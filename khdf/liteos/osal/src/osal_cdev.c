@@ -47,43 +47,43 @@ struct OsalCdev {
 
 int OsalCdevOpen(FAR struct file* filep)
 {
-    struct OsalCdev* dev = (struct OsalCdev*)((struct drv_data *)filep->f_vnode->data)->priv;
+    struct OsalCdev* dev = (struct OsalCdev*)filep->f_inode->i_private;
     return dev->opsImpl->open(dev, filep);
 }
 
 int OsalCdevRelease(FAR struct file* filep)
 {
-    struct OsalCdev* dev = (struct OsalCdev*)((struct drv_data *)filep->f_vnode->data)->priv;
+    struct OsalCdev* dev = (struct OsalCdev*)filep->f_inode->i_private;
     return dev->opsImpl->release(dev, filep);
 }
 
 ssize_t OsalCdevRead(FAR struct file* filep, FAR char* buffer, size_t buflen)
 {
-    struct OsalCdev* dev = (struct OsalCdev*)((struct drv_data *)filep->f_vnode->data)->priv;
+    struct OsalCdev* dev = (struct OsalCdev*)filep->f_inode->i_private;
     return dev->opsImpl->read(filep, buffer, buflen, 0);
 }
 
 ssize_t OsalCdevWrite(FAR struct file* filep, FAR const char* buffer, size_t buflen)
 {
-    struct OsalCdev* dev = (struct OsalCdev*)((struct drv_data *)filep->f_vnode->data)->priv;
+    struct OsalCdev* dev = (struct OsalCdev*)filep->f_inode->i_private;
     return dev->opsImpl->write(filep, buffer, buflen, 0);
 }
 
 off_t OsalCdevSeek(FAR struct file* filep, off_t offset, int whence)
 {
-    struct OsalCdev* dev = (struct OsalCdev*)((struct drv_data *)filep->f_vnode->data)->priv;
+    struct OsalCdev* dev = (struct OsalCdev*)filep->f_inode->i_private;
     return dev->opsImpl->seek(filep, offset, whence);
 }
 
 int OsalCdevIoctl(FAR struct file* filep, int cmd, unsigned long arg)
 {
-    struct OsalCdev* dev = (struct OsalCdev*)((struct drv_data *)filep->f_vnode->data)->priv;
+    struct OsalCdev* dev = (struct OsalCdev*)filep->f_inode->i_private;
     return dev->opsImpl->ioctl(filep, cmd, arg);
 }
 
 int OsalCdevPoll(FAR struct file* filep, poll_table* fds)
 {
-    struct OsalCdev* dev = (struct OsalCdev*)((struct drv_data *)filep->f_vnode->data)->priv;
+    struct OsalCdev* dev = (struct OsalCdev*)filep->f_inode->i_private;
     return dev->opsImpl->poll(filep, fds);
 }
 
