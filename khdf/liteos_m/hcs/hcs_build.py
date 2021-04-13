@@ -40,8 +40,6 @@ import time
 
 
 def exec_command(cmd):
-    print("exec_command:")
-    print(cmd)
     process = subprocess.Popen(cmd)
     process.wait()
     ret_code = process.returncode
