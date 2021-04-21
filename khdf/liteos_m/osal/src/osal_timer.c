@@ -69,46 +69,6 @@ int32_t OsalTimerCreate(OsalTimer *timer, uint32_t interval, OsalTimerFunc func,
     return HDF_SUCCESS;
 }
 
-static int32_t OsalStartTimer(OsalTimer *timer, UINT8 mode)
-{
-    uint32_t ret;
-    uint32_t intSave;
-    uint32_t interval;
-    uint16_t timerID = 0;
-    struct OsalLitetimer *liteTimer = NULL;
-
-    if (timer == NULL || timer->realTimer == NULL) {
-        HDF_LOGE("%s invalid para %d", __func__, __LINE__);
-        return HDF_ERR_INVALID_PARAM;
-    }
-
-    liteTimer = (struct OsalLitetimer *)timer->realTimer;
-    if (liteTimer->interval == 0 || liteTimer->func == NULL) {
-        HDF_LOGE("%s invalid para %d", __func__, __LINE__);
-        return HDF_ERR_INVALID_PARAM;
-    }
-
-    interval = liteTimer->interval;
-    intSave = LOS_IntLock();
-    ret = LOS_SwtmrCreate(LOS_MS2Tick(interval), mode, (SWTMR_PROC_FUNC)liteTimer->func, &timerID, liteTimer->arg);
-    if (ret != LOS_OK) {
-        LOS_IntRestore(intSave);
-        HDF_LOGE("%s LOS_SwtmrCreate fail %u", __func__, ret);
-        return HDF_FAILURE;
-    }
-
-    ret = LOS_SwtmrStart(timerID);
-    if (ret != LOS_OK) {
-        LOS_SwtmrDelete(timerID);
-        LOS_IntRestore(intSave);
-        HDF_LOGE("%s LOS_SwtmrStart fail %u", __func__, ret);
-        return HDF_FAILURE;
-    }
-    LOS_IntRestore(intSave);
-
-    liteTimer->timerID = timerID;
-    return HDF_SUCCESS;
-}
 int32_t OsalTimerStartLoop(OsalTimer *timer)
 {
     return OsalStartTimer(timer, LOS_SWTMR_MODE_PERIOD);

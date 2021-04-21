@@ -38,6 +38,9 @@ config("libhdf_osal_pub_config") {
         "//drivers/framework/include/utils",
         "//kernel/liteos_m/kernel/arch/include",
         "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
+        "//kernel/liteos_m/components/bounds_checking_function/include",
+        "//kernel/liteos_m/kernel/include",
+        "//kernel/liteos_m/utils/",
     ]
 }
 

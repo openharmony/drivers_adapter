@@ -32,6 +32,7 @@
 #define OSAL_ATOMIC_DEF_H
 
 #include <los_atomic.h>
+#include "hdf_base.h"
 
 #ifdef __cplusplus
 extern "C" {

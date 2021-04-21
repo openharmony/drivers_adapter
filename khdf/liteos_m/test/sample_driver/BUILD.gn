@@ -39,6 +39,7 @@ static_library("sample_driver") {
 
     deps = [
         "$khdf_path/osal:hdf_osal_lite",
+        "$khdf_path/core:hdf_core",
     ]
 
     ldflags = [

@@ -125,4 +125,3 @@ int DeviceManagerStartStep2()
     struct DevmgrService *devMgrSvc = (struct DevmgrService *)DevmgrServiceGetInstance();
     return DevmgrServiceLoadLeftDriver(devMgrSvc);
 }
-
