@@ -28,11 +28,11 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 group("hdf_lite") {
-    deps = [
-        "osal:hdf_osal_lite",
-        "core:hdf_core",
-        "hcs:hdf_hcs",
-        "platform:hdf_platform_lite",
-        "test\sample_driver:sample_driver"
-    ]
+  deps = [
+    "core:hdf_core",
+    "hcs:hdf_hcs",
+    "osal:hdf_osal_lite",
+    "platform:hdf_platform_lite",
+    "test\sample_driver:sample_driver",
+  ]
 }
