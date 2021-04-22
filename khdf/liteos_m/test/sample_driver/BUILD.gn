@@ -30,19 +30,13 @@
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 
 static_library("sample_driver") {
-    sources = [
-        "src/sample_driver.c"
-    ]
-    include_dirs = [
-        "include"
-    ]
+  sources = [ "src/sample_driver.c" ]
+  include_dirs = [ "include" ]
 
-    deps = [
-        "$khdf_path/osal:hdf_osal_lite",
-        "$khdf_path/core:hdf_core",
-    ]
+  deps = [
+    "$khdf_path/core:hdf_core",
+    "$khdf_path/osal:hdf_osal_lite",
+  ]
 
-    ldflags = [
-        "-Wl,--whole-archive"
-    ]
+  ldflags = [ "-Wl,--whole-archive" ]
 }
