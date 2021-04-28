@@ -38,8 +38,6 @@
 #include "plat_log.h"
 #include "user_copy.h"
 
-#ifdef PL061_GPIO_USER_SUPPORT
-
 static int GpioOpen(struct file *filep)
 {
     (void)filep;
@@ -160,4 +158,3 @@ void GpioRemoveVfs(void)
         HDF_LOGE("%s: unregister vfs fail!", __func__);
     }
 }
-#endif
