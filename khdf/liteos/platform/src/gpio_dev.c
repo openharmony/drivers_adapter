@@ -30,7 +30,7 @@
 
 #include "gpio_dev.h"
 #include "fcntl.h"
-#include "fs/fs.h" /* from Nuttx */
+#include "fs/fs.h"
 #include "gpio_if.h"
 #include "hdf_base.h"
 #include "hdf_log.h"

@@ -29,7 +29,7 @@
  */
 
 #include "i2c_dev.h"
-#include <fs/fs.h> /* from Nuttx */
+#include <fs/fs.h>
 #include <limits.h>
 #include <stdio.h>
 #include "hdf_base.h"

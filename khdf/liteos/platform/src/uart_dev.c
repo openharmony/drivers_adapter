@@ -183,7 +183,6 @@ extern void poll_wait(struct file *filp,
 static int uartdev_poll(struct file *filep, poll_table *table)
 {
     struct UartHost *host = NULL;
-    //struct UartDriverData *udd = NULL;
 
     if (filep == NULL || filep->f_vnode == NULL) {
         return HDF_ERR_INVALID_PARAM;
@@ -191,27 +190,7 @@ static int uartdev_poll(struct file *filep, poll_table *table)
     struct drv_data *drv = (struct drv_data *)filep->f_vnode->data;
     host = (struct UartHost *)drv->priv;
 
-    /*if (host == NULL || host->priv == NULL) {
-        HDF_LOGE("%s: host is NULL", __func__);
-        return HDF_FAILURE;
-    }*/
     return UartHostPollEvent(host, filep, table);
-
-    /*udd = (struct UartDriverData *)host->priv;
-    if (udd == NULL) {
-        HDF_LOGE("uart_driver_data is NULL");
-        return -EINVAL;
-    }
-    if (UART_STATE_USEABLE != udd->state) {
-        return -EFAULT;
-    }*/
-
-    //poll_wait(filep, &udd->wait, table);
-
-    //if (!PL011UartRxBufEmpty(udd)) {
-    //    return POLLIN | POLLRDNORM;
-    //}
-    //return 0;
 }
 
 static const struct file_operations_vfs g_uartDevFops = {
@@ -231,13 +210,12 @@ static void UartAddRemoveDev(struct UartHost *host, bool add)
 {
     int32_t ret;
     char *devName = NULL;
-    //struct UartDriverData *udd = NULL;
 
     if (host == NULL || host->priv == NULL) {
         HDF_LOGE("%s invalid parameter", __func__);
         return;
     }
-    //udd = (struct UartDriverData *)host->priv;
+
     devName = (char *)OsalMemCalloc(sizeof(char) * (MAX_DEV_NAME_SIZE + 1));
     if (devName == NULL) {
         HDF_LOGE("%s: OsalMemCalloc error", __func__);
