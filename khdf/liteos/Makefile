@@ -86,17 +86,19 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/ability/config/device_resource_if.c
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM), y)
-              LOCAL_SRCS += ./platform/plat_common.c
+              LOCAL_SRCS += ./platform/src/plat_common.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2C), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/i2c_if.c \
               $(HDF_FRAMEWORKS)/support/platform/src/i2c_core.c
+              LOCAL_SRCS += ./platform/src/i2c_dev.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/gpio_if.c \
               $(HDF_FRAMEWORKS)/support/platform/src/gpio_core.c
+              LOCAL_SRCS += ./platform/src/gpio_dev.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG), y)
@@ -107,6 +109,7 @@ endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SPI), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/spi_if.c \
               $(HDF_FRAMEWORKS)/support/platform/src/spi_core.c
+              LOCAL_SRCS += ./platform/src/spi_dev.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PWM), y)
@@ -131,6 +134,7 @@ endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mipi_dsi_core.c
+#              LOCAL_SRCS += ./platform/src/mipi_tx_dev.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_DMAC), y)
@@ -140,6 +144,7 @@ endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_UART), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/uart_if.c \
               $(HDF_FRAMEWORKS)/support/platform/src/uart_core.c
+              LOCAL_SRCS += ./platform/src/uart_dev.c
 endif
 
 ifeq ($(LOSCFG_NET_LWIP_SACK), y)
