@@ -50,6 +50,7 @@ HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/core/common/include/manager
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/core/common/include/host
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/network/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/osal/include
+HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/platform/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/core/adapter/vnode/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/core/adapter/syscall/include
 HDF_INCLUDE += -I $(LITEOSTOPDIR)/bsd/compat/linuxkpi/include
