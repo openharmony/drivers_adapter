@@ -92,6 +92,7 @@ static_library("hdf_core") {
     "$hdf_fwk_path/core/shared/src/hdf_object_manager.c",
     "$hdf_fwk_path/core/shared/src/hdf_service_record.c",
     "$hdf_fwk_path/utils/src/hdf_cstring.c",
+    "$hdf_fwk_path/utils/src/hdf_map.c",
     "$hdf_fwk_path/utils/src/hdf_slist.c",
     "$hdf_fwk_path/utils/src/hdf_sref.c",
     "common/src/devmgr_service_start.c",
