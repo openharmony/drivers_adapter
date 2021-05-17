@@ -64,6 +64,7 @@ static_library("hdf_core") {
     "$hdf_fwk_path/ability/config/hcs_parser/src/hcs_parser.c",
     "$hdf_fwk_path/ability/config/hcs_parser/src/hcs_tree_if.c",
     "$hdf_fwk_path/ability/sbuf/src/hdf_sbuf.c",
+    "$hdf_fwk_path/ability/sbuf/src/hdf_sbuf_impl_raw.c",
     "$hdf_fwk_path/core/common/src/devlite_object_config.c",
     "$hdf_fwk_path/core/common/src/hdf_attribute.c",
     "$hdf_fwk_path/core/common/src/load_driver_entry.c",
