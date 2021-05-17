@@ -18,7 +18,7 @@ HDF_FRAMEWORKS = "//drivers/framework"
 shared_library("hdf_core") {
   sources = [
     "$HDF_FRAMEWORKS/ability/sbuf/src/hdf_sbuf.c",
-    "$hdf_fwk_path/ability/sbuf/src/hdf_sbuf_impl_raw.c",
+    "$HDF_FRAMEWORKS/ability/sbuf/src/hdf_sbuf_impl_raw.c",
     "$HDF_FRAMEWORKS/core/adapter/syscall/src/hdf_devmgr_adapter.c",
     "$HDF_FRAMEWORKS/core/adapter/syscall/src/hdf_syscall_adapter.c",
     "$HDF_FRAMEWORKS/core/shared/src/hdf_io_service.c",
