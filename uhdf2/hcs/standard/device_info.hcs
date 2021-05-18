@@ -1,0 +1,81 @@
+ root {
+    device_info {
+        match_attr = "hdf_manager";
+        template host {
+            hostName = "";
+            priority = 100;
+            template device {
+                template deviceNode {
+                    policy = 0;
+                    priority = 100;
+                    preload = 0;
+                    permission = 0664;
+                    moduleName = "";
+                    serviceName = "";
+                    deviceMatchAttr = "";
+                }
+            }
+        }
+        platform :: host {
+            hostName = "sample_host";
+            priority = 50;
+            sample_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    moduleName = "libsample_driver.z.so";
+                    serviceName = "sample_driver_service";
+                }
+            }
+        }
+        acm :: host {
+            hostName = "acm_host";
+            priority = 50;
+            acm_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    moduleName = "libusbfn_cdcacm.z.so";
+                    serviceName = "usbfn_cdcacm";
+                    deviceMatchAttr = "usbfn_cdcacm_driver";
+                }
+            }
+        }
+        power :: host {
+            hostName = "power_host";
+            priority = 50;
+            battery_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    moduleName = "libbatteryd.z.so";
+                    serviceName = "batteryd";
+                }
+            }
+        }
+        platform_camera :: host {
+            hostName = "camera_host";
+            priority = 50;
+            camera_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    moduleName = "libhdi_impl.z.so";
+                    serviceName = "camera_service";
+                }
+            }
+        }
+        riladapter :: host {
+            hostName = "riladapter_host";
+            priority = 50;
+            riladapter_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    moduleName = "libril_init.z.so";
+                    serviceName = "cellular_radio1";
+                }
+            }
+        }
+    }
+}
