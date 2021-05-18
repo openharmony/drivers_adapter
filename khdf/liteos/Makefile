@@ -43,9 +43,11 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               ./osal/src/osal_workqueue.c \
               ./osal/src/osal_cdev.c \
               $(HDF_FRAMEWORKS)/utils/src/hdf_cstring.c \
+	      $(HDF_FRAMEWORKS)/utils/src/hdf_map.c \
               $(HDF_FRAMEWORKS)/utils/src/hdf_slist.c \
               $(HDF_FRAMEWORKS)/utils/src/hdf_sref.c \
               $(HDF_FRAMEWORKS)/ability/sbuf/src/hdf_sbuf.c \
+	      $(HDF_FRAMEWORKS)/ability/sbuf/src/hdf_sbuf_impl_raw.c \
               ./osal/src/osal_mem.c \
               ./osal/src/osal_mutex.c \
               ./osal/src/osal_sem.c \
