@@ -17,27 +17,15 @@
         "//drivers/peripheral/display/hal:hdi_display",
         "//drivers/peripheral/wlan/client:wifi_driver_client",
         "//drivers/peripheral/wlan/hal:wifi_hal",
-        "//drivers/peripheral/camera/hal:camera_hal",
-        "//drivers/peripheral/usb/core:libusb_core",
-        "//drivers/peripheral/usb/serial:hostsdk_test",
-        "//drivers/peripheral/usb/serial:libusbhost_acm",
-        "//drivers/peripheral/usb/serial:hostacm_test",
-        "//drivers/peripheral/usb/gadget:libusbfn_cdcacm",
-        "//drivers/peripheral/usb/gadget:acm_test",
-        "//drivers/peripheral/usb/gadget:acm_read",
-        "//drivers/peripheral/usb/gadget:acm_write",
-        "//drivers/peripheral/usb/gadget:prop_test",
         "//drivers/peripheral/base:hdf_peripheral.rc",
         "//drivers/peripheral/sensor/hal:hdi_sensor"
       ],
       "test_list": [
-        "//drivers/peripheral/wlan/test:hdf_test_wifi",
         "//drivers/peripheral/sensor/test:hdf_test_sensor",
         "//drivers/adapter/uhdf2/test:hdf_test_uhdf",
         "//drivers/adapter/uhdf2/osal/test:unittest",
         "//drivers/adapter/uhdf2/host/test:unittest",
-        "//drivers/adapter/uhdf2/hdi/test:unittest",
-        "//drivers/peripheral/usb/moduletest:moduletest"
+        "//drivers/adapter/uhdf2/hdi/test:unittest"
       ]
     }
   }
