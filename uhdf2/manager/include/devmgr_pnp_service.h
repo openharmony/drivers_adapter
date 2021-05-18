@@ -24,8 +24,7 @@
 struct HdfSList *DevmgrServiceGetPnpDeviceInfo();
 
 int32_t DevmgrServiceRegPnpDevice(
-    struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName, 
-    const void *privateData);
+    struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName);
 
 int32_t DevmgrServiceUnRegPnpDevice(
     struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName);

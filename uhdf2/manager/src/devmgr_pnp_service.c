@@ -20,7 +20,6 @@
 #include "hdf_log.h"
 #include "osal_mem.h"
 #include "osal_time.h"
-#include "securec.h"
 
 #define PNP_SLEEP_TIME 50 // ms
 
@@ -72,38 +71,11 @@ static bool DevmgrServiceAddPnpDeviceInfo(struct HdfDeviceInfoFull *deviceInfo)
     deviceInfo->super.hostId = g_hostId;
     deviceInfo->super.policy = SERVICE_POLICY_PUBLIC;
     deviceInfo->super.preload = DEVICE_PRELOAD_ENABLE;
-    deviceInfo->super.deviceMatchAttr = "";
     HdfSListAdd(g_deviceInfos, &deviceInfo->super.node);
     return true;
 }
 
-static bool DevmgrServiceAddPrivateData(
-    struct HdfDeviceInfoFull *deviceInfo, const void *privateData)
-{
-    if (privateData != NULL) {
-        deviceInfo->super.private = (const void *)OsalMemCalloc(sizeof(struct UsbPnpNotifyServiceInfo));
-        if (deviceInfo->super.private != NULL) {
-            int32_t length = ((struct UsbPnpNotifyServiceInfo *)(privateData))->length;
-            HDF_LOGD("%{public}s: private length=%{public}d", __func__, length);
-
-            memcpy_s((void *)(deviceInfo->super.private), sizeof(struct UsbPnpNotifyServiceInfo), privateData, length);
-            if (deviceInfo->super.private == NULL) {
-                HDF_LOGE("%{public}s: memcpy_s private error", __func__);
-                return false;
-            }
-        } else {
-            HDF_LOGE("%{public}s: OsalMemCalloc private error", __func__);
-            return false;
-        }
-    } else {
-        HDF_LOGW("%{public}s: privateData is NULL", __func__);
-    }
-
-    return true;
-}
-
-static bool DevmgrServiceAddPnpDevice(
-    const char *moduleName, const char *serviceName, const void *privateData)
+static bool DevmgrServiceAddPnpDevice(const char *moduleName, const char *serviceName)
 {
     if (moduleName == NULL || serviceName == NULL) {
         return false;
@@ -123,11 +95,6 @@ static bool DevmgrServiceAddPnpDevice(
     }
     deviceInfo->super.svcName = strdup(serviceName);
     if (deviceInfo->super.svcName == NULL) {
-        HdfDeviceInfoFullFreeInstance(deviceInfo);
-        return false;
-    }
-
-    if (!DevmgrServiceAddPrivateData(deviceInfo, privateData)) {
         HdfDeviceInfoFullFreeInstance(deviceInfo);
         return false;
     }
@@ -229,8 +196,7 @@ static int DevmgrServiceInstallDevice(struct DevHostServiceClnt *hostClnt, const
 }
 
 int32_t DevmgrServiceRegPnpDevice(
-    struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName,
-    const void *privateData)
+    struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName)
 {
     int32_t ret = HDF_FAILURE;
     struct DevmgrService *inst = (struct DevmgrService *)devmgrSvc;
@@ -251,7 +217,7 @@ int32_t DevmgrServiceRegPnpDevice(
         HDF_LOGE("%s host service is null!", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
-    if (!DevmgrServiceAddPnpDevice(moduleName, serviceName, privateData)) {
+    if (!DevmgrServiceAddPnpDevice(moduleName, serviceName)) {
         HDF_LOGE("%s add pnp device failed!", __func__);
         return ret;
     }
