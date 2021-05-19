@@ -485,5 +485,4 @@ int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId
             return HDF_ERR_INVALID_PARAM;
         }
     }
-    return HDF_SUCCESS;
 }
