@@ -35,11 +35,11 @@ HDM_WIFI_LITE_ROOT = $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/net
 
 ##################path of compile file :start###############
 ##### hdm #####
-#WPHY_PATH := $(HDM_WIFI_ROOT)/compoments/wphy
-#WMAC_PATH := $(HDM_WIFI_ROOT)/compoments/wmac
-WAP_PATH := $(HDM_WIFI_ROOT)/core/compoments/softap
-WSTA_PATH := $(HDM_WIFI_ROOT)/core/compoments/sta
-WEAPOL_PATH := $(HDM_WIFI_ROOT)/core/compoments/eapol
+#WPHY_PATH := $(HDM_WIFI_ROOT)/components/wphy
+#WMAC_PATH := $(HDM_WIFI_ROOT)/components/wmac
+WAP_PATH := $(HDM_WIFI_ROOT)/core/components/softap
+WSTA_PATH := $(HDM_WIFI_ROOT)/core/components/sta
+WEAPOL_PATH := $(HDM_WIFI_ROOT)/core/components/eapol
 NETDEV_PATH := $(HDM_WIFI_ROOT)/../common/netdevice
 MODULE_PATH := $(HDM_WIFI_ROOT)/core/module
 PLATFORM_PATH := $(HDM_WIFI_ROOT)/platform
@@ -47,7 +47,6 @@ QOS_PATH := $(PLATFORM_PATH)/src/qos
 INC_PATH := $(HDM_WIFI_ROOT)/include
 INC_WIFI_PATH := $(LITEOSTOPDIR)/../../drivers/framework/include/wifi
 ##################path of compile file :end###############
-
 
 WIFI_CFLAGS += -I $(INC_PATH) \
 		-I $(WSTA_PATH) \
