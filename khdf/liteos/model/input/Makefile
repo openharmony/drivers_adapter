@@ -41,7 +41,7 @@ LOCAL_SRCS += $(INPUT_ROOT_DIR)/input_bus_ops/input_i2c_ops.c \
               $(INPUT_ROOT_DIR)/event_hub.c \
               $(INPUT_ROOT_DIR)/hdf_touch.c \
               $(INPUT_ROOT_DIR)/hdf_key.c \
-              $(INPUT_ROOT_DIR)/hdf_hid.c
+              $(INPUT_ROOT_DIR)/hdf_hid_adapter.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_TP_5P5_GT911), y)
