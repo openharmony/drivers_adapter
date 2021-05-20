@@ -355,7 +355,8 @@ static int I2cFsOpen(struct file *filep)
 {
     DevHandle handle = NULL;
     struct I2cClient *client = NULL;
-    int16_t id = (int16_t)((uintptr_t)((struct drv_data *)filep->f_vnode)->priv);
+    struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
+    int16_t id = (int16_t)(uintptr_t)drvData->priv;
 
     handle = I2cOpen(id);
     if (handle == NULL) {
