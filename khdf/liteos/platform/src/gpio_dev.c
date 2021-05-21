@@ -102,7 +102,8 @@ static int GpioIoctl(struct file *filep, int cmd, unsigned long arg)
     uint16_t bitNum;
     uint16_t gpio;
     struct GpioBitInfo info = {0};
-    bitNum = (uint16_t)(uintptr_t)((struct drv_data *)filep->f_vnode)->priv;
+    struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
+    bitNum = (uint16_t)(uintptr_t)drvData->priv;
 
     ret = LOS_CopyToKernel(&info, sizeof(struct GpioBitInfo),
         (const VOID *)(uintptr_t)arg, sizeof(struct GpioBitInfo));
