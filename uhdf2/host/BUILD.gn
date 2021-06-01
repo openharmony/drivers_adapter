@@ -37,9 +37,7 @@ config("libhdf_host_pub_config") {
 }
 
 ohos_shared_library("libhdf_host") {
-  public_configs = [
-    ":libhdf_host_pub_config",
-  ]
+  public_configs = [ ":libhdf_host_pub_config" ]
   include_dirs = [
     "//utils/native/base/include",
     "$hdf_framework_path/core/manager/include",
@@ -73,13 +71,10 @@ ohos_shared_library("libhdf_host") {
     "$hdf_framework_path/core/host/src/hdf_service_observer.c",
     "$hdf_framework_path/core/host/src/hdf_service_subscriber.c",
     "$hdf_framework_path/core/host/src/power_state_token.c",
+    "$hdf_framework_path/core/manager/src/hdf_host_info.c",
     "$hdf_framework_path/core/shared/src/hdf_device_info.c",
     "$hdf_framework_path/core/shared/src/hdf_object_manager.c",
     "$hdf_framework_path/core/shared/src/hdf_service_record.c",
-    "$hdf_framework_path/core/manager/src/hdf_host_info.c",
-    "$hdf_uhdf_path/shared/src/hdf_device_info_full.c",
-    "$hdf_uhdf_path/shared/src/dev_attribute_parcel.c",
-    "$hdf_uhdf_path/shared/src/hdf_attribute_full.c",
     "$hdf_uhdf_path/host/src/devhost_object_config.c",
     "$hdf_uhdf_path/host/src/devhost_service_full.c",
     "$hdf_uhdf_path/host/src/devhost_service_stub.c",
@@ -91,12 +86,15 @@ ohos_shared_library("libhdf_host") {
     "$hdf_uhdf_path/host/src/hdf_device_full.c",
     "$hdf_uhdf_path/host/src/hdf_device_thread.c",
     "$hdf_uhdf_path/host/src/hdf_devsvc_manager_clnt.c",
+    "$hdf_uhdf_path/shared/src/dev_attribute_parcel.c",
+    "$hdf_uhdf_path/shared/src/hdf_attribute_full.c",
+    "$hdf_uhdf_path/shared/src/hdf_device_info_full.c",
   ]
 
   deps = [
+    "$hdf_uhdf_path/config:uhdf_hcs_pkg",
     "$hdf_uhdf_path/ipc:libhdf_ipc_adapter",
     "$hdf_uhdf_path/osal:libhdf_utils",
-    "$hdf_uhdf_path/config:uhdf_hcs_pkg",
     "//utils/native/base:utils",
   ]
 
@@ -142,10 +140,10 @@ ohos_executable("hdf_devhost") {
   sources = [ "devhost.c" ]
 
   deps = [
-    "$hdf_uhdf_path/ipc:libhdf_ipc_adapter",
-    "$hdf_uhdf_path/osal:libhdf_utils",
     "$hdf_uhdf_path/config:uhdf_hcs_pkg",
     "$hdf_uhdf_path/host:libhdf_host",
+    "$hdf_uhdf_path/ipc:libhdf_ipc_adapter",
+    "$hdf_uhdf_path/osal:libhdf_utils",
     "//utils/native/base:utils",
   ]
 

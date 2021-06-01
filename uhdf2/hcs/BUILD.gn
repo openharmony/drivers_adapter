@@ -24,13 +24,12 @@ ohos_prebuilt_etc("hdf_default.hcb") {
   } else if (is_large_system) {
     hcs_config_path = "large"
   }
-  exec_script(
-    "$hdf_framework_path/tools/hc-gen/bin/hc-gen",
-    [
-      "-o",
-      rebase_path("hdf_default.hcb"),
-      rebase_path(hcs_config_path + "/hdf.hcs")
-    ],
-    "")
+  exec_script("$hdf_framework_path/tools/hc-gen/bin/hc-gen",
+              [
+                "-o",
+                rebase_path("hdf_default.hcb"),
+                rebase_path(hcs_config_path + "/hdf.hcs"),
+              ],
+              "")
   part_name = "hdf"
 }

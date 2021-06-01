@@ -54,8 +54,8 @@ ohos_shared_library("libhdf_ipc_adapter") {
 
   if (is_standard_system) {
     external_deps = [
-      "communication_L2:ipc_core",
       "hiviewdfx_hilog_native:libhilog",
+      "ipc:ipc_core",
       "samgr_L2:samgr_proxy",
     ]
   } else {
