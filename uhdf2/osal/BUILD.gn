@@ -33,21 +33,17 @@ config("libhdf_utils_pub_config") {
     "$hdf_framework_path/core/adapter/vnode/include",
     "$hdf_framework_path/core/shared/include",
     "$hdf_framework_path/include/core/",
-    "$hdf_uhdf_path/osal/include"
+    "$hdf_uhdf_path/osal/include",
   ]
   defines = [ "__OHOS_USER__" ]
 
   if (is_standard_system) {
-    defines += [
-      "__OHOS_STANDARD_SYS__"
-    ]
+    defines += [ "__OHOS_STANDARD_SYS__" ]
   }
 }
 
 ohos_shared_library("libhdf_utils") {
-  public_configs = [
-    ":libhdf_utils_pub_config",
-  ]
+  public_configs = [ ":libhdf_utils_pub_config" ]
 
   sources = [
     "$hdf_framework_path/ability/sbuf/src/hdf_sbuf.c",
@@ -55,22 +51,22 @@ ohos_shared_library("libhdf_utils") {
     "$hdf_framework_path/core/adapter/syscall/src/hdf_devmgr_adapter.c",
     "$hdf_framework_path/core/adapter/syscall/src/hdf_syscall_adapter.c",
     "$hdf_framework_path/core/shared/src/hdf_io_service.c",
-    "$hdf_framework_path/utils/src/hdf_map.c",
-    "$hdf_framework_path/utils/src/hdf_cstring.c",
-    "$hdf_framework_path/utils/src/hdf_message_looper.c",
-    "$hdf_framework_path/utils/src/hdf_message_task.c",
-    "$hdf_framework_path/utils/src/hdf_slist.c",
-    "$hdf_framework_path/utils/src/hdf_sref.c",
-    "$hdf_framework_path/utils/src/osal_message.c",
-    "$hdf_framework_path/utils/src/osal_msg_queue.c",
-    "$hdf_framework_path/utils/src/hdf_thread_ex.c",
     "$hdf_framework_path/support/posix/src/osal_mem.c",
     "$hdf_framework_path/support/posix/src/osal_mutex.c",
     "$hdf_framework_path/support/posix/src/osal_sem.c",
     "$hdf_framework_path/support/posix/src/osal_spinlock.c",
-    "osal_sysevent.c",
     "$hdf_framework_path/support/posix/src/osal_thread.c",
     "$hdf_framework_path/support/posix/src/osal_time.c",
+    "$hdf_framework_path/utils/src/hdf_cstring.c",
+    "$hdf_framework_path/utils/src/hdf_map.c",
+    "$hdf_framework_path/utils/src/hdf_message_looper.c",
+    "$hdf_framework_path/utils/src/hdf_message_task.c",
+    "$hdf_framework_path/utils/src/hdf_slist.c",
+    "$hdf_framework_path/utils/src/hdf_sref.c",
+    "$hdf_framework_path/utils/src/hdf_thread_ex.c",
+    "$hdf_framework_path/utils/src/osal_message.c",
+    "$hdf_framework_path/utils/src/osal_msg_queue.c",
+    "osal_sysevent.c",
   ]
 
   deps = [ "//utils/native/base:utils" ]

@@ -135,6 +135,4 @@ int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId
             HDF_LOGE("SampleServiceDispatch: not support cmd %d", cmdId);
             return HDF_ERR_INVALID_PARAM;
     }
-
-    return HDF_SUCCESS;
 }

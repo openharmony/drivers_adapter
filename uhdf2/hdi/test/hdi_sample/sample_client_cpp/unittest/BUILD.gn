@@ -18,29 +18,26 @@ group("sample_client_cpp") {
 }
 
 ohos_shared_library("libsample_client_cpp") {
-
   include_dirs = [
     "$hdf_framework_path/ability/sbuf/include",
     "$hdf_uhdf_path/manager/include",
     "$hdf_uhdf_path/include/hdi",
   ]
 
-  sources = [
-    "sample_proxy.cpp",
-  ]
+  sources = [ "sample_proxy.cpp" ]
 
   deps = [
+    "$hdf_uhdf_path/hdi:libhdi",
+    "//drivers/adapter/uhdf2/host:libhdf_host",
     "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
     "//drivers/adapter/uhdf2/osal:libhdf_utils",
-    "//drivers/adapter/uhdf2/host:libhdf_host",
     "//utils/native/base:utils",
-    "$hdf_uhdf_path/hdi:libhdi"
   ]
 
   if (is_standard_system) {
     external_deps = [
       "hiviewdfx_hilog_native:libhilog",
-      "communication_L2:ipc_core",
+      "ipc:ipc_core",
     ]
   } else {
     external_deps = [

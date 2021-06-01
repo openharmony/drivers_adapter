@@ -18,9 +18,11 @@
         "//drivers/peripheral/wlan/client:wifi_driver_client",
         "//drivers/peripheral/wlan/hal:wifi_hal",
         "//drivers/peripheral/base:hdf_peripheral.rc",
-        "//drivers/peripheral/sensor/hal:hdi_sensor"
+        "//drivers/peripheral/sensor/hal:hdi_sensor",
+        "//device/hisilicon/drivers/firmware/common/wlan:wifi_firmware"
       ],
       "test_list": [
+        "//drivers/peripheral/wlan/test:hdf_test_wifi",
         "//drivers/peripheral/sensor/test:hdf_test_sensor",
         "//drivers/adapter/uhdf2/test:hdf_test_uhdf",
         "//drivers/adapter/uhdf2/osal/test:unittest",

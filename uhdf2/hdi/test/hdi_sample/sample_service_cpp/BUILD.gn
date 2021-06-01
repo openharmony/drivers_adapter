@@ -20,26 +20,26 @@ group("sample_service_cpp") {
 ohos_shared_library("libsample_service_cpp") {
   sources = [
     "sample_driver.cpp",
+    "sample_service.cpp",
     "sample_service_stub.cpp",
-    "sample_service.cpp"
   ]
 
   deps = [
+    "//drivers/adapter/uhdf2/host:libhdf_host",
     "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
     "//drivers/adapter/uhdf2/osal:libhdf_utils",
-    "//drivers/adapter/uhdf2/host:libhdf_host",
     "//utils/native/base:utils",
   ]
 
   if (is_standard_system) {
     external_deps = [
       "hiviewdfx_hilog_native:libhilog",
-      "communication_L2:ipc_core"
+      "ipc:ipc_core",
     ]
   } else {
     external_deps = [
-      "ipc:ipc_core",
       "hilog:libhilog",
+      "ipc:ipc_core",
     ]
   }
 
