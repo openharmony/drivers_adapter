@@ -26,14 +26,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-PWD := $(abspath $(shell pwd))
-UNAME := $(shell uname)
-ifneq ($(findstring $(UNAME),Linux),)
-HCGEN_PATH := linux-x86/bin/hc-gen
-else
-HCGEN_PATH := win-x86/bin/hc-gen.exe
-endif
-
 HAVE_VENDOR_CONFIG := $(shell if [ -d $(LITEOS_SOURCE_ROOT)/vendor/$(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))/$(patsubst "%",%,$(LOSCFG_PRODUCT_NAME))/config ]; then echo y; else echo n; fi)
 
 ifeq ($(LOCAL_HCS_ROOT),)
@@ -44,13 +36,9 @@ LOCAL_HCS_ROOT := $(abspath $(LITEOSTOPDIR)/../../device/$(patsubst "%",%,$(LOSC
 endif
 endif
 
-HC_GEN := hc-gen
-BUILD_IN_HC_GEN := $(LITEOSTOPDIR)/../../prebuilts/build-tools/$(HCGEN_PATH)
-ifneq ($(wildcard $(BUILD_IN_HC_GEN)),)
-HC_GEN := $(BUILD_IN_HC_GEN)
-endif
-
 SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
+HC_GEN_DIR := $(abspath $(LITEOSTOPDIR)/../../drivers/framework/tools/hc-gen)
+HC_GEN := $(HC_GEN_DIR)/build/hc-gen
 HDF_CONFIG_DIR := $(LOCAL_HCS_ROOT)
 OBJOUT := $(BUILD)$(dir $(subst $(SOURCE_ROOT),,$(shell pwd)))$(MODULE_NAME)
 LOCAL_CFLAGS += $(LITEOS_GCOV_OPTS)
@@ -89,17 +77,20 @@ LIB := $(LIBA) $(LIBSO)
 
 all: $(LIB)
 
-$(CONFIG_GEN_HEX_SRC):  $(CONFIG_OUT_DIR)%_hex.c: $(HDF_CONFIG_DIR)/%.hcs
+$(HC_GEN):
+	$(HIDE)make -C $(HC_GEN_DIR)
+
+$(CONFIG_GEN_HEX_SRC): $(CONFIG_OUT_DIR)%_hex.c: $(HDF_CONFIG_DIR)/%.hcs | $(HC_GEN)
 	$(HIDE)echo gen hdf built-in config
 	$(HIDE)if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi
 	$(HIDE)$(HC_GEN) $(HCB_FLAGS) -o  $(subst _hex.c,,$(@)) $<
 
-$(CONFIG_GEN_SRCS): $(CONFIG_OUT_DIR)%.c: $(HDF_CONFIG_DIR)/%.hcs
+$(CONFIG_GEN_SRCS): $(CONFIG_OUT_DIR)%.c: $(HDF_CONFIG_DIR)/%.hcs | $(HC_GEN)
 	$(HIDE)echo gen hdf driver config
 	$(HIDE)if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi
 	$(HIDE)$(HC_GEN) -t -o $@ $<
 
-$(DEPENDS_CONFIG_SRCS): $(CONFIG_OUT_DIR)%.c: $(HDF_CONFIG_DIR)/%.hcs
+$(DEPENDS_CONFIG_SRCS): $(CONFIG_OUT_DIR)%.c: $(HDF_CONFIG_DIR)/%.hcs | $(HC_GEN)
 	$(HIDE)if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi
 	$(HIDE)$(HC_GEN) -t -o $@ $<
 	$(HIDE)rm $@
