@@ -32,9 +32,9 @@ import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 static_library("hdf_hcs") {
   sources = [ "hdf_config_gen_hex.c" ]
   config_path = product_path + "/config/hdf.hcs"
-  exec_script("hcs_build.py",
+  hdf_framework_path = "//drivers/framework"
+  exec_script("$hdf_framework_path/tools/hc-gen/build_hcs.py",
               [
-                ohos_root_path + "$hdf_fwk_path/tools/hc-gen/bin/hc-gen",
                 "-i",
                 "-o",
                 rebase_path("hdf_config_gen.c"),
