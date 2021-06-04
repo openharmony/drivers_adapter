@@ -35,6 +35,7 @@
 #include "osal.h"
 
 #define HDF_LOG_TAG             NetBuf
+#define MAX_CONVERSION_LEN      65535
 
 /**
  * @brief Initializes a network data buffer queue.
@@ -616,6 +617,10 @@ struct pbuf *NetBuf2Pbuf(const NetBuf *nb)
     struct eth_hdr *hdr = NULL;
     uint32_t len = NetBufGetDataLen(nb);
 
+    if ((len + ETH_PAD_SIZE) > MAX_CONVERSION_LEN) {
+        HDF_LOGE("%s netbuf len exceeds the maximum length of the pbuf!", __func__);
+        return NULL;
+    }
     p = pbuf_alloc(PBUF_RAW, (uint16_t)(len + ETH_PAD_SIZE), PBUF_RAM);
     if (p == NULL) {
         HDF_LOGE("%s pbuf_alloc failed! len = %d", __func__, len);
