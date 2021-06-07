@@ -53,8 +53,7 @@ int32_t HdfGetServiceNameByDeviceClass(DeviceClass deviceClass, struct HdfSBuf *
         return;
     }
 
-    reply->readPos = 0;
-    reply->writePos = 0;
+    HdfSbufFlush(reply);
     HdfSListIteratorInit(&itHost, &devMgrSvc->hosts);
     while (HdfSListIteratorHasNext(&itHost)) {
         hostClnt = (struct DevHostServiceClnt *)HdfSListIteratorNext(&itHost);
