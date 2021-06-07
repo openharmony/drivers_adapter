@@ -14,22 +14,29 @@
 import("//build/ohos.gni")
 import("//drivers/adapter/uhdf2/uhdf.gni")
 
-ohos_prebuilt_etc("hdf_default.hcb") {
-  source = "hdf_default.hcb"
-  relative_install_dir = "hdfconfig"
-  subsystem_name = "hdf"
+action("build_hcs") {
   hcs_config_path = "default"
   if (is_standard_system) {
     hcs_config_path = "standard"
   } else if (is_large_system) {
     hcs_config_path = "large"
   }
-  exec_script("$hdf_framework_path/tools/hc-gen/build_hcs.py",
-              [
-                "-o",
-                rebase_path("hdf_default.hcb"),
-                rebase_path(hcs_config_path + "/hdf.hcs"),
-              ],
-              "")
+
+  script = "$hdf_framework_path/tools/hc-gen/bin/hc-gen"
+  sources = [ rebase_path(hcs_config_path + "/hdf.hcs") ]
+  outputs = [ "$target_gen_dir/hdf_default.hcb" ]
+  args = [
+    "-o",
+    rebase_path(outputs[0]),
+    sources[0],
+  ]
+}
+
+ohos_prebuilt_etc("hdf_default.hcb") {
+  deps = [ ":build_hcs" ]
+  hcs_outputs = get_target_outputs(":build_hcs")
+  source = hcs_outputs[0]
+  relative_install_dir = "hdfconfig"
+  subsystem_name = "hdf"
   part_name = "hdf"
 }
