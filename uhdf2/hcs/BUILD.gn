@@ -22,7 +22,7 @@ action("build_hcs") {
     hcs_config_path = "large"
   }
 
-  script = "$hdf_framework_path/tools/hc-gen/bin/hc-gen"
+  script = "$hdf_framework_path/tools/hc-gen/build_hcs.py"
   sources = [ rebase_path(hcs_config_path + "/hdf.hcs") ]
   outputs = [ "$target_gen_dir/hdf_default.hcb" ]
   args = [
