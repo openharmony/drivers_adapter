@@ -66,7 +66,10 @@ struct disk_divide_info *StorageBlockGetEmmc(void)
 char *StorageBlockGetEmmcNodeName(void *block)
 {
     struct StorageBlock *sb = (struct StorageBlock *)block;
-
+ 
+    if (sb == NULL) {
+	    return NULL;
+    }
     return sb->name;
 }
 
