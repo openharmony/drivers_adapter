@@ -127,17 +127,17 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MMC), y)
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_core.c \
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_dispatch.c \
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_if.c \
-              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_protocol.c
+              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_protocol.c \
+	      $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_sdio.c \
+	      $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_emmc.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO), y)
-              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/sdio_if.c \
-              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_sdio.c
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/sdio_if.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_EMMC), y)
-              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/emmc_if.c \
-              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_emmc.c
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/emmc_if.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_RTC), y)
