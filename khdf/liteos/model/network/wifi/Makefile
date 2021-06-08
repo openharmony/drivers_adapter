@@ -43,6 +43,7 @@ WEAPOL_PATH := $(HDM_WIFI_ROOT)/core/components/eapol
 NETDEV_PATH := $(HDM_WIFI_ROOT)/../common/netdevice
 MODULE_PATH := $(HDM_WIFI_ROOT)/core/module
 PLATFORM_PATH := $(HDM_WIFI_ROOT)/platform
+IBUS_PATH := $(HDM_WIFI_ROOT)/bus
 QOS_PATH := $(PLATFORM_PATH)/src/qos
 INC_PATH := $(HDM_WIFI_ROOT)/include
 INC_WIFI_PATH := $(LITEOSTOPDIR)/../../drivers/framework/include/wifi
@@ -54,7 +55,8 @@ WIFI_CFLAGS += -I $(INC_PATH) \
 		-I $(WEAPOL_PATH) \
 		-I $(NETDEV_PATH) \
 		-I $(MODULE_PATH) \
-		-I $(INC_WIFI_PATH)
+		-I $(INC_WIFI_PATH) \
+		-I $(IBUS_PATH)
 
 
 LOCAL_SRCS += $(WAP_PATH)/ap.c \
@@ -64,7 +66,9 @@ LOCAL_SRCS += $(WAP_PATH)/ap.c \
 			$(MODULE_PATH)/wifi_module.c \
 			$(MODULE_PATH)/wifi_base.c \
 			$(MODULE_PATH)/wifi_feature.c \
-			$(HDM_WIFI_ROOT)/core/hdf_wifi_core.c
+			$(HDM_WIFI_ROOT)/core/hdf_wifi_core.c \
+			$(IBUS_PATH)/hdf_ibus_intf.c \
+			$(IBUS_PATH)/hdf_sdio_intf.c
 
 MESSAGE_INCLUDE += -I $(PLATFORM_PATH)/include/message \
 			-I $(PLATFORM_PATH)/include
@@ -90,4 +94,5 @@ LOCAL_CFLAGS += $(WIFI_CFLAGS) $(MESSAGE_INCLUDE)
 LOCAL_CFLAGS += -fstack-protector-strong -fno-common -fsigned-char -fno-strict-aliasing
 
 include $(HDF_DRIVER)
+
 
