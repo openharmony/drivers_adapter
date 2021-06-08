@@ -41,6 +41,7 @@ HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/include/core
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/include/net
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/include/wifi
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/model/network/common/netdevice
+HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/model/storage/include/common
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/ability/sbuf/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/core/host/include
