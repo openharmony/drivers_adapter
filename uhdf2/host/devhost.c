@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <sys/prctl.h>
 #include "hdf_base.h"
 #include "devhost_service.h"
@@ -63,6 +64,8 @@ int main(int argc, char **argv)
         HDF_LOGE("Devhost main parameter error, argc: %{public}d", argc);
         return HDF_ERR_INVALID_PARAM;
     }
+
+    prctl(PR_SET_PDEATHSIG, SIGKILL); // host process should exit with devmgr process
 
     int hostId = 0;
     if (!HdfStringToInt(argv[DEVHOST_INPUT_PARAM_HOSTID_POS], &hostId)) {
