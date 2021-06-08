@@ -68,7 +68,7 @@ char *StorageBlockGetEmmcNodeName(void *block)
     struct StorageBlock *sb = (struct StorageBlock *)block;
  
     if (sb == NULL) {
-	    return NULL;
+        return NULL;
     }
     return sb->name;
 }
