@@ -17,7 +17,8 @@ HDF_FRAMEWORKS = "//drivers/framework"
 
 shared_library("hdf_platform") {
   sources = [
-    "$HDF_FRAMEWORKS/support/platform/src/emmc_if.c",
+    "$HDF_FRAMEWORKS/support/platform/src/mmc/mmc_if.c",
+    "$HDF_FRAMEWORKS/support/platform/src/mmc/emmc_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/i2c_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/uart_if.c",
   ]
