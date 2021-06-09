@@ -88,7 +88,11 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/ability/config/device_resource_if.c
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM), y)
-              LOCAL_SRCS += ./platform/src/plat_common.c
+              LOCAL_SRCS += ./platform/src/plat_common.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/common/platform_device.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/common/platform_manager.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/common/platform_queue.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/common/platform_common.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2C), y)
@@ -118,14 +122,22 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PWM), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/pwm_core.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MMC), y)
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_block.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_core.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_dispatch.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_if.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_protocol.c \
+	      $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_sdio.c \
+	      $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_emmc.c
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO), y)
-              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/sdio_if.c \
-              $(HDF_FRAMEWORKS)/support/platform/src/sdio_core.c
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/sdio_if.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_EMMC), y)
-              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/emmc_if.c \
-              $(HDF_FRAMEWORKS)/support/platform/src/emmc_core.c
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/emmc_if.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_RTC), y)

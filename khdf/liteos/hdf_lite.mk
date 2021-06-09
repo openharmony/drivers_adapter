@@ -35,6 +35,8 @@ ifeq ($(LOSCFG_DRIVERS_HDF), y)
     LITEOS_BASELIB += -lhdf
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/core/common/include/manager
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/support/platform/include
+    LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/support/platform/include/common
+    LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/support/platform/include/mmc
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/include/platform
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/include/utils
 
@@ -63,6 +65,11 @@ endif
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR), y)
     LITEOS_BASELIB += -lhdf_sensor_driver
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/sensor
+endif
+
+ifeq ($(LOSCFG_DRIVERS_HDF_STORAGE), y)
+    LITEOS_BASELIB += -lhdf_storage_driver
+    LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/storage
 endif
 
 HAVE_VENDOR_CONFIG := $(shell if [ -d $(LITEOS_SOURCE_ROOT)/vendor/$(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))/$(patsubst "%",%,$(LOSCFG_PRODUCT_NAME))/config ]; then echo y; else echo n; fi)

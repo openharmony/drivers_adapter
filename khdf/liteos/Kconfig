@@ -54,6 +54,13 @@ config DRIVERS_HDF_PLATFORM_I2C
     help
       Answer Y to enable HDF platform i2c driver.
 
+config DRIVERS_HDF_PLATFORM_MMC
+    bool "Enable HDF platform mmc driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform mmc driver.
+
 config DRIVERS_HDF_PLATFORM_EMMC
     bool "Enable HDF platform emmc driver"
     default n
@@ -136,6 +143,7 @@ source "../../drivers/adapter/khdf/liteos/test/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/display/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/input/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/sensor/Kconfig"
+source "../../drivers/adapter/khdf/liteos/model/storage/Kconfig"
 
 # hisilicon Kconfig import
 source "../../device/hisilicon/drivers/Kconfig"
