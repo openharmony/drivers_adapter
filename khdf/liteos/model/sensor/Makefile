@@ -37,10 +37,10 @@ LOCAL_INCLUDE := $(FRAMEWORKS_SENSOR_ROOT)/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/accel \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel
 
-LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_common.c \
-              $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_device_common.c \
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
+              $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_parser.c \
               $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_device_manager.c \
-              $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_parser.c
+              $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_platform_if.c
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_ACCEL), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/accel/sensor_accel_driver.c \
