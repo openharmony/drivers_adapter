@@ -30,7 +30,7 @@ include $(LITEOSTOPDIR)/config.mk
 
 HDF_ROOT_DIR = $(LITEOSTOPDIR)/../../drivers
 
-HDF_CFLAGS := -fstack-protector-strong -fno-common -fsigned-char -fno-strict-aliasing -Wno-format -Wno-format-extra-args
+HDF_CFLAGS := -fstack-protector-strong -fno-common -fsigned-char -fno-strict-aliasing
 
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/include/osal

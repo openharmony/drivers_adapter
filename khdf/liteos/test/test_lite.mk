@@ -26,7 +26,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-HDF_CFLAGS := -Wno-format -Wno-format-extra-args
 HDF_ROOT_TEST_DIR = $(LITEOSTOPDIR)/../../drivers
 
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/include
@@ -90,5 +89,4 @@ HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/model/sensor/driver/includ
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/model/sensor/driver/common/include
 endif
 LOCAL_CFLAGS += $(HDF_TEST_INCLUDE)
-LOCAL_CFLAGS += $(HDF_CFLAGS)
 HDF_DRIVER_TEST = $(HDF_ROOT_TEST_DIR)/adapter/khdf/liteos/hdf_driver.mk
