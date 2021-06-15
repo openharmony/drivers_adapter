@@ -92,7 +92,6 @@ int DevSvcManagerStubDispatch(
     struct HdfRemoteService* service, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int ret = HDF_FAILURE;
-    HDF_LOGV("DevSvcManagerStubDispatch in, code=%d", code);
     struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)service;
     if (stub == NULL) {
         HDF_LOGE("DevSvcManagerStubDispatch failed, object is null, code is %d", code);
