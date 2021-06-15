@@ -47,7 +47,6 @@ int HdfRemoteServiceStub::OnRemoteRequest(uint32_t code,
     } else {
         HDF_LOGE("dispatcher or dispatcher->Dispatch is null, flags is: %d", option.GetFlags());
     }
-    HDF_LOGD("OnRemoteRequest finished, ret = %{public}d", ret);
 
     HdfSBufRecycle(dataSbuf);
     HdfSBufRecycle(replySbuf);
