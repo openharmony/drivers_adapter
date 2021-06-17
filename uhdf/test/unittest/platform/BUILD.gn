@@ -48,7 +48,6 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
       sources += [
         "//drivers/framework/support/platform/test/unittest/common/hdf_emmc_test.cpp",
         "//drivers/framework/support/platform/test/unittest/common/hdf_i2c_test.cpp",
-        "//drivers/framework/support/platform/test/unittest/common/hdf_sdio_test.cpp",
         "//drivers/framework/test/unittest/platform/common/i2c_test.c",
       ]
     }
