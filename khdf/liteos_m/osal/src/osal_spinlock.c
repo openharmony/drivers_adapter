@@ -112,3 +112,25 @@ int32_t OsalSpinUnlock(OsalSpinlock *spinlock)
 
     return HDF_SUCCESS;
 }
+
+int32_t OsalSpinLockIrq(OsalSpinlock *spinlock)
+{
+    return OsalSpinLock(spinlock);
+}
+
+int32_t OsalSpinUnlockIrq(OsalSpinlock *spinlock)
+{
+    return OsalSpinUnlock(spinlock);
+}
+
+int32_t OsalSpinLockIrqSave(OsalSpinlock *spinlock, uint32_t *flags)
+{
+    (void)flags;
+    return OsalSpinLock(spinlock);
+}
+
+int32_t OsalSpinUnlockIrqRestore(OsalSpinlock *spinlock, uint32_t *flags)
+{
+    (void)flags;
+    return OsalSpinUnlock(spinlock);
+}
