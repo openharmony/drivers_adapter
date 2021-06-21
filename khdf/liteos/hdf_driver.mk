@@ -26,12 +26,20 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
+
 PRODUCT_CONFIG := $(PRODUCT_PATH)/config
+DEVICE_CONFIG := $(SOURCE_ROOT)/$(dir $(subst ",,$(LOSCFG_BOARD_CONFIG_PATH)))
+HAVE_PRODUCT_CONFIG := $(shell if [ -d $(PRODUCT_CONFIG) ]; then echo y; else echo n; fi)
+
 ifeq ($(LOCAL_HCS_ROOT),)
-LOCAL_HCS_ROOT := $(PRODUCT_CONFIG)
+    ifeq ($(HAVE_PRODUCT_CONFIG), y)
+        LOCAL_HCS_ROOT := $(PRODUCT_CONFIG)
+    else
+        LOCAL_HCS_ROOT := $(DEVICE_CONFIG)
+    endif
 endif
 
-SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
 HC_GEN_DIR := $(abspath $(LITEOSTOPDIR)/../../drivers/framework/tools/hc-gen)
 HC_GEN := $(HC_GEN_DIR)/build/hc-gen
 HDF_CONFIG_DIR := $(LOCAL_HCS_ROOT)

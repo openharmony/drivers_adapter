@@ -72,6 +72,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_STORAGE), y)
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/storage
 endif
 
+SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
+PRODUCT_CONFIG := $(PRODUCT_PATH)/config
+DEVICE_CONFIG := $(SOURCE_ROOT)/$(dir $(subst ",,$(LOSCFG_BOARD_CONFIG_PATH)))
+HAVE_PRODUCT_CONFIG := $(shell if [ -d $(PRODUCT_CONFIG) ]; then echo y; else echo n; fi)
+
 ifeq ($(LOSCFG_DRIVERS_HDF_TEST), y)
     # for test
     include $(LITEOS_DRIVERS_HDF)/test/test_lite.mk
@@ -79,10 +84,14 @@ ifeq ($(LOSCFG_DRIVERS_HDF_TEST), y)
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/test
 
     LITEOS_BASELIB += -lhdf_test_config
-    LIB_SUBDIRS += $(PRODUCT_PATH)/config/hdf_test
+    LIB_SUBDIRS += $(PRODUCT_CONFIG)/hdf_test
 else
     LITEOS_BASELIB += -lhdf_config
-    LIB_SUBDIRS += $(PRODUCT_PATH)/config
+    ifeq ($(HAVE_PRODUCT_CONFIG), y)
+        LIB_SUBDIRS += $(PRODUCT_CONFIG)
+    else
+        LIB_SUBDIRS += $(DEVICE_CONFIG)
+    endif
 endif
 
 # vendor lib
