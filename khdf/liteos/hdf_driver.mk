@@ -26,14 +26,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-HAVE_VENDOR_CONFIG := $(shell if [ -d $(LITEOS_SOURCE_ROOT)/vendor/$(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))/$(patsubst "%",%,$(LOSCFG_PRODUCT_NAME))/config ]; then echo y; else echo n; fi)
-
+PRODUCT_CONFIG := $(PRODUCT_PATH)/config
 ifeq ($(LOCAL_HCS_ROOT),)
-ifeq ($(HAVE_VENDOR_CONFIG), y)
-LOCAL_HCS_ROOT := $(abspath $(LITEOSTOPDIR)/../../vendor/$(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))/$(patsubst "%",%,$(LOSCFG_PRODUCT_NAME))/config)
-else
-LOCAL_HCS_ROOT := $(abspath $(LITEOSTOPDIR)/../../device/$(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))/$(patsubst "%",%,$(LOSCFG_PRODUCT_NAME))/config)
-endif
+LOCAL_HCS_ROOT := $(PRODUCT_CONFIG)
 endif
 
 SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
