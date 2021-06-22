@@ -72,6 +72,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_STORAGE), y)
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/storage
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_VIBRATOR), y)
+    LITEOS_BASELIB += -lhdf_vibrator_driver
+    LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/misc/vibrator
+endif
+
 HAVE_VENDOR_CONFIG := $(shell if [ -d $(LITEOS_SOURCE_ROOT)/vendor/$(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))/$(patsubst "%",%,$(LOSCFG_PRODUCT_NAME))/config ]; then echo y; else echo n; fi)
 ifeq ($(LOSCFG_DRIVERS_HDF_TEST), y)
 include $(LITEOS_DRIVERS_HDF)/test/test_lite.mk
