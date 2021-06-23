@@ -72,6 +72,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_STORAGE), y)
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/storage
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_VIBRATOR), y)
+    LITEOS_BASELIB += -lhdf_vibrator_driver
+    LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/misc/vibrator
+endif
+
 SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
 PRODUCT_CONFIG := $(PRODUCT_PATH)/config
 DEVICE_CONFIG := $(SOURCE_ROOT)/$(dir $(subst ",,$(LOSCFG_BOARD_CONFIG_PATH)))
