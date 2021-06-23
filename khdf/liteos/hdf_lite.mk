@@ -77,23 +77,26 @@ ifeq ($(LOSCFG_DRIVERS_HDF_VIBRATOR), y)
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/misc/vibrator
 endif
 
-HAVE_VENDOR_CONFIG := $(shell if [ -d $(LITEOS_SOURCE_ROOT)/vendor/$(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))/$(patsubst "%",%,$(LOSCFG_PRODUCT_NAME))/config ]; then echo y; else echo n; fi)
+SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
+PRODUCT_CONFIG := $(PRODUCT_PATH)/config
+DEVICE_CONFIG := $(SOURCE_ROOT)/$(dir $(subst ",,$(LOSCFG_BOARD_CONFIG_PATH)))
+HAVE_PRODUCT_CONFIG := $(shell if [ -d $(PRODUCT_CONFIG) ]; then echo y; else echo n; fi)
+
 ifeq ($(LOSCFG_DRIVERS_HDF_TEST), y)
-include $(LITEOS_DRIVERS_HDF)/test/test_lite.mk
-# test
+    # for test
+    include $(LITEOS_DRIVERS_HDF)/test/test_lite.mk
     LITEOS_BASELIB += -lhdf_test
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/test
 
     LITEOS_BASELIB += -lhdf_test_config
-    LIB_SUBDIRS += $(LITEOS_SOURCE_ROOT)/vendor/$(LOSCFG_DEVICE_COMPANY)/$(LOSCFG_PRODUCT_NAME)/config/hdf_test
+    LIB_SUBDIRS += $(PRODUCT_CONFIG)/hdf_test
 else
-# config
     LITEOS_BASELIB += -lhdf_config
-ifeq ($(HAVE_VENDOR_CONFIG), y)
-    LIB_SUBDIRS += $(LITEOS_SOURCE_ROOT)/vendor/$(LOSCFG_DEVICE_COMPANY)/$(LOSCFG_PRODUCT_NAME)/config
-else
-    LIB_SUBDIRS += $(LITEOS_SOURCE_ROOT)/device/$(LOSCFG_DEVICE_COMPANY)/$(LOSCFG_PRODUCT_NAME)/config
-endif
+    ifeq ($(HAVE_PRODUCT_CONFIG), y)
+        LIB_SUBDIRS += $(PRODUCT_CONFIG)
+    else
+        LIB_SUBDIRS += $(DEVICE_CONFIG)
+    endif
 endif
 
 # vendor lib
