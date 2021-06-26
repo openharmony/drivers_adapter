@@ -31,7 +31,7 @@
 #ifndef OSAL_CDEV_ADAPTER_DEF_H
 #define OSAL_CDEV_ADAPTER_DEF_H
 
-#include <fs/fs.h>
+#include <fs/driver.h>
 #include <sys/ioctl.h>
 #include <fs_poll_pri.h>
 #include <user_copy.h>
