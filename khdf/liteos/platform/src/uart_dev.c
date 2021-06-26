@@ -28,19 +28,17 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "fs/fs.h"
+#include "fs/driver.h"
 #include "securec.h"
 #include "user_copy.h"
 #include "hdf_log.h"
 #include "osal_mem.h"
 #include "uart_dev.h"
 
-#include "fs/vnode.h"
-
 #define HDF_LOG_TAG hdf_uart_dev
 #define HDF_UART_FS_MODE 0660
 
-static int32_t UartDevOpen(FAR struct file *filep)
+static int32_t UartDevOpen(struct file *filep)
 {
     struct UartHost *host = NULL;
 
@@ -51,7 +49,7 @@ static int32_t UartDevOpen(FAR struct file *filep)
     host = (struct UartHost *)drv->priv;
     return UartHostInit(host);
 }
-static int32_t UartDevRelease(FAR struct file *filep)
+static int32_t UartDevRelease(struct file *filep)
 {
     struct UartHost *host = NULL;
 
@@ -64,7 +62,7 @@ static int32_t UartDevRelease(FAR struct file *filep)
     return UartHostDeinit(host);
 }
 
-static ssize_t UartDevRead(FAR struct file *filep, FAR char *buf, size_t count)
+static ssize_t UartDevRead(struct file *filep, char *buf, size_t count)
 {
     int32_t size;
     int32_t ret = LOS_OK;
@@ -143,7 +141,7 @@ static int32_t UartCfgAttr(struct UartHost *host, unsigned long arg)
     return ret;
 }
 
-static int32_t UartDevIoctl(FAR struct file *filep, int32_t cmd, unsigned long arg)
+static int32_t UartDevIoctl(struct file *filep, int32_t cmd, unsigned long arg)
 {
     int32_t ret = HDF_FAILURE;
     struct UartHost *host = NULL;
