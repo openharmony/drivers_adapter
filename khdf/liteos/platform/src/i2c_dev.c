@@ -29,7 +29,7 @@
  */
 
 #include "i2c_dev.h"
-#include <fs/fs.h>
+#include <fs/driveri.h>
 #include <limits.h>
 #include <stdio.h>
 #include "hdf_base.h"
@@ -397,7 +397,7 @@ static int I2cFsClose(struct file *filep)
     return 0;
 }
 
-static ssize_t I2cFsMap(FAR struct file* filep, FAR LosVmMapRegion *region)
+static ssize_t I2cFsMap(struct file* filep, LosVmMapRegion *region)
 {
     size_t size = region->range.size;
 
