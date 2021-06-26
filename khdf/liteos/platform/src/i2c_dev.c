@@ -29,7 +29,7 @@
  */
 
 #include "i2c_dev.h"
-#include <fs/driveri.h>
+#include <fs/driver.h>
 #include <limits.h>
 #include <stdio.h>
 #include "hdf_base.h"
