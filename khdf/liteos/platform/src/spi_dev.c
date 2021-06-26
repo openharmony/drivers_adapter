@@ -28,7 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "fs/fs.h"
+#include "fs/driver.h"
 #include "securec.h"
 #include "user_copy.h"
 #include "hdf_log.h"
@@ -39,7 +39,7 @@
 #define HDF_SPI_FS_MODE 0660
 
 #ifdef LOSCFG_FS_VFS
-static struct SpiDev *SpiDevGetDevFromFilep(FAR struct file *filep)
+static struct SpiDev *SpiDevGetDevFromFilep(struct file *filep)
 {
     if (filep == NULL) {
         HDF_LOGE("%s: filep is invalid", __func__);
@@ -56,7 +56,7 @@ static struct SpiDev *SpiDevGetDevFromFilep(FAR struct file *filep)
     return dev;
 }
 
-static int32_t SpiDevOpen(FAR struct file *filep)
+static int32_t SpiDevOpen(struct file *filep)
 {
     struct SpiDev *dev = NULL;
 
@@ -68,7 +68,7 @@ static int32_t SpiDevOpen(FAR struct file *filep)
     return HDF_SUCCESS;
 }
 
-static ssize_t SpiDevRead(FAR struct file *filep, FAR char *buf, size_t size)
+static ssize_t SpiDevRead(struct file *filep, char *buf, size_t size)
 {
     int32_t ret;
     struct SpiMsg msg = {0};
@@ -332,7 +332,7 @@ static int32_t SpiDevTransfer(struct SpiDev *dev, unsigned long arg)
     return ret;
 }
 
-static int32_t SpiDevIoctl(FAR struct file *filep, int32_t cmd, unsigned long arg)
+static int32_t SpiDevIoctl(struct file *filep, int32_t cmd, unsigned long arg)
 {
     int ret;
     struct SpiCfg mask = {0};
