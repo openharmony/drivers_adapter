@@ -38,7 +38,7 @@ public:
     void TearDown(){}
 };
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_001, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_001, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -52,7 +52,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_001, TestSize.Level0)
     ASSERT_EQ(output, input);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_002, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_002, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -66,7 +66,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_002, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_003, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_003, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -80,7 +80,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_003, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_004, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_004, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -94,7 +94,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_004, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_005, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_005, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -108,7 +108,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_005, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_006, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_006, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -122,7 +122,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_006, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_007, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_007, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -136,7 +136,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_007, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_008, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_008, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -150,7 +150,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_008, TestSize.Level0)
     EXPECT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_009, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_009, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -164,7 +164,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_009, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_010, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_010, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -178,7 +178,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_010, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_011, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_011, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -191,7 +191,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_011, TestSize.Level0)
     ASSERT_EQ(ec, HDF_SUCCESS);
     ASSERT_EQ(input, output);
 }
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_012, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_012, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -205,7 +205,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_012, TestSize.Level0)
     ASSERT_EQ(input, output);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_013, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_013, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -225,7 +225,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_013, TestSize.Level0)
     }
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_014, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_014, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -250,7 +250,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_014, TestSize.Level0)
     }
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_015, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_015, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -268,7 +268,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_015, TestSize.Level0)
     }
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_016, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_016, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -285,7 +285,7 @@ HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_016, TestSize.Level0)
     ASSERT_EQ(output.second, input.second);
 }
 
-HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_017, TestSize.Level0)
+HWTEST_F(SampleObjCPPTest, SampleObjCPPTest_017, TestSize.Level1)
 {
     sptr<ISample> sampleObj = ISample::Get(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);

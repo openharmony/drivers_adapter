@@ -37,7 +37,7 @@ public:
     void TearDown(){}
 };
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_001, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_001, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -53,7 +53,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_001, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_002, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_002, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -69,7 +69,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_002, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_003, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_003, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -85,7 +85,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_003, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_004, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_004, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -101,7 +101,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_004, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_005, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_005, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -117,7 +117,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_005, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_006, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_006, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -133,7 +133,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_006, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_007, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_007, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -149,7 +149,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_007, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_008, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_008, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -165,7 +165,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_008, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_009, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_009, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -181,7 +181,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_009, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_010, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_010, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -197,7 +197,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_010, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_011, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_011, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -213,7 +213,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_011, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_012, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_012, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -229,7 +229,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_012, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_013, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_013, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -263,7 +263,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_013, TestSize.Level0)
     }
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_014, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_014, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -297,7 +297,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_014, TestSize.Level0)
     }
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_015, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_015, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
@@ -317,7 +317,7 @@ HWTEST_F(SampleObjCTest, SampleObjCTest_015, TestSize.Level0)
     HdiSampleRelease(sampleObj);
 }
 
-HWTEST_F(SampleObjCTest, SampleObjCTest_016, TestSize.Level0)
+HWTEST_F(SampleObjCTest, SampleObjCTest_016, TestSize.Level1)
 {
     struct ISample *sampleObj = HdiSampleGet(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleObj != nullptr);
