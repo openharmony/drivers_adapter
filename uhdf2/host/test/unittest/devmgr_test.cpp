@@ -56,7 +56,7 @@ void DevMgrTest::TearDown()
 * @tc.type: FUNC
 * @tc.require: AR000DT1TK
 */
-HWTEST_F(DevMgrTest, DriverLoaderTest_001, TestSize.Level0)
+HWTEST_F(DevMgrTest, DriverLoaderTest_001, TestSize.Level1)
 {
     bool flag = true;
     EXPECT_TRUE(flag);

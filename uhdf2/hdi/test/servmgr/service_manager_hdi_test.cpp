@@ -37,13 +37,13 @@ public:
     void TearDown() {};
 };
 
-HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest001, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest001, TestSize.Level1)
 {
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
 }
 
-HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest002, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest002, TestSize.Level1)
 {
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
@@ -79,7 +79,7 @@ public:
 
 int32_t IPCObjectStubTest::payload = 0;
 
-HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest003, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest003, TestSize.Level1)
 {
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
@@ -100,7 +100,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest003, TestSize.Level0)
     ASSERT_EQ(IPCObjectStubTest::payload, payload);
 }
 
-HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest004, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest004, TestSize.Level1)
 {
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
@@ -121,7 +121,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest004, TestSize.Level0)
     ASSERT_EQ(result, expRes);
 }
 
-HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest006, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest006, TestSize.Level1)
 {
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
