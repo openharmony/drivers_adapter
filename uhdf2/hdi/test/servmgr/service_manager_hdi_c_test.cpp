@@ -36,14 +36,14 @@ public:
     void TearDown() {};
 };
 
-HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest001, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest001, TestSize.Level1)
 {
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
     HDIServiceManagerRelease(servmgr);
 }
 
-HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest002, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest002, TestSize.Level1)
 {
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
@@ -81,7 +81,7 @@ struct HdfRemoteDispatcher g_callbackDispatcher {
     .Dispatch = ServiceManagerTestCallbackDispatch,
 };
 
-HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest003, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest003, TestSize.Level1)
 {
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
@@ -109,7 +109,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest003, TestSize.Level0)
     HdfSBufRecycle(reply);
 }
 
-HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest004, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest004, TestSize.Level1)
 {
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
@@ -138,7 +138,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest004, TestSize.Level0)
     HdfSBufRecycle(reply);
 }
 
-HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest005, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest005, TestSize.Level1)
 {
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
@@ -172,7 +172,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest005, TestSize.Level0)
     HdfSBufRecycle(reply);
 }
 
-HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest006, TestSize.Level0)
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest006, TestSize.Level1)
 {
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
