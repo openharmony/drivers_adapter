@@ -93,7 +93,7 @@ static int32_t OsalStartTimer(OsalTimer *timer, UINT8 mode)
     ret = LOS_SwtmrCreate(LOS_MS2Tick(interval), mode, (SWTMR_PROC_FUNC)liteTimer->func, &timerID, liteTimer->arg);
     if (ret != LOS_OK) {
         LOS_IntRestore(intSave);
-        HDF_LOGE("%s LOS_SwtmrCreate fail %d", __func__, ret);
+        HDF_LOGE("%s LOS_SwtmrCreate fail %u", __func__, ret);
         return HDF_FAILURE;
     }
 
@@ -101,7 +101,7 @@ static int32_t OsalStartTimer(OsalTimer *timer, UINT8 mode)
     if (ret != LOS_OK) {
         LOS_SwtmrDelete(timerID);
         LOS_IntRestore(intSave);
-        HDF_LOGE("%s LOS_SwtmrStart fail %d", __func__, ret);
+        HDF_LOGE("%s LOS_SwtmrStart fail %u", __func__, ret);
         return HDF_FAILURE;
     }
     LOS_IntRestore(intSave);
@@ -109,6 +109,7 @@ static int32_t OsalStartTimer(OsalTimer *timer, UINT8 mode)
     liteTimer->timerID = timerID;
     return HDF_SUCCESS;
 }
+
 int32_t OsalTimerStartLoop(OsalTimer *timer)
 {
     return OsalStartTimer(timer, LOS_SWTMR_MODE_PERIOD);
@@ -116,7 +117,7 @@ int32_t OsalTimerStartLoop(OsalTimer *timer)
 
 int32_t OsalTimerStartOnce(OsalTimer *timer)
 {
-    return OsalStartTimer(timer, LOS_SWTMR_MODE_ONCE);
+    return OsalStartTimer(timer, LOS_SWTMR_MODE_NO_SELFDELETE);
 }
 
 int32_t OsalTimerSetTimeout(OsalTimer *timer, uint32_t interval)
@@ -132,7 +133,7 @@ int32_t OsalTimerSetTimeout(OsalTimer *timer, uint32_t interval)
 
     liteTimer = (struct OsalLitetimer *)timer->realTimer;
     if (liteTimer->timerID == MAX_INVALID_TIMER_VID) {
-        HDF_LOGE("%s timer id invalid %d", __func__, liteTimer->timerID);
+        HDF_LOGE("%s timer id invalid %u", __func__, liteTimer->timerID);
         return HDF_FAILURE;
     }
 
@@ -146,7 +147,7 @@ int32_t OsalTimerSetTimeout(OsalTimer *timer, uint32_t interval)
     ret = LOS_SwtmrDelete(liteTimer->timerID);
     if (ret != LOS_OK) {
         LOS_IntRestore(intSave);
-        HDF_LOGE("%s LOS_SwtmrDelete fail %d", __func__, ret);
+        HDF_LOGE("%s LOS_SwtmrDelete fail %u", __func__, ret);
         return HDF_FAILURE;
     }
     LOS_IntRestore(intSave);
@@ -167,7 +168,7 @@ int32_t OsalTimerDelete(OsalTimer *timer)
 
     liteTimer = (struct OsalLitetimer *)timer->realTimer;
     if (liteTimer->timerID == MAX_INVALID_TIMER_VID) {
-        HDF_LOGE("%s timer id invalid %d", __func__, liteTimer->timerID);
+        HDF_LOGE("%s timer id invalid %u", __func__, liteTimer->timerID);
         return HDF_FAILURE;
     }
     intSave = LOS_IntLock();
@@ -179,7 +180,7 @@ int32_t OsalTimerDelete(OsalTimer *timer)
         return HDF_SUCCESS;
     } else {
         LOS_IntRestore(intSave);
-        HDF_LOGE("%s LOS_SwtmrDelete fail %d", __func__, ret);
+        HDF_LOGE("%s LOS_SwtmrDelete fail %u", __func__, ret);
         return HDF_FAILURE;
     }
 }
