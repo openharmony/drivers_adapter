@@ -82,7 +82,15 @@ static int HdfRemoteAdapterDispatch(struct HdfRemoteService *service, int code, 
     OHOS::MessageParcel *dataParcel = nullptr;
     OHOS::MessageParcel *replyParcel = nullptr;
 
-    (void)SbufToParcel(reply, &replyParcel);
+    if (reply == nullptr) {
+        static OHOS::MessageParcel dummyReply;
+        dummyReply.FlushBuffer();
+        replyParcel = &dummyReply;
+    } else if (SbufToParcel(reply, &replyParcel)) {
+        HDF_LOGE("%s:invalid reply sbuf object to dispatch", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
     if (SbufToParcel(data, &dataParcel)) {
         HDF_LOGE("%s:invalid data sbuf object to dispatch", __func__);
         return HDF_ERR_INVALID_PARAM;

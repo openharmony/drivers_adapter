@@ -14,7 +14,9 @@
  */
 
 #include "hcs_blob_load.h"
+#include <limits.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "hcs_blob_if.h"
 #include "hdf_log.h"
