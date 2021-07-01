@@ -96,7 +96,7 @@ int32_t OsalSpinUnlock(OsalSpinlock *spinlock)
 
 int32_t OsalSpinLockIrq(OsalSpinlock *spinlock)
 {
-#if (LOSCFG_KERNEL_SMP == YES)
+#ifdef LOSCFG_KERNEL_SMP
     if (spinlock == NULL || spinlock->realSpinlock == NULL) {
         HDF_LOGE("%s invalid param %d", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
@@ -113,7 +113,7 @@ int32_t OsalSpinLockIrq(OsalSpinlock *spinlock)
 
 int32_t OsalSpinUnlockIrq(OsalSpinlock *spinlock)
 {
-#if (LOSCFG_KERNEL_SMP == YES)
+#ifdef LOSCFG_KERNEL_SMP
     if (spinlock == NULL || spinlock->realSpinlock == NULL) {
         HDF_LOGE("%s invalid param %d", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;

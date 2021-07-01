@@ -129,7 +129,7 @@ int32_t OsalThreadStart(struct OsalThread *thread, const struct OsalThreadParam 
     } else {
         priority = OSAL_PRIORITY_LOW;
     }
-#if (LOSCFG_KERNEL_SMP == YES)
+#ifdef LOSCFG_KERNEL_SMP
     if (para->cpuID != OSAL_INVALID_CPU_ID) {
         stTskInitParam.usCpuAffiMask = CPUID_TO_AFFI_MASK(para->cpuID);
     }
