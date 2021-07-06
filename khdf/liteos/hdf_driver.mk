@@ -30,7 +30,7 @@ SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
 
 PRODUCT_CONFIG := $(PRODUCT_PATH)/config
 DEVICE_CONFIG := $(SOURCE_ROOT)/$(dir $(subst ",,$(LOSCFG_BOARD_CONFIG_PATH)))
-HAVE_PRODUCT_CONFIG := $(shell if [ -d $(PRODUCT_CONFIG) ]; then echo y; else echo n; fi)
+HAVE_PRODUCT_CONFIG := $(shell if [ -e $(PRODUCT_CONFIG)/Makefile ]; then echo y; else echo n; fi)
 
 ifeq ($(LOCAL_HCS_ROOT),)
     ifeq ($(HAVE_PRODUCT_CONFIG), y)
