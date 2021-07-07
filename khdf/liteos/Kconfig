@@ -145,6 +145,3 @@ source "../../drivers/adapter/khdf/liteos/model/input/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/sensor/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/storage/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/misc/vibrator/Kconfig"
-
-# hisilicon Kconfig import
-source "../../device/hisilicon/drivers/Kconfig"
