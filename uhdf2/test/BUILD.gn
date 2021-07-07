@@ -13,5 +13,8 @@
 
 group("hdf_test_uhdf") {
   testonly = true
-  deps = [ "unittest/config:hdf_adapter_uhdf_test_config" ]
+  deps = [
+    "unittest/config:hdf_adapter_uhdf_test_config",
+    "unittest/module/audio:Audio_Adm_Test",
+  ]
 }

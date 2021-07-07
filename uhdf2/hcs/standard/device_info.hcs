@@ -40,5 +40,17 @@
                 }
             }
         }
+        audio :: host {
+            hostName = "audio_hdi_server_host";
+            priority = 50;
+            audio_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    moduleName = "libaudio_hdi_adapter_server.z.so";
+                    serviceName = "audio_hdi_service";
+                }
+            }
+        }
     }
 }
