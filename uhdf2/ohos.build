@@ -20,6 +20,7 @@
         "//drivers/peripheral/base:hdf_peripheral.rc",
         "//drivers/peripheral/sensor/hal:hdi_sensor",
         "//device/hisilicon/drivers/firmware/common/wlan:wifi_firmware",
+        "//drivers/peripheral/audio:hdi_audio",
         "//drivers/peripheral/misc/vibrator/hal:hdi_vibrator"
       ],
       "test_list": [
@@ -29,7 +30,9 @@
         "//drivers/adapter/uhdf2/osal/test:unittest",
         "//drivers/adapter/uhdf2/host/test:unittest",
         "//drivers/adapter/uhdf2/hdi/test:unittest",
-        "//drivers/peripheral/misc/vibrator/test:hdf_test_vibrator"
+        "//drivers/peripheral/misc/vibrator/test:hdf_test_vibrator",
+        "//drivers/peripheral/audio/test/systemtest:systemtest",
+        "//drivers/peripheral/audio:audio_test"
       ]
     }
   }
