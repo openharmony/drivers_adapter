@@ -52,5 +52,18 @@
                 }
             }
         }
+        hdi_server :: host {
+             hostName = "camera_host";
+             priority = 50;
+
+	     display_device :: device {
+                 device0 :: deviceNode {
+                     policy = 2;
+                     priority = 120;
+                     moduleName = "libhdi_display_layer_service.z.so";
+                     serviceName = "hdi_display_layer_service";
+                 }
+             }
+         }
     }
 }
