@@ -69,7 +69,6 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/core/manager/src/devsvc_manager.c \
               $(HDF_FRAMEWORKS)/core/manager/src/hdf_driver_installer.c \
               $(HDF_FRAMEWORKS)/core/manager/src/hdf_host_info.c \
-              $(HDF_FRAMEWORKS)/core/manager/src/power_state_manager.c \
               $(HDF_FRAMEWORKS)/core/manager/src/power_state_token_clnt.c \
               $(HDF_FRAMEWORKS)/core/shared/src/hdf_service_record.c \
               $(HDF_FRAMEWORKS)/core/shared/src/hdf_device_info.c \

@@ -90,48 +90,64 @@ static int DevHostServiceFullDelDevice(
     return DevHostServiceFullOpsDevice(devHostService, attribute, DEVHOST_MESSAGE_DEL_DEVICE);
 }
 
-static int DispatchSysEventToDevice(struct HdfDevice *device, uint32_t event)
+static int DevHostServiceFullDispatchPowerState(struct HdfDevice *device, uint32_t state)
 {
-    struct HdfSListIterator deviceNodeIt;
     struct HdfDeviceNode *deviceNode = NULL;
     int ret = HDF_SUCCESS;
+    int result = HDF_SUCCESS;
 
-    HdfSListIteratorInit(&deviceNodeIt, &device->services);
-    while (HdfSListIteratorHasNext(&deviceNodeIt)) {
-        deviceNode = HDF_SLIST_CONTAINER_OF(struct HdfSListNode, HdfSListIteratorNext(&deviceNodeIt),
-            struct HdfDeviceNode, entry);
-        if (deviceNode->powerToken != NULL) {
-            ret = PowerStateOnSysStateChange(deviceNode->powerToken, event);
+    if (IsPowerWakeState(state)) {
+        DLIST_FOR_EACH_ENTRY(deviceNode, &device->devNodes, struct HdfDeviceNode, entry) {
+            if (deviceNode->powerToken != NULL) {
+                ret = PowerStateChange(deviceNode->powerToken, state);
+                if (ret != HDF_SUCCESS) {
+                    HDF_LOGE("device %s failed to resume(%d) %d", deviceNode->driverEntry->moduleName, state, ret);
+                    result = HDF_FAILURE;
+                }
+            }
+        }
+    } else {
+        DLIST_FOR_EACH_ENTRY_REVERSE(deviceNode, &device->devNodes, struct HdfDeviceNode, entry) {
+            if (deviceNode->powerToken != NULL) {
+                ret = PowerStateChange(deviceNode->powerToken, state);
+                if (ret != HDF_SUCCESS) {
+                    HDF_LOGE("device %s failed to suspend(%d) %d", deviceNode->driverEntry->moduleName, state, ret);
+                    result = HDF_FAILURE;
+                }
+            }
         }
     }
 
-    return ret;
+    return result;
+}
+
+static uint32_t SysEventToPowerState(uint32_t sysEvent)
+{
+    switch (sysEvent) {
+        case KEVENT_POWER_SUSPEND:
+            return POWER_STATE_SUSPEND;
+        case KEVENT_POWER_DISPLAY_OFF:
+            return POWER_STATE_DOZE_SUSPEND;
+        case KEVENT_POWER_RESUME:
+            return POWER_STATE_RESUME;
+        case KEVENT_POWER_DISPLAY_ON:
+            return POWER_STATE_DOZE_RESUME;
+        default:
+            return POWER_STATE_MAX;
+    }
 }
 
 static int OnSysEventReceived(struct HdfSysEventNotifyNode *self, uint64_t eventClass,
     uint32_t event, const char* content)
 {
     (void)(content);
-    struct HdfDevice *device = NULL;
-
     if (self == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
 
     struct DevHostService *hostService = CONTAINER_OF(self, struct DevHostService, sysEventNotifyNode);
     HDF_LOGI("host receive eventClass=%llu, event=%u", (unsigned long long)eventClass, event);
-
-    if (HdfPmIsWakeEvent(event)) {
-        DLIST_FOR_EACH_ENTRY_REVERSE(device, &hostService->devices, struct HdfDevice, node) {
-            DispatchSysEventToDevice(device, event);
-        }
-    } else {
-        DLIST_FOR_EACH_ENTRY(device, &hostService->devices, struct HdfDevice, node) {
-            DispatchSysEventToDevice(device, event);
-        }
-    }
-
-    return HDF_SUCCESS;
+    return hostService->super.PmNotify(&hostService->super, SysEventToPowerState(event));
 }
 
 static int DevHostServiceFullStartService(struct IDevHostService *service)
@@ -158,6 +174,33 @@ static int DevHostServiceFullStartService(struct IDevHostService *service)
     return HDF_SUCCESS;
 }
 
+int DevHostServiceFullPmNotify(struct IDevHostService *service, uint32_t state)
+{
+    struct DevHostService *hostService = (struct DevHostService*)service;
+    int result = HDF_SUCCESS;
+
+    if (hostService == NULL || !IsValidPowerState(state)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    struct HdfDevice *device = NULL;
+    if (IsPowerWakeState(state)) {
+        DLIST_FOR_EACH_ENTRY_REVERSE(device, &hostService->devices, struct HdfDevice, node) {
+            if (DevHostServiceFullDispatchPowerState(device, state) != HDF_SUCCESS) {
+                result = HDF_FAILURE;
+            }
+        }
+    } else {
+        DLIST_FOR_EACH_ENTRY(device, &hostService->devices, struct HdfDevice, node) {
+            if (DevHostServiceFullDispatchPowerState(device, state)) {
+                result = HDF_FAILURE;
+            }
+        }
+    }
+
+    return result;
+}
+
 void DevHostServiceFullConstruct(struct DevHostServiceFull *inst)
 {
     struct IDevHostService *hostServiceIf = &inst->super.super;
@@ -168,6 +211,7 @@ void DevHostServiceFullConstruct(struct DevHostServiceFull *inst)
     hostServiceIf->AddDevice = DevHostServiceFullAddDevice;
     hostServiceIf->DelDevice = DevHostServiceFullDelDevice;
     hostServiceIf->StartService = DevHostServiceFullStartService;
+    hostServiceIf->PmNotify = DevHostServiceFullPmNotify;
     HdfMessageLooperConstruct(&inst->looper);
     HdfMessageTaskConstruct(&inst->task, &inst->looper, &handler);
 }
