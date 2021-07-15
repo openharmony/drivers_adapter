@@ -25,7 +25,6 @@
 int DevFillQueryDeviceInfo(struct IDevmgrService *inst, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     struct DevmgrService *devMgrSvc = (struct DevmgrService *)inst;
-    struct HdfSListIterator itHost;
     struct HdfSListIterator itDeviceInfo;
     struct HdfDeviceInfo *deviceInfo = NULL;
     struct DevHostServiceClnt *hostClnt = NULL;
@@ -42,12 +41,9 @@ int DevFillQueryDeviceInfo(struct IDevmgrService *inst, struct HdfSBuf *data, st
         HDF_LOGE("%s failed, status is invalid %d", __func__, status);
         return HDF_FAILURE;
     }
-    HDF_LOGD("%s, %d", __func__, status);
 
-    HdfSListIteratorInit(&itHost, &devMgrSvc->hosts);
-    while (HdfSListIteratorHasNext(&itHost)) {
-        hostClnt = (struct DevHostServiceClnt *)HdfSListIteratorNext(&itHost);
-        HdfSListIteratorInit(&itDeviceInfo, hostClnt->deviceInfos);
+    DLIST_FOR_EACH_ENTRY(hostClnt, &devMgrSvc->hosts, struct DevHostServiceClnt, node) {
+    HdfSListIteratorInit(&itDeviceInfo, hostClnt->deviceInfos);
         HDF_LOGD("%s, host:%s %d", __func__, hostClnt->hostName, hostClnt->hostId);
         while (HdfSListIteratorHasNext(&itDeviceInfo)) {
             deviceInfo = (struct HdfDeviceInfo *)HdfSListIteratorNext(&itDeviceInfo);
@@ -68,7 +64,6 @@ int DevFillQueryDeviceInfo(struct IDevmgrService *inst, struct HdfSBuf *data, st
             }
         }
     }
-
     return HDF_SUCCESS;
 }
 

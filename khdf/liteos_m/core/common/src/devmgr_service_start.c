@@ -44,7 +44,6 @@ static int g_isQuickLoad = DEV_MGR_SLOW_LOAD;
 
 int32_t HdfGetServiceNameByDeviceClass(DeviceClass deviceClass, struct HdfSBuf *reply)
 {
-    struct HdfSListIterator itHost;
     struct HdfSListIterator itDeviceInfo;
     struct HdfDeviceInfo *deviceInfo = NULL;
     struct DevHostServiceClnt *hostClnt = NULL;
@@ -54,9 +53,7 @@ int32_t HdfGetServiceNameByDeviceClass(DeviceClass deviceClass, struct HdfSBuf *
     }
 
     HdfSbufFlush(reply);
-    HdfSListIteratorInit(&itHost, &devMgrSvc->hosts);
-    while (HdfSListIteratorHasNext(&itHost)) {
-        hostClnt = (struct DevHostServiceClnt *)HdfSListIteratorNext(&itHost);
+    DLIST_FOR_EACH_ENTRY(hostClnt, &devMgrSvc->hosts, struct DevHostServiceClnt, node) {
         HdfSListIteratorInit(&itDeviceInfo, hostClnt->deviceInfos);
         while (HdfSListIteratorHasNext(&itDeviceInfo)) {
             deviceInfo = (struct HdfDeviceInfo *)HdfSListIteratorNext(&itDeviceInfo);
@@ -69,6 +66,7 @@ int32_t HdfGetServiceNameByDeviceClass(DeviceClass deviceClass, struct HdfSBuf *
             }
         }
     }
+
     HdfSbufWriteString(reply, NULL);
 }
 

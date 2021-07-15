@@ -60,19 +60,17 @@ static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *
 void DevmgrServiceFullOnDeviceHostDied(struct DevmgrServiceFull *inst, uint32_t hostId)
 {
     (void)hostId;
-    struct HdfSListIterator it;
     struct DevHostServiceClnt *hostClnt = NULL;
+    struct DevHostServiceClnt *hostClntTmp = NULL;
     if (inst == NULL) {
         return;
     }
     OsalMutexLock(&inst->super.devMgrMutex);
-    HdfSListIteratorInit(&it, &inst->super.hosts);
-    while (HdfSListIteratorHasNext(&it)) {
-        hostClnt = (struct DevHostServiceClnt *)HdfSListIteratorNext(&it);
+    DLIST_FOR_EACH_ENTRY_SAFE(hostClnt, hostClntTmp,  &inst->super.hosts, struct DevHostServiceClnt, node) {
         if (hostClnt->hostId == hostId) {
             int32_t ret = DevmgrServiceFullHandleDeviceHostDied(hostClnt);
             if (ret == INVALID_PID) {
-                HdfSListRemove(&inst->super.hosts, &hostClnt->node);
+                DListRemove(&hostClnt->node);
                 DevHostServiceClntFreeInstance(hostClnt);
             }
             break;

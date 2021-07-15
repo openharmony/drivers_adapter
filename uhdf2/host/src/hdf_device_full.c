@@ -48,7 +48,7 @@ static int HdfDeviceFullAttach(
             thread->Start(thread);
         }
         // modified list operation.
-        HdfSListAdd(&fullDevice->super.services, &deviceService->entry);
+        DListInsertTail(&deviceService->entry, &fullDevice->super.devNodes);
         DeviceThreadAttach(deviceThread, device, deviceService);
     }
     return HDF_SUCCESS;

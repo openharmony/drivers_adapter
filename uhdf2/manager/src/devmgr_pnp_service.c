@@ -16,6 +16,7 @@
 #include "devmgr_pnp_service.h"
 #include "devhost_service_clnt.h"
 #include "hdf_device_info_full.h"
+#include "hdf_dlist.h"
 #include "hdf_driver_installer.h"
 #include "hdf_log.h"
 #include "osal_mem.h"
@@ -124,15 +125,12 @@ static void DevmgrServiceDelPnpDevice(const char *moduleName, const char *servic
 
 struct DevHostServiceClnt *DevmgrServiceGetPnpHostClnt(struct DevmgrService *inst)
 {
-    struct HdfSListIterator it;
     struct DevHostServiceClnt *hostClnt = NULL;
     if (inst == NULL) {
         return NULL;
     }
 
-    HdfSListIteratorInit(&it, &inst->hosts);
-    while (HdfSListIteratorHasNext(&it)) {
-        hostClnt = (struct DevHostServiceClnt *)HdfSListIteratorNext(&it);
+    DLIST_FOR_EACH_ENTRY(hostClnt, &inst->hosts, struct DevHostServiceClnt, node) {
         if (strcmp(hostClnt->hostName, PNP_HOST_NAME) == 0) {
             return hostClnt;
         }
@@ -152,18 +150,18 @@ int32_t DevmgrServiceStartPnpHost(struct DevmgrService *inst)
         return ret;
     }
 
-    uint16_t hostId = HdfSListCount(&inst->hosts);
+    uint16_t hostId = DlistGetCount(&inst->hosts);
     DevmgrServiceSetPnpHostId(hostId);
     hostClnt = DevHostServiceClntNewInstance(hostId, PNP_HOST_NAME);
     if (hostClnt == NULL) {
         HDF_LOGW("%s creating new device host client failed", __func__);
         return ret;
     }
-    HdfSListAdd(&inst->hosts, &hostClnt->node);
+    DListInsertTail(&inst->hosts, &hostClnt->node);
     ret = installer->StartDeviceHost(hostClnt->hostId, hostClnt->hostName);
     if (ret != HDF_SUCCESS) {
         HDF_LOGW("%s starting host failed, host name is %s", __func__, hostClnt->hostName);
-        HdfSListRemove(&inst->hosts, &hostClnt->node);
+        DListRemove(&hostClnt->node);
         DevHostServiceClntFreeInstance(hostClnt);
     }
     return ret;
