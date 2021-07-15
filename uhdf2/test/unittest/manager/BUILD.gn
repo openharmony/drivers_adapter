@@ -73,7 +73,6 @@ ohos_unittest("hdf_adapter_uhdf_test_ioservice") {
   sources = [ "//drivers/framework/core/manager/test/unittest/common/hdf_ioservice_test.cpp" ]
   deps = [
     "//drivers/adapter/uhdf2/osal:libhdf_utils",
-    "//drivers/adapter/uhdf2/test/unittest/common:libhdf_test_common",
     "//utils/native/base:utils",
   ]
   cflags = [
@@ -108,7 +107,6 @@ ohos_unittest("hdf_adapter_uhdf_test_sbuf") {
   ]
   deps = [
     "//drivers/adapter/uhdf2/osal:libhdf_utils",
-    "//drivers/adapter/uhdf2/test/unittest/common:libhdf_test_common",
     "//utils/native/base:utils",
   ]
   cflags = [
