@@ -20,7 +20,6 @@
         "//drivers/peripheral/base:hdf_peripheral.rc",
         "//drivers/peripheral/sensor/hal:hdi_sensor",
         "//device/hisilicon/drivers/firmware/common/wlan:wifi_firmware",
-        "//drivers/peripheral/misc/vibrator/hal:hdi_vibrator",
         "//drivers/peripheral/wlan/hdi_service:wifi_hdi_device",
         "//drivers/peripheral/audio:hdi_audio",
         "//drivers/peripheral/audio:audio_sample_client",
