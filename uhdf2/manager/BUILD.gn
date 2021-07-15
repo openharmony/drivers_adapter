@@ -38,6 +38,7 @@ ohos_executable("hdf_devmgr") {
     "$hdf_uhdf_path/host/include",
     "$hdf_uhdf_path/security/include",
     "include",
+    "//drivers/peripheral/usb/ddk/host/include",
   ]
 
   sources = [
@@ -62,6 +63,8 @@ ohos_executable("hdf_devmgr") {
     "src/devmgr_query_device.c",
     "src/devmgr_service_full.c",
     "src/devmgr_service_stub.c",
+    "//drivers/peripheral/usb/ddk/host/src/usb_ddk_pnp_loader.c",
+    "src/usb_pnp_manager.c",
     "src/devmgr_virtual_service.c",
     "src/devsvc_manager_stub.c",
     "src/driver_installer_full.c",

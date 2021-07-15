@@ -62,7 +62,7 @@ int DevmgrServiceVirtualDevice(
     }
 
     if (flag) {
-        ret = DevmgrServiceRegPnpDevice(inst, moduleName, serviceName);
+        ret = DevmgrServiceRegPnpDevice(inst, moduleName, serviceName, NULL, NULL);
         if (ret == HDF_SUCCESS) {
             list = DevmgrServiceGetPnpDeviceInfo();
             DevmgrUpdateDeviceType(list, moduleName, serviceName);

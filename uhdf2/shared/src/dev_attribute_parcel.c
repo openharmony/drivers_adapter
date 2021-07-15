@@ -17,11 +17,37 @@
 #include "hdf_base.h"
 #include "hdf_log.h"
 #include "osal_mem.h"
+#include "securec.h"
 
 #define HDF_LOG_TAG dev_attribute_parcel
 
+#define ATTRIBUTE_PRIVATE_DATA_LENGTH_NULL      0
+#define ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL    1
+
+bool DeviceAttributeReadPrivateData(struct HdfDeviceInfoFull *attribute, const void *privateData)
+{
+    if (privateData != NULL) {
+        uint32_t length = ((struct HdfPrivateInfo *)(privateData))->length;
+        attribute->super.private = (const void *)OsalMemCalloc(length);
+        if (attribute->super.private != NULL) {
+            memcpy_s((void *)(attribute->super.private), length, privateData, length);
+            if (attribute->super.private == NULL) {
+                HDF_LOGE("%{public}s: memcpy_s private error", __func__);
+                return false;
+            }
+        } else {
+            HDF_LOGE("%{public}s: OsalMemCalloc private error", __func__);
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool DeviceAttributeFullWrite(const struct HdfDeviceInfoFull *attribute, struct HdfSBuf *sbuf)
 {
+    uint32_t length;
+
     if (attribute == NULL || sbuf == NULL) {
         return false;
     }
@@ -32,7 +58,25 @@ bool DeviceAttributeFullWrite(const struct HdfDeviceInfoFull *attribute, struct 
     ret &= HdfSbufWriteInt32(sbuf, attribute->super.policy);
     ret &= HdfSbufWriteString(sbuf, attribute->super.svcName);
     ret &= HdfSbufWriteString(sbuf, attribute->super.moduleName);
-    ret &= HdfSbufWriteString(sbuf, attribute->super.deviceMatchAttr);
+
+    if (attribute->super.deviceMatchAttr != NULL) {
+        length = ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL;
+        ret &= HdfSbufWriteUint32(sbuf, length);
+        ret &= HdfSbufWriteString(sbuf, attribute->super.deviceMatchAttr);
+    } else {
+        length = ATTRIBUTE_PRIVATE_DATA_LENGTH_NULL;
+        ret &= HdfSbufWriteUint32(sbuf, length);
+    }
+
+    if (attribute->super.private != NULL) {
+        length = ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL;
+        ret &= HdfSbufWriteUint32(sbuf, length);
+        length = ((struct HdfPrivateInfo *)(attribute->super.private))->length;
+        ret &= HdfSbufWriteBuffer(sbuf, attribute->super.private, length);
+    } else {
+        length = ATTRIBUTE_PRIVATE_DATA_LENGTH_NULL;
+        ret &= HdfSbufWriteUint32(sbuf, length);
+    }
 
     if (ret == 0) {
         HDF_LOGE("Device attribute write parcel failed");
@@ -75,6 +119,37 @@ struct HdfDeviceInfoFull *DeviceAttributeFullRead(struct HdfSBuf *sbuf)
         if (attribute->super.moduleName == NULL) {
             HDF_LOGE("Read from parcel failed, strdup moduleName fail");
             break;
+        }
+
+        uint32_t length;
+        if (!HdfSbufReadUint32(sbuf, &length)) {
+            HDF_LOGE("Device attribute readDeviceMatchAttr length failed");
+            break;
+        }
+        if (length == ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL) {
+            const char *deviceMatchAttr = HdfSbufReadString(sbuf);
+            if (deviceMatchAttr == NULL) {
+                HDF_LOGE("%{public}s: Read from parcel failed, deviceMatchAttr is null", __func__);
+                break;
+            }
+            attribute->super.deviceMatchAttr = strdup(deviceMatchAttr);
+        }
+
+        if (!HdfSbufReadUint32(sbuf, &length)) {
+            HDF_LOGE("Device attribute readPrivate length failed");
+            break;
+        }
+        if (length == ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL) {
+            uint32_t privateLength;
+            void *privateData = NULL;
+            if (!HdfSbufReadBuffer(sbuf, (const void **)(&privateData), &privateLength)) {
+                HDF_LOGW("%{public}s: HdfSbufReadBuffer privateData error!", __func__);
+                privateData = NULL;
+            }
+            if (!DeviceAttributeReadPrivateData(attribute, privateData)) {
+                HDF_LOGE("%{public}s: Read from parcel failed, private is null", __func__);
+                break;
+            }
         }
 
         return attribute;
