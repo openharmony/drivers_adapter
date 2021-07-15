@@ -36,7 +36,7 @@
         "//drivers/adapter/uhdf2/host/test:unittest",
         "//drivers/adapter/uhdf2/hdi/test:unittest",
         "//drivers/peripheral/misc/vibrator/test:hdf_test_vibrator",
-	      "//drivers/peripheral/wlan/test/hdi_service:unittest",
+        "//drivers/peripheral/wlan/test/hdi_service:unittest",
         "//drivers/peripheral/audio/test/systemtest:systemtest"
       ]
     }
