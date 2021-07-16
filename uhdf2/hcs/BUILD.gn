@@ -15,15 +15,24 @@ import("//build/ohos.gni")
 import("//drivers/adapter/uhdf2/uhdf.gni")
 
 action("build_hcs") {
+  gadget = "acm"
+  hcs_source = "/hdf.hcs"
   hcs_config_path = "default"
   if (is_standard_system) {
     hcs_config_path = "standard"
+    if (gadget == "acm") {
+      hcs_source = "/hdf.hcs"
+    } else if (gadget == "ecm") {
+      hcs_source = "/hdf_ecm.hcs"
+    } else if (gadget == "ecm_acm") {
+      hcs_source = "/hdf_ecm_acm.hcs"
+    }
   } else if (is_large_system) {
     hcs_config_path = "large"
   }
 
   script = "$hdf_framework_path/tools/hc-gen/build_hcs.py"
-  sources = [ rebase_path(hcs_config_path + "/hdf.hcs") ]
+  sources = [ rebase_path(hcs_config_path + hcs_source) ]
   outputs = [ "$target_gen_dir/hdf_default.hcb" ]
   args = [
     "-o",

@@ -20,6 +20,7 @@
 #include "hdf_log.h"
 #include "osal_mem.h"
 #include "osal_time.h"
+#include "usb_pnp_manager.h"
 
 #define PNP_SLEEP_TIME 50 // ms
 
@@ -75,7 +76,8 @@ static bool DevmgrServiceAddPnpDeviceInfo(struct HdfDeviceInfoFull *deviceInfo)
     return true;
 }
 
-static bool DevmgrServiceAddPnpDevice(const char *moduleName, const char *serviceName)
+static bool DevmgrServiceAddPnpDevice(
+    const char *moduleName, const char *serviceName, const char *deviceMatchAttr, const void *privateData)
 {
     if (moduleName == NULL || serviceName == NULL) {
         return false;
@@ -95,6 +97,17 @@ static bool DevmgrServiceAddPnpDevice(const char *moduleName, const char *servic
     }
     deviceInfo->super.svcName = strdup(serviceName);
     if (deviceInfo->super.svcName == NULL) {
+        HdfDeviceInfoFullFreeInstance(deviceInfo);
+        return false;
+    }
+
+    deviceInfo->super.deviceMatchAttr = strdup(deviceMatchAttr);
+    if (deviceInfo->super.deviceMatchAttr == NULL) {
+        HdfDeviceInfoFullFreeInstance(deviceInfo);
+        return false;
+    }
+
+    if (!DevmgrUsbPnpManageAddPrivateData(deviceInfo, privateData)) {
         HdfDeviceInfoFullFreeInstance(deviceInfo);
         return false;
     }
@@ -196,7 +209,8 @@ static int DevmgrServiceInstallDevice(struct DevHostServiceClnt *hostClnt, const
 }
 
 int32_t DevmgrServiceRegPnpDevice(
-    struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName)
+    struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName,
+    const char *deviceMatchAttr, const void *privateData)
 {
     int32_t ret = HDF_FAILURE;
     struct DevmgrService *inst = (struct DevmgrService *)devmgrSvc;
@@ -217,7 +231,7 @@ int32_t DevmgrServiceRegPnpDevice(
         HDF_LOGE("%s host service is null!", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
-    if (!DevmgrServiceAddPnpDevice(moduleName, serviceName)) {
+    if (!DevmgrServiceAddPnpDevice(moduleName, serviceName, deviceMatchAttr, privateData)) {
         HDF_LOGE("%s add pnp device failed!", __func__);
         return ret;
     }

@@ -28,6 +28,38 @@
                 }
             }
         }
+        usbfnMaster :: host {
+            hostName = "usbfnMaster_host";
+            priority = 50;
+            usbfn_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 80;
+                    preload = 2;
+                    moduleName = "libusbfn_master.z.so";
+                    serviceName = "usbfn_master";
+                    deviceMatchAttr = "usbfn_master_driver";
+                }
+            }
+            ecm_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 81;
+                    moduleName = "libusbfn_cdcecm.z.so";
+                    serviceName = "usbfn_cdcecm";
+                    deviceMatchAttr = "usbfn_cdcecm_driver";
+                }
+            }
+            acm_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    moduleName = "libusbfn_cdcacm.z.so";
+                    serviceName = "usbfn_cdcacm";
+                    deviceMatchAttr = "usbfn_cdcacm_driver";
+                }
+            }
+        }
         power :: host {
             hostName = "power_host";
             priority = 50;

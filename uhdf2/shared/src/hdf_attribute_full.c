@@ -69,10 +69,11 @@ const struct DeviceResourceNode *HdfGetRootNode(void)
     return mgrRoot;
 }
 
-bool HdfDeviceListAdd(const char *moduleName, const char *serviceName)
+bool HdfDeviceListAdd(const char *moduleName, const char *serviceName, const void *privateData)
 {
     (void)moduleName;
     (void)serviceName;
+    (void)privateData;
     return true;
 }
 

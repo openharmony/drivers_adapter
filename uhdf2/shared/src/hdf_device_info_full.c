@@ -47,6 +47,12 @@ void HdfDeviceInfoFullFreeInstance(struct HdfDeviceInfoFull *attribute)
         if (attribute->super.svcName != NULL) {
             OsalMemFree((void *)attribute->super.svcName);
         }
+        if (attribute->super.deviceMatchAttr != NULL) {
+            OsalMemFree((void *)attribute->super.deviceMatchAttr);
+        }
+        if (attribute->super.private != NULL) {
+            OsalMemFree((void *)attribute->super.private);
+        }
         if (attribute->deviceHandle != NULL) {
             dlclose(attribute->deviceHandle);
         }
