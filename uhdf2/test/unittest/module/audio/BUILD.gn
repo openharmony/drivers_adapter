@@ -13,8 +13,8 @@
 
 import("//build/test.gni")
 
-module_output_path = "hdf/audio/unittest/adm"
-ohos_unittest("Audio_Adm_Test") {
+module_output_path = "hdf/audio"
+ohos_unittest("hdf_unittest_audio_adm") {
   module_out_path = module_output_path
   include_dirs = [
     "//drivers/framework/ability/sbuf/include",
