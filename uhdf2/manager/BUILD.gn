@@ -51,7 +51,6 @@ ohos_executable("hdf_devmgr") {
     "$hdf_framework_path/core/manager/src/devsvc_manager.c",
     "$hdf_framework_path/core/manager/src/hdf_driver_installer.c",
     "$hdf_framework_path/core/manager/src/hdf_host_info.c",
-    "$hdf_framework_path/core/manager/src/power_state_manager.c",
     "$hdf_framework_path/core/shared/src/hdf_device_info.c",
     "$hdf_framework_path/core/shared/src/hdf_object_manager.c",
     "$hdf_framework_path/core/shared/src/hdf_service_record.c",
