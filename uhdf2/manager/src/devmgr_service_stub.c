@@ -17,8 +17,8 @@
 #include "devhost_service_clnt.h"
 #include "devhost_service_proxy.h"
 #include "device_token_proxy.h"
-#include "devmgr_query_device.h"
 #include "devmgr_pnp_service.h"
+#include "devmgr_query_device.h"
 #include "devmgr_virtual_service.h"
 #include "devsvc_manager.h"
 #include "hdf_base.h"
@@ -26,6 +26,7 @@
 #include "hdf_sbuf.h"
 #include "osal_mem.h"
 #include "osal_sysevent.h"
+#include "usb_pnp_manager.h"
 
 #define HDF_LOG_TAG devmgr_service_stub
 
@@ -64,7 +65,7 @@ static int32_t DevmgrServiceStubDispatchPnpDevice(
     }
 
     if (isReg) {
-        ret = DevmgrServiceRegPnpDevice(devmgrSvc, moduleName, serviceName);
+        ret = DevmgrServiceRegPnpDevice(devmgrSvc, moduleName, serviceName, NULL, NULL);
     } else {
         ret = DevmgrServiceUnRegPnpDevice(devmgrSvc, moduleName, serviceName);
     }
@@ -163,8 +164,12 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
     fullService->remote = remoteService;
 
     status = DevmgrServiceStartService((struct IDevmgrService *)&fullService->super);
+    if (status == HDF_SUCCESS) {
+        if (DevmgrUsbPnpManageEventHandle(inst) != HDF_SUCCESS) {
+            HDF_LOGE("%{public}s:%{public}d DevmgrUsbPnpManageEventHandle error", __func__, __LINE__);
+        }
+    }
 
-    HDF_LOGI("%s: Start service status is %d", __func__, status);
     return status;
 }
 

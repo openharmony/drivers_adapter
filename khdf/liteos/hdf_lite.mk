@@ -39,6 +39,7 @@ ifeq ($(LOSCFG_DRIVERS_HDF), y)
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/support/platform/include/mmc
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/include/platform
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/include/utils
+    LITEOS_DRIVERS_HDF_INCLUDE += -I $(LITEOS_DRIVERS_HDF)/model/usb/host/include
 
 # models
 ifeq ($(LOSCFG_DRIVERS_HDF_WIFI), y)

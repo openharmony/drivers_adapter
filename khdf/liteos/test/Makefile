@@ -53,6 +53,12 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/wifi/hdf_wifi_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/model/network/wifi/unittest/message/hdf_single_node_message_test.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/model/usb/src/hdf_usb_device_test.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/src/usb_device_lite_cdcacm_test.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/src/usb_device_lite_sdk_if_test.c 
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_driver_test.c
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
