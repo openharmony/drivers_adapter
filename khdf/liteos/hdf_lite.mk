@@ -25,10 +25,6 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
-LITEOS_BASELIB += -L$(LITEOSTOPDIR)/../../drivers/liteos/usb/gadget
-LITEOS_BASELIB += -lusb_dwc3
-endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF), y)
     LITEOS_BASELIB += --whole-archive
@@ -80,33 +76,6 @@ endif
 ifeq ($(LOSCFG_DRIVERS_HDF_VIBRATOR), y)
     LITEOS_BASELIB += -lhdf_vibrator_driver
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/misc/vibrator
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_HOST), y)
-    LITEOS_BASELIB += -lhdf_usb_ddk_host
-    LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/usb/host
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
-    LITEOS_BASELIB += -lhdf_usb_ddk_device
-    LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/usb/device
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
-ifeq ($(LOSCFG_DRIVERS_HDF_USBFN_MASTER), y)
-    LITEOS_BASELIB += -lhdf_usbfn_master
-    LIB_SUBDIRS    += $(LITEOS_SOURCE_ROOT)/drivers/peripheral/usb/gadget/function/master
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USBFN_CDCACM), y)
-    LITEOS_BASELIB += -lhdf_usbfn_cdcacm
-    LIB_SUBDIRS    += $(LITEOS_SOURCE_ROOT)/drivers/peripheral/usb/gadget/function/acm
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USBFN_CDCECM), y)
-    LITEOS_BASELIB += -lhdf_usbfn_cdcecm
-    LIB_SUBDIRS    += $(LITEOS_SOURCE_ROOT)/drivers/peripheral/usb/gadget/function/ecm
-endif
 endif
 
 SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
