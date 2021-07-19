@@ -99,7 +99,14 @@
         hdi_server :: host {
             hostName = "camera_host";
             priority = 50;
-
+            camera_device :: device {
+                 device0 :: deviceNode {
+                     policy = 2;
+                     priority = 100;
+                     moduleName = "libcamera_hdi_impl.z.so";
+                     serviceName = "camera_service";
+                 }
+             }
 	        display_device :: device {
                 device0 :: deviceNode {
                     policy = 2;
