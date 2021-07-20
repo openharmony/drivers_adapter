@@ -116,5 +116,17 @@
                 }
             }
         }
+        input_hal :: host {
+            hostName = "input_user_host";
+            priority = 50;
+            input_device :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 150;
+                    moduleName = "libhdf_input_hotplug.z.so";
+                    serviceName = "input_service";
+                }
+            }
+        }
     }
 }
