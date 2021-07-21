@@ -24,6 +24,7 @@
         "//drivers/peripheral/audio:hdi_audio",
         "//drivers/peripheral/audio:audio_sample_client",
         "//drivers/peripheral/usb:libusb_ddk",
+        "//drivers/peripheral/camera/hal:camera_hal",
         "//drivers/peripheral/misc/vibrator/hal:hdi_vibrator",
         "//drivers/peripheral/display/interfaces/hdi_cpp/server:display_service",
         "//drivers/peripheral/display/interfaces/hdi_cpp/client:display_client",
