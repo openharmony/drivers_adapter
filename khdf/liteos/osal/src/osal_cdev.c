@@ -54,6 +54,9 @@ int OsalCdevOpen(struct file* filep)
 
 int OsalCdevRelease(struct file* filep)
 {
+    if (filep == NULL || filep->f_vnode == NULL) {
+        return HDF_ERR_INVALID_OBJECT;
+    }
     struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
     struct OsalCdev* dev = (struct OsalCdev* )drvData->priv;
     return dev->opsImpl->release(dev, filep);
@@ -61,6 +64,9 @@ int OsalCdevRelease(struct file* filep)
 
 ssize_t OsalCdevRead(struct file* filep, char* buffer, size_t buflen)
 {
+    if (filep == NULL || filep->f_vnode == NULL) {
+        return HDF_ERR_INVALID_OBJECT;
+    }
     struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
     struct OsalCdev* dev = (struct OsalCdev* )drvData->priv;
     return dev->opsImpl->read(filep, buffer, buflen, 0);
@@ -68,6 +74,9 @@ ssize_t OsalCdevRead(struct file* filep, char* buffer, size_t buflen)
 
 ssize_t OsalCdevWrite(struct file* filep, const char* buffer, size_t buflen)
 {
+    if (filep == NULL || filep->f_vnode == NULL) {
+        return HDF_ERR_INVALID_OBJECT;
+    }
     struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
     struct OsalCdev* dev = (struct OsalCdev* )drvData->priv;
     return dev->opsImpl->write(filep, buffer, buflen, 0);
@@ -75,6 +84,9 @@ ssize_t OsalCdevWrite(struct file* filep, const char* buffer, size_t buflen)
 
 off_t OsalCdevSeek(struct file* filep, off_t offset, int whence)
 {
+    if (filep == NULL || filep->f_vnode == NULL) {
+        return HDF_ERR_INVALID_OBJECT;
+    }
     struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
     struct OsalCdev* dev = (struct OsalCdev* )drvData->priv;
     return dev->opsImpl->seek(filep, offset, whence);
@@ -82,6 +94,9 @@ off_t OsalCdevSeek(struct file* filep, off_t offset, int whence)
 
 int OsalCdevIoctl(struct file* filep, int cmd, unsigned long arg)
 {
+    if (filep == NULL || filep->f_vnode == NULL) {
+        return HDF_ERR_INVALID_OBJECT;
+    }
     struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
     struct OsalCdev* dev = (struct OsalCdev* )drvData->priv;
     return dev->opsImpl->ioctl(filep, cmd, arg);
@@ -89,6 +104,9 @@ int OsalCdevIoctl(struct file* filep, int cmd, unsigned long arg)
 
 int OsalCdevPoll(struct file* filep, poll_table* fds)
 {
+    if (filep == NULL || filep->f_vnode == NULL) {
+        return HDF_ERR_INVALID_OBJECT;
+    }
     struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
     struct OsalCdev* dev = (struct OsalCdev* )drvData->priv;
     return dev->opsImpl->poll(filep, fds);
