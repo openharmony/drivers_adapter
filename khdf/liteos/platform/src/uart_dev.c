@@ -75,7 +75,7 @@ static ssize_t UartDevRead(struct file *filep, char *buf, size_t count)
     struct drv_data *drv = (struct drv_data *)filep->f_vnode->data;
     host = (struct UartHost *)drv->priv;
 
-    if (LOS_IsUserAddressRange((vaddr_t)buf, count)) {
+    if (LOS_IsUserAddressRange((vaddr_t)(uintptr_t)buf, count)) {
         tmpBuf = (uint8_t *)OsalMemCalloc(count);
         if (tmpBuf == NULL) {
             HDF_LOGE("%s: OsalMemCalloc error", __func__);
@@ -104,7 +104,7 @@ static ssize_t UartDevWrite(struct file *filep, const char *buf, size_t count)
     struct drv_data *drv = (struct drv_data *)filep->f_vnode->data;
     host = (struct UartHost *)drv->priv;
 
-    if (LOS_IsUserAddressRange((vaddr_t)buf, count)) {
+    if (LOS_IsUserAddressRange((vaddr_t)(uintptr_t)buf, count)) {
         tmpBuf = (uint8_t *)OsalMemCalloc(count);
         if (tmpBuf == NULL) {
             HDF_LOGE("%s: OsalMemCalloc error", __func__);
@@ -132,7 +132,7 @@ static int32_t UartCfgAttr(struct UartHost *host, unsigned long arg)
     if (!LOS_IsUserAddressRange((vaddr_t)arg, len)) {
         ret = memcpy_s((void *)&attr, len, (void *)arg, len);
     } else {
-        ret = LOS_ArchCopyFromUser(&attr, (void *)arg, len);
+        ret = LOS_ArchCopyFromUser(&attr, (void *)(uintptr_t)arg, len);
     }
     if (ret != LOS_OK) {
         return ret;
