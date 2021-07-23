@@ -54,6 +54,7 @@ hdf_driver(module_name) {
   include_dirs = [
     "$FRAMEWORKS_INPUT_ROOT",
     "$FRAMEWORKS_INPUT_ROOT/input_bus_ops",
+    "//third_party/FreeBSD/sys/dev/evdev/"
   ]
 }
 
