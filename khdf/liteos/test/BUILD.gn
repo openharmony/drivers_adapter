@@ -85,6 +85,14 @@ hdf_driver(module_name) {
       ]
     }
 
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_ADC)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/adc_driver_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/adc_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_adc_entry_test.c",
+      ]
+    }
+
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG)) {
       sources += [
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/watchdog_test.c",
