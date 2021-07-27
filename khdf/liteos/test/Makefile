@@ -70,6 +70,11 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i2c_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i2c_driver_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_i2c_entry_test.c
 endif
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_ADC), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/adc_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/adc_driver_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_adc_entry_test.c
+endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/watchdog_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_watchdog_entry_test.c

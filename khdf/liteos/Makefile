@@ -100,6 +100,12 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2C), y)
               LOCAL_SRCS += ./platform/src/i2c_dev.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_ADC), y)
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/adc_if.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/adc_core.c
+endif
+
+
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/gpio_if.c \
               $(HDF_FRAMEWORKS)/support/platform/src/gpio_core.c
