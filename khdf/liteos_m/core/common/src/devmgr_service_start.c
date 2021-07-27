@@ -28,6 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <power/los_pm.h>
 #include "devmgr_service_start.h"
 #include "devhost_service_clnt.h"
 #include "devmgr_service.h"
@@ -49,7 +50,7 @@ int32_t HdfGetServiceNameByDeviceClass(DeviceClass deviceClass, struct HdfSBuf *
     struct DevHostServiceClnt *hostClnt = NULL;
     struct DevmgrService *devMgrSvc = (struct DevmgrService *)DevmgrServiceGetInstance();
     if (devMgrSvc == NULL || reply == NULL) {
-        return;
+        return HDF_ERR_INVALID_PARAM;
     }
 
     HdfSbufFlush(reply);
@@ -68,6 +69,7 @@ int32_t HdfGetServiceNameByDeviceClass(DeviceClass deviceClass, struct HdfSBuf *
     }
 
     HdfSbufWriteString(reply, NULL);
+    return HDF_SUCCESS;
 }
 
 int32_t HdfLoadDriverByServiceName(const char *svcName)
@@ -102,6 +104,44 @@ int DeviceManagerIsQuickLoad()
     return g_isQuickLoad;
 }
 
+UINT32 DevmgrPmSuspend(UINT32 mode)
+{
+    if (mode != LOS_SYS_DEEP_SLEEP) {
+        return LOS_OK;
+    }
+
+    HDF_LOGI("%s: hdf suspend start", __func__);
+    struct IDevmgrService *devmgrService = DevmgrServiceGetInstance();
+    if (devmgrService == NULL) {
+        return LOS_NOK;
+    }
+
+    if (devmgrService->PowerStateChange(devmgrService, POWER_STATE_SUSPEND) != HDF_SUCCESS) {
+        HDF_LOGE("%s: drivers suspend failed", __func__);
+        devmgrService->PowerStateChange(devmgrService, POWER_STATE_RESUME);
+        return LOS_NOK;
+    }
+
+    HDF_LOGI("%s: hdf suspend done", __func__);
+    return LOS_OK;
+}
+
+void DevmgrPmResume(UINT32 mode)
+{
+    if (mode != LOS_SYS_DEEP_SLEEP) {
+        return;
+    }
+
+    HDF_LOGI("%s: hdf resume start", __func__);
+    struct IDevmgrService *devmgrService = DevmgrServiceGetInstance();
+    if (devmgrService == NULL) {
+        return;
+    }
+
+    devmgrService->PowerStateChange(devmgrService, POWER_STATE_RESUME);
+    HDF_LOGI("%s: hdf resume done", __func__);
+}
+
 int DeviceManagerStart()
 {
     struct IDevmgrService *instance = DevmgrServiceGetInstance();
@@ -110,7 +150,23 @@ int DeviceManagerStart()
         HDF_LOGE("Device manager start failed, service instance is null!");
         return HDF_FAILURE;
     }
-    return instance->StartService(instance);
+    int ret = instance->StartService(instance);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("failed to start hdf devmgr");
+        return ret;
+    }
+
+    static LosPmDevice pmOpt = {
+        .suspend = DevmgrPmSuspend,
+        .resume = DevmgrPmResume,
+    };
+
+    if (LOS_PmRegister(LOS_PM_TYPE_DEVICE, &pmOpt) != 0) {
+        HDF_LOGE("failed to register los pm opt");
+        return HDF_FAILURE;
+    }
+
+    return HDF_SUCCESS;
 }
 
 int DeviceManagerStartStep2()
