@@ -106,6 +106,13 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_ADC)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/adc_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/adc_if.c",
+    ]
+  }
+
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO)) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio_core.c",
