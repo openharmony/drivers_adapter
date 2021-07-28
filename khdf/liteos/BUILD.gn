@@ -210,18 +210,9 @@ group("liteos") {
     "model/storage",
   ]
 
-  hdf_config = "$device_path/config"
   if (defined(LOSCFG_DRIVERS_HDF_TEST)) {
-    hdf_config = "$product_path/config/hdf_test"
     deps += [ "test" ]
-  } else {
-    cmd = "if [ -f $product_path/config/BUILD.gn ]; then echo true; else echo false; fi"
-    HAVE_PRODUCT_CONFIG = exec_script("//build/lite/run_shell_cmd.py", [ cmd ], "value")
-    if (HAVE_PRODUCT_CONFIG) {
-      hdf_config = "$product_path/config"
-    }
   }
-  deps += [ hdf_config ]
 }
 
 config("public") {
