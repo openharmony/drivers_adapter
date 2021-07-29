@@ -47,6 +47,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_WIFI), y)
     LIB_SUBDIRS    +=  $(LITEOS_DRIVERS_HDF)/model/network/wifi
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HIETH_SF), y)
+    LITEOS_BASELIB += -lhdf_eth_model
+    LIB_SUBDIRS    +=  $(LITEOS_DRIVERS_HDF)/model/network/ethernet
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_USB), y)
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(LITEOS_DRIVERS_HDF)/model/bus/usb/include
     LITEOS_BASELIB += -lhdf_usb
