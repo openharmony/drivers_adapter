@@ -30,6 +30,7 @@
 
 #include "net_device_adapter.h"
 
+#include <los_task_pri.h>
 #include <lwip/netif.h>
 #include <lwip/pbuf.h>
 #include <lwip/opt.h>
@@ -40,6 +41,42 @@
 
 #define HDF_LOG_TAG NetDeviceLite
 #define FREE_SPACE_SIZE 2
+
+static bool IsInSystemTaskContext(void)
+{
+    LosTaskCB *runTask = (LosTaskCB *)OsCurrTaskGet();
+
+    if (runTask == NULL) {
+        return false;
+    }
+    return (runTask->taskStatus & OS_TASK_FLAG_SYSTEM_TASK) != 0;
+}
+
+static int32_t SetNetIfLinkStatus(struct netif *lwipNf, NetIfLinkStatus status)
+{
+    int32_t ret = 0;
+    if (status == NETIF_LINK_DOWN) {
+        if (IsInSystemTaskContext()) {
+            netif_set_link_down(lwipNf);
+        } else {
+            ret = netifapi_netif_set_link_down(lwipNf);
+        }
+    } else if (status == NETIF_LINK_UP) {
+        if (IsInSystemTaskContext()) {
+            netif_set_link_up(lwipNf);
+        } else {
+            ret = netifapi_netif_set_link_up(lwipNf);
+        }
+    } else {
+        HDF_LOGE("%s fail: status error!", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    if (ret == ERR_OK) {
+        return HDF_SUCCESS;
+    }
+    HDF_LOGE("%s fail ret = %d!", __func__, ret);
+    return HDF_FAILURE;
+}
 
 static int32_t LiteNetDevInit(struct NetDeviceImpl *netDeviceImpl)
 {
@@ -178,7 +215,7 @@ static struct netif *CreateLwipNetIf(const struct NetDeviceImpl *netDeviceImpl, 
     lwipNf->state = (void *)netDeviceImpl;
     lwipNf->drv_send = LwipSend;
     lwipNf->drv_set_hwaddr = LwipSetHwaddr;
-    lwipNf->link_layer_type = WIFI_DRIVER_IF;
+    lwipNf->link_layer_type = netDev->LinkLayerType;
     lwipNf->hwaddr_len = MAC_ADDR_SIZE;
     lwipNf->drv_config = LwipDrvConfig;
 #if LOSCFG_NET_LWIP_SACK_2_0
@@ -191,6 +228,7 @@ static struct netif *CreateLwipNetIf(const struct NetDeviceImpl *netDeviceImpl, 
 #endif
     return lwipNf;
 }
+
 static void DestroyLwipNetIf(struct netif *lwipNf)
 {
     if (lwipNf != NULL) {
@@ -198,11 +236,14 @@ static void DestroyLwipNetIf(struct netif *lwipNf)
     }
 }
 
-static void IpV6SpecialProc(struct netif *lwipNf, Protocol80211IfType ifType)
+static void IpV6SpecialProc(struct NetDevice *lwipNd, struct netif *lwipNf)
 {
-    if (lwipNf == NULL) {
+    Protocol80211IfType ifType = lwipNd->funType.wlanType;
+
+    if (lwipNd->LinkLayerType != WIFI_LINK) {
         return;
     }
+
     if ((ifType == PROTOCOL_80211_IFTYPE_AP) || (ifType == PROTOCOL_80211_IFTYPE_MESH_POINT)) {
 #ifdef _PRE_WLAN_FEATURE_LWIP_IPV6_AUTOCONFIG
         (hi_void)netifapi_set_ip6_autoconfig_disabled(lwipNf);
@@ -213,7 +254,20 @@ static void IpV6SpecialProc(struct netif *lwipNf, Protocol80211IfType ifType)
     }
     return;
 }
-static int32_t LiteNetDevAdd(struct NetDeviceImpl *netDeviceImpl, Protocol80211IfType ifType)
+
+static void LiteNetifLinkChangeCallback(struct netif *netif)
+{
+    if (netif == NULL || netif->state == NULL) {
+        return;
+    }
+    struct NetDeviceImpl *netDeviceImpl = (struct NetDeviceImpl *)netif->state;
+    if (netDeviceImpl->netDevice != NULL && netDeviceImpl->netDevice->netDeviceIf != NULL &&
+        netDeviceImpl->netDevice->netDeviceIf->linkStatusChanged != NULL) {
+            netDeviceImpl->netDevice->netDeviceIf->linkStatusChanged(netDeviceImpl->netDevice);
+    }
+}
+
+static int32_t LiteNetDevAdd(struct NetDeviceImpl *netDeviceImpl)
 {
     if (netDeviceImpl == NULL || netDeviceImpl->osPrivate == NULL || netDeviceImpl->netDevice == NULL) {
         HDF_LOGE("Lite netif add fail : impl = null , osPrivate = null, or netdevice = null!");
@@ -258,9 +312,10 @@ static int32_t LiteNetDevAdd(struct NetDeviceImpl *netDeviceImpl, Protocol80211I
     }
 
     liteNdPri->lwipNetif = lwipNf;
-    IpV6SpecialProc(lwipNf, ifType);
+    IpV6SpecialProc(lwipNd, lwipNf);
     /* set netif default status */
     netifapi_netif_set_default(lwipNf);
+    netif_set_link_callback(lwipNf, LiteNetifLinkChangeCallback);
     HDF_LOGI("%s success!!", __func__);
     return HDF_SUCCESS;
 }
@@ -322,32 +377,43 @@ static int32_t LiteNetDevSetLinkStatus(struct NetDeviceImpl *netDeviceImpl, NetI
         HDF_LOGE("%s fail : netif = null!", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-    int32_t ret = 0;
-    if (status == NETIF_LINK_DOWN) {
-        ret = netifapi_netif_set_link_down(lwipNf);
-    } else if (status == NETIF_LINK_UP) {
-        ret = netifapi_netif_set_link_up(lwipNf);
-    } else {
-        HDF_LOGE("%s fail : status error!", __func__);
-        return HDF_ERR_INVALID_PARAM;
-    }
-    if (ret == ERR_OK) {
-        return HDF_SUCCESS;
-    }
-    HDF_LOGE("%s fail ret = %d!", __func__, ret);
-    return HDF_FAILURE;
+	return SetNetIfLinkStatus(lwipNf, status);
 }
 
-static ProcessingResult LiteNetDevDataFilter(struct NetBuf *buff)
+int32_t LiteNetDevGetLinkStatus(struct NetDeviceImpl *netDeviceImpl, NetIfLinkStatus *status)
 {
-    if (buff == NULL) {
+    struct netif *lwipNf = GetNetIfFromDevImpl(netDeviceImpl);
+    if (lwipNf == NULL) {
+        HDF_LOGE("%s fail : netif = null!", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    if (status == NULL) {
+        HDF_LOGE("%s fail : status is null", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    if (netif_is_link_up(lwipNf)) {
+        *status = NETIF_LINK_UP;
+    } else {
+        *status = NETIF_LINK_DOWN;
+    }
+    return HDF_SUCCESS;
+}
+
+static ProcessingResult LiteNetDevDataFilter(struct NetDeviceImpl *netDeviceImpl, struct NetBuf *buff)
+{
+    struct NetDevice *lwipNd = NULL;
+
+    if (netDeviceImpl == NULL || buff == NULL) {
         HDF_LOGE("%s fail : buff = null!", __func__);
         return PROCESSING_ERROR;
     }
+    lwipNd = netDeviceImpl->netDevice;
+
     struct EtherHeader *header = (struct EtherHeader *)NetBufGetAddress(buff, E_DATA_BUF);
     uint16_t etherType = ntohs(header->etherType);
-    if ((etherType == ETHER_TYPE_IP) || (etherType == ETHER_TYPE_ARP) || (etherType == ETHER_TYPE_RARP) ||
-        (etherType == ETHER_TYPE_IPV6) || (etherType == ETHER_TYPE_6LO) || (etherType == ETHER_TYPE_PAE)) {
+    if ((lwipNd->LinkLayerType == ETHERNET_LINK) || (etherType == ETHER_TYPE_IP) || (etherType == ETHER_TYPE_ARP) ||
+        (etherType == ETHER_TYPE_RARP) || (etherType == ETHER_TYPE_IPV6) || (etherType == ETHER_TYPE_6LO) ||
+        (etherType == ETHER_TYPE_PAE)) {
         return PROCESSING_CONTINUE;
     } else {
         NetBufFree(buff);
@@ -359,11 +425,13 @@ static int32_t LiteNetDevDataReceive(struct NetDeviceImpl *netDeviceImpl, struct
 {
     struct netif *lwipNf = GetNetIfFromDevImpl(netDeviceImpl);
     if (lwipNf == NULL) {
+        NetBufFree(buff);
         HDF_LOGE("%s fail : lwipnf = null!", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
     struct pbuf *pBuff = ConverNetBufToPBuf(buff);
     if (pBuff == NULL) {
+        NetBufFree(buff);
         HDF_LOGE("%s fail : pBuff = null!", __func__);
         return HDF_FAILURE;
     }
@@ -383,7 +451,7 @@ static int32_t LiteNetDevReceive(struct NetDeviceImpl *netDeviceImpl, struct Net
         HDF_LOGE("%s fail : lwipnf = null or buff = null!", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-    ProcessingResult ret = LiteNetDevDataFilter(buff);
+    ProcessingResult ret = LiteNetDevDataFilter(netDeviceImpl, buff);
     if (ret == PROCESSING_CONTINUE) {
         return LiteNetDevDataReceive(netDeviceImpl, buff);
     } else if (ret == PROCESSING_COMPLETE) {
@@ -508,6 +576,7 @@ static struct NetDeviceImplOp g_liteNdImplOps = {
     .delete = LiteNetDevDelete,
     .setStatus = LiteNetDevSetStatus,
     .setLinkStatus = LiteNetDevSetLinkStatus,
+    .getLinkStatus = LiteNetDevGetLinkStatus,
     .receive = LiteNetDevReceive,
     .setIpAddr = LiteNetSetIpAddr,
     .dhcpsStart = LiteNetDhcpsStart,
