@@ -35,11 +35,10 @@ hdf_driver(module_name) {
   FRAMEWORKS_DISPLAY_ROOT = "$HDF_FRAMEWORKS_PATH/model/display/driver"
   sources = [
     "$FRAMEWORKS_DISPLAY_ROOT/hdf_disp.c",
-    "$FRAMEWORKS_DISPLAY_ROOT/lcd_abs_if.c",
   ]
 
   if (defined(LOSCFG_PLATFORM_HI3516DV300)) {
-    sources += [ "$FRAMEWORKS_DISPLAY_ROOT/hi35xx_disp.c" ]
+    sources += [ "$FRAMEWORKS_DISPLAY_ROOT/adapter_soc/hi35xx_disp.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_LCDKIT)) {

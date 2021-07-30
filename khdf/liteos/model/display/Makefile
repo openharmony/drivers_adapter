@@ -33,11 +33,11 @@ MODULE_NAME := hdf_display
 LOCAL_INCLUDE := $(LITEOSTOPDIR)/../../base/hiviewdfx/hilog_lite/interfaces/native/kits \
                  $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver
 
+
 LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/hdf_disp.c
-LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/lcd_abs_if.c
 
 ifeq ($(LOSCFG_PLATFORM_HI3516DV300), y)
-LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/hi35xx_disp.c
+LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/adapter_soc/hi35xx_disp.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_LCDKIT), y)
