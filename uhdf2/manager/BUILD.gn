@@ -96,7 +96,11 @@ ohos_executable("hdf_devmgr") {
 }
 
 ohos_prebuilt_etc("hdf_devmgr.rc") {
-  source = "hdf_devmgr.rc"
+  if (use_musl) {
+    source = "hdf_devmgr.cfg"
+  } else {
+    source = "hdf_devmgr.rc"
+  }
   relative_install_dir = "init"
   subsystem_name = "hdf"
   part_name = "hdf"
