@@ -206,6 +206,7 @@ group("liteos") {
     "model/input",
     "model/misc/vibrator",
     "model/network/wifi",
+    "model/network/ethernet",
     "model/sensor",
     "model/storage",
   ]
