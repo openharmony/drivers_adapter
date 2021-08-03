@@ -86,4 +86,6 @@ ohos_shared_library("libhdf_utils") {
   # install_images = [ "vendor" ]
   subsystem_name = "hdf"
   part_name = "hdf"
+  module_install_dir = "lib"
+  install_images = [ "system", "updater" ]
 }
