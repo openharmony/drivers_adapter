@@ -15,7 +15,9 @@ import("//build/ohos.gni")
 import("//drivers/adapter/uhdf2/uhdf.gni")
 
 group("uhdf_utils_pkg") {
-  deps = [ ":libhdf_utils" ]
+  deps = [
+    ":libhdf_utils",
+  ]
 }
 
 config("libhdf_utils_pub_config") {
@@ -69,7 +71,9 @@ ohos_shared_library("libhdf_utils") {
     "osal_sysevent.c",
   ]
 
-  deps = [ "//utils/native/base:utils" ]
+  deps = [
+    "//utils/native/base:utils",
+  ]
 
   if (is_standard_system) {
     external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
@@ -86,5 +90,8 @@ ohos_shared_library("libhdf_utils") {
   # install_images = [ "vendor" ]
   subsystem_name = "hdf"
   part_name = "hdf"
-  install_images = [ "system", "updater" ]
+  install_images = [
+    "system",
+    "updater",
+  ]
 }
