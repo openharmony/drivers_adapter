@@ -29,7 +29,7 @@ int32_t DevmgrServiceStartPnpHost(struct DevmgrService *inst);
 
 int32_t DevmgrServiceRegPnpDevice(
     struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName,
-        const char *deviceMatchAttr, const void *privateData);
+    const char *deviceMatchAttr, const void *privateData);
 
 int32_t DevmgrServiceUnRegPnpDevice(
     struct IDevmgrService *devmgrSvc, const char *moduleName, const char *serviceName);

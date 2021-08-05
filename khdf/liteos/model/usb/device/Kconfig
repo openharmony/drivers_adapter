@@ -29,26 +29,27 @@
 config DRIVERS_HDF_USB_DDK_DEVICE
     bool "Enable HDF LiteOS USB DDK Device driver"
     default n
-    depends on DRIVERS_HDF
+    depends on DRIVERS_HDF && DRIVERS_USB
     help
         Answer Y to choice HDF LiteOS USB DDK Device driver.
 
 config DRIVERS_HDF_USB_COMPOSITE
     bool "Enable HDF usb composite driver"
     default n
-    depends on DRIVERS_HDF
+    depends on DRIVERS_HDF && DRIVERS_USB
     help
       Answer Y to enable HDF usb composite driver.
 
 config DRIVERS_USB3_DEVICE_CONTROLLER
     bool "Enable HDF usb3 controller driver"
     default n
+    depends on DRIVERS_HDF && DRIVERS_USB
     help
       Answer Y to enable HDF usb controller driver.
 
 config DRIVERS_HDF_USB_F_CONFIG
     bool "Enable HDF usb f_config driver"
     default n
-    depends on DRIVERS_HDF
+    depends on DRIVERS_HDF && DRIVERS_USB
     help
       Answer Y to enable HDF usb f_config driver.
