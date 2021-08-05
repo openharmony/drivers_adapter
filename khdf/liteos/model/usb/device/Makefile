@@ -33,10 +33,10 @@ MODULE_NAME := hdf_usb_ddk_device
 
 FRAMEWORKS_USB_DDK_DEVICE = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/ddk/device
 
-USB_DEVICE_ROOT = $(LITEOSTOPDIR)/../../drivers/liteos/usb
+USB_DEVICE_ROOT = $(LITEOSTOPDIR)/../../third_party/NuttX/drivers/usbdev
 
-LOCAL_INCLUDE := $(LITEOSTOPDIR)/../../drivers/liteos/usb \
-                 $(LITEOSTOPDIR)/../../drivers/liteos/usb/gadget/fconfig/include \
+LOCAL_INCLUDE := $(USB_DEVICE_ROOT) \
+                 $(USB_DEVICE_ROOT)/gadget/fconfig/include \
                  $(LITEOSTOPDIR)/../../kernel/liteos_a/bsd/compat/linuxkpi/include/linux \
                  $(LITEOSTOPDIR)/../../kernel/liteos_a/bsd/dev/usb \
                  $(LITEOSTOPDIR)/../../kernel/liteos_a/bsd/compat/linuxkpi/include/asm \

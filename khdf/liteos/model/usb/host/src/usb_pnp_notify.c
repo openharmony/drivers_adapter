@@ -431,11 +431,6 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
         goto out;
     }
 
-    HDF_LOGI("%s:%d report one device information, %d usbDevAddr=%p, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!",
-        __func__, __LINE__, g_usbPnpNotifyCmdType, deviceInfo->info.usbDevAddr, deviceInfo->info.devNum,
-        deviceInfo->info.busNum, deviceInfo->info.numInfos, deviceInfo->info.deviceInfo.vendorId,
-        deviceInfo->info.deviceInfo.productId);
-
     OsalMutexLock(&deviceInfo->lock);
     if (deviceInfo->status == USB_PNP_DEVICE_INIT_STATUS) {
         ret = UsbPnpNotifySendEventLoader(data);
@@ -745,16 +740,34 @@ void UsbPnpNotifyDevice(const char *type, struct usb_device *udev)
     }
 }
 
-struct usb_device *UsbPnpNotifyGetUsbDevice(uint8_t busNum, uint8_t devNum)
+struct usb_device *UsbPnpNotifyGetUsbDevice(struct UsbGetDevicePara paraData)
 {
+    bool findFlag = false;
     struct usb_device *usbPnpDevice = NULL;
     struct UsbPnpNotifyDeviceList *pnpNotifyDevicePos = NULL;
 
     OsalMutexLock(&g_usbPnpNotifyDevicelistLock);
     DLIST_FOR_EACH_ENTRY(pnpNotifyDevicePos, &g_usbPnpDeviceListHead,
         struct UsbPnpNotifyDeviceList, deviceList) {
-        if ((pnpNotifyDevicePos->device->address == devNum)
-            && (pnpNotifyDevicePos->device->port_no == busNum)) {
+        switch (paraData.type) {
+            case USB_PNP_DEVICE_ADDRESS_TYPE:
+                if ((pnpNotifyDevicePos->device->address == paraData.devNum)
+                    && (pnpNotifyDevicePos->device->port_no == paraData.busNum)) {
+                    findFlag = true;
+                }
+                break;
+            case USB_PNP_DEVICE_VENDOR_PRODUCT_TYPE:
+                if ((UGETW(pnpNotifyDevicePos->device->ddesc.idVendor) == paraData.vendorId)
+                    && (UGETW(pnpNotifyDevicePos->device->ddesc.idProduct) == paraData.productId)) {
+                    findFlag = true;
+                }
+                break;
+            default:
+                findFlag = false;
+                break;
+        }
+
+        if (findFlag == true) {
             usbPnpDevice = pnpNotifyDevicePos->device;
             break;
         }

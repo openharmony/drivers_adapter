@@ -205,10 +205,12 @@ group("liteos") {
     "model/display",
     "model/input",
     "model/misc/vibrator",
-    "model/network/wifi",
     "model/network/ethernet",
+    "model/network/wifi",
     "model/sensor",
     "model/storage",
+    "model/usb/device",
+    "model/usb/host",
   ]
 
   if (defined(LOSCFG_DRIVERS_HDF_TEST)) {
@@ -224,6 +226,8 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/support/platform/include/mmc",
     "$HDF_FRAMEWORKS_PATH/include/platform",
     "$HDF_FRAMEWORKS_PATH/include/utils",
+    "$HDF_FRAMEWORKS_PATH/model/usb/include",
+    "//drivers/adapter/khdf/liteos/model/usb/host/include",
   ]
 
   configs = [ "model/bus/usb:public" ]

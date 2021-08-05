@@ -40,7 +40,8 @@
         "//drivers/adapter/uhdf2/hdi/test:unittest",
         "//drivers/peripheral/misc/vibrator/test:hdf_test_vibrator",
         "//drivers/peripheral/wlan/test/hdi_service:unittest",
-        "//drivers/peripheral/audio/test/systemtest:systemtest"
+        "//drivers/peripheral/audio/test/systemtest:systemtest",
+        "//drivers/peripheral/usb/test:hdf_test_usb"
       ]
     }
   }
