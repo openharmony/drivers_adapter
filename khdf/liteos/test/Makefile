@@ -54,9 +54,9 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/wifi/hdf_wifi_test.c \
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/model/usb/src/hdf_usb_device_test.c \
-              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/src/usb_device_lite_cdcacm_test.c \
-              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/src/usb_device_lite_sdk_if_test.c 
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/model/usb/device/src/hdf_usb_device_test.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/device/src/usb_device_lite_cdcacm_test.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/device/src/usb_device_lite_sdk_if_test.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM), y)
@@ -110,6 +110,15 @@ endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/sensor/hdf_sensor_test.c
+endif
+
+ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_HOST), y)
+ifeq ($(LOSCFG_DRIVERS_HDF_USB_PNP_NOTIFY), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/model/usb/host/src/usb_test.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/host/src/usb_raw_test.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/host/src/usb_raw_io.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/host/src/hdf_usb_entry_test.c
+endif
 endif
 
 LOCAL_FLAGS += $(LITEOS_GCOV_OPTS)
