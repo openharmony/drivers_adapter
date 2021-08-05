@@ -65,6 +65,11 @@ typedef enum {
     USB_PNP_DEVICE_INTERFACE_STATUS,
 } UsbPnpDeviceStatus;
 
+typedef enum {
+    USB_PNP_DEVICE_ADDRESS_TYPE,
+    USB_PNP_DEVICE_VENDOR_PRODUCT_TYPE,
+} UsbPnpDeviceParaType;
+
 struct UsbPnpDeviceInfo {
     int32_t id;
     struct OsalMutex lock;
@@ -96,8 +101,22 @@ struct UsbPnpNotifyDeviceList {
     struct DListHead deviceList;
 };
 
+struct UsbGetDevicePara {
+    UsbPnpDeviceParaType type;
+    union {
+        struct {
+            uint8_t busNum;
+            uint8_t devNum;
+        };
+        struct {
+            uint16_t vendorId;
+            uint16_t productId;
+        };
+    };
+};
+
 void UsbPnpNotifyDevice(const char *type, struct usb_device *udev);
-struct usb_device *UsbPnpNotifyGetUsbDevice(uint8_t busNum, uint8_t devNum);
+struct usb_device *UsbPnpNotifyGetUsbDevice(struct UsbGetDevicePara paraData);
 
 #ifdef __cplusplus
 #if __cplusplus

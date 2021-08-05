@@ -61,11 +61,20 @@ hdf_driver(module_name) {
 
   if (defined(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE)) {
     sources += [
-      "$HDF_TEST_FRAMWORK_ROOT/model/usb/src/hdf_usb_device_test.c",
-      "$HDF_TEST_FRAMWORK_ROOT/model/usb/src/usb_device_lite_cdcacm_test.c",
-      "$HDF_TEST_FRAMWORK_ROOT/model/usb/src/usb_device_lite_sdk_if_test.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/device/src/hdf_usb_device_test.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/device/src/usb_device_lite_cdcacm_test.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/device/src/usb_device_lite_sdk_if_test.c",
     ]
-}
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_USB_DDK_HOST) && defined(LOSCFG_DRIVERS_HDF_USB_PNP_NOTIFY)) {
+    sources += [
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_test.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_raw_test.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_raw_io.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/hdf_usb_entry_test.c",
+    ]
+  }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM)) {
     sources += [ "$HDF_TEST_FRAMWORK_ROOT/platform/common/platform_driver_test.c" ]
@@ -227,11 +236,20 @@ config("test_lite") {
 
   if (defined(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE)) {
     include_dirs += [
-      "$HDF_TEST_FRAMWORK_ROOT/model/usb/include",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/device/include",
       "$HDF_ROOT_DIR/peripheral/usb/ddk/common/include",
       "$HDF_ROOT_DIR/peripheral/usb/ddk/device/include",
       "$HDF_ROOT_DIR/peripheral/usb/interfaces/ddk/common",
       "$HDF_ROOT_DIR/peripheral/usb/interfaces/ddk/device",
+    ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_USB_DDK_HOST)) {
+    include_dirs += [
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/include",
+      "$HDF_ROOT_DIR/peripheral/usb/interfaces/ddk/common",
+      "$HDF_ROOT_DIR/peripheral/usb/interfaces/ddk/host",
+      "$HDF_ROOT_DIR/peripheral/usb/gadget/function/include",
     ]
   }
 }

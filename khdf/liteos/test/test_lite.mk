@@ -89,11 +89,17 @@ HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/model/sensor/driver/includ
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/model/sensor/driver/common/include
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
-HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/test/unittest/model/usb/include
+HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/test/unittest/model/usb/device/include
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/peripheral/usb/ddk/common/include
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/peripheral/usb/ddk/device/include
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/peripheral/usb/interfaces/ddk/common
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/peripheral/usb/interfaces/ddk/device
+endif
+ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_HOST), y)
+HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/test/unittest/model/usb/host/include
+HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/peripheral/usb/interfaces/ddk/common
+HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/peripheral/usb/interfaces/ddk/host
+HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/peripheral/usb/gadget/function/include
 endif
 LOCAL_CFLAGS += $(HDF_TEST_INCLUDE)
 HDF_DRIVER_TEST = $(HDF_ROOT_TEST_DIR)/adapter/khdf/liteos/hdf_driver.mk

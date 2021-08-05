@@ -28,6 +28,7 @@ ohos_executable("hdf_devmgr") {
     "$hdf_framework_path/include/config",
     "$hdf_framework_path/ability/sbuf/include",
     "$hdf_framework_path/ability/config/hcs_parser/include",
+    "$hdf_framework_path/model/usb/include",
     "$hdf_uhdf_path/ipc/include",
     "$hdf_uhdf_path/osal/include/",
     "$hdf_uhdf_path/include/config",
@@ -38,13 +39,9 @@ ohos_executable("hdf_devmgr") {
     "$hdf_uhdf_path/host/include",
     "$hdf_uhdf_path/security/include",
     "include",
-    "//drivers/peripheral/usb/ddk/host/include",
   ]
 
   sources = [
-    "$hdf_uhdf_path/shared/src/dev_attribute_parcel.c",
-    "$hdf_uhdf_path/shared/src/hdf_attribute_full.c",
-    "$hdf_uhdf_path/shared/src/hdf_device_info_full.c",
     "$hdf_framework_path/core/manager/src/devhost_service_clnt.c",
     "$hdf_framework_path/core/manager/src/device_token_clnt.c",
     "$hdf_framework_path/core/manager/src/devmgr_service.c",
@@ -54,6 +51,10 @@ ohos_executable("hdf_devmgr") {
     "$hdf_framework_path/core/shared/src/hdf_device_info.c",
     "$hdf_framework_path/core/shared/src/hdf_object_manager.c",
     "$hdf_framework_path/core/shared/src/hdf_service_record.c",
+    "$hdf_framework_path/model/usb/src/usb_ddk_pnp_loader.c",
+    "$hdf_uhdf_path/shared/src/dev_attribute_parcel.c",
+    "$hdf_uhdf_path/shared/src/hdf_attribute_full.c",
+    "$hdf_uhdf_path/shared/src/hdf_device_info_full.c",
     "device_manager.c",
     "src/devhost_service_proxy.c",
     "src/device_token_proxy.c",
@@ -62,18 +63,17 @@ ohos_executable("hdf_devmgr") {
     "src/devmgr_query_device.c",
     "src/devmgr_service_full.c",
     "src/devmgr_service_stub.c",
-    "//drivers/peripheral/usb/ddk/host/src/usb_ddk_pnp_loader.c",
-    "src/usb_pnp_manager.c",
     "src/devmgr_virtual_service.c",
     "src/devsvc_manager_stub.c",
     "src/driver_installer_full.c",
     "src/hdf_get_attribute.c",
+    "src/usb_pnp_manager.c",
   ]
 
   deps = [
+    "$hdf_uhdf_path/config:uhdf_hcs_pkg",
     "$hdf_uhdf_path/ipc:libhdf_ipc_adapter",
     "$hdf_uhdf_path/osal:libhdf_utils",
-    "$hdf_uhdf_path/config:uhdf_hcs_pkg",
     "//utils/native/base:utils",
   ]
 

@@ -133,8 +133,8 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MMC), y)
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_dispatch.c \
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_if.c \
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_protocol.c \
-	      $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_sdio.c \
-	      $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_emmc.c
+              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_sdio.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_emmc.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO), y)
