@@ -57,31 +57,25 @@ hdf_driver(module_name) {
       "$USB_DEVICE_ROOT/gadget/fconfig/src/f_config.c",
       "$USB_DEVICE_ROOT/gadget/fconfig/src/f_generic.c",
       "$USB_DEVICE_ROOT/gadget/fconfig/src/obj_res.c",
-      "$USB_DEVICE_ROOT/gadget/fconfig/src/usbd_config.c",
-      "$USB_DEVICE_ROOT/gadget/fconfig/src/usbd_generic_ep0.c",
-      "$USB_DEVICE_ROOT/gadget/fconfig/src/usbd_generic_epfile.c",
       "$USB_DEVICE_ROOT/gadget/fconfig/src/usb_handle.c",
       "$USB_DEVICE_ROOT/gadget/fconfig/src/usb_obj.c",
       "$USB_DEVICE_ROOT/gadget/fconfig/src/usb_string.c",
+      "$USB_DEVICE_ROOT/gadget/fconfig/src/usbd_config.c",
+      "$USB_DEVICE_ROOT/gadget/fconfig/src/usbd_generic_ep0.c",
+      "$USB_DEVICE_ROOT/gadget/fconfig/src/usbd_generic_epfile.c",
     ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_USBFN_MASTER)) {
-    sources += [
-      "$FRAMEWORKS_USB_DRIVERS/master/dev_master.c",
-    ]
+    sources += [ "$FRAMEWORKS_USB_DRIVERS/master/dev_master.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_USBFN_CDCACM)) {
-    sources += [
-      "$FRAMEWORKS_USB_DRIVERS/acm/cdcacm.c",
-    ]
+    sources += [ "$FRAMEWORKS_USB_DRIVERS/acm/cdcacm.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_USBFN_CDCECM)) {
-    sources += [
-      "$FRAMEWORKS_USB_DRIVERS/ecm/cdcecm.c",
-    ]
+    sources += [ "$FRAMEWORKS_USB_DRIVERS/ecm/cdcecm.c" ]
   }
 
   ldflags = [
@@ -107,5 +101,7 @@ hdf_driver(module_name) {
 }
 
 group("device") {
-  public_deps = [ ":$module_name" ]
+  public_deps = [
+    ":$module_name",
+  ]
 }
