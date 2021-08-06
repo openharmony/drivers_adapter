@@ -36,10 +36,6 @@ hdf_driver(module_name) {
   public_configs = [ ":public" ]
 }
 
-group("usb") {
-  public_deps = [ ":$module_name" ]
-}
-
 config("public") {
   include_dirs = [ "include" ]
 }

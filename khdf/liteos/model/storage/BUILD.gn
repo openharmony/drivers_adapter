@@ -43,7 +43,3 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_STORAGE_ROOT/include/common",
   ]
 }
-
-group("storage") {
-  public_deps = [ ":$module_name" ]
-}

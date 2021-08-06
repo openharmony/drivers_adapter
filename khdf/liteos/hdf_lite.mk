@@ -117,8 +117,8 @@ endif
 endif
 
 SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
-PRODUCT_CONFIG := $(PRODUCT_PATH)/config
-DEVICE_CONFIG := $(DEVICE_PATH)/config
+PRODUCT_CONFIG := $(PRODUCT_PATH)/hdf_config
+DEVICE_CONFIG := $(DEVICE_PATH)/hdf_config
 HAVE_PRODUCT_CONFIG := $(shell if [ -e $(PRODUCT_CONFIG)/Makefile ]; then echo y; else echo n; fi)
 
 ifeq ($(LOSCFG_DRIVERS_HDF_TEST), y)

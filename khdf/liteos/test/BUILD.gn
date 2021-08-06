@@ -163,10 +163,6 @@ hdf_driver(module_name) {
   configs += [ ":test_lite" ]
 }
 
-group("test") {
-  public_deps = [ ":$module_name" ]
-}
-
 config("test_lite") {
   include_dirs = [
     "$HDF_FRAMEWORKS_PATH/include",
