@@ -28,8 +28,8 @@
 
 SOURCE_ROOT := $(abspath $(LITEOSTOPDIR)/../../)
 
-PRODUCT_CONFIG := $(PRODUCT_PATH)/config
-DEVICE_CONFIG := $(DEVICE_PATH)/config
+PRODUCT_CONFIG := $(PRODUCT_PATH)/hdf_config
+DEVICE_CONFIG := $(DEVICE_PATH)/hdf_config
 HAVE_PRODUCT_CONFIG := $(shell if [ -e $(PRODUCT_CONFIG)/Makefile ]; then echo y; else echo n; fi)
 
 ifeq ($(LOCAL_HCS_ROOT),)
@@ -48,7 +48,7 @@ LOCAL_CFLAGS += $(LITEOS_GCOV_OPTS)
 LOCAL_CFLAGS += $(addprefix -I ,$(LOCAL_INCLUDE))
 
 HCS_SRCS:= $(addprefix $(HDF_CONFIG_DIR)/,$(LOCAL_HCS_SRCS))
-CONFIG_OUT_DIR := $(OBJOUT)/config/
+CONFIG_OUT_DIR := $(OBJOUT)/hdf_config/
 CONFIG_GEN_SRCS := $(addsuffix .c,$(addprefix $(CONFIG_OUT_DIR),$(basename $(LOCAL_HCS_SRCS))))
 CONFIG_OUT_SUBDIRS := $(dir $(CONFIG_GEN_SRCS))
 DEPENDS_CONFIG_SRCS :=  $(addsuffix .c,$(addprefix $(CONFIG_OUT_DIR),$(basename $(LOCAL_DEPENDS_HCS_SRCS))))
