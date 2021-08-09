@@ -32,6 +32,7 @@
 #include "los_memory.h"
 #include "lwip/prot/ethernet.h"
 #include "net_device.h"
+#include "securec.h"
 #include "osal.h"
 
 #define HDF_LOG_TAG             NetBuf
