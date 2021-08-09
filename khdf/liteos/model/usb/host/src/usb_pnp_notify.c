@@ -111,7 +111,8 @@ static struct UsbPnpDeviceInfo *UsbPnpNotifyCreateInfo(void)
         OsalMutexInit(&infoTemp->lock);
         infoTemp->status = USB_PNP_DEVICE_INIT_STATUS;
         DListHeadInit(&infoTemp->list);
-        memset(infoTemp->interfaceRemoveStatus, 0, sizeof(infoTemp->interfaceRemoveStatus));
+        memset_s(infoTemp->interfaceRemoveStatus, USB_PNP_INFO_MAX_INTERFACES,
+            0, sizeof(infoTemp->interfaceRemoveStatus));
         DListInsertTail(&infoTemp->list, &g_usbPnpInfoListHead);
 
         return infoTemp;
