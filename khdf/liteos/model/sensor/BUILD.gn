@@ -54,7 +54,3 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_SENSOR_ROOT/chipset/accel",
   ]
 }
-
-group("sensor") {
-  public_deps = [ ":$module_name" ]
-}
