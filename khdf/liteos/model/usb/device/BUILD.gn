@@ -32,9 +32,9 @@ import("//drivers/adapter/khdf/liteos/hdf.gni")
 module_switch = defined(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE)
 module_name = "hdf_usb_ddk_device"
 hdf_driver(module_name) {
-  FRAMEWORKS_USB_DDK_DEVICE = "//drivers/peripheral/usb/ddk/device"
+  FRAMEWORKS_USB_DDK_DEVICE = "$HDF_PERIPHERAL_PATH/usb/ddk/device"
   USB_DEVICE_ROOT = "//third_party/NuttX/drivers/usbdev"
-  FRAMEWORKS_USB_DRIVERS = "//drivers/peripheral/usb/gadget/function"
+  FRAMEWORKS_USB_DRIVERS = "$HDF_PERIPHERAL_PATH/usb/gadget/function"
   sources = [
     "$FRAMEWORKS_USB_DDK_DEVICE/src/adapter_if_liteos.c",
     "$FRAMEWORKS_USB_DDK_DEVICE/src/usbfn_cfg_mgr.c",
@@ -78,30 +78,14 @@ hdf_driver(module_name) {
     sources += [ "$FRAMEWORKS_USB_DRIVERS/ecm/cdcecm.c" ]
   }
 
-  ldflags = [
-    "-L$USB_DEVICE_ROOT/gadget",
-    "-lusb_dwc3",
-  ]
+  libs = [ "$LITEOSTHIRDPARTY/NuttX/drivers/usbdev/gadget/libusb_dwc3.a" ]
 
   include_dirs = [
     "$USB_DEVICE_ROOT",
     "$USB_DEVICE_ROOT/gadget/fconfig/include",
-    "//kernel/liteos_a/bsd/compat/linuxkpi/include/linux",
-    "//kernel/liteos_a/bsd/dev/usb",
-    "//kernel/liteos_a/bsd/compat/linuxkpi/include/asm",
-    "//kernel/liteos_a/bsd/compat/linuxkpi/include/linux/",
-    "//device/hisilicon/hispark_taurus/sdk_linux/huawei_proprietary/include/",
     "$FRAMEWORKS_USB_DDK_DEVICE/../../interfaces/ddk/common",
     "$FRAMEWORKS_USB_DDK_DEVICE/../../interfaces/ddk/device",
     "$FRAMEWORKS_USB_DDK_DEVICE/include",
     "$FRAMEWORKS_USB_DRIVERS/include",
-    "//kernel/liteos_a/bsd",
-    "//kernel/liteos_a/bsd/kern",
-  ]
-}
-
-group("device") {
-  public_deps = [
-    ":$module_name",
   ]
 }

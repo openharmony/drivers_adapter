@@ -226,11 +226,12 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/support/platform/include/mmc",
     "$HDF_FRAMEWORKS_PATH/include/platform",
     "$HDF_FRAMEWORKS_PATH/include/utils",
-    "$HDF_FRAMEWORKS_PATH/model/usb/include",
-    "//drivers/adapter/khdf/liteos/model/usb/host/include",
   ]
 
-  configs = [ "model/bus/usb:public" ]
+  configs = [
+    "model/bus/usb:public",
+    "model/usb/host:public",
+  ]
 }
 
 config("hdf_config") {
