@@ -29,8 +29,8 @@
 
 import("//kernel/liteos_a/liteos.gni")
 
-HDF_ROOT_DIR = "//drivers"
-HDF_FRAMEWORKS_PATH = "$HDF_ROOT_DIR/framework"
+HDF_FRAMEWORKS_PATH = "//drivers/framework"
+HDF_PERIPHERAL_PATH = "//drivers/peripheral"
 
 template("hdf_driver") {
   if (defined(invoker.hcs_sources)) {
