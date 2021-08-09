@@ -223,8 +223,8 @@ config("test_lite") {
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR)) {
     include_dirs += [
       "$HDF_TEST_FRAMWORK_ROOT/sensor",
-      "$HDF_ROOT_DIR/peripheral/sensor/interfaces/include",
-      "$HDF_ROOT_DIR/peripheral/sensor/hal/include",
+      "$HDF_PERIPHERAL_PATH/sensor/interfaces/include",
+      "$HDF_PERIPHERAL_PATH/sensor/hal/include",
       "$HDF_FRAMEWORKS_PATH/model/sensor/driver/include",
       "$HDF_FRAMEWORKS_PATH/model/sensor/driver/common/include",
     ]
@@ -233,19 +233,19 @@ config("test_lite") {
   if (defined(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE)) {
     include_dirs += [
       "$HDF_TEST_FRAMWORK_ROOT/model/usb/device/include",
-      "$HDF_ROOT_DIR/peripheral/usb/ddk/common/include",
-      "$HDF_ROOT_DIR/peripheral/usb/ddk/device/include",
-      "$HDF_ROOT_DIR/peripheral/usb/interfaces/ddk/common",
-      "$HDF_ROOT_DIR/peripheral/usb/interfaces/ddk/device",
+      "$HDF_PERIPHERAL_PATH/usb/ddk/common/include",
+      "$HDF_PERIPHERAL_PATH/usb/ddk/device/include",
+      "$HDF_PERIPHERAL_PATH/usb/interfaces/ddk/common",
+      "$HDF_PERIPHERAL_PATH/usb/interfaces/ddk/device",
     ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_USB_DDK_HOST)) {
     include_dirs += [
       "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/include",
-      "$HDF_ROOT_DIR/peripheral/usb/interfaces/ddk/common",
-      "$HDF_ROOT_DIR/peripheral/usb/interfaces/ddk/host",
-      "$HDF_ROOT_DIR/peripheral/usb/gadget/function/include",
+      "$HDF_PERIPHERAL_PATH/usb/interfaces/ddk/common",
+      "$HDF_PERIPHERAL_PATH/usb/interfaces/ddk/host",
+      "$HDF_PERIPHERAL_PATH/usb/gadget/function/include",
     ]
   }
 }
