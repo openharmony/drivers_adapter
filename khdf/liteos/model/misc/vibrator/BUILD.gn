@@ -48,7 +48,3 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_VIBRATOR_ROOT/chipset",
   ]
 }
-
-group("vibrator") {
-  public_deps = [ ":$module_name" ]
-}

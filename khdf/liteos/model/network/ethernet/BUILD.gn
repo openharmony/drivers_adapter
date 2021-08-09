@@ -44,7 +44,3 @@ hdf_driver(module_name) {
     "$HDF_FRAMEWORKS_PATH/include/ethernet",
   ]
 }
-
-group("ethernet") {
-  public_deps = [ ":$module_name" ]
-}

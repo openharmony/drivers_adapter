@@ -57,7 +57,3 @@ hdf_driver(module_name) {
     "//third_party/FreeBSD/sys/dev/evdev/"
   ]
 }
-
-group("input") {
-  public_deps = [ ":$module_name" ]
-}

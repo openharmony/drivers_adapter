@@ -60,7 +60,3 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_DISPLAY_ROOT",
   ]
 }
-
-group("display") {
-  public_deps = [ ":$module_name" ]
-}

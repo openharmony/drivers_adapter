@@ -75,7 +75,3 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_WIFI_ROOT/platform/include",
   ]
 }
-
-group("wifi") {
-  public_deps = [ ":$module_name" ]
-}
