@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+ * Copyright (c) 2021 Huawei Device Co., Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@
 #ifndef _HDF_NETBUF_ADAPTER_H
 #define _HDF_NETBUF_ADAPTER_H
 
-#include "los_spinlock.h"
+#include "osal_spinlock.h"
 #include "hdf_dlist.h"
 #include "lwip/pbuf.h"
 
@@ -122,7 +122,7 @@ typedef struct NetBufQueue {
     struct DListHead dlist; /**< Doubly linked list. Generally, multiple network data buffers are linked
                                  by using a doubly linked list. */
     uint32_t     size;      /**< Number of network data buffers in the queue */
-    struct Spinlock lock;      /**< Queue operation lock */
+    OsalSpinlock lock;      /**< Queue operation lock */
 } NetBufQueue;
 
 struct NetDevice;
