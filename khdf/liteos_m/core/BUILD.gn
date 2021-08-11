@@ -53,6 +53,7 @@ config("libhdf_core_pub_config") {
     "$hdf_fwk_path/core/adapter/syscall/include",
     "$hdf_fwk_path/include/config",
     "$hdf_fwk_path/ability/config/hcs_parser/include",
+    "//kernel/liteos_m/components",
   ]
 }
 
