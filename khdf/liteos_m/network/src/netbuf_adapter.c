@@ -284,13 +284,21 @@ NetBuf *NetBufAlloc(uint32_t size)
     NetBuf *nb = NULL;
     uint8_t *data = NULL;
 
+#if CACHE_ALIGNED_SIZE
     nb = (NetBuf *)LOS_MemAllocAlign(m_aucSysMem0, sizeof(*nb), CACHE_ALIGNED_SIZE);
+#else
+    nb = (NetBuf *)LOS_MemAlloc(m_aucSysMem0, sizeof(*nb));
+#endif
     if (nb == NULL) {
         HDF_LOGE("%s alloc net buf fail", __func__);
         return NULL;
     }
 
+#if CACHE_ALIGNED_SIZE
     data = (uint8_t *)LOS_MemAllocAlign(m_aucSysMem0, size, CACHE_ALIGNED_SIZE);
+#else
+    data = (uint8_t *)LOS_MemAlloc(m_aucSysMem0, size);
+#endif
     if (data == NULL) {
         HDF_LOGE("%s alloc data fail, size:%u", __func__, size);
         LOS_MemFree(m_aucSysMem0, nb);
@@ -542,8 +550,11 @@ int32_t NetBufResizeRoom(NetBuf *nb, uint32_t head, uint32_t tail)
     }
 
     size = head + nb->len + tail;
-    size = ALIGN(size, CACHE_ALIGNED_SIZE);
+#if CACHE_ALIGNED_SIZE
     data = (uint8_t *)LOS_MemAllocAlign(m_aucSysMem0, size, CACHE_ALIGNED_SIZE);
+#else
+    data = (uint8_t *)LOS_MemAlloc(m_aucSysMem0, size);
+#endif
     if (data == NULL) {
         HDF_LOGE("%s mem alloc fail, size:%u", __func__, size);
         return HDF_FAILURE;
