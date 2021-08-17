@@ -53,7 +53,7 @@ int DeviceServiceStubPublishService(struct HdfDeviceNode *service, const char *s
     const struct HdfDeviceInfo *deviceInfo = service->deviceInfo;
 
     if (fullService->remote != NULL) {
-        HDF_LOGE("%s:service %s already published", __func__, serviceName);
+        HDF_LOGE("%{public}s:service %{public}s already published", __func__, serviceName);
         return HDF_ERR_INVALID_OBJECT;
     }
 

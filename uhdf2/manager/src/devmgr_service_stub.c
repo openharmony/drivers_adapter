@@ -36,7 +36,7 @@ static int32_t DevmgrServiceStubDispatchAttachDevice(
     uint32_t hostId;
     uint32_t deviceId;
     if (!HdfSbufReadUint32(data, &hostId) || !HdfSbufReadUint32(data, &deviceId)) {
-        HDF_LOGE("%s:failed to get host id and device id", __func__);
+        HDF_LOGE("%{public}s:failed to get host id and device id", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -81,7 +81,7 @@ int32_t DevmgrServiceStubDispatch(
         return HDF_ERR_INVALID_PARAM;
     }
     struct IDevmgrService *super = (struct IDevmgrService *)&serviceStub->super;
-    HDF_LOGE("%s devmgr service stub dispatch cmd %d", __func__, code);
+    HDF_LOGE("%{public}s devmgr service stub dispatch cmd %{public}d", __func__, code);
     switch (code) {
         case DEVMGR_SERVICE_ATTACH_DEVICE_HOST: {
             uint32_t hostId = 0;
@@ -122,7 +122,7 @@ int32_t DevmgrServiceStubDispatch(
             break;
     }
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%s devmgr service stub dispach failed, cmd id is %d", __func__, code);
+        HDF_LOGE("%{public}s devmgr service stub dispach failed, cmd id is %{public}d", __func__, code);
         HdfSbufWriteInt32(reply, ret);
     }
 

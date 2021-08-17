@@ -59,14 +59,14 @@ static int32_t HdfObtainDeviceInfo(struct DeviceInfoList *list, struct HdfSBuf *
         node = (struct DeviceInfoNode *)base;
         node->svcName = base + sizeof(*node);
         if (strcpy_s(node->svcName, svrNameLen, svrName) != EOK) {
-            HDF_LOGE("strcpy service name %s failed", svrName);
+            HDF_LOGE("strcpy service name %{public}s failed", svrName);
             OsalMemFree(base);
             continue;
         }
-        HDF_LOGD("%s %s", __func__, svrName);
+        HDF_LOGD("%{public}s %{public}s", __func__, svrName);
         HdfSbufReadInt32(reply, &deviceType);
         if (deviceType != HDF_LOCAL_SERVICE && deviceType != HDF_REMOTE_SERVICE) {
-            HDF_LOGE("device type error %d ", deviceType);
+            HDF_LOGE("device type error %{public}d ", deviceType);
             OsalMemFree(base);
             continue;
         }
@@ -167,11 +167,11 @@ static int32_t HdfOpsDevice(struct HDIDeviceManager *iDevMgr,
     }
 
     if (!HdfSbufWriteString(data, moduleName)) {
-        HDF_LOGE("%s: writing module name failed!", __func__);
+        HDF_LOGE("%{public}s: writing module name failed!", __func__);
         goto out;
     }
     if (!HdfSbufWriteString(data, serviceName)) {
-        HDF_LOGE("%s: writing service name failed!", __func__);
+        HDF_LOGE("%{public}s: writing service name failed!", __func__);
         goto out;
     }
     status = DeviceManagerHdiCall(iDevMgr, opsId, data, reply);
@@ -224,13 +224,13 @@ struct HDIDeviceManager *HDIDeviceManagerGet(void)
     struct HdfRemoteService *remote = serviceMgr->GetService(serviceMgr, DEVICE_MANAGER_SERVICE);
     HDIServiceManagerRelease(serviceMgr);
     if (remote == NULL) {
-        HDF_LOGE("%s: hdi service %s not found", __func__, DEVICE_MANAGER_SERVICE);
+        HDF_LOGE("%{public}s: hdi service %{public}s not found", __func__, DEVICE_MANAGER_SERVICE);
         return NULL;
     }
 
     struct HDIDeviceManager *iDevMgr = OsalMemAlloc(sizeof(struct HDIDeviceManager));
     if (iDevMgr == NULL) {
-        HDF_LOGE("%s: OOM", __func__);
+        HDF_LOGE("%{public}s: OOM", __func__);
         HdfRemoteServiceRecycle(remote);
         return NULL;
     }

@@ -33,12 +33,12 @@ static int32_t DevSvcManagerStubAddService(struct IDevSvcManager *super, struct 
     struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
     const char *name = HdfSbufReadString(data);
     if (name == NULL) {
-        HDF_LOGE("%s failed, name is null", __func__);
+        HDF_LOGE("%{public}s failed, name is null", __func__);
         return ret;
     }
     struct HdfRemoteService *service = HdfSBufReadRemoteService(data);
     if (service == NULL) {
-        HDF_LOGE("%s failed, service is null", __func__);
+        HDF_LOGE("%{public}s failed, service is null", __func__);
         return ret;
     }
     HdfRemoteServiceAddDeathRecipient(service, &stub->recipient);
@@ -60,7 +60,7 @@ static int32_t DevSvcManagerStubGetService(
     int ret = HDF_FAILURE;
     const char *name = HdfSbufReadString(data);
     if (name == NULL) {
-        HDF_LOGE("%s failed, name is null", __func__);
+        HDF_LOGE("%{public}s failed, name is null", __func__);
         return ret;
     }
     struct HdfRemoteService *remoteService =
@@ -79,7 +79,7 @@ static int32_t DevSvcManagerStubRemoveService(struct IDevSvcManager *super, stru
 {
     const char *name = HdfSbufReadString(data);
     if (name == NULL) {
-        HDF_LOGE("%s failed, name is null", __func__);
+        HDF_LOGE("%{public}s failed, name is null", __func__);
         return HDF_FAILURE;
     }
     struct HdfDeviceObject *deviceObject = super->GetObject(super, name);
@@ -94,7 +94,7 @@ int DevSvcManagerStubDispatch(
     int ret = HDF_FAILURE;
     struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)service;
     if (stub == NULL) {
-        HDF_LOGE("DevSvcManagerStubDispatch failed, object is null, code is %d", code);
+        HDF_LOGE("DevSvcManagerStubDispatch failed, object is null, code is %{public}d", code);
         return ret;
     }
     struct IDevSvcManager *super = (struct IDevSvcManager *)&stub->super;
@@ -112,7 +112,7 @@ int DevSvcManagerStubDispatch(
             break;
         }
         default: {
-            HDF_LOGE("Unknown code : %d", code);
+            HDF_LOGE("Unknown code : %{public}d", code);
             ret = HDF_FAILURE;
         }
     }
@@ -152,7 +152,7 @@ bool DevSvcManagerStubConstruct(struct DevSvcManagerStub *inst)
 
     int ret = HdfRemoteServiceRegister(DEVICE_SERVICE_MANAGER_SA_ID, inst->remote);
     if (ret != 0) {
-        HDF_LOGE("Device service manager failed to publish hdi, %d", ret);
+        HDF_LOGE("Device service manager failed to publish hdi, %{public}d", ret);
     }
 
     HDF_LOGI("Device service manager publish success");

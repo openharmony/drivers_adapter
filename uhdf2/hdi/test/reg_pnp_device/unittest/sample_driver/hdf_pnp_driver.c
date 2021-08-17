@@ -27,21 +27,21 @@ int32_t PnpDriverDispatch(struct HdfDeviceIoClient *client, int cmdId, struct Hd
 {
     (void)client;
     if (data == NULL || reply == NULL) {
-        HDF_LOGE("%s failed, input is null", __func__);
+        HDF_LOGE("%{public}s failed, input is null", __func__);
         return HDF_FAILURE;
     }
     int32_t ret = HDF_SUCCESS;
     switch (cmdId) {
         case HDF_PNP_MES_TEST: {
             const char *str = HdfSbufReadString(data);
-            HDF_LOGE("%s pnp get str is %s", __func__, str);
+            HDF_LOGE("%{public}s pnp get str is %{public}s", __func__, str);
             HdfSbufWriteInt32(reply, 1);
             break;
         }
         case HDF_PNP_MES_FAULT: {
             // test to crash process
             const char *str = NULL;
-            HDF_LOGE("%s test to crash procss is %c", __func__, str[1]);
+            HDF_LOGE("%{public}s test to crash procss is %{public}c", __func__, str[1]);
             break;
         }
         case HDF_PNP_MES_SECUREC: {
@@ -53,7 +53,7 @@ int32_t PnpDriverDispatch(struct HdfDeviceIoClient *client, int cmdId, struct Hd
             break;
         }
         default: {
-            HDF_LOGE("%s failed, cmd id is %d", __func__, cmdId);
+            HDF_LOGE("%{public}s failed, cmd id is %{public}d", __func__, cmdId);
             break;
         }
     }
@@ -62,7 +62,7 @@ int32_t PnpDriverDispatch(struct HdfDeviceIoClient *client, int cmdId, struct Hd
 
 int32_t HdfPnpDriverBind(struct HdfDeviceObject *para)
 {
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
     static struct IDeviceIoService virtualService = {
         .object.objectId = 1,
         .Dispatch = PnpDriverDispatch,
@@ -73,17 +73,17 @@ int32_t HdfPnpDriverBind(struct HdfDeviceObject *para)
 
 int32_t HdfPnpDriverInit(struct HdfDeviceObject *para)
 {
-    HDF_LOGE("%s enter!", __func__);
+    HDF_LOGE("%{public}s enter!", __func__);
     if (para == NULL) {
-        HDF_LOGE("%s init failed, input is null", __func__);
+        HDF_LOGE("%{public}s init failed, input is null", __func__);
         return HDF_FAILURE;
     }
     DeviceHandle *palHandle = DeviceHandleCreate(PAL_GPIO_TYPE, NULL);
     if (palHandle == NULL) {
-        HDF_LOGE("%s %d open gpio failed", __func__, __LINE__);
+        HDF_LOGE("%{public}s %{public}d open gpio failed", __func__, __LINE__);
         g_gpioFlg = 0;
     } else {
-        HDF_LOGE("%s %d open gpio success", __func__, __LINE__);
+        HDF_LOGE("%{public}s %{public}d open gpio success", __func__, __LINE__);
         DeviceHandleDestroy(palHandle);
         g_gpioFlg = 1;
     }
@@ -92,9 +92,9 @@ int32_t HdfPnpDriverInit(struct HdfDeviceObject *para)
 
 void HdfPnpDriverRelease(struct HdfDeviceObject *para)
 {
-    HDF_LOGE("%s enter!", __func__);
+    HDF_LOGE("%{public}s enter!", __func__);
     if (para == NULL) {
-        HDF_LOGE("%s release failed, input is null", __func__);
+        HDF_LOGE("%{public}s release failed, input is null", __func__);
         return;
     }
     para->service = NULL;

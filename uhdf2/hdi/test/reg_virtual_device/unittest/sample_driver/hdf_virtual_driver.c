@@ -21,7 +21,7 @@
 
 int32_t HdfVirtualDriverBind(struct HdfDeviceObject *para)
 {
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
     static struct IDeviceIoService virtualService = {
         .object.objectId = 1,
         .Dispatch = NULL,
@@ -33,7 +33,7 @@ int32_t HdfVirtualDriverBind(struct HdfDeviceObject *para)
 int32_t HdfVirtualDriverInit(struct HdfDeviceObject *para)
 {
     (void)para;
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
     return 0;
 }
 
@@ -41,7 +41,7 @@ void HdfVirtualDriverRelease(struct HdfDeviceObject *para)
 {
     (void)para;
 
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
 }
 
 struct HdfDriverEntry g_sampleDriverEntry = {

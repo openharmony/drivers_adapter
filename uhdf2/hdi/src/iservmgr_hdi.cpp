@@ -61,10 +61,10 @@ sptr<IRemoteObject> ServiceManagerProxy::GetService(const char* serviceName)
     MessageOption option;
     int status = Remote()->SendRequest(DEVSVC_MANAGER_GET_SERVICE, data, reply, option);
     if (status) {
-        HDF_LOGE("get hdi service call failed, %d", status);
+        HDF_LOGE("get hdi service call failed, %{public}d", status);
         return nullptr;
     }
-    HDF_LOGE("get hdi service call success, %d", status);
+    HDF_LOGE("get hdi service call success, %{public}d", status);
     return reply.ReadRemoteObject();
 }
 } // namespace V1_0

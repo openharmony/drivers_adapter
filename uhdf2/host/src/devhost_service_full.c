@@ -36,7 +36,7 @@ static int32_t DevHostServiceFullDispatchMessage(struct HdfMessageTask *task, st
             struct HdfDeviceInfo *attribute = (struct HdfDeviceInfo *)msg->data[0];
             status = DevHostServiceAddDevice(&hostService->super.super, attribute);
             if (status != HDF_SUCCESS) {
-                HDF_LOGE("DevHostServiceAddDevice failed and return %d", status);
+                HDF_LOGE("DevHostServiceAddDevice failed and return %{public}d", status);
             }
             break;
         }
@@ -44,13 +44,13 @@ static int32_t DevHostServiceFullDispatchMessage(struct HdfMessageTask *task, st
             struct HdfDeviceInfo *attribute = (struct HdfDeviceInfo *)msg->data[0];
             status = DevHostServiceDelDevice(&hostService->super.super, attribute);
             if (status != HDF_SUCCESS) {
-                HDF_LOGE("DevHostServiceDelDevice failed and return %d", status);
+                HDF_LOGE("DevHostServiceDelDevice failed and return %{public}d", status);
             }
             HdfDeviceInfoFullFreeInstance((struct HdfDeviceInfoFull *)attribute);
             break;
         }
         default: {
-            HDF_LOGE("DevHostServiceFullDispatchMessage unknown message %d", msg->messageId);
+            HDF_LOGE("DevHostServiceFullDispatchMessage unknown message %{public}d", msg->messageId);
             break;
         }
     }
@@ -101,7 +101,8 @@ static int DevHostServiceFullDispatchPowerState(struct HdfDevice *device, uint32
             if (deviceNode->powerToken != NULL) {
                 ret = PowerStateChange(deviceNode->powerToken, state);
                 if (ret != HDF_SUCCESS) {
-                    HDF_LOGE("device %s failed to resume(%d) %d", deviceNode->driverEntry->moduleName, state, ret);
+                    HDF_LOGE("device %{public}s failed to resume(%{public}d) %{public}d",
+                        deviceNode->driverEntry->moduleName, state, ret);
                     result = HDF_FAILURE;
                 }
             }
@@ -111,7 +112,8 @@ static int DevHostServiceFullDispatchPowerState(struct HdfDevice *device, uint32
             if (deviceNode->powerToken != NULL) {
                 ret = PowerStateChange(deviceNode->powerToken, state);
                 if (ret != HDF_SUCCESS) {
-                    HDF_LOGE("device %s failed to suspend(%d) %d", deviceNode->driverEntry->moduleName, state, ret);
+                    HDF_LOGE("device %{public}s failed to suspend(%{public}d) %{public}d",
+                        deviceNode->driverEntry->moduleName, state, ret);
                     result = HDF_FAILURE;
                 }
             }
@@ -146,7 +148,7 @@ static int OnSysEventReceived(struct HdfSysEventNotifyNode *self, uint64_t event
     }
 
     struct DevHostService *hostService = CONTAINER_OF(self, struct DevHostService, sysEventNotifyNode);
-    HDF_LOGI("host receive eventClass=%llu, event=%u", (unsigned long long)eventClass, event);
+    HDF_LOGI("host receive eventClass=%{public}llu, event=%{public}u", (unsigned long long)eventClass, event);
     return hostService->super.PmNotify(&hostService->super, SysEventToPowerState(event));
 }
 

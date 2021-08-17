@@ -103,7 +103,7 @@ static void HdfSetBit(uint32_t nr, volatile uint64_t *addr)
 static int32_t HdfGetRandom(int numBytes, uint8_t *random)
 {
     if (RAND_bytes(random, numBytes) != RAND_OPS_SUCCESS) {
-        HDF_LOGE("%s: RAND_bytes failed", __FUNCTION__);
+        HDF_LOGE("%{public}s: RAND_bytes failed", __FUNCTION__);
         return HDF_FAILURE;
     }
     return HDF_SUCCESS;
@@ -114,7 +114,7 @@ static void HdfCalculatePerms(const char *permStr, volatile uint64_t *perms)
     uint32_t *result = NULL;
     result = (uint32_t *)MapGet(&g_indexMap, permStr);
     if (result == NULL) {
-        HDF_LOGE("%s: %s is not exist in map", __FUNCTION__, permStr);
+        HDF_LOGE("%{public}s: %{public}s is not exist in map", __FUNCTION__, permStr);
         return;
     }
     HdfSetBit(*result, perms);
@@ -128,7 +128,7 @@ static int32_t HdfSecCheckParameters(const char *id)
     }
     uint32_t len = (uint32_t)strlen(id);
     if (len >= (ID_MAX_SIZE - 1)) {
-        HDF_LOGE("HdfSecCheckParameters failed, id length is %u", len);
+        HDF_LOGE("HdfSecCheckParameters failed, id length is %{public}u", len);
         return HDF_FAILURE;
     }
     return HDF_SUCCESS;
@@ -137,7 +137,7 @@ static int32_t HdfSecCheckParameters(const char *id)
 static int32_t HdfUpdateSecurityId(const char *id, const uint64_t perms, const int32_t isSetCurrentSecId)
 {
     if (HdfSecCheckParameters(id) != HDF_SUCCESS) {
-        HDF_LOGE("%s check id failed", __FUNCTION__);
+        HDF_LOGE("%{public}s check id failed", __FUNCTION__);
         return HDF_FAILURE;
     }
     struct SecInfo secInfo = {
@@ -146,19 +146,19 @@ static int32_t HdfUpdateSecurityId(const char *id, const uint64_t perms, const i
     };
     int32_t ret = strncpy_s(secInfo.secId, ID_MAX_SIZE, id, ID_MAX_SIZE - 1);
     if (ret != EOK) {
-        HDF_LOGE("%s strncpy_s id failed", __FUNCTION__);
+        HDF_LOGE("%{public}s strncpy_s id failed", __FUNCTION__);
         return HDF_FAILURE;
     }
     secInfo.secMap[0] = perms;
 
     char path[PATH_MAX + 1] = { 0 };
     if (realpath(HDF_SECURE_PATH, path) == NULL) {
-        HDF_LOGE("file %s is invalid", HDF_SECURE_PATH);
+        HDF_LOGE("file %{public}s is invalid", HDF_SECURE_PATH);
         return HDF_FAILURE;
     }
     int32_t fd = open(path, O_WRONLY);
     if (fd < 0) {
-        HDF_LOGE("open %s failed, errno is %d", HDF_SECURE_PATH, errno);
+        HDF_LOGE("open %{public}s failed, errno is %{public}d", HDF_SECURE_PATH, errno);
         return HDF_FAILURE;
     }
 
@@ -173,7 +173,7 @@ static int32_t HdfUpdateSecurityId(const char *id, const uint64_t perms, const i
     close(fd);
     fd = -1;
     if (ret != 0) {
-        HDF_LOGE("%s ioctl error, ret is %d", __FUNCTION__, ret);
+        HDF_LOGE("%{public}s ioctl error, ret is %{public}d", __FUNCTION__, ret);
         return HDF_FAILURE;
     }
     return HDF_SUCCESS;
@@ -194,7 +194,7 @@ int32_t HdfRegisterAllDevSecId(const struct DeviceResourceNode *hostRoot)
     uint64_t random = 0;
     int32_t ret = HdfGetRandom(MAX_RANDOM_BYTE_LEN, (uint8_t *)&random);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%s HdfGetRandom failed", __FUNCTION__);
+        HDF_LOGE("%{public}s HdfGetRandom failed", __FUNCTION__);
         return HDF_FAILURE;
     }
 
@@ -207,7 +207,7 @@ int32_t HdfRegisterAllDevSecId(const struct DeviceResourceNode *hostRoot)
         const struct DeviceResourceNode *deviceRoot = driverRoot->child;
         while (deviceRoot != NULL) {
             int32_t permNums = HcsGetElemNum(deviceRoot, HDF_SEC_PERM_ELEM_NAME);
-            HDF_LOGD("name is %s, permNums is %d", deviceRoot->name, permNums);
+            HDF_LOGD("name is %{public}s, permNums is %{public}d", deviceRoot->name, permNums);
             for (int i = 0; i < permNums; ++i) {
                 HcsGetStringArrayElem(deviceRoot, HDF_SEC_PERM_ELEM_NAME, i, &permStr, NULL);
                 HdfCalculatePerms(permStr, &perms);
@@ -221,7 +221,7 @@ int32_t HdfRegisterAllDevSecId(const struct DeviceResourceNode *hostRoot)
         HcsGetString(hostRoot, HDF_SEC_HOST_NAME, &hostName, NULL);
         ret = HdfRegisterSecurityId(hostName, perms);
         if (ret != HDF_SUCCESS) {
-            HDF_LOGE("HdfCreateSecurityId failed for %s", hostRoot->name);
+            HDF_LOGE("HdfCreateSecurityId failed for %{public}s", hostRoot->name);
         }
         perms = HDF_SECURE_INVALID_PERM;
     }
@@ -240,6 +240,6 @@ void HdfDelSecurity(const char *hostName)
     }
     int32_t ret = HdfUpdateSecurityId(hostName, 0, HDF_SECURE_DEL_CUR_ID);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%s delete %s security failed", __func__, hostName);
+        HDF_LOGE("%{public}s delete %{public}s security failed", __func__, hostName);
     }
 }

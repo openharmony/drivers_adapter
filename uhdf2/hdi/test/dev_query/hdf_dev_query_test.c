@@ -43,11 +43,11 @@ static uint64_t g_totalUsec[TEST_ITEM_CNT];
 
 #define UT_TEST_CHECK_RET(val, flag) do { \
     if (!(val)) { \
-        HDF_LOGE("[HDF_TEST] %s line:%d HDF_TEST_FAIL", __func__, __LINE__); \
+        HDF_LOGE("[HDF_TEST] %{public}s line:%{public}d HDF_TEST_FAIL", __func__, __LINE__); \
         printf("[HDF_TEST] %s line:%d HDF_TEST_FAIL\r\n", __func__, __LINE__); \
         g_testItemFailCnt++; \
     } else if ((flag)) { \
-        HDF_LOGD("[HDF_TEST] %s line:%d HDF_TEST_PASS", __func__, __LINE__); \
+        HDF_LOGD("[HDF_TEST] %{public}s line:%{public}d HDF_TEST_PASS", __func__, __LINE__); \
         printf("[HDF_TEST] %s line:%d HDF_TEST_PASS\r\n", __func__, __LINE__); \
     } \
     g_testItemCnt++; \
@@ -57,9 +57,9 @@ static uint64_t g_totalUsec[TEST_ITEM_CNT];
 
 void PrintTestResult()
 {
-    HDF_LOGE("[HDF_TEST] %s test items: %d", __func__, g_testItemCnt);
-    HDF_LOGE("[HDF_TEST] %s test PASS: %d", __func__, g_testItemCnt - g_testItemFailCnt);
-    HDF_LOGE("[HDF_TEST] %s test FAIL: %d", __func__, g_testItemFailCnt);
+    HDF_LOGE("[HDF_TEST] %{public}s test items: %{public}d", __func__, g_testItemCnt);
+    HDF_LOGE("[HDF_TEST] %{public}s test PASS: %{public}d", __func__, g_testItemCnt - g_testItemFailCnt);
+    HDF_LOGE("[HDF_TEST] %{public}s test FAIL: %{public}d", __func__, g_testItemFailCnt);
     printf("[HDF_TEST] %s test items: %d\r\n", __func__, g_testItemCnt);
     printf("[HDF_TEST] %s test PASS: %d\r\n", __func__, g_testItemCnt - g_testItemFailCnt);
     printf("[HDF_TEST] %s test FAIL: %d\r\n", __func__, g_testItemFailCnt);
@@ -73,17 +73,17 @@ static void CalcAverageTime(int index, const OsalTimespec *diff)
 
 static void CheckAverageTime()
 {
-    HDF_LOGD("[HDF_TEST] %s line:%d test query usable %d time use time:%lu us",
+    HDF_LOGD("[HDF_TEST] %{public}s line:%{public}d test query usable %{public}d time use time:%{public}lu us",
         __func__, __LINE__, g_index[USABLE], g_totalUsec[USABLE]);
     printf("[HDF_TEST] %s line:%d test query usable %d time use time: %lu us\r\n",
         __func__, __LINE__, g_index[USABLE], g_totalUsec[USABLE]);
 
-    HDF_LOGD("[HDF_TEST] %s line:%d test query unusable %d time use time:%lu us",
+    HDF_LOGD("[HDF_TEST] %{public}s line:%{public}d test query unusable %{public}d time use time:%{public}lu us",
         __func__, __LINE__, g_index[UNUSABLE], g_totalUsec[UNUSABLE]);
     printf("[HDF_TEST] %s line:%d test query nusable %d time use time: %lu us\r\n",
         __func__, __LINE__, g_index[UNUSABLE], g_totalUsec[UNUSABLE]);
 
-    HDF_LOGD("[HDF_TEST] %s line:%d test query free %d time use time:%lu us",
+    HDF_LOGD("[HDF_TEST] %{public}s line:%{public}d test query free %{public}d time use time:%{public}lu us",
         __func__, __LINE__, g_index[FREE], g_totalUsec[FREE]);
     printf("[HDF_TEST] %s line:%d test query free %d time use time: %lu us\r\n",
         __func__, __LINE__, g_index[FREE], g_totalUsec[FREE]);
@@ -153,15 +153,15 @@ static void QueryDeviceUsableTest(int index)
     UT_TEST_CHECK_RET(ret == HDF_SUCCESS, flag);
     if (ret == HDF_SUCCESS) {
         UT_TEST_CHECK_RET(list.deviceCnt == HDF_USABLE_DEVICE_CNT, flag);
-        HDF_LOGD("[HDF_TEST] %s usable:%d line:%d", __func__, list.deviceCnt, __LINE__);
+        HDF_LOGD("[HDF_TEST] %{public}s usable:%{public}d line:%{public}d", __func__, list.deviceCnt, __LINE__);
         if (flag) {
             printf("[HDF_TEST] %s usable:%d line:%d\r\n", __func__, list.deviceCnt, __LINE__);
         }
         DLIST_FOR_EACH_ENTRY(devNode, &list.list, struct DeviceInfoNode, node) {
-            HDF_LOGD("usable: %s %d", devNode->svcName, devNode->deviceType);
+            HDF_LOGD("usable: %{public}s %{public}d", devNode->svcName, devNode->deviceType);
         }
     } else {
-        HDF_LOGE("[HDF_TEST] %s line:%d", __func__, __LINE__);
+        HDF_LOGE("[HDF_TEST] %{public}s line:%{public}d", __func__, __LINE__);
     }
 
     GET_TIME_BEGIN(&time1);
@@ -186,15 +186,15 @@ static void QueryDeviceUnusableTest(int index)
     UT_TEST_CHECK_RET(ret == HDF_SUCCESS, flag);
     if (ret == HDF_SUCCESS) {
         UT_TEST_CHECK_RET(list.deviceCnt == HDF_UNUSABLE_DEVICE_CNT, flag);
-        HDF_LOGD("[HDF_TEST] %s unusable:%d line:%d", __func__, list.deviceCnt, __LINE__);
+        HDF_LOGD("[HDF_TEST] %{public}s unusable:%{public}d line:%{public}d", __func__, list.deviceCnt, __LINE__);
         if (flag) {
             printf("[HDF_TEST] %s unusable:%d line:%d\r\n", __func__, list.deviceCnt, __LINE__);
         }
         DLIST_FOR_EACH_ENTRY(devNode, &list.list, struct DeviceInfoNode, node) {
-            HDF_LOGD("[HDF_TEST] usable: %s %d", devNode->svcName, devNode->deviceType);
+            HDF_LOGD("[HDF_TEST] usable: %{public}s %{public}d", devNode->svcName, devNode->deviceType);
         }
     } else {
-        HDF_LOGE("%s %d", __func__, __LINE__);
+        HDF_LOGE("%{public}s %{public}d", __func__, __LINE__);
     }
 
     HdfFreeQueryDeviceList(&list);

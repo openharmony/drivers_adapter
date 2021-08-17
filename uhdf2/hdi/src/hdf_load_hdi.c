@@ -39,28 +39,28 @@ struct HdiObject *LoadHdi(const char *name, uint32_t version)
     }
 
     if (snprintf_s(path, sizeof(path), sizeof(path) - 1, "%s/%s", HDI_SO_PATH, name) < 0) {
-        HDF_LOGE("%s snprintf_s failed", __func__);
+        HDF_LOGE("%{public}s snprintf_s failed", __func__);
         return NULL;
     }
     if (realpath(path, resolvedPath) == NULL) {
-        HDF_LOGE("%s file name invalid", __func__);
+        HDF_LOGE("%{public}s file name invalid", __func__);
         return NULL;
     }
 
     struct HdiObject *hdi = (struct HdiObject *)OsalMemCalloc(sizeof(*hdi));
     if (hdi == NULL) {
-        HDF_LOGE("%s malloc failed", __func__);
+        HDF_LOGE("%{public}s malloc failed", __func__);
         return NULL;
     }
     void *handler = dlopen(resolvedPath, RTLD_LAZY);
     if (handler == NULL) {
-        HDF_LOGE("%s dlopen failed %s", __func__, dlerror());
+        HDF_LOGE("%{public}s dlopen failed %{public}s", __func__, dlerror());
         OsalMemFree(hdi);
         return NULL;
     }
     struct HdiBase *base = *(struct HdiBase **)dlsym(handler, "hdfHdiDesc");
     if (base == NULL) {
-        HDF_LOGE("%s dlsym failed %s", __func__, dlerror());
+        HDF_LOGE("%{public}s dlsym failed %{public}s", __func__, dlerror());
         dlclose(handler);
         OsalMemFree(hdi);
         return NULL;
@@ -81,7 +81,7 @@ struct HdiObject *LoadHdi(const char *name, uint32_t version)
 void CloseHdi(struct HdiObject *hdi)
 {
     if (hdi == NULL || hdi->dlHandler == 0 || hdi->hdiBase == NULL) {
-        HDF_LOGE("%s para invalid", __func__);
+        HDF_LOGE("%{public}s para invalid", __func__);
         return;
     }
 

@@ -70,7 +70,7 @@ static inline struct DataBlock *DataBlockBlockUnmarshalling(struct HdfSBuf *data
     }
 
     if (readSize != sizeof(struct DataBlock)) {
-        HDF_LOGE("%{public}s: dataBlock size mismatch %d", __func__, readSize);
+        HDF_LOGE("%{public}s: dataBlock size mismatch %{public}d", __func__, readSize);
         return NULL;
     }
 

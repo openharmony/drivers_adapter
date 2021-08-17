@@ -74,7 +74,7 @@ const struct DeviceResourceNode *HcsGetRootNode(void)
         pthread_mutex_lock(&g_getDmRootMutex);
         if ((g_hcsTreeRoot == NULL) && !CreateHcsToTree()) {
             pthread_mutex_unlock(&g_getDmRootMutex);
-            HDF_LOGE("%s is failed", __func__);
+            HDF_LOGE("%{public}s is failed", __func__);
             return NULL;
         }
         pthread_mutex_unlock(&g_getDmRootMutex);
