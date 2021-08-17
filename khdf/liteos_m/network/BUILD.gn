@@ -46,7 +46,7 @@ static_library("hdf_network") {
     "../osal/include",
     "$kernel_path/kernel/include",
     "$kernel_path/utils",
-    "$kernel_path/components/net/lwip-2.1/porting/include",
+    "$ohos_kernel_liteos_m_lwip_path/porting/include",
     "$hdf_fwk_path/include/net",
     "$hdf_fwk_path/include",
     "$hdf_fwk_path/model/network/common/netdevice",
