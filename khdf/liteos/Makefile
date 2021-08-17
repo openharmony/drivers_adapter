@@ -166,6 +166,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_UART), y)
               LOCAL_SRCS += ./platform/src/uart_dev.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2S), y)
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/i2s_if.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/i2s_core.c
+endif
+
 ifeq ($(LOSCFG_NET_LWIP_SACK), y)
               LOCAL_SRCS += ./network/src/netbuf_adapter.c
 ifeq ($(LOSCFG_DRIVERS_HDF_WIFI), y)

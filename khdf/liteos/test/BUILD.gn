@@ -123,6 +123,13 @@ hdf_driver(module_name) {
       ]
     }
 
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2S)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/i2s_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_i2s_entry_test.c",
+      ]
+    }
+
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
       sources += [ "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_rtc_entry_test.c" ]
     }
