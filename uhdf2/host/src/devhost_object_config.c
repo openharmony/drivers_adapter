@@ -67,7 +67,7 @@ const struct HdfObjectCreator *HdfObjectManagerGetCreators(int objectId)
 {
     int numConfigs = sizeof(g_fullDevHostObjectCreators) / sizeof(g_fullDevHostObjectCreators[0]);
     if (objectId < 0 || objectId >= numConfigs) {
-        HDF_LOGE("Invalid objectId: %d", objectId);
+        HDF_LOGE("Invalid objectId: %{public}d", objectId);
         return NULL;
     }
     return &g_fullDevHostObjectCreators[objectId];

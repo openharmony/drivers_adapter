@@ -23,19 +23,19 @@
 
 int SampleAServiceA()
 {
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
     return SAMPLEA_RET;
 }
 
 int SampleAServiceB(int para)
 {
-    HDF_LOGE("%s %d", __func__, para);
+    HDF_LOGE("%{public}s %{public}d", __func__, para);
     return SAMPLEB_RET;
 }
 
 int SampleAOpen()
 {
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
     return 0;
 }
 

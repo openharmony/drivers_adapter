@@ -23,7 +23,7 @@ int32_t HdfSampleDriverBind(struct HdfDeviceObject *para)
 {
     (void)para;
 
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
     return 0;
 }
 
@@ -31,7 +31,7 @@ int32_t HdfSampleDriverInit(struct HdfDeviceObject *para)
 {
     (void)para;
 
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
     return 0;
 }
 
@@ -39,7 +39,7 @@ void HdfSampleDriverRelease(struct HdfDeviceObject *para)
 {
     (void)para;
 
-    HDF_LOGE("%s", __func__);
+    HDF_LOGE("%{public}s", __func__);
 }
 
 struct HdfDriverEntry g_sampleDriverEntry = {

@@ -30,12 +30,12 @@ int32_t SampleServiceStub::SampleStubBooleanTypeTest(MessageParcel& data,
 
     int32_t ec = service.BooleanTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteBool(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -50,12 +50,12 @@ int32_t SampleServiceStub::SampleStubByteTypeTest(MessageParcel& data,
 
     int32_t ec = service.ByteTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteInt8(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -70,12 +70,12 @@ int32_t SampleServiceStub::SampleStubShortTypeTest(MessageParcel& data,
 
     int32_t ec = service.ShortTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteInt16(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -90,12 +90,12 @@ int32_t SampleServiceStub::SampleStubIntTypeTest(MessageParcel& data,
 
     int32_t ec = service.IntTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteInt32(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -110,12 +110,12 @@ int32_t SampleServiceStub::SampleStubLongTypeTest(MessageParcel& data,
 
     int32_t ec = service.LongTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteInt64(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -130,12 +130,12 @@ int32_t SampleServiceStub::SampleStubFloatTypeTest(MessageParcel& data,
 
     int32_t ec = service.FloatTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteFloat(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -150,12 +150,12 @@ int32_t SampleServiceStub::SampleStubDoubleTypeTest(MessageParcel& data,
 
     int32_t ec = service.DoubleTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteDouble(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -170,12 +170,12 @@ int32_t SampleServiceStub::SampleStubStringTypeTest(MessageParcel& data,
 
     int32_t ec = service.StringTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteString(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -190,12 +190,12 @@ int32_t SampleServiceStub::SampleStubUcharTypeTest(MessageParcel& data,
 
     int32_t ec = service.UcharTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteUint8(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -210,12 +210,12 @@ int32_t SampleServiceStub::SampleStubUshortTypeTest(MessageParcel& data,
 
     int32_t ec = service.UshortTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteUint16(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -230,12 +230,12 @@ int32_t SampleServiceStub::SampleStubUintTypeTest(MessageParcel& data,
 
     int32_t ec = service.UintTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteUint32(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -250,12 +250,12 @@ int32_t SampleServiceStub::SampleStubUlongTypeTest(MessageParcel& data,
 
     int32_t ec = service.UlongTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteUint64(output)) {
-        HDF_LOGE("%s: write result failed", __func__);
+        HDF_LOGE("%{public}s: write result failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -275,18 +275,18 @@ int32_t SampleServiceStub::SampleStubListTypeTest(MessageParcel& data,
 
     int32_t ec = service.ListTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteUint32(output.size())) {
-        HDF_LOGE("%s: write result size failed", __func__);
+        HDF_LOGE("%{public}s: write result size failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
     for (auto it : output) {
         if (!reply.WriteInt8(it)) {
-            HDF_LOGE("%s: write result failed", __func__);
+            HDF_LOGE("%{public}s: write result failed", __func__);
             return HDF_ERR_INVALID_PARAM;
         }
     }
@@ -309,18 +309,18 @@ int32_t SampleServiceStub::SampleStubMapTypeTest(MessageParcel& data,
 
     int32_t ec = service.MapTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteUint32(output.size())) {
-        HDF_LOGE("%s: write result size failed", __func__);
+        HDF_LOGE("%{public}s: write result size failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
     for (auto it : output) {
         if (!reply.WriteInt8(it.first) || !reply.WriteInt8(it.second)) {
-            HDF_LOGE("%s: write result size failed", __func__);
+            HDF_LOGE("%{public}s: write result size failed", __func__);
             return HDF_ERR_INVALID_PARAM;
         }
     }
@@ -341,18 +341,18 @@ int32_t SampleServiceStub::SampleStubArrayTypeTest(MessageParcel& data,
 
     int32_t ec = service.ArrayTypeTest(input, output);
     if (ec != HDF_SUCCESS) {
-        HDF_LOGE("%s: call failed, error code is %d", __func__, ec);
+        HDF_LOGE("%{public}s: call failed, error code is %{public}d", __func__, ec);
         return ec;
     }
 
     if (!reply.WriteUint32(output.size())) {
-        HDF_LOGE("%s: write result size failed", __func__);
+        HDF_LOGE("%{public}s: write result size failed", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
     for (auto it : output) {
         if (!reply.WriteInt8(it)) {
-            HDF_LOGE("%s: write result failed", __func__);
+            HDF_LOGE("%{public}s: write result failed", __func__);
             return HDF_ERR_INVALID_PARAM;
         }
     }
@@ -443,7 +443,7 @@ int32_t SampleServiceStub::SampleServiceStubOnRemoteRequest(int cmdId,
         case CMD_ENUM_TYPE_TEST:
             return SampleStubEnumTypeTest(data, reply, option);
         default: {
-            HDF_LOGE("%s: not support cmd %d", __func__, cmdId);
+            HDF_LOGE("%{public}s: not support cmd %{public}d", __func__, cmdId);
             return HDF_ERR_INVALID_PARAM;
         }
     }
@@ -475,7 +475,7 @@ int32_t SampleServiceOnRemoteRequest(void *stub, int cmdId, struct HdfSBuf& data
 
     (void)SbufToParcel(&reply, &replyParcel);
     if (SbufToParcel(&data, &dataParcel) != HDF_SUCCESS) {
-        HDF_LOGE("%s:invalid data sbuf object to dispatch", __func__);
+        HDF_LOGE("%{public}s:invalid data sbuf object to dispatch", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 

@@ -55,7 +55,7 @@ static int DevHostServiceStubDispatch(
             }
             ret = serviceIf->AddDevice(serviceIf, &attribute->super);
             if (ret != HDF_SUCCESS) {
-                HDF_LOGE("Dispatch failed, add service failed and ret is %d", ret);
+                HDF_LOGE("Dispatch failed, add service failed and ret is %{public}d", ret);
             }
             break;
         }
@@ -71,12 +71,12 @@ static int DevHostServiceStubDispatch(
             }
             ret = serviceIf->DelDevice(serviceIf, &attribute->super);
             if (ret != HDF_SUCCESS) {
-                HDF_LOGE("Dispatch failed, del service failed and ret is %d", ret);
+                HDF_LOGE("Dispatch failed, del service failed and ret is %{public}d", ret);
             }
             break;
         }
         default: {
-            HDF_LOGE("DevHostServiceStubDispatch unknown code:%d", code);
+            HDF_LOGE("DevHostServiceStubDispatch unknown code:%{public}d", code);
             break;
         }
     }

@@ -22,11 +22,11 @@ static int32_t g_testItemFailCnt = 0;
 
 #define UT_TEST_CHECK_RET(val, flag) do { \
     if (!(val)) { \
-        HDF_LOGE("[HDF_TEST] %s line:%d HDF_TEST_FAIL", __func__, __LINE__); \
+        HDF_LOGE("[HDF_TEST] %{public}s line:%{public}d HDF_TEST_FAIL", __func__, __LINE__); \
         printf("[HDF_TEST] %s line:%d HDF_TEST_FAIL\r\n", __func__, __LINE__); \
         g_testItemFailCnt++; \
     } else if ((flag)) { \
-        HDF_LOGD("[HDF_TEST] %s line:%d HDF_TEST_PASS", __func__, __LINE__); \
+        HDF_LOGD("[HDF_TEST] %{public}s line:%{public}d HDF_TEST_PASS", __func__, __LINE__); \
         printf("[HDF_TEST] %s line:%d HDF_TEST_PASS\r\n", __func__, __LINE__); \
     } \
     g_testItemCnt++; \
@@ -50,9 +50,9 @@ struct HdiSampleA {
 
 void PrintTestResult()
 {
-    HDF_LOGE("[HDF_TEST] %s test items: %d", __func__, g_testItemCnt);
-    HDF_LOGE("[HDF_TEST] %s test PASS: %d", __func__, g_testItemCnt - g_testItemFailCnt);
-    HDF_LOGE("[HDF_TEST] %s test FAIL: %d", __func__, g_testItemFailCnt);
+    HDF_LOGE("[HDF_TEST] %{public}s test items: %{public}d", __func__, g_testItemCnt);
+    HDF_LOGE("[HDF_TEST] %{public}s test PASS: %{public}d", __func__, g_testItemCnt - g_testItemFailCnt);
+    HDF_LOGE("[HDF_TEST] %{public}s test FAIL: %{public}d", __func__, g_testItemFailCnt);
     printf("[HDF_TEST] %s test items: %d\r\n", __func__, g_testItemCnt);
     printf("[HDF_TEST] %s test PASS: %d\r\n", __func__, g_testItemCnt - g_testItemFailCnt);
     printf("[HDF_TEST] %s test FAIL: %d\r\n", __func__, g_testItemFailCnt);
@@ -79,14 +79,14 @@ static void HdiOpenTest()
     sampleA = (struct HdiSampleA *)hdi->hdiBase;
     UT_TEST_CHECK_RET(sampleA != NULL, true);
     ret = sampleA->ServiceA();
-    HDF_LOGD("%s %d", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d", __func__, ret);
     UT_TEST_CHECK_RET(ret == SERRVICE_A_RESULT, true);
     ret = sampleA->ServiceB(0);
-    HDF_LOGD("%s %d", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d", __func__, ret);
     UT_TEST_CHECK_RET(ret == SERRVICE_B_RESULT, true);
     CloseHdi(hdi);
     OsalDiffTime(&time1, &time2, &diff);
-    HDF_LOGD("%s load one times: use %lu s %lu us", __func__, diff.sec, diff.usec);
+    HDF_LOGD("%{public}s load one times: use %{public}lu s %{public}lu us", __func__, diff.sec, diff.usec);
     printf("[HDF_TEST] %s load one times: use %lu s %lu us\r\n", __func__, diff.sec, diff.usec);
     UT_TEST_CHECK_RET((diff.usec / HDF_KILO_UNIT) <= HDI_LOAD_TIME_RANGE, true);
 }
@@ -106,10 +106,10 @@ static void HdiReCloseTest()
     sampleA = (struct HdiSampleA *)hdi->hdiBase;
     UT_TEST_CHECK_RET(sampleA != NULL, true);
     ret = sampleA->ServiceA();
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret == SERRVICE_A_RESULT, true);
     ret = sampleA->ServiceB(0);
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret == SERRVICE_B_RESULT, true);
     CloseHdi(hdi);
     CloseHdi(hdi);
@@ -130,10 +130,10 @@ static void HdiOpenVersionErrorTest()
     sampleA = (struct HdiSampleA *)hdi->hdiBase;
     UT_TEST_CHECK_RET(sampleA == NULL, true);
     ret = sampleA->ServiceA();
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret != SERRVICE_A_RESULT, true);
     ret = sampleA->ServiceB(0);
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret != SERRVICE_B_RESULT, true);
     CloseHdi(hdi);
 }
@@ -153,10 +153,10 @@ static void HdiOpenNameErrorTest()
     sampleA = (struct HdiSampleA *)hdi->hdiBase;
     UT_TEST_CHECK_RET(sampleA == NULL, true);
     ret = sampleA->ServiceA();
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret != SERRVICE_A_RESULT, true);
     ret = sampleA->ServiceB(0);
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret != SERRVICE_B_RESULT, true);
     CloseHdi(hdi);
 }
@@ -176,10 +176,10 @@ static void HdiOpenErrorTest()
     sampleA = (struct HdiSampleA *)hdi->hdiBase;
     UT_TEST_CHECK_RET(sampleA == NULL, true);
     ret = sampleA->ServiceA();
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret != SERRVICE_A_RESULT, true);
     ret = sampleA->ServiceB(0);
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret != SERRVICE_B_RESULT, true);
     CloseHdi(hdi);
 }
@@ -203,7 +203,8 @@ static void HdiOpenMoreTest()
     OsalGetTime(&time2);
     OsalDiffTime(&time1, &time2, &diff);
     totalUsec = diff.sec * HDF_MICRO_UNIT + diff.usec;
-    HDF_LOGD("%s load %d times: use %lu s %lu us", __func__, HDI_LOAD_PRESSURE_TIME, diff.sec, diff.usec);
+    HDF_LOGD("%{public}s load %{public}d times: use %{public}lu s %{public}lu us",
+        __func__, HDI_LOAD_PRESSURE_TIME, diff.sec, diff.usec);
     printf("[HDF_TEST] %s load %d times: use %lu s %lu us\r\n", __func__, HDI_LOAD_PRESSURE_TIME, diff.sec, diff.usec);
     UT_TEST_CHECK_RET((totalUsec / HDF_KILO_UNIT / HDI_LOAD_PRESSURE_TIME) <= HDI_LOAD_TIME_RANGE, true);
 
@@ -215,10 +216,10 @@ static void HdiOpenMoreTest()
         sampleA = (struct HdiSampleA *)hdi->hdiBase;
         UT_TEST_CHECK_RET(sampleA != NULL, false);
         ret = sampleA->ServiceA();
-        HDF_LOGD("%s %d ", __func__, ret);
+        HDF_LOGD("%{public}s %{public}d ", __func__, ret);
         UT_TEST_CHECK_RET(ret == SERRVICE_A_RESULT, false);
         ret = sampleA->ServiceB(0);
-        HDF_LOGD("%s %d ", __func__, ret);
+        HDF_LOGD("%{public}s %{public}d ", __func__, ret);
         UT_TEST_CHECK_RET(ret == SERRVICE_B_RESULT, false);
     }
     OsalGetTime(&time1);
@@ -229,7 +230,8 @@ static void HdiOpenMoreTest()
     OsalGetTime(&time2);
     OsalDiffTime(&time1, &time2, &diff);
     totalUsec = diff.sec * HDF_MICRO_UNIT + diff.usec;
-    HDF_LOGD("%s close %d times: use %lu s %lu us", __func__, HDI_LOAD_PRESSURE_TIME, diff.sec, diff.usec);
+    HDF_LOGD("%{public}s close %{public}d times: use %{public}lu s %{public}lu us",
+        __func__, HDI_LOAD_PRESSURE_TIME, diff.sec, diff.usec);
     printf("[HDF_TEST] %s close %d times: use %lu s %lu us\r\n", __func__, HDI_LOAD_PRESSURE_TIME, diff.sec, diff.usec);
     UT_TEST_CHECK_RET((totalUsec / HDF_KILO_UNIT / HDI_LOAD_PRESSURE_TIME) <= HDI_LOAD_TIME_RANGE, true);
 }
@@ -251,10 +253,10 @@ static void HdiOpenTwoSoTest()
     sampleA = (struct HdiSampleA *)hdiA->hdiBase;
     UT_TEST_CHECK_RET(sampleA != NULL, true);
     ret = sampleA->ServiceA();
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret == SERRVICE_A_RESULT, true);
     ret = sampleA->ServiceB(0);
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret == SERRVICE_B_RESULT, true);
 
     hdiB = LoadHdi("hdf_test_load_hdi_driver_b.so", 1);
@@ -265,10 +267,10 @@ static void HdiOpenTwoSoTest()
     sampleB = (struct HdiSampleA *)hdiB->hdiBase;
     UT_TEST_CHECK_RET(sampleB != NULL, true);
     ret = sampleB->ServiceA();
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret == SERRVICE_A_RESULT, true);
     ret = sampleB->ServiceB(0);
-    HDF_LOGD("%s %d ", __func__, ret);
+    HDF_LOGD("%{public}s %{public}d ", __func__, ret);
     UT_TEST_CHECK_RET(ret == SERRVICE_B_RESULT, true);
 
     CloseHdi(hdiA);

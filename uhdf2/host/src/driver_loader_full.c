@@ -48,12 +48,12 @@ struct HdfDriverEntry *HdfDriverLoaderGetDriverEntry(const struct HdfDeviceInfo 
     }
 
     if (strcat_s(driverPath, sizeof(driverPath) - 1, DRIVER_PATH) != EOK) {
-        HDF_LOGE("%s get driver path failed", __func__);
+        HDF_LOGE("%{public}s get driver path failed", __func__);
         return NULL;
     }
 
     if (strcat_s(driverPath, (sizeof(driverPath) - 1 - sizeof(DRIVER_PATH)), deviceInfo->moduleName) != EOK) {
-        HDF_LOGE("%s get full driver path failed", __func__);
+        HDF_LOGE("%{public}s get full driver path failed", __func__);
         return NULL;
     }
 
@@ -63,7 +63,7 @@ struct HdfDriverEntry *HdfDriverLoaderGetDriverEntry(const struct HdfDeviceInfo 
     }
     deviceHandle = dlopen(realPath, RTLD_LAZY);
     if (deviceHandle == NULL) {
-        HDF_LOGE("Get device entry failed, %s load fail", realPath);
+        HDF_LOGE("Get device entry failed, %{public}s load fail", realPath);
         return NULL;
     }
     fullAttribute->deviceHandle = deviceHandle;

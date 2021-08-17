@@ -116,7 +116,7 @@ sptr<ISample> ISample::Get(const std::string& serviceName)
         }
     } while(false);
 
-    HDF_LOGE("%s: get %s failed!", __func__, serviceName.c_str());
+    HDF_LOGE("%{public}s: get %{public}s failed!", __func__, serviceName.c_str());
     return nullptr;
 }
 }  // namespace V1_0
