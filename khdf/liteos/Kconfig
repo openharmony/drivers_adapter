@@ -132,6 +132,13 @@ config DRIVERS_HDF_PLATFORM_SPI
     help
       Answer Y to enable HDF platform spi driver.
 
+config DRIVERS_HDF_PLATFORM_I2S
+    bool "Enable HDF platform i2s driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform i2s driver.
+
 config DRIVERS_HDF_PLATFORM_WATCHDOG
     bool "Enable HDF platform watchdog driver"
     default n
