@@ -171,6 +171,8 @@ hdf_driver(module_name) {
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI)) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi_dsi_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi_dsi_if.c",
+
       #"platform/src/mipi_tx_dev.c",
     ]
   }
