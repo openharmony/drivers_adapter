@@ -571,7 +571,7 @@ static int32_t SampleProxyListTypeTest(struct ISample *self, const int8_t *input
 
     for (uint32_t i = 0; i < inSize; i++) {
         if (!HdfSbufWriteInt8(data, input[i])) {
-            HDF_LOGE("%{public}s: write input[%d] failed!", __func__, i);
+            HDF_LOGE("%{public}s: write input[%{public}d] failed!", __func__, i);
             ec = HDF_ERR_INVALID_PARAM;
             goto finished;
         }
@@ -642,7 +642,7 @@ static int32_t SampleProxyArrayTypeTest(struct ISample *self, const int8_t *inpu
 
     for (uint32_t i = 0; i < inSize; i++) {
         if (!HdfSbufWriteInt8(data, input[i])) {
-            HDF_LOGE("%{public}s: write input[%d] failed!", __func__, i);
+            HDF_LOGE("%{public}s: write input[%{public}d] failed!", __func__, i);
             ec = HDF_ERR_INVALID_PARAM;
             goto finished;
         }

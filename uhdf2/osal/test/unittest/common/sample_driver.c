@@ -75,7 +75,7 @@ int32_t SampleDriverSendEvent(struct HdfDeviceIoClient *client, int id, struct H
 {
     int32_t ret = broadcast ? HdfDeviceSendEvent(client->device, id, data) :
         HdfDeviceSendEventToClient(client, id, data);
-    HDF_LOGI("%s:report event done, broadcast = %d", __func__, broadcast);
+    HDF_LOGI("%{public}s:report event done, broadcast = %{public}d", __func__, broadcast);
     return ret;
 }
 
@@ -85,7 +85,7 @@ int32_t SampleDriverDispatch(struct HdfDeviceIoClient *client, int cmdId, struct
     if (reply == NULL || client == NULL) {
         return HDF_FAILURE;
     }
-    HDF_LOGI("%s:cmdId = %d", __func__, cmdId);
+    HDF_LOGI("%{public}s:cmdId = %{public}d", __func__, cmdId);
     switch (cmdId) {
         case SAMPLE_DRIVER_REGISTE_DEVICE: {
             ret = SampleDriverRegisteDevice(data);
@@ -113,7 +113,7 @@ int32_t SampleDriverDispatch(struct HdfDeviceIoClient *client, int cmdId, struct
 
 int HdfSampleDriverBind(struct HdfDeviceObject *deviceObject)
 {
-    HDF_LOGD("%s::enter!, deviceObject=%p", __func__, deviceObject);
+    HDF_LOGD("%{public}s::enter!, deviceObject=%{public}p", __func__, deviceObject);
     if (deviceObject == NULL) {
         return HDF_FAILURE;
     }
@@ -128,12 +128,12 @@ int HdfSampleDriverBind(struct HdfDeviceObject *deviceObject)
 
 int HdfSampleDriverInit(struct HdfDeviceObject *deviceObject)
 {
-    HDF_LOGD("%s::enter!, deviceObject=%p", __func__, deviceObject);
+    HDF_LOGD("%{public}s::enter!, deviceObject=%{public}p", __func__, deviceObject);
     if (deviceObject == NULL) {
-        HDF_LOGE("%s::ptr is null!", __func__);
+        HDF_LOGE("%{public}s::ptr is null!", __func__);
         return HDF_FAILURE;
     }
-    HDF_LOGD("%s:Init success", __func__);
+    HDF_LOGD("%{public}s:Init success", __func__);
     return HDF_SUCCESS;
 }
 

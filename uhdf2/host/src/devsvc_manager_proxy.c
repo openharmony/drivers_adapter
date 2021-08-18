@@ -28,7 +28,7 @@ static int DevSvcManagerProxyAddService(
 {
     struct DevSvcManagerProxy *serviceProxy = (struct DevSvcManagerProxy *)inst;
     if (service == NULL || svcName == NULL) {
-        HDF_LOGE("%s:service or name is null", __func__);
+        HDF_LOGE("%{public}s:service or name is null", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
     if ((serviceProxy == NULL) || (serviceProxy->remote == NULL)) {
@@ -58,7 +58,7 @@ static int DevSvcManagerProxyAddService(
             struct HdfDeviceObject, service, struct HdfDeviceNode, deviceObject);
         struct DeviceServiceStub *deviceFullService = (struct DeviceServiceStub *)devNode;
         if (deviceFullService->remote == NULL) {
-            HDF_LOGE("%s: device service is broken", __func__);
+            HDF_LOGE("%{public}s: device service is broken", __func__);
             break;
         }
 
@@ -104,7 +104,7 @@ finished:
     if (data != NULL) {
         HdfSBufRecycle(data);
     }
-    HDF_LOGI("DevSvcManagerProxyGetService finish, and status is %d", status);
+    HDF_LOGI("DevSvcManagerProxyGetService finish, and status is %{public}d", status);
     return (remoteService == NULL) ? NULL : &remoteService->object_;
 }
 
@@ -126,7 +126,7 @@ void DevSvcManagerProxyRemoveService(struct IDevSvcManager *inst, const char *sv
     dispatcher = remoteService->dispatcher;
     HdfSbufWriteString(data, svcName);
     int status = dispatcher->Dispatch(remoteService, DEVSVC_MANAGER_REMOVE_SERVICE, data, reply);
-    HDF_LOGD("Device service manager proxy remove service status is %d", status);
+    HDF_LOGD("Device service manager proxy remove service status is %{public}d", status);
 finished:
     if (reply != NULL) {
         HdfSBufRecycle(reply);

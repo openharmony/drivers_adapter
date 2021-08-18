@@ -45,7 +45,7 @@ int HdfRemoteServiceStub::OnRemoteRequest(uint32_t code,
     if (dispatcher != nullptr && dispatcher->Dispatch != nullptr) {
         ret = dispatcher->Dispatch((HdfRemoteService *)service_->target, code, dataSbuf, replySbuf);
     } else {
-        HDF_LOGE("dispatcher or dispatcher->Dispatch is null, flags is: %d", option.GetFlags());
+        HDF_LOGE("dispatcher or dispatcher->Dispatch is null, flags is: %{public}d", option.GetFlags());
     }
 
     HdfSBufRecycle(dataSbuf);
@@ -87,12 +87,12 @@ static int HdfRemoteAdapterDispatch(struct HdfRemoteService *service, int code, 
         dummyReply.FlushBuffer();
         replyParcel = &dummyReply;
     } else if (SbufToParcel(reply, &replyParcel)) {
-        HDF_LOGE("%s:invalid reply sbuf object to dispatch", __func__);
+        HDF_LOGE("%{public}s:invalid reply sbuf object to dispatch", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
     if (SbufToParcel(data, &dataParcel)) {
-        HDF_LOGE("%s:invalid data sbuf object to dispatch", __func__);
+        HDF_LOGE("%{public}s:invalid data sbuf object to dispatch", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -215,7 +215,7 @@ int HdfRemoteAdapterAddSa(int32_t saId, struct HdfRemoteService *service)
     struct HdfRemoteServiceHolder *holder = reinterpret_cast<struct HdfRemoteServiceHolder *>(service);
     int ret = saManager->AddSystemAbility(saId, holder->remote_);
     (void)OHOS::IPCSkeleton::GetInstance().SetMaxWorkThreadNum(g_remoteThreadMax++);
-    HDF_LOGI("add sa %d, ret = %s", saId, ret == 0 ? "succ" : "fail");
+    HDF_LOGI("add sa %{public}d, ret = %{public}s", saId, (ret == 0) ? "succ" : "fail");
 
     return HDF_SUCCESS;
 }
@@ -231,7 +231,7 @@ struct HdfRemoteService *HdfRemoteAdapterGetSa(int32_t saId)
     if (remote != nullptr) {
         return HdfRemoteAdapterBind(remote);
     } else {
-        HDF_LOGE("failed to get sa %d", saId);
+        HDF_LOGE("failed to get sa %{public}d", saId);
     }
     return nullptr;
 }

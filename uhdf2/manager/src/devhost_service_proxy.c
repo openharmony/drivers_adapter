@@ -83,7 +83,7 @@ void DevHostServiceProxyOnRemoteDied(struct HdfDeathRecipient *recipient, struct
         struct HdfDeathRecipient, recipient, struct DevHostServiceProxy, recipient);
     message->messageId = DEVMGR_MESSAGE_DEVHOST_DIED;
     message->data[0] = (void *)(uintptr_t)proxy->hostId;
-    HDF_LOGD("%s: host %{public}u dead, respawn it", __FUNCTION__, proxy->hostId);
+    HDF_LOGD("%{public}s: host %{public}u dead, respawn it", __FUNCTION__, proxy->hostId);
     task->SendMessage(task, message, false);
 }
 

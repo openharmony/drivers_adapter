@@ -95,7 +95,7 @@ int32_t DevmgrServiceFullDispatchMessage(struct HdfMessageTask *task, struct Hdf
             break;
         }
         default: {
-            HDF_LOGE("Message is wrong, message is %u", msg->messageId);
+            HDF_LOGE("Message is wrong, message is %{public}u", msg->messageId);
         }
     }
 

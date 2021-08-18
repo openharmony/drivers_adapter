@@ -58,7 +58,7 @@ static void HdfDeviceFullDettach(struct IHdfDevice *device, struct HdfDeviceNode
 {
     struct HdfDeviceFull *fullDevice = HdfDeviceFullReinterpretCast(device);
     if (fullDevice == NULL || devNode == NULL) {
-        HDF_LOGE("%s input is null", __func__);
+        HDF_LOGE("%{public}s input is null", __func__);
         return;
     }
 
