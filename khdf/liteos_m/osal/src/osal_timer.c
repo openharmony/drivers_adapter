@@ -93,7 +93,7 @@ static int32_t OsalStartTimer(OsalTimer *timer, UINT8 mode)
     ret = LOS_SwtmrCreate(interval, mode, (SWTMR_PROC_FUNC)liteTimer->func, &timerID, liteTimer->arg,
         OS_SWTMR_ROUSES_IGNORE, OS_SWTMR_ALIGN_INSENSITIVE);
 #else
-    ret = LOS_SwtmrCreate(interval, mode, (SWTMR_PROC_FUNC)liteTimer->func, &timerID, liteTimer->arg)
+    ret = LOS_SwtmrCreate(interval, mode, (SWTMR_PROC_FUNC)liteTimer->func, &timerID, liteTimer->arg);
 #endif
     if (ret != LOS_OK) {
         LOS_IntRestore(intSave);
