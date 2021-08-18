@@ -132,7 +132,7 @@ int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId
         case SAMPLE_BUFFER_TRANS:
             return SampleServiceStubBufferTrans(client, data, reply);
         default:
-            HDF_LOGE("SampleServiceDispatch: not support cmd %d", cmdId);
+            HDF_LOGE("SampleServiceDispatch: not support cmd %{public}d", cmdId);
             return HDF_ERR_INVALID_PARAM;
     }
 }

@@ -347,7 +347,7 @@ static struct HdfRemoteService *SbufMParcelImplReadRemoteService(struct HdfSbufI
     }
     auto remote = MParcelCast(sbuf)->ReadRemoteObject();
     if (remote == nullptr) {
-        HDF_LOGE("%s: read remote object fail", __func__);
+        HDF_LOGE("%{public}s: read remote object fail", __func__);
         return nullptr;
     }
     return HdfRemoteAdapterBind(remote);

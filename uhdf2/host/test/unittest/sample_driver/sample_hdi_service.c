@@ -22,7 +22,7 @@
 int32_t SampleServicePing(struct HdfDeviceObject *device, const char* info, char** infoOut)
 {
     (void)device;
-    HDF_LOGI("Sample:info is %s", info);
+    HDF_LOGI("Sample:info is %{public}s", info);
     *infoOut = strdup(info);
     return 0;
 }
@@ -42,7 +42,7 @@ int32_t SampleServiceCallback(struct HdfDeviceObject *device, struct HdfRemoteSe
     HdfSbufWriteInt32(dataSbuf, code);
     int ret = callback->dispatcher->Dispatch(callback, 0, dataSbuf, NULL);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("failed to do callback, ret = %d", ret);
+        HDF_LOGE("failed to do callback, ret = %{public}d", ret);
     }
     HdfSBufRecycle(dataSbuf);
     return ret;

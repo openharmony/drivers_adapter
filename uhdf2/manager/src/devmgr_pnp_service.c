@@ -84,7 +84,7 @@ static bool DevmgrServiceAddPnpDevice(
         return false;
     }
     if (DevmgrServiceIsPnpDeviceExist(moduleName, serviceName)) {
-        HDF_LOGE("%s adding pnp device failed, %s already exist", __func__, moduleName);
+        HDF_LOGE("%{public}s adding pnp device failed, %{public}s already exist", __func__, moduleName);
         return false;
     }
     struct HdfDeviceInfoFull *deviceInfo = HdfDeviceInfoFullNewInstance();
@@ -159,7 +159,7 @@ int32_t DevmgrServiceStartPnpHost(struct DevmgrService *inst)
 
     installer = DriverInstallerGetInstance();
     if ((installer == NULL) || (installer->StartDeviceHost == NULL)) {
-        HDF_LOGE("%s installer or installer->StartDeviceHost is null", __func__);
+        HDF_LOGE("%{public}s installer or installer->StartDeviceHost is null", __func__);
         return ret;
     }
 
@@ -167,13 +167,13 @@ int32_t DevmgrServiceStartPnpHost(struct DevmgrService *inst)
     DevmgrServiceSetPnpHostId(hostId);
     hostClnt = DevHostServiceClntNewInstance(hostId, PNP_HOST_NAME);
     if (hostClnt == NULL) {
-        HDF_LOGW("%s creating new device host client failed", __func__);
+        HDF_LOGW("%{public}s creating new device host client failed", __func__);
         return ret;
     }
     DListInsertTail(&inst->hosts, &hostClnt->node);
     ret = installer->StartDeviceHost(hostClnt->hostId, hostClnt->hostName);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGW("%s starting host failed, host name is %s", __func__, hostClnt->hostName);
+        HDF_LOGW("%{public}s starting host failed, host name is %{public}s", __func__, hostClnt->hostName);
         DListRemove(&hostClnt->node);
         DevHostServiceClntFreeInstance(hostClnt);
     }
@@ -198,7 +198,7 @@ static int DevmgrServiceInstallDevice(struct DevHostServiceClnt *hostClnt, const
         if (strcmp(deviceInfo->svcName, serviceName) == 0) {
             ret = devHostSvcIf->AddDevice(devHostSvcIf, deviceInfo);
             if (ret != HDF_SUCCESS) {
-                HDF_LOGE("Installing %s driver failed, ret = %d", deviceInfo->svcName, ret);
+                HDF_LOGE("Installing %{public}s driver failed, ret = %{public}d", deviceInfo->svcName, ret);
             }
             break;
         }
@@ -219,18 +219,18 @@ int32_t DevmgrServiceRegPnpDevice(
     if (hostClnt == NULL) {
         ret = DevmgrServiceStartPnpHost(inst);
         if (ret != HDF_SUCCESS) {
-            HDF_LOGE("%s add pnp device failed!", __func__);
+            HDF_LOGE("%{public}s add pnp device failed!", __func__);
             return ret;
         }
         OsalMSleep(PNP_SLEEP_TIME);
         hostClnt = DevmgrServiceGetPnpHostClnt(inst);
     }
     if (hostClnt == NULL || hostClnt->hostService == NULL) {
-        HDF_LOGE("%s host service is null!", __func__);
+        HDF_LOGE("%{public}s host service is null!", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
     if (!DevmgrServiceAddPnpDevice(moduleName, serviceName, deviceMatchAttr, privateData)) {
-        HDF_LOGE("%s add pnp device failed!", __func__);
+        HDF_LOGE("%{public}s add pnp device failed!", __func__);
         return ret;
     }
 
@@ -238,7 +238,7 @@ int32_t DevmgrServiceRegPnpDevice(
     ret = DevmgrServiceInstallDevice(hostClnt, serviceName);
     if (ret != HDF_SUCCESS) {
         DevmgrServiceDelPnpDevice(moduleName, serviceName);
-        HDF_LOGE("%s: failed %d %s", __func__, hostClnt->hostId, hostClnt->hostName);
+        HDF_LOGE("%{public}s: failed %{public}d %{public}s", __func__, hostClnt->hostId, hostClnt->hostName);
     }
     return ret;
 }
@@ -251,11 +251,11 @@ int32_t DevmgrServiceUnRegPnpDevice(
     struct DevmgrService *inst = (struct DevmgrService *)devmgrSvc;
     struct DevHostServiceClnt *hostClnt = DevmgrServiceGetPnpHostClnt(inst);
     if (hostClnt == NULL || hostClnt->hostService == NULL) {
-        HDF_LOGE("%s host service is not init", __func__);
+        HDF_LOGE("%{public}s host service is not init", __func__);
         OsalMSleep(PNP_SLEEP_TIME);
         hostClnt = DevmgrServiceGetPnpHostClnt(inst);
         if (hostClnt == NULL || hostClnt->hostService == NULL) {
-            HDF_LOGE("%s host service is not init", __func__);
+            HDF_LOGE("%{public}s host service is not init", __func__);
             return ret;
         }
     }
@@ -266,7 +266,7 @@ int32_t DevmgrServiceUnRegPnpDevice(
 
     devHostSvcIf = (struct IDevHostService *)hostClnt->hostService;
     if (devHostSvcIf->DelDevice == NULL) {
-        HDF_LOGE("%s host del device is not init", __func__);
+        HDF_LOGE("%{public}s host del device is not init", __func__);
         return ret;
     }
     HdfSListIteratorInit(&it, hostClnt->deviceInfos);

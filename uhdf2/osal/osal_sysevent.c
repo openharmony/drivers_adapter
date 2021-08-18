@@ -74,7 +74,7 @@ static int FinishEvent(struct HdfIoService *service, const struct HdfSysEvent *e
 
     int ret = service->dispatcher->Dispatch(&service->object, KEVENT_COMPLETE_EVENT, sbuf, NULL);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("failed to finish sysevent, %d", ret);
+        HDF_LOGE("failed to finish sysevent, %{public}d", ret);
     }
 
     HdfSBufRecycle(sbuf);
@@ -130,7 +130,7 @@ static int InitKeventIoServiceListenerLocked(struct HdfSysEventNotifier *notifie
         notifier->keventIoService = HdfIoServiceBind(KEVENT_IOSERVICE_NAME);
     }
     if (notifier->keventIoService == NULL) {
-        HDF_LOGE(" ioservice %s is invalid", KEVENT_IOSERVICE_NAME);
+        HDF_LOGE(" ioservice %{public}s is invalid", KEVENT_IOSERVICE_NAME);
         return HDF_DEV_ERR_NO_DEVICE;
     }
 
@@ -138,7 +138,7 @@ static int InitKeventIoServiceListenerLocked(struct HdfSysEventNotifier *notifie
     notifier->ioServiceListener.priv = notifier;
     int ret = HdfDeviceRegisterEventListener(notifier->keventIoService, &notifier->ioServiceListener);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE(" ioservice %s is invalid", KEVENT_IOSERVICE_NAME);
+        HDF_LOGE(" ioservice %{public}s is invalid", KEVENT_IOSERVICE_NAME);
         HdfIoServiceRecycle(notifier->keventIoService);
         notifier->keventIoService = NULL;
     }

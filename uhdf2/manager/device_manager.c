@@ -42,6 +42,6 @@ int main()
         }
     }
 
-    HDF_LOGE("starting device manager service failed, status is %d", status);
+    HDF_LOGE("starting device manager service failed, status is %{public}d", status);
     return status;
 }

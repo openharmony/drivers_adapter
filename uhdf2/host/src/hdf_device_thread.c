@@ -40,7 +40,7 @@ int32_t DeviceThreadMessageHandler(struct HdfMessageTask *task, struct HdfMessag
             break;
         }
         default: {
-            HDF_LOGE("Unsupported message, message id is %u", msg->messageId);
+            HDF_LOGE("Unsupported message, message id is %{public}u", msg->messageId);
             break;
         }
     }

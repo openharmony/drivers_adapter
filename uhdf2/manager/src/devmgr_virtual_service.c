@@ -35,11 +35,12 @@ static void DevmgrUpdateDeviceType(struct HdfSList *list, const char *moduleName
         if ((deviceInfo != NULL) &&
             (strcmp(deviceInfo->moduleName, moduleName) == 0) && (strcmp(deviceInfo->svcName, serviceName) == 0)) {
             deviceInfo->deviceType = HDF_DEV_REMOTE_SERVICE;
-            HDF_LOGD("%s: set remote service %s %s %d", __func__, moduleName, serviceName, deviceInfo->deviceType);
+            HDF_LOGD("%{public}s: set remote service %{public}s %{public}s %{public}d",
+                __func__, moduleName, serviceName, deviceInfo->deviceType);
             return;
         }
     }
-    HDF_LOGE("%s: remote service %s %s not found", __func__, moduleName, serviceName);
+    HDF_LOGE("%{public}s: remote service %{public}s %{public}s not found", __func__, moduleName, serviceName);
 }
 
 int DevmgrServiceVirtualDevice(
@@ -50,14 +51,14 @@ int DevmgrServiceVirtualDevice(
 
     (void)reply;
     if (inst == NULL || data == NULL) {
-        HDF_LOGE("%s para invalid", __func__);
+        HDF_LOGE("%{public}s para invalid", __func__);
         return HDF_FAILURE;
     }
 
     const char *moduleName = HdfSbufReadString(data);
     const char *serviceName = HdfSbufReadString(data);
     if (moduleName == NULL || serviceName == NULL) {
-        HDF_LOGE("%s: reading string failed", __func__);
+        HDF_LOGE("%{public}s: reading string failed", __func__);
         return HDF_FAILURE;
     }
 

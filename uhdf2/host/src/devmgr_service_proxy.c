@@ -37,7 +37,7 @@ int DevmgrServiceProxyAttachDeviceHost(
     struct DevmgrServiceProxy *serviceProxy = (struct DevmgrServiceProxy *)inst;
     struct DevHostServiceStub *hostStub = (struct DevHostServiceStub *)service;
     if ((serviceProxy->remote == NULL) || (data == NULL) || (reply == NULL)) {
-        HDF_LOGE("DevmgrServiceProxyAttachDeviceHost failed, host id is %u", hostId);
+        HDF_LOGE("DevmgrServiceProxyAttachDeviceHost failed, host id is %{public}u", hostId);
         goto finished;
     }
     remoteService = serviceProxy->remote;
@@ -45,7 +45,7 @@ int DevmgrServiceProxyAttachDeviceHost(
     HdfSbufWriteInt32(data, hostId);
     HdfSBufWriteRemoteService(data, hostStub->remote);
     status = dipatcher->Dispatch(remoteService, DEVMGR_SERVICE_ATTACH_DEVICE_HOST, data, reply);
-    HDF_LOGI("Attach device host dispatch finish, status is %d", status);
+    HDF_LOGI("Attach device host dispatch finish, status is %{public}d", status);
 finished:
     if (reply != NULL) {
         HdfSBufRecycle(reply);

@@ -56,7 +56,7 @@ struct HdfRemoteService *HDIServiceManagerGetService(struct HDIServiceManager *i
         if (status == HDF_SUCCESS) {
             service = HdfSBufReadRemoteService(reply);
         } else {
-            HDF_LOGI("%s: %s not found", __func__, serviceName);
+            HDF_LOGI("%{public}s: %{public}s not found", __func__, serviceName);
         }
     } while (0);
 
@@ -78,13 +78,13 @@ struct HDIServiceManager *HDIServiceManagerGet(void)
 {
     struct HdfRemoteService *remote = HdfRemoteServiceGet(DEVICE_SERVICE_MANAGER_SA_ID);
     if (remote == NULL) {
-        HDF_LOGE("%s: hdi service %s not found", __func__, DEVICE_SERVICE_MANAGER);
+        HDF_LOGE("%{public}s: hdi service %{public}s not found", __func__, DEVICE_SERVICE_MANAGER);
         return NULL;
     }
 
     struct HDIServiceManager *iServMgr = OsalMemAlloc(sizeof(struct HDIServiceManager));
     if (iServMgr == NULL) {
-        HDF_LOGE("%s: OOM", __func__);
+        HDF_LOGE("%{public}s: OOM", __func__);
         HdfRemoteServiceRecycle(remote);
         return NULL;
     }
