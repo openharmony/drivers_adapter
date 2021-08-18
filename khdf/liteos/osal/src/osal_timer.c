@@ -169,6 +169,8 @@ int32_t OsalTimerDelete(OsalTimer *timer)
     liteTimer = (struct OsalLitetimer *)timer->realTimer;
     if (liteTimer->timerID == MAX_INVALID_TIMER_VID) {
         HDF_LOGE("%s timer id invalid %u", __func__, liteTimer->timerID);
+        OsalMemFree(timer->realTimer);
+        timer->realTimer = NULL;
         return HDF_FAILURE;
     }
     intSave = LOS_IntLock();

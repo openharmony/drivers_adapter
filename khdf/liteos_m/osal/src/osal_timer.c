@@ -89,7 +89,12 @@ static int32_t OsalStartTimer(OsalTimer *timer, UINT8 mode)
 
     interval = liteTimer->interval;
     intSave = LOS_IntLock();
-    ret = LOS_SwtmrCreate(LOS_MS2Tick(interval), mode, (SWTMR_PROC_FUNC)liteTimer->func, &timerID, liteTimer->arg);
+#if (LOSCFG_BASE_CORE_SWTMR_ALIGN == 1)
+    ret = LOS_SwtmrCreate(interval, mode, (SWTMR_PROC_FUNC)liteTimer->func, &timerID, liteTimer->arg,
+        OS_SWTMR_ROUSES_IGNORE, OS_SWTMR_ALIGN_INSENSITIVE);
+#else
+    ret = LOS_SwtmrCreate(interval, mode, (SWTMR_PROC_FUNC)liteTimer->func, &timerID, liteTimer->arg)
+#endif
     if (ret != LOS_OK) {
         LOS_IntRestore(intSave);
         HDF_LOGE("%s LOS_SwtmrCreate fail %u", __func__, ret);
@@ -168,6 +173,8 @@ int32_t OsalTimerDelete(OsalTimer *timer)
     liteTimer = (struct OsalLitetimer *)timer->realTimer;
     if (liteTimer->timerID == OSAL_INVALID_TIMER_ID) {
         HDF_LOGE("%s timer id invalid %u", __func__, liteTimer->timerID);
+        OsalMemFree(timer->realTimer);
+        timer->realTimer = NULL;
         return HDF_FAILURE;
     }
     intSave = LOS_IntLock();
