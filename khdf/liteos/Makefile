@@ -152,7 +152,8 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_RTC), y)
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI), y)
-              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mipi_dsi_core.c
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mipi_dsi_if.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/mipi_dsi_core.c
 #              LOCAL_SRCS += ./platform/src/mipi_tx_dev.c
 endif
 
