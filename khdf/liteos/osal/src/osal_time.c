@@ -36,7 +36,6 @@
 #include "hdf_log.h"
 
 #define HDF_LOG_TAG osal_time
-#define TM_SINCE_YEAR 1900
 
 int32_t OsalGetTime(OsalTimespec *time)
 {
