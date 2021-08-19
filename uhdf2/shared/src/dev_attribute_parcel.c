@@ -32,11 +32,11 @@ bool DeviceAttributeReadPrivateData(struct HdfDeviceInfoFull *attribute, const v
         if (attribute->super.private != NULL) {
             memcpy_s((void *)(attribute->super.private), length, privateData, length);
             if (attribute->super.private == NULL) {
-                HDF_LOGE("%{public}s: memcpy_s private error", __func__);
+                HDF_LOGE("%s: memcpy_s private error", __func__);
                 return false;
             }
         } else {
-            HDF_LOGE("%{public}s: OsalMemCalloc private error", __func__);
+            HDF_LOGE("%s: OsalMemCalloc private error", __func__);
             return false;
         }
     }
@@ -129,7 +129,7 @@ struct HdfDeviceInfoFull *DeviceAttributeFullRead(struct HdfSBuf *sbuf)
         if (length == ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL) {
             const char *deviceMatchAttr = HdfSbufReadString(sbuf);
             if (deviceMatchAttr == NULL) {
-                HDF_LOGE("%{public}s: Read from parcel failed, deviceMatchAttr is null", __func__);
+                HDF_LOGE("%s: Read from parcel failed, deviceMatchAttr is null", __func__);
                 break;
             }
             attribute->super.deviceMatchAttr = strdup(deviceMatchAttr);
@@ -143,11 +143,11 @@ struct HdfDeviceInfoFull *DeviceAttributeFullRead(struct HdfSBuf *sbuf)
             uint32_t privateLength;
             void *privateData = NULL;
             if (!HdfSbufReadBuffer(sbuf, (const void **)(&privateData), &privateLength)) {
-                HDF_LOGW("%{public}s: HdfSbufReadBuffer privateData error!", __func__);
+                HDF_LOGW("%s: HdfSbufReadBuffer privateData error!", __func__);
                 privateData = NULL;
             }
             if (!DeviceAttributeReadPrivateData(attribute, privateData)) {
-                HDF_LOGE("%{public}s: Read from parcel failed, private is null", __func__);
+                HDF_LOGE("%s: Read from parcel failed, private is null", __func__);
                 break;
             }
         }
