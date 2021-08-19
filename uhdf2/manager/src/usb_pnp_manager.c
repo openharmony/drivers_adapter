@@ -40,7 +40,7 @@ static int32_t UsbPnpManageStartPnpHost(struct IDevmgrService *devmgrSvc)
     if (hostClnt == NULL) {
         ret = DevmgrServiceStartPnpHost(inst);
         if (ret != HDF_SUCCESS) {
-            HDF_LOGE("%{public}s:%{public}d add pnp device failed!", __func__, __LINE__);
+            HDF_LOGE("%s:%d add pnp device failed!", __func__, __LINE__);
             return ret;
         }
         OsalMSleep(WAIT_PNP_SLEEP_TIME);
@@ -51,7 +51,7 @@ static int32_t UsbPnpManageStartPnpHost(struct IDevmgrService *devmgrSvc)
         OsalMSleep(WAIT_PNP_SLEEP_TIME);
         i++;
         if (i > WAIT_PNP_SLEEP_CNT) {
-            HDF_LOGE("%{public}s:%{public}d!", __func__, __LINE__);
+            HDF_LOGE("%s:%d!", __func__, __LINE__);
             break;
         }
     }
@@ -64,7 +64,7 @@ bool UsbPnpManagerWriteModuleName(struct HdfSBuf *sbuf, const char *moduleName)
     char modName[128] = {0};
 
     if (sprintf_s(modName, sizeof(modName) - 1, "lib%s.z.so", moduleName) < 0) {
-        HDF_LOGE("%{public}s: sprintf_s modName fail", __func__);
+        HDF_LOGE("%s: sprintf_s modName fail", __func__);
         return false;
     }
 
@@ -77,7 +77,7 @@ int32_t UsbPnpManagerRegisterOrUnregisterDevice(struct UsbPnpManagerDeviceInfo m
 
     ret = UsbPnpManageStartPnpHost(managerInfo.devmgrSvc);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%{public}s:%{public}d privateData is NULL!", __func__, __LINE__);
+        HDF_LOGE("%s:%d privateData is NULL!", __func__, __LINE__);
         return ret;
     }
 
@@ -101,13 +101,13 @@ int DevmgrUsbPnpManageEventHandle(struct IDevmgrService *inst)
     usbPnpListener.priv = (void *)(inst);
 
     if (usbPnpServ == NULL) {
-        HDF_LOGE("%{public}s: HdfIoServiceBind faile.", __func__);
+        HDF_LOGE("%s: HdfIoServiceBind faile.", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
 
     status = HdfDeviceRegisterEventListener(usbPnpServ, &usbPnpListener);
     if (status != HDF_SUCCESS) {
-        HDF_LOGE("HdfDeviceRegisterEventListener faile status=%{public}d", status);
+        HDF_LOGE("HdfDeviceRegisterEventListener faile status=%d", status);
         return status;
     }
 
@@ -122,11 +122,11 @@ bool DevmgrUsbPnpManageAddPrivateData(struct HdfDeviceInfoFull *deviceInfo, cons
         if (deviceInfo->super.private != NULL) {
             memcpy_s((void *)(deviceInfo->super.private), length, privateData, length);
             if (deviceInfo->super.private == NULL) {
-                HDF_LOGE("%{public}s: memcpy_s private error", __func__);
+                HDF_LOGE("%s: memcpy_s private error", __func__);
                 return false;
             }
         } else {
-            HDF_LOGE("%{public}s: OsalMemCalloc private error", __func__);
+            HDF_LOGE("%s: OsalMemCalloc private error", __func__);
             return false;
         }
     }

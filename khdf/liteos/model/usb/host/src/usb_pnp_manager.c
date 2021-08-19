@@ -51,7 +51,7 @@ int32_t UsbPnpManagerRegisterOrUnregisterDevice(struct UsbPnpManagerDeviceInfo m
         struct HdfDeviceObject *devObj = HdfRegisterDevice(managerInfo.moduleName, managerInfo.serviceName,
             (const void *)managerInfo.privateData);
         if (devObj == NULL) {
-            HDF_LOGE("%{public}s:%{public}d devObj is NULL!", __func__, __LINE__);
+            HDF_LOGE("%s:%d devObj is NULL!", __func__, __LINE__);
             return HDF_FAILURE;
         }
     } else {
@@ -70,11 +70,11 @@ bool UsbPnpManagerAddPrivateData(struct HdfDeviceInfo *deviceInfo, const void *p
 
             memcpy_s((void *)(deviceInfo->private), sizeof(struct UsbPnpNotifyServiceInfo), privateData, length);
             if (deviceInfo->private == NULL) {
-                HDF_LOGE("%{public}s: memcpy_s private error", __func__);
+                HDF_LOGE("%s: memcpy_s private error", __func__);
                 return false;
             }
         } else {
-            HDF_LOGE("%{public}s: OsalMemCalloc private error", __func__);
+            HDF_LOGE("%s: OsalMemCalloc private error", __func__);
             return false;
         }
     }

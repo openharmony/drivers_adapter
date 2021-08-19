@@ -170,7 +170,7 @@ int32_t DevmgrServiceStartPnpHost(struct DevmgrService *inst)
         HDF_LOGW("%{public}s creating new device host client failed", __func__);
         return ret;
     }
-    DListInsertTail(&inst->hosts, &hostClnt->node);
+    DListInsertTail(&hostClnt->node, &inst->hosts);
     ret = installer->StartDeviceHost(hostClnt->hostId, hostClnt->hostName);
     if (ret != HDF_SUCCESS) {
         HDF_LOGW("%{public}s starting host failed, host name is %{public}s", __func__, hostClnt->hostName);

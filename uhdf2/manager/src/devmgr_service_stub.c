@@ -166,7 +166,7 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
     status = DevmgrServiceStartService((struct IDevmgrService *)&fullService->super);
     if (status == HDF_SUCCESS) {
         if (DevmgrUsbPnpManageEventHandle(inst) != HDF_SUCCESS) {
-            HDF_LOGE("%{public}s:%{public}d DevmgrUsbPnpManageEventHandle error", __func__, __LINE__);
+            HDF_LOGE("%s:%d DevmgrUsbPnpManageEventHandle error", __func__, __LINE__);
         }
     }
 
