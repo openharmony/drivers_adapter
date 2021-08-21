@@ -34,8 +34,13 @@ module_name = "hdf_display"
 hdf_driver(module_name) {
   FRAMEWORKS_DISPLAY_ROOT = "$HDF_FRAMEWORKS_PATH/model/display/driver"
   sources = [
+    "$FRAMEWORKS_DISPLAY_ROOT/backlight/hdf_bl.c",
     "$FRAMEWORKS_DISPLAY_ROOT/hdf_disp.c",
   ]
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
+    sources += [ "$FRAMEWORKS_DISPLAY_ROOT/backlight/pwm_bl.c" ]
+  }
 
   if (defined(LOSCFG_PLATFORM_HI3516DV300)) {
     sources += [ "$FRAMEWORKS_DISPLAY_ROOT/adapter_soc/hi35xx_disp.c" ]
@@ -58,5 +63,6 @@ hdf_driver(module_name) {
 
   include_dirs = [
     "$FRAMEWORKS_DISPLAY_ROOT",
+    "$FRAMEWORKS_DISPLAY_ROOT/backlight",
   ]
 }

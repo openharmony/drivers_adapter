@@ -191,8 +191,8 @@ hdf_driver(module_name) {
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2S)) {
     sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s_if.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s_if.c",
     ]
   }
 
