@@ -28,13 +28,20 @@
 
 include $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/lite.mk
 
+ifeq ($(LOSCFG_DRIVERS_HDF_DISP), y)
 MODULE_NAME := hdf_display
 
 LOCAL_INCLUDE := $(LITEOSTOPDIR)/../../base/hiviewdfx/hilog_lite/interfaces/native/kits \
-                 $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver
+                 $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver \
+                 $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/backlight
 
 
-LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/hdf_disp.c
+LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/hdf_disp.c \
+                 $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/backlight/hdf_bl.c
+
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PWM), y)
+LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/backlight/pwm_bl.c
+endif
 
 ifeq ($(LOSCFG_PLATFORM_HI3516DV300), y)
 LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/adapter_soc/hi35xx_disp.c
@@ -51,5 +58,7 @@ endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_LCD_ST7789), y)
 LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/display/driver/panel/ssp_st7789.c
+endif
+
 endif
 include $(HDF_DRIVER)
