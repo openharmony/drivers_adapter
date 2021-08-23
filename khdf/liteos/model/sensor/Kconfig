@@ -45,3 +45,9 @@ config DRIVERS_HDF_SENSOR_GYRO
     depends on DRIVERS_HDF_SENSOR
     help
       Answer Y to enable HDF gyro sensor driver.
+config DRIVERS_HDF_SENSOR_BAROMETER
+    bool "Enable HDF barometer sensor driver"
+    default n
+    depends on DRIVERS_HDF_SENSOR
+    help
+      Answer Y to enable HDF barometer sensor driver.
