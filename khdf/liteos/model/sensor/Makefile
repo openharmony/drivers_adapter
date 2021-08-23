@@ -47,4 +47,9 @@ LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/accel/sensor_accel_driver.c \
               $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel/accel_bmi160.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_GYRO), y)
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/gyro/gyro_bmi160.c \
+              $(FRAMEWORKS_SENSOR_ROOT)/chipset/gyro/sensor_gyro_driver.c
+endif
+
 include $(HDF_DRIVER)
