@@ -56,8 +56,8 @@ hdf_driver(module_name) {
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER)) {
     sources += [
-      "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer/barometer_bmp180.c",
       "$FRAMEWORKS_SENSOR_ROOT/barometer/sensor_barometer_driver.c",
+      "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer/barometer_bmp180.c",
     ]
   }
 
