@@ -54,6 +54,13 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER)) {
+    sources += [
+      "$FRAMEWORKS_SENSOR_ROOT/barometer/sensor_barometer_driver.c",
+      "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer/barometer_bmp180.c",
+    ]
+  }
+
   include_dirs = [
     "$FRAMEWORKS_SENSOR_ROOT/include",
     "$FRAMEWORKS_SENSOR_ROOT/common/include",
@@ -61,5 +68,7 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_SENSOR_ROOT/chipset/accel",
     "$FRAMEWORKS_SENSOR_ROOT/gyro",
     "$FRAMEWORKS_SENSOR_ROOT/chipset/gyro",
+    "$FRAMEWORKS_SENSOR_ROOT/barometer",
+    "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer",
   ]
 }

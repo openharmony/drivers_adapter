@@ -35,7 +35,9 @@ FRAMEWORKS_SENSOR_ROOT = $(LITEOSTOPDIR)/../../drivers/framework/model/sensor/dr
 LOCAL_INCLUDE := $(FRAMEWORKS_SENSOR_ROOT)/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/common/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/accel \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel \
+                 $(FRAMEWORKS_SENSOR_ROOT)/barometer \
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer
 
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
               $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_parser.c \
@@ -45,6 +47,12 @@ LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_ACCEL), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/accel/sensor_accel_driver.c \
               $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel/accel_bmi160.c
+endif
+
+ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER), y)
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/barometer/sensor_barometer_driver.c \
+              $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer/barometer_bmp180.c
+
 endif
 
 include $(HDF_DRIVER)
