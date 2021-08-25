@@ -63,13 +63,15 @@ int32_t UsbPnpManagerRegisterOrUnregisterDevice(struct UsbPnpManagerDeviceInfo m
 
 bool UsbPnpManagerAddPrivateData(struct HdfDeviceInfo *deviceInfo, const void *privateData)
 {
+    int ret;
+
     if (privateData != NULL) {
         deviceInfo->private = (const void *)OsalMemCalloc(sizeof(struct UsbPnpNotifyServiceInfo));
         if (deviceInfo->private != NULL) {
             uint32_t length = ((struct UsbPnpNotifyServiceInfo *)(privateData))->length;
 
-            memcpy_s((void *)(deviceInfo->private), sizeof(struct UsbPnpNotifyServiceInfo), privateData, length);
-            if (deviceInfo->private == NULL) {
+            ret = memcpy_s((void *)(deviceInfo->private), sizeof(struct UsbPnpNotifyServiceInfo), privateData, length);
+            if ((ret != EOK) || (deviceInfo->private == NULL)) {
                 HDF_LOGE("%s: memcpy_s private error", __func__);
                 return false;
             }

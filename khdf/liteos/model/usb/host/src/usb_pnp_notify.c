@@ -48,6 +48,7 @@
 
 static wait_queue_head_t g_usbPnpNotifyReportWait;
 static struct OsalThread g_usbPnpNotifyReportThread;
+static bool g_usbPnpThreadRunningFlag = false;
 static enum UsbPnpNotifyServiceCmd g_usbPnpNotifyCmdType = USB_PNP_NOTIFY_ADD_INTERFACE;
 static enum UsbPnpNotifyRemoveType g_usbPnpNotifyRemoveType = USB_PNP_NOTIFY_REMOVE_BUS_DEV_NUM;
 struct OsalMutex g_usbSendEventLock;
@@ -204,7 +205,7 @@ static int32_t UsbPnpNotifyAddInitInfo(struct UsbPnpDeviceInfo *deviceInfo, unio
 {
     int32_t ret = HDF_SUCCESS;
 
-    deviceInfo->info.usbDevAddr = (uint32_t)infoData.usbDev;
+    deviceInfo->info.usbDevAddr = (uintptr_t)infoData.usbDev;
     deviceInfo->info.devNum = infoData.usbDev->address;
     deviceInfo->info.busNum = infoData.usbDev->port_no;
 
@@ -385,7 +386,7 @@ static int32_t UsbPnpNotifyGetDeviceInfo(void *eventData, union UsbPnpDeviceInfo
     } else if ((g_usbPnpNotifyCmdType == USB_PNP_NOTIFY_ADD_DEVICE)
         || (g_usbPnpNotifyCmdType == USB_PNP_NOTIFY_REMOVE_DEVICE)) {
         infoQueryPara.type = USB_INFO_DEVICE_ADDRESS_TYPE;
-        infoQueryPara.usbDevAddr = (uint32_t)pnpInfoData->usbDev;
+        infoQueryPara.usbDevAddr = (uintptr_t)pnpInfoData->usbDev;
         *deviceInfo = UsbPnpNotifyFindInfo(infoQueryPara);
     } else {
         *deviceInfo = UsbPnpNotifyCreateInfo();
@@ -433,7 +434,7 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
     }
 
     HDF_LOGI("%s:%d report one device information, %d usbDevAddr=0x%x, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!",
-        __func__, __LINE__, g_usbPnpNotifyCmdType, deviceInfo->info.usbDevAddr, deviceInfo->info.devNum,
+        __func__, __LINE__, g_usbPnpNotifyCmdType, (uint32_t)deviceInfo->info.usbDevAddr, deviceInfo->info.devNum,
         deviceInfo->info.busNum, deviceInfo->info.numInfos, deviceInfo->info.deviceInfo.vendorId,
         deviceInfo->info.deviceInfo.productId);
 
@@ -536,8 +537,8 @@ static int32_t TestPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObj
     }
 
     HDF_LOGI("%s: report one device information, %d usbDev=0x%x, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!", \
-        __func__, g_usbPnpNotifyCmdType, infoTable.usbDevAddr, infoTable.devNum, infoTable.busNum, infoTable.numInfos, \
-        infoTable.deviceInfo.vendorId, infoTable.deviceInfo.productId);
+        __func__, g_usbPnpNotifyCmdType, (uint32_t)infoTable.usbDevAddr, infoTable.devNum, infoTable.busNum, \
+        infoTable.numInfos, infoTable.deviceInfo.vendorId, infoTable.deviceInfo.productId);
 
     ret = UsbPnpNotifySendEventLoader(data);
     if (ret != HDF_SUCCESS) {
@@ -583,7 +584,7 @@ static int UsbPnpNotifyReportThread(void* arg)
     int ret;
     struct HdfDeviceObject *deviceObject = (struct HdfDeviceObject *)arg;
 
-    while (true) {
+    while (g_usbPnpThreadRunningFlag) {
 #if USB_PNP_NOTIFY_TEST_MODE == false
         ret = wait_event_interruptible(g_usbPnpNotifyReportWait, g_usbDevice != NULL);
 #else
@@ -712,7 +713,7 @@ static void UsbPnpNotifyDetachDevice(struct usb_device *udev)
 
     if (UsbPnpNotifyFindDeviceList(udev, true) == true) {
         infoQueryPara.type = USB_INFO_DEVICE_ADDRESS_TYPE;
-        infoQueryPara.usbDevAddr = (uint32_t)udev;
+        infoQueryPara.usbDevAddr = (uintptr_t)udev;
         deviceInfo = UsbPnpNotifyFindInfo(infoQueryPara);
         if (deviceInfo == NULL) {
             PRINTK("%s:%d USB_DEVICE_REMOVE find info failed", __func__, __LINE__);
@@ -970,6 +971,8 @@ static int32_t UsbPnpNotifyInit(struct HdfDeviceObject *device)
 
     OsalMutexInit(&g_usbSendEventLock);
 
+    g_usbPnpThreadRunningFlag = true;
+
     /* Creat thread to handle send usb interface information. */
     (void)memset_s(&threadCfg, sizeof(threadCfg), 0, sizeof(threadCfg));
     threadCfg.name = "LiteOS usb pnp notify handle kthread";
@@ -1001,6 +1004,8 @@ static void UsbPnpNotifyRelease(struct HdfDeviceObject *device)
         HDF_LOGI("%s: device is null", __func__);
         return;
     }
+
+    g_usbPnpThreadRunningFlag = false;
 
     ret = OsalThreadDestroy(&g_usbPnpNotifyReportThread);
     if (HDF_SUCCESS != ret) {
