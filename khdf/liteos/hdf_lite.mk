@@ -139,8 +139,8 @@ else
 endif
 
 # vendor lib
-COMPANY_OF_SOC := $(subst $\",,$(LOSCFG_DEVICE_COMPANY))
-include $(LITEOSTOPDIR)/../../device/$(COMPANY_OF_SOC)/drivers/lite.mk
+COMPANY_OF_SOC := $(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))
+-include $(LITEOSTOPDIR)/../../device/$(COMPANY_OF_SOC)/drivers/lite.mk
     LITEOS_BASELIB += --no-whole-archive
 endif
 
