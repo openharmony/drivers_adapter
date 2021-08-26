@@ -38,6 +38,8 @@ LOCAL_INCLUDE := $(FRAMEWORKS_SENSOR_ROOT)/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel \
                  $(FRAMEWORKS_SENSOR_ROOT)/barometer \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer
+                 $(FRAMEWORKS_SENSOR_ROOT)/hall \
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/hall
 
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
               $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_parser.c \
@@ -52,6 +54,12 @@ endif
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/barometer/sensor_barometer_driver.c \
               $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer/barometer_bmp180.c
+
+endif
+
+ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_HALL), y)
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/hall/sensor_hall_driver.c \
+              $(FRAMEWORKS_SENSOR_ROOT)/chipset/hall/hall_ak8789.c
 
 endif
 
