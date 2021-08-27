@@ -83,7 +83,7 @@ struct UsbInfoQueryPara {
     UsbInfoQueryParaType type;
     union {
         int32_t id;
-        uint32_t usbDevAddr;
+        uintptr_t usbDevAddr;
         struct {
             int32_t devNum;
             int32_t busNum;

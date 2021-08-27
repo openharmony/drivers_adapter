@@ -28,7 +28,7 @@
 #define WAIT_PNP_SLEEP_TIME 10 // ms
 #define WAIT_PNP_SLEEP_CNT  100
 
-static int32_t UsbPnpManageStartPnpHost(struct IDevmgrService *devmgrSvc)
+static int32_t UsbPnpManageStartPnpHost(const struct IDevmgrService *devmgrSvc)
 {
     int32_t ret;
     int32_t i = 0;
@@ -116,12 +116,14 @@ int DevmgrUsbPnpManageEventHandle(struct IDevmgrService *inst)
 
 bool DevmgrUsbPnpManageAddPrivateData(struct HdfDeviceInfoFull *deviceInfo, const void *privateData)
 {
+    int ret;
+
     if (privateData != NULL) {
         uint32_t length = ((struct HdfPrivateInfo *)(privateData))->length;
         deviceInfo->super.private = (const void *)OsalMemCalloc(length);
         if (deviceInfo->super.private != NULL) {
-            memcpy_s((void *)(deviceInfo->super.private), length, privateData, length);
-            if (deviceInfo->super.private == NULL) {
+            ret = memcpy_s((void *)(deviceInfo->super.private), length, privateData, length);
+            if ((ret != EOK) || (deviceInfo->super.private == NULL)) {
                 HDF_LOGE("%s: memcpy_s private error", __func__);
                 return false;
             }
