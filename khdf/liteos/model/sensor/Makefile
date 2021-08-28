@@ -37,7 +37,7 @@ LOCAL_INCLUDE := $(FRAMEWORKS_SENSOR_ROOT)/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/accel \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel \
                  $(FRAMEWORKS_SENSOR_ROOT)/barometer \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer \
                  $(FRAMEWORKS_SENSOR_ROOT)/hall \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/hall
 
