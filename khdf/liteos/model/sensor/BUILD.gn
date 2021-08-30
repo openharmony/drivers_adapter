@@ -41,14 +41,10 @@ hdf_driver(module_name) {
   ]
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_ACCEL)) {
-    sources += [
-      "$FRAMEWORKS_SENSOR_ROOT/accel/sensor_accel_driver.c",
-    ]
+    sources += [ "$FRAMEWORKS_SENSOR_ROOT/accel/sensor_accel_driver.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_ACCEL_BMI160)) {
-    sources += [
-      "$FRAMEWORKS_SENSOR_ROOT/chipset/accel/accel_bmi160.c",
-    ]
+    sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/accel/accel_bmi160.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_GYRO)) {
     sources += [
