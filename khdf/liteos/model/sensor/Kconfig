@@ -39,6 +39,12 @@ config DRIVERS_HDF_SENSOR_ACCEL
     depends on DRIVERS_HDF_SENSOR
     help
       Answer Y to enable HDF accel sensor driver.
+config DRIVERS_HDF_SENSOR_ACCEL_BMI160
+    bool "Enable HDF accel sensor driver"
+    default n
+    depends on DRIVERS_HDF_SENSOR_ACCEL
+    help
+      Answer Y to enable HDF accel bmi160 sensor driver.
 config DRIVERS_HDF_SENSOR_GYRO
     bool "Enable HDF gyro sensor driver"
     default n
