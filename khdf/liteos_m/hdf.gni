@@ -32,3 +32,19 @@ import("//kernel/liteos_m/config.gni")
 khdf_path = "//drivers/adapter/khdf/liteos_m"
 hdf_fwk_path = "//drivers/framework"
 kernel_path = "//kernel/liteos_m"
+
+template("hdf_driver") {
+  if (defined(invoker.hcs_sources)) {
+    action_foreach(target_name) {
+      script = "$hdf_fwk_path/tools/hc-gen/build_hcs.py"
+      sources = invoker.hcs_sources
+      outputs = [ "$target_gen_dir/{{source_name_part}}_hex.c" ]
+      args = [
+        "-i",
+        "-o",
+        rebase_path("hdf_config_gen.c"),
+        "{{source}}",
+      ]
+    }
+  }
+}
