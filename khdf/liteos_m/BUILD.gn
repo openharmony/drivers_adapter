@@ -30,7 +30,6 @@
 group("hdf_lite") {
   deps = [
     "core:hdf_core",
-    "hcs:hdf_hcs",
     "network:hdf_network",
     "osal:hdf_osal_lite",
     "platform:hdf_platform_lite",
