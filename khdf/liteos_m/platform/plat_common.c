@@ -28,7 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "plat_common.h"
+#include "platform_core.h"
 #include "los_interrupt.h"
 
 bool PlatInIrqContext(void)
