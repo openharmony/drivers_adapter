@@ -17,6 +17,7 @@ group("hdf_test_uhdf") {
     "unittest/config:hdf_adapter_uhdf_test_config",
     "unittest/manager:hdf_adapter_uhdf_test_ioservice",
     "unittest/manager:hdf_adapter_uhdf_test_sbuf",
+    "unittest/osal:hdf_adapter_uhdf_test_osal_posix",
     "unittest/osal:hdf_adapter_uhdf_test_osal",
   ]
 }
