@@ -22,6 +22,7 @@ lite_component("hdf_test_uhdf") {
       "//drivers/adapter/uhdf/test/unittest/manager:hdf_adapter_uhdf_test_ioservice",
       "//drivers/adapter/uhdf/test/unittest/manager:hdf_adapter_uhdf_test_manager",
       "//drivers/adapter/uhdf/test/unittest/manager:hdf_adapter_uhdf_test_sbuf",
+      "//drivers/adapter/uhdf/test/unittest/osal:hdf_adapter_uhdf_test_osal_posix",
       "//drivers/adapter/uhdf/test/unittest/osal:hdf_adapter_uhdf_test_osal",
       "//drivers/adapter/uhdf/test/unittest/platform:hdf_adapter_uhdf_test_platform",
     ]
