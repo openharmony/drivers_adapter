@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Huawei Device Co., Ltd.
+# Copyright (c) 2020-2021 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -16,10 +16,20 @@ include $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/lite.mk
 MODULE_NAME := hdf_storage_driver
 
 LOCAL_INCLUDE := $(LITEOSTOPDIR)/../../base/hiviewdfx/interfaces/kits \
-                 $(LITEOSTOPDIR)/../../drivers/framework/model/storage/include/common
+                 $(LITEOSTOPDIR)/../../third_party/mtd-utils/include \
+                 $(LITEOSTOPDIR)/../../drivers/khdf/liteos/model/storage/include \
 
 LOCAL_SRCS += ./storage_block_lite.c
-
 LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/common/storage_block.c
+
+ifeq ($(LOSCFG_DRIVERS_HDF_STORAGE_MTD), y)
+    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mtd/mtd_core.c
+    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mtd/mtd_spi_common.c
+    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mtd/mtd_char.c
+    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mtd/mtd_block.c
+    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/mtd_legacy_lite.c
+    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/mtd_char_lite.c
+    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/mtd_block_lite.c
+endif
 
 include $(HDF_DRIVER)
