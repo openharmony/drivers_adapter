@@ -29,7 +29,7 @@
  */
 
 #include "disk.h"
-#include "fs/driver.h"
+#include "fs/fs.h"
 #include "hdf_base.h"
 #include "hdf_log.h"
 #include "storage_block.h"
@@ -73,17 +73,19 @@ char *StorageBlockGetEmmcNodeName(void *block)
     return sb->name;
 }
 
-static int LiteosBlockOpen(struct Vnode *vnode)
+static int LiteosBlockOpen(FAR struct Vnode *vnode)
 {
+    (void)vnode;
     return 0;
 }
 
-static int LiteosBlockClose(struct Vnode *vnode)
+static int LiteosBlockClose(FAR struct Vnode *vnode)
 {
+    (void)vnode;
     return 0;
 }
 
-static ssize_t LiteosBlockRead(struct Vnode *vnode, unsigned char *buf,
+static ssize_t LiteosBlockRead(FAR struct Vnode *vnode, FAR unsigned char *buf,
     unsigned long long secStart, unsigned int nSecs)
 {
     size_t max = (size_t)(-1);
@@ -95,7 +97,7 @@ static ssize_t LiteosBlockRead(struct Vnode *vnode, unsigned char *buf,
     return StorageBlockRead(sb, buf, (size_t)secStart, (size_t)nSecs);
 }
 
-static ssize_t LiteosBlockWrite(struct Vnode *vnode, const unsigned char *buf,
+static ssize_t LiteosBlockWrite(FAR struct Vnode *vnode, FAR const unsigned char *buf,
     unsigned long long secStart, unsigned int nSecs)
 {
     size_t max = (size_t)(-1);
@@ -107,7 +109,7 @@ static ssize_t LiteosBlockWrite(struct Vnode *vnode, const unsigned char *buf,
     return StorageBlockWrite(sb, buf, (size_t)secStart, (size_t)nSecs);
 }
 
-static int LiteosBlockGeometry(struct Vnode *vnode, struct geometry *geometry)
+static int LiteosBlockGeometry(FAR struct Vnode *vnode, FAR struct geometry *geometry)
 {
     struct StorageBlock *sb = (struct StorageBlock *)((struct drv_data*)vnode->data)->priv;
 
@@ -125,7 +127,7 @@ static int LiteosBlockGeometry(struct Vnode *vnode, struct geometry *geometry)
     return HDF_SUCCESS;
 }
 
-static int32_t LiteosBlockSaveGeometry(struct Vnode *vnode, unsigned long arg)
+static int32_t LiteosBlockSaveGeometry(FAR struct Vnode *vnode, unsigned long arg)
 {
     int32_t ret;
     struct geometry gm;
@@ -146,7 +148,7 @@ static int32_t LiteosBlockSaveGeometry(struct Vnode *vnode, unsigned long arg)
     return HDF_SUCCESS;
 }
 
-static int32_t LiteosBlockIoctl(struct Vnode *vnode, int cmd, unsigned long arg)
+static int32_t LiteosBlockIoctl(FAR struct Vnode *vnode, int cmd, unsigned long arg)
 {
     int32_t ret;
     int flag, errCnt;
