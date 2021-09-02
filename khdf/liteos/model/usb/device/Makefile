@@ -37,11 +37,6 @@ USB_DEVICE_ROOT = $(LITEOSTOPDIR)/../../third_party/NuttX/drivers/usbdev
 
 LOCAL_INCLUDE := $(USB_DEVICE_ROOT) \
                  $(USB_DEVICE_ROOT)/gadget/fconfig/include \
-                 $(LITEOSTOPDIR)/../../kernel/liteos_a/bsd/compat/linuxkpi/include/linux \
-                 $(LITEOSTOPDIR)/../../kernel/liteos_a/bsd/dev/usb \
-                 $(LITEOSTOPDIR)/../../kernel/liteos_a/bsd/compat/linuxkpi/include/asm \
-                 $(LITEOSTOPDIR)/../../kernel/liteos_a/bsd/compat/linuxkpi/include/linux/ \
-                 $(LITEOSTOPDIR)/../../device/hisilicon/hispark_taurus/sdk_linux/huawei_proprietary/include/ \
                  $(FRAMEWORKS_USB_DDK_DEVICE)/../../interfaces/ddk/common \
                  $(FRAMEWORKS_USB_DDK_DEVICE)/../../interfaces/ddk/device \
                  $(FRAMEWORKS_USB_DDK_DEVICE)/include
@@ -59,10 +54,10 @@ endif
 endif
 
 LOCAL_SRCS += $(FRAMEWORKS_USB_DDK_DEVICE)/src/adapter_if_liteos.c \
-	      $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_cfg_mgr.c \
-	      $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_dev_mgr.c \
-	      $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_io_mgr.c \
-	      $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_sdk_if.c
+          $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_cfg_mgr.c \
+          $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_dev_mgr.c \
+          $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_io_mgr.c \
+          $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_sdk_if.c
 
 endif
 include $(HDF_DRIVER)

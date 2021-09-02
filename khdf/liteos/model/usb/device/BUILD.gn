@@ -33,7 +33,7 @@ module_switch = defined(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE)
 module_name = "hdf_usb_ddk_device"
 hdf_driver(module_name) {
   FRAMEWORKS_USB_DDK_DEVICE = "$HDF_PERIPHERAL_PATH/usb/ddk/device"
-  USB_DEVICE_ROOT = "//third_party/NuttX/drivers/usbdev"
+  USB_DEVICE_ROOT = "$LITEOSTHIRDPARTY/NuttX/drivers/usbdev"
   FRAMEWORKS_USB_DRIVERS = "$HDF_PERIPHERAL_PATH/usb/gadget/function"
   sources = [
     "$FRAMEWORKS_USB_DDK_DEVICE/src/adapter_if_liteos.c",
@@ -78,7 +78,8 @@ hdf_driver(module_name) {
     sources += [ "$FRAMEWORKS_USB_DRIVERS/ecm/cdcecm.c" ]
   }
 
-  libs = [ "$LITEOSTHIRDPARTY/NuttX/drivers/usbdev/gadget/libusb_dwc3.a" ]
+  libs =
+      [ "//device/hisilicon/hispark_taurus/sdk_liteos/drivers/libusb_dwc3.a" ]
 
   include_dirs = [
     "$USB_DEVICE_ROOT",

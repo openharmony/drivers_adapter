@@ -27,7 +27,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
-LITEOS_BASELIB += -L$(LITEOSTOPDIR)/../../third_party/NuttX/drivers/usbdev/gadget
+LITEOS_BASELIB += -L$(LITEOSTOPDIR)/../../device/hisilicon/hispark_taurus/sdk_liteos/drivers
 LITEOS_BASELIB += -lusb_dwc3
 endif
 
