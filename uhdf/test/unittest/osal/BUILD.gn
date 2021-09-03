@@ -52,3 +52,45 @@ unittest("hdf_adapter_uhdf_test_osal") {
     "-fno-strict-aliasing",
   ]
 }
+
+unittest("hdf_adapter_uhdf_test_osal_posix") {
+  output_extension = "bin"
+  output_dir = "$root_out_dir/test/unittest/hdf"
+  include_dirs = [
+    "//third_party/googletest/googletest/include",
+    "//third_party/bounds_checking_function/include",
+    "//drivers/framework/ability/sbuf/include",
+    "//drivers/framework/include/platform",
+    "//drivers/framework/include/core",
+    "//drivers/framework/include/osal",
+    "//drivers/adapter/uhdf/posix/include",
+    "//drivers/framework/include/utils",
+    "//drivers/framework/include/config",
+    "//drivers/framework/include",
+    "//drivers/framework/test/unittest/include",
+    "//drivers/framework/test/unittest/osal",
+    "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
+  ]
+
+  defines = [ "__USER__" ]
+  sources = [
+    "//drivers/framework/support/posix/test/unittest/common/hdf_osal_test_posix.cpp",
+    "//drivers/framework/test/unittest/osal/osal_all_test.c",
+    "//drivers/framework/test/unittest/osal/osal_get_case_test.c",
+    "//drivers/framework/test/unittest/osal/osal_list_test.c",
+  ]
+  deps = [
+    "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
+    "//drivers/adapter/uhdf/manager:hdf_core",
+    "//drivers/adapter/uhdf/posix:hdf_posix_osal",
+  ]
+  public_deps = [ "//third_party/bounds_checking_function:libsec_shared" ]
+  cflags = [
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsigned-char",
+    "-fno-common",
+    "-fno-strict-aliasing",
+  ]
+}
