@@ -23,9 +23,9 @@ shared_library("hdf_posix_osal") {
     "//drivers/framework/support/posix/src/osal_mem.c",
     "//drivers/framework/support/posix/src/osal_mutex.c",
     "//drivers/framework/support/posix/src/osal_sem.c",
+    "//drivers/framework/support/posix/src/osal_spinlock.c",
     "//drivers/framework/support/posix/src/osal_thread.c",
     "//drivers/framework/support/posix/src/osal_time.c",
-    "//drivers/framework/support/posix/src/osal_spinlock.c",
   ]
   include_dirs = [
     "//drivers/framework/include",
