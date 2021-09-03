@@ -74,9 +74,9 @@ ohos_unittest("hdf_adapter_uhdf_test_osal_posix") {
   defines = [ "__USER__" ]
   sources = [
     "//drivers/framework/support/posix/test/unittest/common/hdf_osal_test_posix.cpp",
-    "//drivers/framework/test/unittest/osal/osal_list_test.c",
     "//drivers/framework/test/unittest/osal/osal_all_test.c",
     "//drivers/framework/test/unittest/osal/osal_get_case_test.c",
+    "//drivers/framework/test/unittest/osal/osal_list_test.c",
   ]
   deps = [
     "//drivers/adapter/uhdf2/osal:libhdf_utils",
