@@ -54,3 +54,46 @@ ohos_unittest("hdf_adapter_uhdf_test_osal") {
     external_deps = [ "hilog:libhilog" ]
   }
 }
+
+ohos_unittest("hdf_adapter_uhdf_test_osal_posix") {
+  module_out_path = module_output_path
+
+  include_dirs = [
+    "//drivers/framework/ability/sbuf/include",
+    "//drivers/framework/include/platform",
+    "//drivers/framework/include/core",
+    "//drivers/framework/include/osal",
+    "//drivers/adapter/uhdf/posix/include",
+    "//drivers/framework/include/utils",
+    "//drivers/framework/include/config",
+    "//drivers/framework/include",
+    "//drivers/framework/test/unittest/include",
+    "//drivers/framework/test/unittest/osal",
+  ]
+
+  defines = [ "__USER__" ]
+  sources = [
+    "//drivers/framework/support/posix/test/unittest/common/hdf_osal_test_posix.cpp",
+    "//drivers/framework/test/unittest/osal/osal_all_test.c",
+    "//drivers/framework/test/unittest/osal/osal_get_case_test.c",
+    "//drivers/framework/test/unittest/osal/osal_list_test.c",
+  ]
+  deps = [
+    "//drivers/adapter/uhdf2/osal:libhdf_utils",
+    "//utils/native/base:utils",
+  ]
+
+  cflags = [
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsigned-char",
+    "-fno-common",
+    "-fno-strict-aliasing",
+  ]
+  if (is_standard_system) {
+    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  } else {
+    external_deps = [ "hilog:libhilog" ]
+  }
+}
