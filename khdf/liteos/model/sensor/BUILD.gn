@@ -61,10 +61,10 @@ hdf_driver(module_name) {
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_HALL)) {
-    sources += [
-      "$FRAMEWORKS_SENSOR_ROOT/chipset/hall/hall_ak8789.c",
-      "$FRAMEWORKS_SENSOR_ROOT/hall/sensor_hall_driver.c",
-    ]
+    sources += ["$FRAMEWORKS_SENSOR_ROOT/hall/sensor_hall_driver.c"]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_HALL_AK8789)) {
+    sources += ["$FRAMEWORKS_SENSOR_ROOT/chipset/hall/hall_ak8789.c"]
   }
 
   include_dirs = [
