@@ -63,3 +63,9 @@ config DRIVERS_HDF_SENSOR_HALL
     depends on DRIVERS_HDF_SENSOR
     help
       Answer Y to enable HDF hall sensor driver.
+config DRIVERS_HDF_SENSOR_HALL_AK8789
+    bool "Enable HDF hall sensor driver"
+    default n
+    depends on DRIVERS_HDF_SENSOR_HALL
+    help
+      Answer Y to enable HDF hall ak8789 sensor driver.
