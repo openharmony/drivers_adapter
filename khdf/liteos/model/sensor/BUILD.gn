@@ -67,6 +67,13 @@ hdf_driver(module_name) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/hall/hall_ak8789.c" ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_MAGNETIC)) {
+    sources += [ "$FRAMEWORKS_SENSOR_ROOT/magnetic/sensor_magnetic_driver.c" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_MAGNETIC_LSM303)) {
+    sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/magnetic/magnetic_lsm303.c" ]
+  }
+
   include_dirs = [
     "$FRAMEWORKS_SENSOR_ROOT/include",
     "$FRAMEWORKS_SENSOR_ROOT/common/include",
@@ -78,5 +85,7 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer",
     "$FRAMEWORKS_SENSOR_ROOT/hall",
     "$FRAMEWORKS_SENSOR_ROOT/chipset/hall",
+    "$FRAMEWORKS_SENSOR_ROOT/magnetic",
+    "$FRAMEWORKS_SENSOR_ROOT/chipset/magnetic",
   ]
 }
