@@ -46,17 +46,19 @@ hdf_driver(module_name) {
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_ACCEL_BMI160)) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/accel/accel_bmi160.c" ]
   }
+
+  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER)) {
+    sources += [ "$FRAMEWORKS_SENSOR_ROOT/barometer/sensor_barometer_driver.c" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER_BMP180)) {
+    sources +=
+        [ "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer/barometer_bmp180.c" ]
+  }
+
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_GYRO)) {
     sources += [
       "$FRAMEWORKS_SENSOR_ROOT/chipset/gyro/gyro_bmi160.c",
       "$FRAMEWORKS_SENSOR_ROOT/gyro/sensor_gyro_driver.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER)) {
-    sources += [
-      "$FRAMEWORKS_SENSOR_ROOT/barometer/sensor_barometer_driver.c",
-      "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer/barometer_bmp180.c",
     ]
   }
 
@@ -72,10 +74,10 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_SENSOR_ROOT/common/include",
     "$FRAMEWORKS_SENSOR_ROOT/accel",
     "$FRAMEWORKS_SENSOR_ROOT/chipset/accel",
-    "$FRAMEWORKS_SENSOR_ROOT/gyro",
-    "$FRAMEWORKS_SENSOR_ROOT/chipset/gyro",
     "$FRAMEWORKS_SENSOR_ROOT/barometer",
     "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer",
+    "$FRAMEWORKS_SENSOR_ROOT/gyro",
+    "$FRAMEWORKS_SENSOR_ROOT/chipset/gyro",
     "$FRAMEWORKS_SENSOR_ROOT/hall",
     "$FRAMEWORKS_SENSOR_ROOT/chipset/hall",
   ]
