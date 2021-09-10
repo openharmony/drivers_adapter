@@ -54,6 +54,9 @@ hdf_driver(module_name) {
     sources +=
         [ "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer/barometer_bmp180.c" ]
   }
+  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_PROXIMITY)) {
+    sources += [ "$FRAMEWORKS_SENSOR_ROOT/proximity/sensor_proximity_driver.c" ]
+  }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_GYRO)) {
     sources += [
@@ -89,5 +92,6 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_SENSOR_ROOT/chipset/hall",
     "$FRAMEWORKS_SENSOR_ROOT/magnetic",
     "$FRAMEWORKS_SENSOR_ROOT/chipset/magnetic",
+    "$FRAMEWORKS_SENSOR_ROOT/proximity",
   ]
 }
