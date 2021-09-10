@@ -36,6 +36,8 @@ LOCAL_INCLUDE := $(FRAMEWORKS_SENSOR_ROOT)/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/common/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/accel \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel \
+                 $(FRAMEWORKS_SENSOR_ROOT)/als \
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/als \
                  $(FRAMEWORKS_SENSOR_ROOT)/barometer \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer \
                  $(FRAMEWORKS_SENSOR_ROOT)/hall \
@@ -51,6 +53,11 @@ LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_ACCEL), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/accel/sensor_accel_driver.c \
               $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel/accel_bmi160.c
+endif
+
+ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_ALS), y)
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/als/sensor_als_driver.c \
+              $(FRAMEWORKS_SENSOR_ROOT)/chipset/als/als_bh1745.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER), y)
