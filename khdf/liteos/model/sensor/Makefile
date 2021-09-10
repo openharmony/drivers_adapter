@@ -68,4 +68,8 @@ LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/magnetic/sensor_magnetic_driver.c \
               $(FRAMEWORKS_SENSOR_ROOT)/chipset/magnetic/magnetic_lsm303.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_PROXIMITY), y)
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/proximity/sensor_proximity_driver.c
+endif
+
 include $(HDF_DRIVER)
