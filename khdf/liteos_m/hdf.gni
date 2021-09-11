@@ -28,23 +28,38 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import("//kernel/liteos_m/config.gni")
-
 khdf_path = "//drivers/adapter/khdf/liteos_m"
 hdf_fwk_path = "//drivers/framework"
 kernel_path = "//kernel/liteos_m"
-
 template("hdf_driver") {
   if (defined(invoker.hcs_sources)) {
-    action_foreach(target_name) {
+    action_foreach("hc_gen") {
       script = "$hdf_fwk_path/tools/hc-gen/build_hcs.py"
       sources = invoker.hcs_sources
       outputs = [ "$target_gen_dir/{{source_name_part}}_hex.c" ]
       args = [
         "-i",
         "-o",
-        rebase_path("hdf_config_gen.c"),
+        rebase_path("$target_gen_dir/{{source_name_part}}"),
         "{{source}}",
       ]
+    }
+  }
+  static_library(target_name) {
+    if (defined(invoker.hcs_sources)) {
+      hc_gen = ":hc_gen"
+      generated_sources = get_target_outputs(hc_gen)
+      print(generated_sources)
+      if (defined(invoker.sources)) {
+        sources += generated_sources
+      } else {
+        sources = generated_sources
+      }
+      if (defined(invoker.deps)) {
+        deps += [ hc_gen ]
+      } else {
+        deps = [ hc_gen ]
+      }
     }
   }
 }
