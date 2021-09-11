@@ -150,7 +150,7 @@ source "../../drivers/adapter/khdf/liteos/test/Kconfig"
 config DRIVERS_HDF_WIFI
     bool "Enable HDF WiFi Host driver"
     default n
-    depends on DRIVERS_HDF_PERIPHERAL && NET_LWIP_SACK
+    depends on DRIVERS_HDF && NET_LWIP_SACK
     help
       Answer Y to enable HDF WiFi Host driver.
 
