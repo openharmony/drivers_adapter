@@ -26,13 +26,13 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-config DRIVERS_HDF
-    bool "Enable HDF manager"
+menuconfig DRIVERS_HDF
+    bool "HDF driver framework support"
     default n
     depends on DRIVERS
     help
       Answer Y to enable LiteOS support HDF.
-
+if DRIVERS_HDF
 config DRIVERS_HDF_PLATFORM
     bool "Enable HDF platform driver"
     default n
@@ -110,14 +110,6 @@ config DRIVERS_HDF_PLATFORM_MIPI_DSI
     help
       Answer Y to enable HDF platform mipi dsi driver.
 
-config DRIVERS_HIEDMAC
-    bool "Enable HIEDMAC"
-    default n
-    depends on DRIVERS && PLATFORM_HI3559AV100
-    help
-      Answer Y to enable LiteOS support hiedmac.
-
-
 config DRIVERS_HDF_PLATFORM_HISI_SDK
     bool "Enable HDF hisi sdk driver"
     default n
@@ -146,22 +138,31 @@ config DRIVERS_HDF_PLATFORM_WATCHDOG
     help
       Answer Y to enable HDF platform watchdog driver.
 
+config DRIVERS_HIEDMAC
+    bool "Enable HIEDMAC"
+    default n
+    depends on DRIVERS && PLATFORM_HI3559AV100
+    help
+      Answer Y to enable LiteOS support hiedmac.
+source "../../drivers/adapter/khdf/liteos/model/storage/Kconfig"
+source "../../drivers/adapter/khdf/liteos/test/Kconfig"
+
 config DRIVERS_HDF_WIFI
     bool "Enable HDF WiFi Host driver"
     default n
-    depends on DRIVERS_HDF && NET_LWIP_SACK
+    depends on DRIVERS_HDF_PERIPHERAL && NET_LWIP_SACK
     help
       Answer Y to enable HDF WiFi Host driver.
 
 source "../../drivers/adapter/khdf/liteos/model/bus/usb/Kconfig"
-source "../../drivers/adapter/khdf/liteos/test/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/display/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/input/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/sensor/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/storage/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/misc/vibrator/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/usb/device/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/usb/host/Kconfig"
 source "../../drivers/peripheral/usb/gadget/function/master/Kconfig"
 source "../../drivers/peripheral/usb/gadget/function/acm/Kconfig"
 source "../../drivers/peripheral/usb/gadget/function/ecm/Kconfig"
+
+endif
