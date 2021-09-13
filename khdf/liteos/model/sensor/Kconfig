@@ -45,6 +45,18 @@ config DRIVERS_HDF_SENSOR_ACCEL_BMI160
     depends on DRIVERS_HDF_SENSOR_ACCEL
     help
       Answer Y to enable HDF accel bmi160 sensor driver.
+config DRIVERS_HDF_SENSOR_ALS
+    bool "Enable HDF als sensor driver"
+    default n
+    depends on DRIVERS_HDF_SENSOR
+    help
+      Answer Y to enable HDF als sensor driver.
+config DRIVERS_HDF_SENSOR_ALS_BH1745
+    bool "Enable HDF accel sensor driver"
+    default n
+    depends on DRIVERS_HDF_SENSOR_ALS
+    help
+      Answer Y to enable HDF als bh1745 sensor driver.
 config DRIVERS_HDF_SENSOR_PROXIMITY
     bool "Enable HDF proximity sensor driver"
     default n
