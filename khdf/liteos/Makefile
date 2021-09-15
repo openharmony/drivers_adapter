@@ -128,7 +128,7 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PWM), y)
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MMC), y)
-              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_block.c \
+              LOCAL_SRCS += \
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_core.c \
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_dispatch.c \
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_if.c \

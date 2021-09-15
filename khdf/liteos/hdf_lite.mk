@@ -42,13 +42,17 @@ ifeq ($(LOSCFG_DRIVERS_HDF), y)
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/support/platform/include
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/support/platform/include/common
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/support/platform/include/mmc
+    LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/model/storage/include
+    LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/model/storage/include/mmc
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/model/storage/include/mtd
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/include/platform
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/include/utils
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/include/osal
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(HDF_FRAMEWORKS_PATH)/utils/include
     LITEOS_DRIVERS_HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/osal/include
-    LITEOS_DRIVERS_HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../drivers/adapter/khdf/model/storage/include
+    LITEOS_DRIVERS_HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/include
+    LITEOS_DRIVERS_HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/include/mmc
+    LITEOS_DRIVERS_HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/include/mtd
 
 # models
 ifeq ($(LOSCFG_DRIVERS_HDF_WIFI), y)

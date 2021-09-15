@@ -28,10 +28,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "mtd_legacy_lite.h"
+#include "mtd/mtd_legacy_lite.h"
 #include "string.h"
 
-#include "mtd_core.h"
+#include "mtd/mtd_core.h"
 #include "mtd_list.h"
 #include "hdf_log.h"
 #include "osal_mem.h"

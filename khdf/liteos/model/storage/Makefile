@@ -19,17 +19,20 @@ LOCAL_INCLUDE := $(LITEOSTOPDIR)/../../base/hiviewdfx/interfaces/kits \
                  $(LITEOSTOPDIR)/../../third_party/mtd-utils/include \
                  $(LITEOSTOPDIR)/../../drivers/khdf/liteos/model/storage/include \
 
-LOCAL_SRCS += ./storage_block_lite.c
-LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/common/storage_block.c
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MMC), y)
+    LOCAL_SRCS += src/mmc/mmc_block_lite.c
+    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mmc/mmc_block.c
+endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_STORAGE_MTD), y)
     LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mtd/mtd_core.c
     LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mtd/mtd_spi_common.c
     LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mtd/mtd_char.c
     LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/framework/model/storage/src/mtd/mtd_block.c
-    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/mtd_legacy_lite.c
-    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/mtd_char_lite.c
-    LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/mtd_block_lite.c
+    #LOCAL_SRCS += $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/storage/src/mtd/mtd_legacy_lite.c
+    LOCAL_SRCS += src/mtd/mtd_legacy_lite.c
+    LOCAL_SRCS += src/mtd/mtd_char_lite.c
+    LOCAL_SRCS += src/mtd/mtd_block_lite.c
 endif
 
 include $(HDF_DRIVER)
