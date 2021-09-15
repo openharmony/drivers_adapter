@@ -32,11 +32,12 @@
 #include "fs/fs.h"
 #include "hdf_base.h"
 #include "hdf_log.h"
-#include "storage_block.h"
+#include "mmc/mmc_block.h"
+#include "mmc/mmc_sd.h"
 #include "sys/ioctl.h"
 #include "user_copy.h"
 
-#define HDF_LOG_TAG storage_block_lite_c
+#define HDF_LOG_TAG mmc_block_lite_c
 
 /* block ioctl */
 #define MMC_IOC_MAGIC   'm'
@@ -58,19 +59,21 @@ struct RtDeviceBlkGeometry {
 
 struct disk_divide_info g_emmcInfo = {.sector_count = 0xffffffff};
 
+#ifdef LOSCFG_STORAGE_EMMC
 struct disk_divide_info *StorageBlockGetEmmc(void)
 {
     return &g_emmcInfo;
 }
+#endif
 
 char *StorageBlockGetEmmcNodeName(void *block)
 {
-    struct StorageBlock *sb = (struct StorageBlock *)block;
- 
-    if (sb == NULL) {
+    struct MmcBlock *mb = (struct MmcBlock *)block;
+
+    if (mb == NULL) {
         return NULL;
     }
-    return sb->name;
+    return mb->name;
 }
 
 static int LiteosBlockOpen(FAR struct Vnode *vnode)
@@ -89,31 +92,41 @@ static ssize_t LiteosBlockRead(FAR struct Vnode *vnode, FAR unsigned char *buf,
     unsigned long long secStart, unsigned int nSecs)
 {
     size_t max = (size_t)(-1);
-    struct StorageBlock *sb = (struct StorageBlock *)((struct drv_data*)vnode->data)->priv;
+    struct MmcBlock *mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
 
     if (secStart >= max || nSecs >= max) {
         return HDF_ERR_INVALID_PARAM;
     }
-    return StorageBlockRead(sb, buf, (size_t)secStart, (size_t)nSecs);
+    if (mb == NULL) {
+        HDF_LOGE("%s: mmc block is null", __func__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    return MmcDeviceRead(mb->mmc, buf, (size_t)secStart, (size_t)nSecs);
 }
 
 static ssize_t LiteosBlockWrite(FAR struct Vnode *vnode, FAR const unsigned char *buf,
     unsigned long long secStart, unsigned int nSecs)
 {
     size_t max = (size_t)(-1);
-    struct StorageBlock *sb = (struct StorageBlock *)((struct drv_data*)vnode->data)->priv;
+    struct MmcBlock *mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
 
     if (secStart >= max || nSecs >= max) {
         return HDF_ERR_INVALID_PARAM;
     }
-    return StorageBlockWrite(sb, buf, (size_t)secStart, (size_t)nSecs);
+    if (mb == NULL) {
+        HDF_LOGE("%s: mmc block is null", __func__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    return MmcDeviceWrite(mb->mmc, (uint8_t *)buf, (size_t)secStart, (size_t)nSecs);
 }
 
 static int LiteosBlockGeometry(FAR struct Vnode *vnode, FAR struct geometry *geometry)
 {
-    struct StorageBlock *sb = (struct StorageBlock *)((struct drv_data*)vnode->data)->priv;
+    struct MmcBlock *mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
 
-    if (sb == NULL) {
+    if (mb == NULL) {
         return HDF_ERR_INVALID_OBJECT;
     }
     if (geometry == NULL) {
@@ -122,8 +135,8 @@ static int LiteosBlockGeometry(FAR struct Vnode *vnode, FAR struct geometry *geo
     geometry->geo_available    = true;
     geometry->geo_mediachanged = false;
     geometry->geo_writeenabled = true;
-    geometry->geo_nsectors = sb->capacity; /* StorageBlock sized by sectors */
-    geometry->geo_sectorsize = sb->secSize;
+    geometry->geo_nsectors = mb->capacity; /* MmcDevice sized by sectors */
+    geometry->geo_sectorsize = mb->secSize;
     return HDF_SUCCESS;
 }
 
@@ -148,29 +161,50 @@ static int32_t LiteosBlockSaveGeometry(FAR struct Vnode *vnode, unsigned long ar
     return HDF_SUCCESS;
 }
 
+static int32_t MmcBlockGetAuSize(struct MmcBlock *mb, uint32_t *auSize)
+{
+    struct MmcDevice *mmc = NULL;
+    struct SdDevice *sd = NULL;
+
+    if (mb == NULL || mb->mmc == NULL) {
+        HDF_LOGE("%s: mmc block or device is null", __func__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    mmc = (struct MmcDevice *)mb->mmc;
+    if (mmc->type != MMC_DEV_SD) {
+        HDF_LOGE("%s: media is not sd", __func__);
+        return HDF_ERR_NOT_SUPPORT;
+    }
+    sd = (struct SdDevice *)mmc;
+
+    *auSize = sd->reg.ssr.auSize;
+    return HDF_SUCCESS;
+}
+
 static int32_t LiteosBlockIoctl(FAR struct Vnode *vnode, int cmd, unsigned long arg)
 {
     int32_t ret;
     int flag, errCnt;
     unsigned int au;
     uint32_t auSize;
-    struct StorageBlock *sb = NULL;
+    struct MmcBlock *mb = NULL;
 
-    sb = (struct StorageBlock *)((struct drv_data*)vnode->data)->priv;
+    mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
 
     switch (cmd) {
         case RT_DEVICE_CTRL_BLK_GETGEOME:
             ret = LiteosBlockSaveGeometry(vnode, arg);
             break;
         case RT_DEVICE_CARD_STATUS:
-            flag = (StorageBlockIsPresent(sb)) ? 1 : 0;
+            flag = (MmcDeviceIsPresent(mb->mmc)) ? 1 : 0;
             ret = LOS_CopyFromKernel((void *)(uintptr_t)arg, sizeof(int), &flag, sizeof(int));
             if (ret) {
                 ret = HDF_ERR_IO;
             }
             break;
         case RT_DEVICE_CARD_AU_SIZE:
-            ret = StorageBlockGetAuSize(sb, &auSize);
+            ret = MmcBlockGetAuSize(mb, &auSize);
             if (ret == HDF_SUCCESS) {
                 au = (unsigned int)auSize;
                 ret = LOS_CopyFromKernel((void *)(uintptr_t)arg, sizeof(au), &au, sizeof(au));
@@ -180,7 +214,7 @@ static int32_t LiteosBlockIoctl(FAR struct Vnode *vnode, int cmd, unsigned long 
             }
             break;
         case RT_DEVICE_BLOCK_ERROR_COUNT:
-            errCnt = sb->errCnt;
+            errCnt = mb->errCnt;
             ret = LOS_CopyFromKernel((void *)(uintptr_t)arg, sizeof(int), &errCnt,
                       sizeof(int));
             if (ret) {
@@ -209,43 +243,83 @@ struct block_operations *StorageBlockGetMmcOps(void)
     return &g_blockOps;
 }
 
-int32_t StorageBlockOsInit(struct StorageBlock *sb)
+static struct MmcBlock *g_diskIdTable[SYS_MAX_DISK] = { };
+
+int32_t MmcBlockOsInit(struct MmcDevice *mmcDevice)
 {
     int32_t ret;
-    int diskId;
+    int32_t diskId;
     struct disk_divide_info *info = NULL;
+    struct MmcBlock *mb = NULL;
 
-    if (sb == NULL || sb->name[0] == '\0') {
+    if (mmcDevice == NULL || mmcDevice->mb == NULL) {
+        return HDF_ERR_INVALID_OBJECT;
+    }
+    mb = mmcDevice->mb;
+
+    if (mb->name[0] == '\0') {
+        HDF_LOGE("%s: mmc block name invalid", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
 
-    diskId = los_alloc_diskid_byname(sb->name);
-    if (!sb->removeable) {
+    diskId = los_alloc_diskid_byname(mb->name);
+    if (!mb->removeable) {
         info = &g_emmcInfo;
-        info->sector_count = sb->capacity;
+        info->sector_count = mb->capacity;
     }
 
-    ret = los_disk_init(sb->name, &g_blockOps, (void *)sb, diskId, info);
+    ret = los_disk_init(mb->name, &g_blockOps, (void *)mb, diskId, info);
     if (ret != ENOERR) {
-        HDF_LOGE("StorageBlockRegister: los_disk_init fail:%d", ret);
+        HDF_LOGE("%s: los_disk_init fail:%d", __func__, ret);
         return ret;
+    }
+
+    mb->osData = get_disk(diskId);
+    if (mb->osData == NULL) {
+        HDF_LOGE("%s: los_disk_init fail:%d", __func__, ret);
+        return HDF_PLT_ERR_OS_API;
+    }
+
+    if (diskId >= 0 && diskId < SYS_MAX_DISK) {
+        g_diskIdTable[diskId] = mb;
     }
 
     return HDF_SUCCESS;
 }
 
-void StorageBlockOsUninit(struct StorageBlock *sb)
+void MmcBlockOsUninit(struct MmcDevice *mmcDevice)
 {
     int diskId;
+    struct MmcBlock *mb = NULL;
 
-    if (sb == NULL || sb->name[0] == '\0') {
+    if (mmcDevice == NULL || mmcDevice->mb == NULL) {
         return;
     }
-    diskId = los_get_diskid_byname(sb->name);
+    mb = mmcDevice->mb;
+
+    diskId = los_get_diskid_byname(mb->name);
     (void)los_disk_deinit(diskId);
+
+    if (diskId >= 0 && diskId < SYS_MAX_DISK) {
+        g_diskIdTable[diskId] = NULL;
+    }
 }
 
-ssize_t StorageBlockMmcErase(unsigned int block_id, size_t secStart, unsigned int secNr)
+struct MmcBlock *MmcBlockFromDiskId(int32_t diskId)
 {
-    return StorageBlockErase(StorageBlockFromNumber(block_id), secStart, secNr);
+    if (diskId >= 0 && diskId < SYS_MAX_DISK) {
+        return g_diskIdTable[diskId];
+    }
+    return NULL;
+}
+
+ssize_t StorageBlockMmcErase(uint32_t diskId, size_t secStart, size_t secNr)
+{
+    struct MmcBlock *mb = NULL;
+
+    mb = MmcBlockFromDiskId((int32_t)diskId);
+    if (mb == NULL || mb->mmc == NULL) {
+        return HDF_ERR_INVALID_PARAM;
+    }
+    return MmcDeviceErase(mb->mmc, secStart, secNr);
 }

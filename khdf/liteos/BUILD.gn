@@ -142,7 +142,6 @@ hdf_driver(module_name) {
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MMC)) {
     sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_block.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_dispatch.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_emmc.c",
@@ -254,7 +253,8 @@ config("hdf_config") {
     "$HDF_FRAMEWORKS_PATH/include/net",
     "$HDF_FRAMEWORKS_PATH/include/wifi",
     "$HDF_FRAMEWORKS_PATH/model/network/common/netdevice",
-    "$HDF_FRAMEWORKS_PATH/model/storage/include/common",
+    "$HDF_FRAMEWORKS_PATH/model/storage/include",
+    "$HDF_FRAMEWORKS_PATH/model/storage/include/mmc",
     "$HDF_FRAMEWORKS_PATH/model/storage/include/mtd",
     "$HDF_FRAMEWORKS_PATH/ability/sbuf/include",
     "$HDF_FRAMEWORKS_PATH/support/platform/include",
@@ -267,6 +267,8 @@ config("hdf_config") {
     "osal/include",
     "platform/include",
     "model/storage/include",
+    "model/storage/include/mmc",
+    "model/storage/include/mtd",
     "$HDF_FRAMEWORKS_PATH/core/adapter/vnode/include",
     "$HDF_FRAMEWORKS_PATH/core/adapter/syscall/include",
     "$HDF_FRAMEWORKS_PATH/include/config",
