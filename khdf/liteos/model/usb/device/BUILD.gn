@@ -49,11 +49,6 @@ hdf_driver(module_name) {
       "$USB_DEVICE_ROOT/gadget/composite_desc.c",
       "$USB_DEVICE_ROOT/gadget/f_acm_desc.c",
       "$USB_DEVICE_ROOT/gadget/f_camera.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_USB_F_CONFIG)) {
-    sources += [
       "$USB_DEVICE_ROOT/gadget/fconfig/src/f_config.c",
       "$USB_DEVICE_ROOT/gadget/fconfig/src/f_generic.c",
       "$USB_DEVICE_ROOT/gadget/fconfig/src/obj_res.c",
@@ -66,16 +61,12 @@ hdf_driver(module_name) {
     ]
   }
 
-  if (defined(LOSCFG_DRIVERS_HDF_USBFN_MASTER)) {
-    sources += [ "$FRAMEWORKS_USB_DRIVERS/master/dev_master.c" ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_USBFN_CDCACM)) {
-    sources += [ "$FRAMEWORKS_USB_DRIVERS/acm/cdcacm.c" ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_USBFN_CDCECM)) {
-    sources += [ "$FRAMEWORKS_USB_DRIVERS/ecm/cdcecm.c" ]
+  if (defined(LOSCFG_DRIVERS_HDF_USB_DEVICE_DEMO_TEST)) {
+    sources += [
+      "$FRAMEWORKS_USB_DRIVERS/acm/cdcacm.c",
+      "$FRAMEWORKS_USB_DRIVERS/ecm/cdcecm.c",
+      "$FRAMEWORKS_USB_DRIVERS/master/dev_master.c",
+    ]
   }
 
   libs =

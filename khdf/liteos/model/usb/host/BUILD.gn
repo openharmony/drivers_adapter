@@ -35,59 +35,45 @@ hdf_driver(module_name) {
   PERIPHERAL_USB_DDK_HOST = "$HDF_PERIPHERAL_PATH/usb/ddk/host"
   sources = [
     "$PERIPHERAL_USB_DDK_HOST/src/liteos_adapter.c",
+    "$PERIPHERAL_USB_DDK_HOST/src/usb_interface_pool.c",
+    "$PERIPHERAL_USB_DDK_HOST/src/usb_io_manage.c",
+    "$PERIPHERAL_USB_DDK_HOST/src/usb_protocol.c",
     "$PERIPHERAL_USB_DDK_HOST/src/usb_raw_api.c",
     "$PERIPHERAL_USB_DDK_HOST/src/usb_raw_api_library.c",
-    "$PERIPHERAL_USB_DDK_HOST/src/usb_protocol.c",
-    "$PERIPHERAL_USB_DDK_HOST/src/usb_io_manage.c",
-    "$PERIPHERAL_USB_DDK_HOST/src/usb_interface_pool.c",
   ]
   include_dirs = []
   if (defined(LOSCFG_DRIVERS_HDF_USB_PNP_NOTIFY)) {
     USB_PNP_NOTIFY_SHARED_ROOT = "$HDF_FRAMEWORKS_PATH/core/shared"
     FRAMEWORKS_USB_DDK_HOST = "$HDF_FRAMEWORKS_PATH/model/usb"
     sources += [
-      "src/usb_pnp_notify.c",
-      "src/usb_pnp_manager.c",
       "$FRAMEWORKS_USB_DDK_HOST/src/usb_ddk_pnp_loader.c",
+      "src/usb_pnp_manager.c",
+      "src/usb_pnp_notify.c",
       "src/usb_test_pnp_notify.c",
     ]
-    include_dirs += [
-      "$USB_PNP_NOTIFY_SHARED_ROOT/include",
-    ]
+    include_dirs += [ "$USB_PNP_NOTIFY_SHARED_ROOT/include" ]
     public_configs = [ ":public" ]
   }
 
-  if (defined(LOSCFG_DRIVERS_HDF_USB_HOST_SERIAL)) {
-    FRAMEWORKS_USB_SERIAL_ROOT = "$HDF_PERIPHERAL_PATH/usb/serial"
-    sources += [
-      "$FRAMEWORKS_USB_SERIAL_ROOT/src/usb_serial.c",
-    ]
-    include_dirs += [
-      "$FRAMEWORKS_USB_SERIAL_ROOT/../gadget/function/include",
-      "$FRAMEWORKS_USB_SERIAL_ROOT/include",
-    ]
-  }
+  if (defined(LOSCFG_DRIVERS_HDF_USB_HOST_DEMO_TEST)) {
+    FRAMEWORKS_USB_SERIAL_DEMO_ROOT = "$HDF_PERIPHERAL_PATH/usb/serial"
+    FRAMEWORKS_USB_NET_DEMO_ROOT = "$HDF_PERIPHERAL_PATH/usb/net"
+    FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT =
+        "$HDF_PERIPHERAL_PATH/usb/sample/host/liteos_test"
 
-  if (defined(LOSCFG_DRIVERS_HDF_USB_HOST_SERIAL_RAW)) {
-    FRAMEWORKS_USB_SERIAL_RAW_ROOT = "$HDF_PERIPHERAL_PATH/usb/serial"
     sources += [
-      "$FRAMEWORKS_USB_SERIAL_RAW_ROOT/src/usb_serial_rawapi.c",
+      "$FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT/src/usbhost_nosdk_speed.c",
+      "$FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT/src/usbhost_sdkapi_speed.c",
+      "$FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT/src/usbhost_sdkraw_speed.c",
+      "$FRAMEWORKS_USB_NET_DEMO_ROOT/src/cdc_ether.c",
+      "$FRAMEWORKS_USB_SERIAL_DEMO_ROOT/src/usb_serial.c",
+      "$FRAMEWORKS_USB_SERIAL_DEMO_ROOT/src/usb_serial_rawapi.c",
     ]
     include_dirs += [
-      "$FRAMEWORKS_USB_SERIAL_RAW_ROOT/../gadget/function/include",
-      "$FRAMEWORKS_USB_SERIAL_RAW_ROOT/include",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_USB_HOST_NET)) {
-    FRAMEWORKS_USB_NET_ROOT = "$HDF_PERIPHERAL_PATH/usb/net"
-    sources += [
-      "$FRAMEWORKS_USB_NET_ROOT/src/cdc_ether.c",
-    ]
-    include_dirs += [
-      "$FRAMEWORKS_USB_NET_ROOT/../serial/include",
-      "$FRAMEWORKS_USB_NET_ROOT/../gadget/function/include",
-      "$FRAMEWORKS_USB_NET_ROOT/include",
+      "$FRAMEWORKS_USB_SERIAL_DEMO_ROOT/../gadget/function/include",
+      "$FRAMEWORKS_USB_SERIAL_DEMO_ROOT/include",
+      "$FRAMEWORKS_USB_NET_DEMO_ROOT/include",
+      "$FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT/include",
     ]
   }
 
@@ -96,42 +82,6 @@ hdf_driver(module_name) {
     "$PERIPHERAL_USB_DDK_HOST/../../interfaces/ddk/host",
     "$PERIPHERAL_USB_DDK_HOST/include",
   ]
-
-  if (defined(LOSCFG_DRIVERS_HDF_USB_HOST_SDK_API_SPEED)) {
-    FRAMEWORKS_USB_SDK_API_SPEED_ROOT = "$HDF_PERIPHERAL_PATH/usb/sample/host/liteos_test"
-    sources += [
-      "$FRAMEWORKS_USB_SDK_API_SPEED_ROOT/src/usbhost_sdkapi_speed.c",
-    ]
-    include_dirs += [
-      "$FRAMEWORKS_USB_SDK_API_SPEED_ROOT/../../../serial/include",
-      "$FRAMEWORKS_USB_SDK_API_SPEED_ROOT/../../../gadget/function/include",
-      "$FRAMEWORKS_USB_SDK_API_SPEED_ROOT/include",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_USB_HOST_SDK_RAW_SPEED)) {
-    FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT = "$HDF_PERIPHERAL_PATH/usb/sample/host/liteos_test"
-    sources += [
-      "$FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT/src/usbhost_sdkraw_speed.c",
-    ]
-    include_dirs += [
-      "$FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT/../../../serial/include",
-      "$FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT/../../../gadget/function/include",
-      "$FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT/include",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_USB_HOST_NO_SDK_SPEED)) {
-    FRAMEWORKS_USB_NO_SDK_SPEED_ROOT = "$HDF_PERIPHERAL_PATH/usb/sample/host/liteos_test"
-    sources += [
-      "$FRAMEWORKS_USB_NO_SDK_SPEED_ROOT/src/usbhost_nosdk_speed.c",
-    ]
-    include_dirs += [
-      "$FRAMEWORKS_USB_NO_SDK_SPEED_ROOT/../../../serial/include",
-      "$FRAMEWORKS_USB_NO_SDK_SPEED_ROOT/../../../gadget/function/include",
-      "$FRAMEWORKS_USB_NO_SDK_SPEED_ROOT/include",
-    ]
-  }
 }
 
 config("public") {
