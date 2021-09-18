@@ -43,12 +43,12 @@ int DriverInstallerFullStartDeviceHost(uint32_t devHostId, const char* devHostNa
     char cmd[MAX_CMD_LEN] = {0};
     // fork process.
     if (snprintf_s(cmd, sizeof(cmd), sizeof(cmd) - 1, " %d", devHostId) < 0) {
-        HDF_LOGE("Starting device host, snprintf_s failed");
+        HDF_LOGE("starting device host, snprintf_s failed");
         return HDF_FAILURE;
     }
     if (!g_sigFlag) {
         if (signal(SIGCHLD, SigChildProc) == SIG_ERR) {
-            HDF_LOGE("Starting device host, signal failed");
+            HDF_LOGE("starting device host, signal failed");
             return HDF_FAILURE;
         }
         g_sigFlag = true;
@@ -57,17 +57,17 @@ int DriverInstallerFullStartDeviceHost(uint32_t devHostId, const char* devHostNa
     pid_t fpid;
     fpid = fork();
     if (fpid < 0) {
-        HDF_LOGE("Starting device host, fork failed");
+        HDF_LOGE("starting device host, fork failed");
         return HDF_FAILURE;
     } else if (fpid == 0) {
         char * const args[] = {DEV_HOST_BINARY, cmd, (char * const)devHostName, NULL};
         char * const envs[] = {NULL};
         if (execve(DEV_HOST_BINARY, args, envs) == -1) {
-            HDF_LOGE("Start device host, execve failed");
-            return HDF_FAILURE;
+            HDF_LOGE("start device host, execve failed");
+            abort();
         }
     } else {
-        HDF_LOGI("Starting device host success");
+        HDF_LOGI("fork device host success");
     }
     return HDF_SUCCESS;
 }
