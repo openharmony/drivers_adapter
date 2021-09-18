@@ -32,7 +32,7 @@
 #define MTD_LEGACY_LITE_H
 
 #include "hdf_base.h"
-#include "mtd/mtd_core.h"
+#include "mtd_core.h"
 
 typedef struct erase_info {
     int scrub;
