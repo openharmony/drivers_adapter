@@ -32,8 +32,8 @@
 #include "fs/fs.h"
 #include "hdf_base.h"
 #include "hdf_log.h"
-#include "mmc/mmc_block.h"
-#include "mmc/mmc_sd.h"
+#include "mmc_block.h"
+#include "mmc_sd.h"
 #include "sys/ioctl.h"
 #include "user_copy.h"
 

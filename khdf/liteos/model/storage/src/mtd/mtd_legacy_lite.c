@@ -28,10 +28,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "mtd/mtd_legacy_lite.h"
+#include "mtd_legacy_lite.h"
 #include "string.h"
 
-#include "mtd/mtd_core.h"
+#include "mtd_core.h"
 #include "mtd_list.h"
 #include "hdf_log.h"
 #include "osal_mem.h"
@@ -140,9 +140,9 @@ void AddMtdList(char *type, struct MtdDev *mtdDev)
     q->next = p;
 }
 
-MtdInfoLegacy gMtdInfo;
+MtdInfoLegacy g_mtdInfo;
 MtdInfoLegacy *nand_mtd;
-struct MtdDevice *gNandMtd;
+struct MtdDevice *g_nandMtd;
 /************** compatibale of old hisi interfaces ***************************/
 // from device/hisilicon/drivers/xxxx/mtd/nand/src/common/nand.c
 int nand_init(void)
@@ -156,11 +156,11 @@ int hinand_read(void *memaddr, unsigned long start, unsigned long size)
 {
     int32_t ret;
 
-    if (gNandMtd == NULL) {
-        HDF_LOGE("%s: gNandMtd is null", __func__);
+    if (g_nandMtd == NULL) {
+        HDF_LOGE("%s: g_nandMtd is null", __func__);
         return -ENODEV;
     }
-    ret = MtdDeviceRead(gNandMtd, (off_t)start, (size_t)size, (uint8_t *)memaddr);
+    ret = MtdDeviceRead(g_nandMtd, (off_t)start, (size_t)size, (uint8_t *)memaddr);
     if ((unsigned long)ret != size) {
         HDF_LOGE("%s: ret=%d, size=%lu", __func__, ret, size);
     }
@@ -171,11 +171,11 @@ int hinand_write(void *memaddr, unsigned long start, unsigned long size)
 {
     int32_t ret;
 
-    if (gNandMtd == NULL) {
-        HDF_LOGE("%s: gNandMtd is null", __func__);
+    if (g_nandMtd == NULL) {
+        HDF_LOGE("%s: g_nandMtd is null", __func__);
         return -ENODEV;
     }
-    ret = MtdDeviceWrite(gNandMtd, (off_t)start, (size_t)size, (const uint8_t *)memaddr);
+    ret = MtdDeviceWrite(g_nandMtd, (off_t)start, (size_t)size, (const uint8_t *)memaddr);
     if ((unsigned long)ret != size) {
         HDF_LOGE("%s: ret=%d, size=%lu", __func__, ret, size);
     }
@@ -187,11 +187,11 @@ int hinand_erase(unsigned long start, unsigned long size)
     int ret;
     off_t failAddr;
 
-    if (gNandMtd == NULL) {
-        HDF_LOGE("%s: gNandMtd is null", __func__);
+    if (g_nandMtd == NULL) {
+        HDF_LOGE("%s: g_nandMtd is null", __func__);
         return -ENODEV;
     }
-    ret = MtdDeviceErase(gNandMtd, (off_t)start, (size_t)size, &failAddr);
+    ret = MtdDeviceErase(g_nandMtd, (off_t)start, (size_t)size, &failAddr);
     if (ret != 0) {
         HDF_LOGE("%s: MtdDeviceErase failed, ret=%d", __func__, ret);
     }
@@ -202,11 +202,11 @@ int hinand_yaffs_read(void *memaddr, unsigned long start, unsigned long size)
 {
     int32_t ret;
 
-    if (gNandMtd == NULL) {
-        HDF_LOGE("%s: gNandMtd is null", __func__);
+    if (g_nandMtd == NULL) {
+        HDF_LOGE("%s: g_nandMtd is null", __func__);
         return -ENODEV;
     }
-    ret = MtdDeviceReadWithOob(gNandMtd, (off_t)start, (size_t)size, (uint8_t *)memaddr);
+    ret = MtdDeviceReadWithOob(g_nandMtd, (off_t)start, (size_t)size, (uint8_t *)memaddr);
     if ((unsigned long)ret != size) {
         HDF_LOGE("%s: ret=%d, size=%lu", __func__, ret, size);
     }
@@ -217,11 +217,11 @@ int hinand_yaffs_write(void *memaddr, unsigned long start, unsigned long size)
 {
     int32_t ret;
 
-    if (gNandMtd == NULL) {
-        HDF_LOGE("%s: gNandMtd is null", __func__);
+    if (g_nandMtd == NULL) {
+        HDF_LOGE("%s: g_nandMtd is null", __func__);
         return -ENODEV;
     }
-    ret = MtdDeviceWriteWithOob(gNandMtd, (off_t)start, (size_t)size, (uint8_t *)memaddr);
+    ret = MtdDeviceWriteWithOob(g_nandMtd, (off_t)start, (size_t)size, (uint8_t *)memaddr);
     if ((unsigned long)ret != size) {
         HDF_LOGE("%s: ret=%d, size=%lu", __func__, ret, size);
     }
@@ -230,12 +230,12 @@ int hinand_yaffs_write(void *memaddr, unsigned long start, unsigned long size)
 
 int hinand_yaffs_nand_block_isbad(loff_t ofs)
 {
-    return MtdDeviceIsBadBlock(gNandMtd, ofs);
+    return MtdDeviceIsBadBlock(g_nandMtd, ofs);
 }
 
 int hinand_yaffs_nand_block_markbad(loff_t ofs)
 {
-    return MtdDeviceMarkBadBlock(gNandMtd, ofs);
+    return MtdDeviceMarkBadBlock(g_nandMtd, ofs);
 }
 
 int spinor_init(void)
@@ -336,7 +336,7 @@ void MtdDeviceLegacyFillMtdInfo(struct MtdDevice *mtdDevice)
     if (mtdDevice == NULL) {
         return;
     }
-    nand_mtd = &gMtdInfo;
+    nand_mtd = &g_mtdInfo;
 
     nand_mtd->size = mtdDevice->capacity;
     nand_mtd->erasesize = mtdDevice->eraseSize;
@@ -355,5 +355,5 @@ void MtdDeviceLegacyFillMtdInfo(struct MtdDevice *mtdDevice)
     nand_mtd->block_markbad = MtdDeviceLegacyBlockMarkBad;
     nand_mtd->priv = mtdDevice;
 
-    gNandMtd = mtdDevice;
+    g_nandMtd = mtdDevice;
 }
