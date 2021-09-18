@@ -31,8 +31,8 @@
 #include "fs/fs.h"
 #include "sys/ioctl.h"
 #include "hdf_log.h"
-#include "mtd_core.h"
-#include "mtd_block.h"
+#include "mtd/mtd_core.h"
+#include "mtd/mtd_block.h"
 #include "platform_core.h"
 
 #define HDF_LOG_TAG mtd_block_lite_c
@@ -84,7 +84,7 @@ static int32_t LiteosMtdBlockIoctl(FAR struct Vnode *vnode, int cmd, unsigned lo
     return 0;
 }
 
-static struct block_operations gLiteosNandOps = {
+static struct block_operations g_liteosNandOps = {
     .open = LiteosMtdBlockOpen,
     .close = LiteosMtdBlockClose,
     .read = LiteosMtdBlockRead,
@@ -94,7 +94,7 @@ static struct block_operations gLiteosNandOps = {
     .unlink = NULL,
 };
 
-static struct block_operations gLiteosSpinorOps = {
+static struct block_operations g_liteosSpinorOps = {
     .open = LiteosMtdBlockOpen,
     .close = LiteosMtdBlockClose,
     .read = LiteosMtdBlockRead,
@@ -106,12 +106,12 @@ static struct block_operations gLiteosSpinorOps = {
 
 struct block_operations *GetDevNandOps(void)
 {
-    return &gLiteosNandOps;
+    return &g_liteosNandOps;
 }
 
 struct block_operations *GetDevSpinorOps(void)
 {
-    return &gLiteosSpinorOps;
+    return &g_liteosSpinorOps;
 }
 
 #define MTD_LITE_BLOCK_DRV_MODE 0755

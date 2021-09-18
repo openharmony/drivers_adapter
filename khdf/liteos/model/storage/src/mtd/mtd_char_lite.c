@@ -37,11 +37,11 @@
 #include "user_copy.h"
 
 #include "hdf_log.h"
-#include "mtd_char.h"
-#include "mtd_core.h"
-#include "mtd_legacy_lite.h"
+#include "mtd/mtd_char.h"
+#include "mtd/mtd_core.h"
+#include "mtd/mtd_legacy_lite.h"
 #include "mtd_partition.h"
-#include "mtd_user.h"
+#include "mtd/mtd_user.h"
 #include "osal_mem.h"
 
 struct MtdFileInfo {
@@ -364,7 +364,7 @@ static ssize_t MtdCharMap(FAR struct file* filep, FAR LosVmMapRegion *region)
     return 0;
 }
 
-static const struct file_operations_vfs gMtdCharFops = {
+static const struct file_operations_vfs g_MtdCharFops = {
     .open   =   MtdCharOpen,
     .close  =   MtdCharClose,
     .read   =   MtdCharRead,
@@ -501,5 +501,5 @@ void MtdCharOsUninit(struct MtdDevice *mtdDevice)
 
 const struct file_operations_vfs *GetMtdCharFops(VOID)
 {
-    return &gMtdCharFops;
+    return &g_MtdCharFops;
 }
