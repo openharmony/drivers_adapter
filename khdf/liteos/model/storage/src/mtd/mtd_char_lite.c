@@ -37,11 +37,11 @@
 #include "user_copy.h"
 
 #include "hdf_log.h"
-#include "mtd/mtd_char.h"
-#include "mtd/mtd_core.h"
-#include "mtd/mtd_legacy_lite.h"
+#include "mtd_char.h"
+#include "mtd_core.h"
+#include "mtd_legacy_lite.h"
 #include "mtd_partition.h"
-#include "mtd/mtd_user.h"
+#include "mtd_user.h"
 #include "osal_mem.h"
 
 struct MtdFileInfo {
@@ -429,7 +429,7 @@ int HdfMtdDevWrite(struct MtdDev *mtdDev, UINT64 start, UINT64 len, const char *
     return MtdDeviceWrite((struct MtdDevice *)mtdDev->priv, start, len, (const uint8_t *)buf);
 }
 
-static const char * MtdCharGetName(struct MtdDevice *mtdDevice)
+static const char *MtdCharGetName(struct MtdDevice *mtdDevice)
 {
     switch (mtdDevice->type) {
         case MTD_TYPE_SPI_NOR:
