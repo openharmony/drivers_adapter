@@ -157,6 +157,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI), y)
 #              LOCAL_SRCS += ./platform/src/mipi_tx_dev.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_CSI), y)
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mipi_csi_if.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/mipi_csi_core.c
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_DMAC), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/dmac_core.c
 endif

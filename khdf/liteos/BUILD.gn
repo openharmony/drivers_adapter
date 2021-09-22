@@ -176,6 +176,13 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_CSI)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi_csi_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi_csi_if.c",
+    ]
+  }
+
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_DMAC)) {
     sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/dmac_core.c" ]
   }
