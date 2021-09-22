@@ -88,7 +88,7 @@ config DRIVERS_HDF_SENSOR_HALL
     help
       Answer Y to enable HDF hall sensor driver.
 config DRIVERS_HDF_SENSOR_HALL_AK8789
-    bool "Enable HDF hall sensor driver"
+    bool "Enable HDF hall ak8789 sensor driver"
     default n
     depends on DRIVERS_HDF_SENSOR_HALL
     help
@@ -100,7 +100,7 @@ config DRIVERS_HDF_SENSOR_MAGNETIC
     help
       Answer Y to enable HDF magnetic sensor driver.
 config DRIVERS_HDF_SENSOR_MAGNETIC_LSM303
-    bool "Enable HDF magnetic sensor driver "
+    bool "Enable HDF magnetic lsm303 sensor driver "
     default n
     depends on DRIVERS_HDF_SENSOR_MAGNETIC
     help
