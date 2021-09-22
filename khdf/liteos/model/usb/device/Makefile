@@ -41,23 +41,33 @@ LOCAL_INCLUDE := $(USB_DEVICE_ROOT) \
                  $(FRAMEWORKS_USB_DDK_DEVICE)/../../interfaces/ddk/device \
                  $(FRAMEWORKS_USB_DDK_DEVICE)/include
 
+LOCAL_SRCS += $(FRAMEWORKS_USB_DDK_DEVICE)/src/adapter_if_liteos.c \
+              $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_cfg_mgr.c \
+              $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_dev_mgr.c \
+              $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_io_mgr.c \
+              $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_sdk_if.c
+
 ifeq ($(LOSCFG_DRIVERS_HDF_USB_COMPOSITE), y)
 LOCAL_SRCS += $(USB_DEVICE_ROOT)/gadget/composite.c \
               $(USB_DEVICE_ROOT)/gadget/composite_desc.c \
               $(USB_DEVICE_ROOT)/gadget/cdcacm.c \
               $(USB_DEVICE_ROOT)/gadget/f_acm_desc.c \
-              $(USB_DEVICE_ROOT)/gadget/f_camera.c
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_F_CONFIG), y)
-LOCAL_SRCS += $(wildcard $(USB_DEVICE_ROOT)/gadget/fconfig/src/*.c)
-endif
+              $(USB_DEVICE_ROOT)/gadget/f_camera.c \
+              $(wildcard $(USB_DEVICE_ROOT)/gadget/fconfig/src/*.c)
 endif
 
-LOCAL_SRCS += $(FRAMEWORKS_USB_DDK_DEVICE)/src/adapter_if_liteos.c \
-          $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_cfg_mgr.c \
-          $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_dev_mgr.c \
-          $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_io_mgr.c \
-          $(FRAMEWORKS_USB_DDK_DEVICE)/src/usbfn_sdk_if.c
+ifeq ($(LOSCFG_DRIVERS_HDF_USB_DEVICE_DEMO_TEST), y)
+FRAMEWORKS_USB_DEVICE_DEMO_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/gadget/function
+
+LOCAL_INCLUDE += $(FRAMEWORKS_USB_DDK_DEVICE)/../../interfaces/ddk/common \
+                 $(FRAMEWORKS_USB_DDK_DEVICE)/../../interfaces/ddk/device \
+                 $(FRAMEWORKS_USB_DEVICE_DEMO_ROOT)/include
+
+LOCAL_SRCS += $(FRAMEWORKS_USB_DEVICE_DEMO_ROOT)/master/dev_master.c \
+              $(FRAMEWORKS_USB_DEVICE_DEMO_ROOT)/acm/cdcacm.c \
+              $(FRAMEWORKS_USB_DEVICE_DEMO_ROOT)/ecm/cdcecm.c
+endif
 
 endif
+
 include $(HDF_DRIVER)

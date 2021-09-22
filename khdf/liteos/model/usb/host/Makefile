@@ -60,80 +60,25 @@ LOCAL_SRCS += $(USB_PNP_NOTIFY_ROOT)/src/usb_pnp_notify.c \
               $(USB_PNP_NOTIFY_ROOT)/src/usb_test_pnp_notify.c
 endif
 
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_HOST_SERIAL), y)
-FRAMEWORKS_USB_SERIAL_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/serial
+ifeq ($(LOSCFG_DRIVERS_HDF_USB_HOST_DEMO_TEST), y)
+FRAMEWORKS_USB_SERIAL_DEMO_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/serial
+FRAMEWORKS_USB_NET_DEMO_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/net
+FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/sample/host/liteos_test
 
-LOCAL_INCLUDE := $(FRAMEWORKS_USB_SERIAL_ROOT)/../interfaces/ddk/common \
-                 $(FRAMEWORKS_USB_SERIAL_ROOT)/../interfaces/ddk/host \
-                 $(FRAMEWORKS_USB_SERIAL_ROOT)/../ddk/host/include \
-                 $(FRAMEWORKS_USB_SERIAL_ROOT)/../gadget/function/include \
-                 $(FRAMEWORKS_USB_SERIAL_ROOT)/include
+LOCAL_INCLUDE := $(FRAMEWORKS_USB_SERIAL_DEMO_ROOT)/../gadget/function/include \
+                 $(FRAMEWORKS_USB_SERIAL_DEMO_ROOT)/../interfaces/ddk/common \
+                 $(FRAMEWORKS_USB_SERIAL_DEMO_ROOT)/../interfaces/ddk/host \
+                 $(FRAMEWORKS_USB_SERIAL_DEMO_ROOT)/../ddk/host/include \
+                 $(FRAMEWORKS_USB_SERIAL_DEMO_ROOT)/include \
+                 $(FRAMEWORKS_USB_NET_DEMO_ROOT)/include \
+                 $(FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT)/include
 
-LOCAL_SRCS += $(FRAMEWORKS_USB_SERIAL_ROOT)/src/usb_serial.c
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_HOST_SERIAL_RAW), y)
-FRAMEWORKS_USB_SERIAL_RAW_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/serial
-
-LOCAL_INCLUDE := $(FRAMEWORKS_USB_SERIAL_RAW_ROOT)/../interfaces/ddk/common \
-                 $(FRAMEWORKS_USB_SERIAL_RAW_ROOT)/../interfaces/ddk/host \
-                 $(FRAMEWORKS_USB_SERIAL_RAW_ROOT)/../ddk/host/include \
-                 $(FRAMEWORKS_USB_SERIAL_RAW_ROOT)/../gadget/function/include \
-                 $(FRAMEWORKS_USB_SERIAL_RAW_ROOT)/include
-
-LOCAL_SRCS += $(FRAMEWORKS_USB_SERIAL_RAW_ROOT)/src/usb_serial_rawapi.c
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_HOST_NET), y)
-FRAMEWORKS_USB_NET_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/net
-
-LOCAL_INCLUDE := $(FRAMEWORKS_USB_NET_ROOT)/../interfaces/ddk/common \
-                 $(FRAMEWORKS_USB_NET_ROOT)/../interfaces/ddk/host \
-                 $(FRAMEWORKS_USB_NET_ROOT)/../ddk/host/include \
-                 $(FRAMEWORKS_USB_NET_ROOT)/../serial/include \
-                 $(FRAMEWORKS_USB_NET_ROOT)/../gadget/function/include \
-                 $(FRAMEWORKS_USB_NET_ROOT)/include
-
-LOCAL_SRCS += $(FRAMEWORKS_USB_NET_ROOT)/src/cdc_ether.c
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_HOST_SDK_API_SPEED), y)
-FRAMEWORKS_USB_SDK_API_SPEED_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/sample/host/liteos_test
-
-LOCAL_INCLUDE += $(FRAMEWORKS_USB_SDK_API_SPEED_ROOT)/../../../interfaces/ddk/common \
-                 $(FRAMEWORKS_USB_SDK_API_SPEED_ROOT)/../../../interfaces/ddk/host \
-                 $(FRAMEWORKS_USB_SDK_API_SPEED_ROOT)/../../../ddk/host/include \
-                 $(FRAMEWORKS_USB_SDK_API_SPEED_ROOT)/../../../serial/include \
-                 $(FRAMEWORKS_USB_SDK_API_SPEED_ROOT)/../../../gadget/function/include \
-                 $(FRAMEWORKS_USB_SDK_API_SPEED_ROOT)/include
-
-LOCAL_SRCS += $(FRAMEWORKS_USB_SDK_API_SPEED_ROOT)/src/usbhost_sdkapi_speed.c
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_HOST_SDK_RAW_SPEED), y)
-FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/sample/host/liteos_test
-
-LOCAL_INCLUDE += $(FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT)/../../../interfaces/ddk/common \
-                 $(FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT)/../../../interfaces/ddk/host \
-                 $(FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT)/../../../ddk/host/include \
-                 $(FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT)/../../../serial/include \
-                 $(FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT)/../../../gadget/function/include \
-                 $(FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT)/include
-
-LOCAL_SRCS += $(FRAMEWORKS_USB_SDK_RAW_SPEED_ROOT)/src/usbhost_sdkraw_speed.c
-endif
-
-ifeq ($(LOSCFG_DRIVERS_HDF_USB_HOST_NO_SDK_SPEED), y)
-FRAMEWORKS_USB_NO_SDK_SPEED_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/sample/host/liteos_test
-
-LOCAL_INCLUDE += $(FRAMEWORKS_USB_NO_SDK_SPEED_ROOT)/../../../interfaces/ddk/common \
-                 $(FRAMEWORKS_USB_NO_SDK_SPEED_ROOT)/../../../interfaces/ddk/host \
-                 $(FRAMEWORKS_USB_NO_SDK_SPEED_ROOT)/../../../ddk/host/include \
-                 $(FRAMEWORKS_USB_NO_SDK_SPEED_ROOT)/../../../serial/include \
-                 $(FRAMEWORKS_USB_NO_SDK_SPEED_ROOT)/../../../gadget/function/include \
-                 $(FRAMEWORKS_USB_NO_SDK_SPEED_ROOT)/include
-
-LOCAL_SRCS += $(FRAMEWORKS_USB_NO_SDK_SPEED_ROOT)/src/usbhost_nosdk_speed.c
+LOCAL_SRCS += $(FRAMEWORKS_USB_SERIAL_DEMO_ROOT)/src/usb_serial.c \
+              $(FRAMEWORKS_USB_SERIAL_DEMO_ROOT)/src/usb_serial_rawapi.c \
+              $(FRAMEWORKS_USB_NET_DEMO_ROOT)/src/cdc_ether.c \
+              $(FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT)/src/usbhost_sdkapi_speed.c \
+              $(FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT)/src/usbhost_sdkraw_speed.c \
+              $(FRAMEWORKS_USB_DDK_SPEED_TEST_ROOT)/src/usbhost_nosdk_speed.c
 endif
 
 endif
