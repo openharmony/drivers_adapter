@@ -29,7 +29,7 @@
 config DRIVERS_HDF_USB_DDK_HOST
     bool "Enable HDF LiteOS USB DDK HOST driver"
     default n
-    depends on DRIVERS_HDF && DRIVERS_USB
+    depends on DRIVERS_HDF && DRIVERS_USB && DRIVERS_HDF_USB_PNP_NOTIFY
     help
         Answer Y to choice HDF LiteOS USB DDK HOST driver.
 
@@ -40,44 +40,9 @@ config DRIVERS_HDF_USB_PNP_NOTIFY
     help
         Answer Y to choice HDF LiteOS USB PNP Notify driver.
 
-config DRIVERS_HDF_USB_HOST_SERIAL
-    bool "Enable HDF usb host serial driver"
+config DRIVERS_HDF_USB_HOST_DEMO_TEST
+    bool "Enable HDF usb host driver demo and speed test"
     default n
-    depends on DRIVERS_HDF && DRIVERS_USB
+    depends on DRIVERS_HDF && DRIVERS_USB && DRIVERS_HDF_USB_DDK_HOST
     help
-      Answer Y to enable HDF usb host serial driver.
-
-config DRIVERS_HDF_USB_HOST_SERIAL_RAW
-    bool "Enable HDF usb host serial raw driver"
-    default n
-    depends on DRIVERS_HDF && DRIVERS_USB
-    help
-      Answer Y to enable HDF usb host serial driver.
-
-config DRIVERS_HDF_USB_HOST_NET
-    bool "Enable HDF usb host net driver"
-    default n
-    depends on DRIVERS_HDF && DRIVERS_USB
-    help
-      Answer Y to enable HDF usb host net driver.
-
-config DRIVERS_HDF_USB_HOST_SDK_API_SPEED
-    bool "Enable HDF usb host sdk api speed driver"
-    default n
-    depends on DRIVERS_HDF && DRIVERS_USB
-    help
-      Answer Y to enable HDF usb host sdk api speed test driver.
-
-config DRIVERS_HDF_USB_HOST_SDK_RAW_SPEED
-    bool "Enable HDF usb host sdk raw api speed driver"
-    default n
-    depends on DRIVERS_HDF && DRIVERS_USB
-    help
-      Answer Y to enable HDF usb host sdk raw api speed test driver.
-
-config DRIVERS_HDF_USB_HOST_NO_SDK_SPEED
-    bool "Enable HDF usb host no sdk speed driver"
-    default n
-    depends on DRIVERS_HDF && DRIVERS_USB
-    help
-      Answer Y to enable HDF usb host no sdk speed test driver.
+      Answer Y to enable HDF usb host driver demo and speed test.
