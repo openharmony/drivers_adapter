@@ -40,7 +40,7 @@ config DRIVERS_HDF_SENSOR_ACCEL
     help
       Answer Y to enable HDF accel sensor driver.
 config DRIVERS_HDF_SENSOR_ACCEL_BMI160
-    bool "Enable HDF accel sensor driver"
+    bool "Enable HDF accel bmi160 sensor driver"
     default n
     depends on DRIVERS_HDF_SENSOR_ACCEL
     help
@@ -52,7 +52,7 @@ config DRIVERS_HDF_SENSOR_ALS
     help
       Answer Y to enable HDF als sensor driver.
 config DRIVERS_HDF_SENSOR_ALS_BH1745
-    bool "Enable HDF accel sensor driver"
+    bool "Enable HDF accel bh1745 sensor driver"
     default n
     depends on DRIVERS_HDF_SENSOR_ALS
     help
@@ -76,7 +76,7 @@ config DRIVERS_HDF_SENSOR_BAROMETER
     help
       Answer Y to enable HDF barometer sensor driver.
 config DRIVERS_HDF_SENSOR_BAROMETER_BMP180
-    bool "Enable HDF barometer sensor driver"
+    bool "Enable HDF barometer bmp180 sensor driver"
     default n 
     depends on DRIVERS_HDF_SENSOR_BAROMETER
     help
@@ -88,7 +88,7 @@ config DRIVERS_HDF_SENSOR_HALL
     help
       Answer Y to enable HDF hall sensor driver.
 config DRIVERS_HDF_SENSOR_HALL_AK8789
-    bool "Enable HDF hall sensor driver"
+    bool "Enable HDF hall ak8789 sensor driver"
     default n
     depends on DRIVERS_HDF_SENSOR_HALL
     help
@@ -100,7 +100,7 @@ config DRIVERS_HDF_SENSOR_MAGNETIC
     help
       Answer Y to enable HDF magnetic sensor driver.
 config DRIVERS_HDF_SENSOR_MAGNETIC_LSM303
-    bool "Enable HDF magnetic sensor driver"
+    bool "Enable HDF magnetic lsm303 sensor driver "
     default n
     depends on DRIVERS_HDF_SENSOR_MAGNETIC
     help
