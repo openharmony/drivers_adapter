@@ -628,7 +628,7 @@ struct pbuf *NetBuf2Pbuf(const NetBuf *nb)
     struct pbuf *p  = NULL;
     struct eth_hdr *hdr = NULL;
     uint32_t len = NetBufGetDataLen(nb);
-
+    
     if ((len + ETH_PAD_SIZE) > MAX_CONVERSION_LEN) {
         HDF_LOGE("%s netbuf len exceeds the maximum length of the pbuf!", __func__);
         return NULL;
@@ -638,14 +638,12 @@ struct pbuf *NetBuf2Pbuf(const NetBuf *nb)
         HDF_LOGE("%s pbuf_alloc failed! len = %d", __func__, len);
         return NULL;
     }
-
     hdr = (struct eth_hdr *)p->payload;
     if (memcpy_s(&hdr->dest, len, NetBufGetAddress(nb, E_DATA_BUF), len) != EOK) {
         pbuf_free(p);
         HDF_LOGE("%s memcpy err!", __func__);
         return NULL;
     }
-
     return p;
 }
 
