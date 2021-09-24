@@ -33,7 +33,13 @@ HDF_FRAMEWORKS_PATH = "//drivers/framework"
 HDF_PERIPHERAL_PATH = "//drivers/peripheral"
 
 template("hdf_driver") {
-  if (defined(invoker.hcs_sources)) {
+  if (defined(invoker.module_switch)) {
+    forward_variables_from(invoker, [ "module_switch" ])
+  } else {
+    module_switch = true
+  }
+
+  if (module_switch && defined(invoker.hcs_sources)) {
     action_foreach("hc_gen") {
       script = "//build/lite/run_shell_cmd.py"
       sources = invoker.hcs_sources
@@ -51,12 +57,11 @@ template("hdf_driver") {
     }
   }
   kernel_module(target_name) {
-    forward_variables_from(invoker, [ "module_switch" ])
     forward_variables_from(invoker, "*", [ "configs" ])
     if (defined(invoker.configs)) {
       configs += invoker.configs
     }
-    if (defined(invoker.hcs_sources)) {
+    if (module_switch && defined(invoker.hcs_sources)) {
       hc_gen = ":hc_gen"
       generated_sources = get_target_outputs(hc_gen)
       if (defined(invoker.sources)) {
