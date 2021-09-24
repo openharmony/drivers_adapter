@@ -45,7 +45,5 @@ hdf_driver(module_name) {
       "-DENABLE_WLAN_PARAM_MONITOR",
     ]
   }
-  include_dirs = [
-    "$FRAMEWORKS_DSOFTBUS_ROOT/include",
-  ]
+  include_dirs = [ "$FRAMEWORKS_DSOFTBUS_ROOT/include" ]
 }
