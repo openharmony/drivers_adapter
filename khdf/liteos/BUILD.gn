@@ -212,6 +212,7 @@ group("liteos") {
     "model/bus/usb",
     "model/display",
     "model/input",
+    "model/misc/dsoftbus",
     "model/misc/vibrator",
     "model/network/ethernet",
     "model/network/wifi",
