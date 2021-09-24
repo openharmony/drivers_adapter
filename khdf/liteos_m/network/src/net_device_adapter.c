@@ -263,7 +263,8 @@ static int32_t LiteNetDevAdd(struct NetDeviceImpl *netDeviceImpl)
         HDF_LOGE("%s fail : CreateLwipNetIf fail!", __func__);
         return HDF_FAILURE;
     }
-    if ((ret = netifapi_netif_add(lwipNf, &ipaddr, &netmask, &gw, (void *)liteNdPri, driverif_input, tcpip_input)) != ERR_OK) {
+    if ((ret = netifapi_netif_add(lwipNf, &ipaddr, &netmask, &gw, (void *)liteNdPri,
+        driverif_input, tcpip_input)) != ERR_OK) {
         HDF_LOGE("%s : netifapi_netif_add fail!,ret=%d", __func__, ret);
         DestroyLwipNetIf(lwipNf);
         return HDF_FAILURE;
@@ -353,7 +354,7 @@ static int32_t LiteNetDevSetLinkStatus(struct NetDeviceImpl *netDeviceImpl, NetI
         HDF_LOGE("%s fail : netif = null!", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-	return SetNetIfLinkStatus(lwipNf, status);
+    return SetNetIfLinkStatus(lwipNf, status);
 }
 
 int32_t LiteNetDevGetLinkStatus(struct NetDeviceImpl *netDeviceImpl, NetIfLinkStatus *status)
