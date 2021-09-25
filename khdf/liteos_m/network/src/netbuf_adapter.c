@@ -628,7 +628,7 @@ struct pbuf *NetBuf2Pbuf(const NetBuf *nb)
     struct pbuf *p  = NULL;
     struct eth_hdr *hdr = NULL;
     uint32_t len = NetBufGetDataLen(nb);
-    
+
     if ((len + ETH_PAD_SIZE) > MAX_CONVERSION_LEN) {
         HDF_LOGE("%s netbuf len exceeds the maximum length of the pbuf!", __func__);
         return NULL;
