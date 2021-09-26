@@ -52,7 +52,7 @@ config DRIVERS_HDF_SENSOR_ALS
     help
       Answer Y to enable HDF als sensor driver.
 config DRIVERS_HDF_SENSOR_ALS_BH1745
-    bool "Enable HDF accel bh1745 sensor driver"
+    bool "Enable HDF als bh1745 sensor driver"
     default n
     depends on DRIVERS_HDF_SENSOR_ALS
     help
