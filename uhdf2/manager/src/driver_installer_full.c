@@ -61,8 +61,8 @@ int DriverInstallerFullStartDeviceHost(uint32_t devHostId, const char* devHostNa
         return HDF_FAILURE;
     } else if (fpid == 0) {
         char * const args[] = {DEV_HOST_BINARY, cmd, (char * const)devHostName, NULL};
-        char * const envs[] = {NULL};
-        if (execve(DEV_HOST_BINARY, args, envs) == -1) {
+        extern char** environ;
+        if (execve(DEV_HOST_BINARY, args, environ) == -1) {
             HDF_LOGE("start device host, execve failed");
             abort();
         }
