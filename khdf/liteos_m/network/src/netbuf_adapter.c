@@ -638,14 +638,12 @@ struct pbuf *NetBuf2Pbuf(const NetBuf *nb)
         HDF_LOGE("%s pbuf_alloc failed! len = %d", __func__, len);
         return NULL;
     }
-
     hdr = (struct eth_hdr *)p->payload;
     if (memcpy_s(&hdr->dest, len, NetBufGetAddress(nb, E_DATA_BUF), len) != EOK) {
         pbuf_free(p);
         HDF_LOGE("%s memcpy err!", __func__);
         return NULL;
     }
-
     return p;
 }
 
