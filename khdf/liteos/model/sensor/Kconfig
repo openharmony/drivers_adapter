@@ -77,7 +77,7 @@ config DRIVERS_HDF_SENSOR_BAROMETER
       Answer Y to enable HDF barometer sensor driver.
 config DRIVERS_HDF_SENSOR_BAROMETER_BMP180
     bool "Enable HDF barometer bmp180 sensor driver"
-    default n 
+    default n
     depends on DRIVERS_HDF_SENSOR_BAROMETER
     help
       Answer Y to enable HDF barometer bmp180 sensor driver.
