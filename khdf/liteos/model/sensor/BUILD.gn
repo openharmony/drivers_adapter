@@ -48,7 +48,7 @@ hdf_driver(module_name) {
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_ALS)) {
-    sources += [ "$FRAMEWORKS_SENSOR_ROOT/accel/sensor_als_driver.c" ]
+    sources += [ "$FRAMEWORKS_SENSOR_ROOT/als/sensor_als_driver.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_ALS_BH1745)) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/als/als_bh1745.c" ]
