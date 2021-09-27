@@ -33,11 +33,7 @@ module_name = "hdf_storage_driver"
 hdf_driver(module_name) {
   FRAMEWORKS_STORAGE_ROOT = "$HDF_FRAMEWORKS_PATH/model/storage"
 
-  include_dirs = [
-    "//base/hiviewdfx/interfaces/kits",
-    "$FRAMEWORKS_STORAGE_ROOT/include",
-    "./include",
-  ]
+  include_dirs = [ "//base/hiviewdfx/interfaces/kits" ]
 
   sources = []
 
@@ -59,4 +55,11 @@ hdf_driver(module_name) {
       "src/mtd/mtd_legacy_lite.c",
     ]
   }
+}
+
+config("public") {
+  include_dirs = [
+    "include",
+    "$HDF_FRAMEWORKS_PATH/model/storage/include",
+  ]
 }
