@@ -273,15 +273,83 @@ static void MtdCharGetMtdInfo(const struct MtdDevice *mtdDevice, struct MtdInfo 
     mtdInfo->oobsize = mtdDevice->oobSize;
 }
 
+static int MtdCharIoctlGetInfo(const mtd_partition *part, const struct MtdDevice *mtdDevice,
+    int cmd, unsigned long arg)
+{
+    int ret;
+    struct MtdInfo mtdInfo;
+    size_t startAddr;
+    size_t endAddr;
+
+    (void)cmd;
+
+    MtdCharGetMtdInfo(mtdDevice, &mtdInfo); 
+    startAddr = part->start_block * mtdDevice->eraseSize;
+    endAddr = (part->end_block + 1) * mtdDevice->eraseSize;
+    ret = LOS_CopyFromKernel((void *)(uintptr_t)arg, sizeof(mtdInfo), (void *)&mtdInfo, sizeof(mtdInfo));
+    if (ret == 0) {
+        ((struct MtdInfo *)(uintptr_t)arg)->size = endAddr - startAddr;
+    }
+    return ret;
+}
+
+static int MtdCharIoctlErase(const mtd_partition *part, struct MtdDevice *mtdDevice,
+    int cmd, unsigned long arg)
+{
+    int ret;
+    struct EraseInfo erase;
+    size_t startAddr;
+
+    (void)cmd;
+    ret = LOS_CopyToKernel((void *)&erase, sizeof(erase), (void *)(uintptr_t)arg, sizeof(erase));
+    if (ret != 0) {
+        return -EINVAL;
+    }
+
+    startAddr = part->start_block * mtdDevice->eraseSize;
+    return (int)MtdDeviceErase(mtdDevice, startAddr + erase.start, startAddr + erase.length, NULL);
+}
+
+static int MtdCharIoctlGetBadBlock(const mtd_partition *part, struct MtdDevice *mtdDevice,
+    int cmd, unsigned long arg)
+{
+    int ret;
+    loff_t offs;
+    size_t startAddr;
+
+    (void)cmd;
+    ret = LOS_CopyToKernel((void *)&offs, sizeof(offs), (void *)(uintptr_t)arg, sizeof(offs));
+    if (ret != 0) {
+        return -EINVAL;
+    }
+
+    startAddr = part->start_block * mtdDevice->eraseSize;
+    return (int)MtdDeviceIsBadBlock(mtdDevice, (loff_t)startAddr + offs);
+}
+
+static int MtdCharIoctlSetBadBlock(const mtd_partition *part, struct MtdDevice *mtdDevice,
+    int cmd, unsigned long arg)
+{
+    int ret;
+    loff_t offs;
+    size_t startAddr;
+
+    (void)cmd;
+    ret = LOS_CopyToKernel((void *)&offs, sizeof(offs), (void *)(uintptr_t)arg, sizeof(offs));
+    if (ret != 0) {
+        return -EINVAL;
+    }
+
+    startAddr = part->start_block * mtdDevice->eraseSize;
+    return (int)MtdDeviceMarkBadBlock(mtdDevice, (loff_t)startAddr + offs);
+}
+
 /*
  * ioctl device interface
  */
 static int MtdCharIoctl(FAR struct file *filep, int cmd, unsigned long arg)
 {
     int ret = ENOERR;
-    size_t blockSize;
-    size_t startAddr;
-    size_t endAddr;
     struct drv_data *drv = (struct drv_data *)filep->f_vnode->data;
     mtd_partition *partition = (mtd_partition *)drv->priv;
     struct MtdFileInfo *mfi = (struct MtdFileInfo *)filep->f_priv;
@@ -290,55 +358,19 @@ static int MtdCharIoctl(FAR struct file *filep, int cmd, unsigned long arg)
 
     (void)LOS_MuxLock(&partition->lock, LOS_WAIT_FOREVER);
 
-    blockSize = mtdDev->eraseSize;
-    startAddr = partition->start_block * blockSize;
-    endAddr = (partition->end_block + 1) * blockSize;
-
-    HDF_LOGW("%s: ioctl not support, cmd=%d", __func__, cmd);
-    HDF_LOGW("%s: start:%u, end:%u", __func__, startAddr, endAddr);
-
     switch (cmd) {
         case MTD_IOC_GETINFO: {
-            struct MtdInfo mtdInfo;
-            MtdCharGetMtdInfo(mtdDevice, &mtdInfo); 
-            ret = LOS_CopyFromKernel((void *)(uintptr_t)arg, sizeof(mtdInfo), (void *)&mtdInfo, sizeof(mtdInfo));
-            if (ret != 0) {
-                ret = -EINVAL;
-                break;
-            }
-            ((struct MtdInfo *)(uintptr_t)arg)->size = endAddr - startAddr;
-            break;
+            ret = MtdCharIoctlGetInfo(partition, mtdDevice, cmd, arg);
         }
         case MTD_IOC_ERASE:
         case MTD_IOC_ERASE64: {
-            struct EraseInfo erase;
-            ret = LOS_CopyToKernel((void *)&erase, sizeof(erase), (void *)(uintptr_t)arg, sizeof(erase));
-            if (ret != 0) {
-                ret = -EINVAL;
-                break;
-            }
-            ret = MtdDeviceErase(mtdDevice, startAddr + erase.start, startAddr + erase.length, NULL);
-            break;
+            ret = MtdCharIoctlErase(partition, mtdDevice, cmd, arg);
         }
         case MTD_IOC_GETBADBLOCK: {
-            loff_t offs;
-            ret = LOS_CopyToKernel((void *)&offs, sizeof(offs), (void *)(uintptr_t)arg, sizeof(offs));
-            if (ret != 0) {
-                ret = -EINVAL;
-                break;
-            }
-            ret = (int)MtdDeviceIsBadBlock(mtdDevice, (loff_t)startAddr + offs);
-            break;
+            ret = MtdCharIoctlGetBadBlock(partition, mtdDevice, cmd, arg);
         }
         case MTD_IOC_SETBADBLOCK: {
-            loff_t offs;
-            ret = LOS_CopyToKernel((void *)&offs, sizeof(offs), (void *)(uintptr_t)arg, sizeof(offs));
-            if (ret != 0) {
-                ret = -EINVAL;
-                break;
-            }
-            ret = MtdDeviceMarkBadBlock(mtdDevice, (loff_t)startAddr + offs);
-            break;
+            ret = MtdCharIoctlSetBadBlock(partition, mtdDevice, cmd, arg);
         }
         case MTD_IOC_SETFILEMODE:
             mfi->mode = 0;
