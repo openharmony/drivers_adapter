@@ -300,7 +300,7 @@ static int MtdCharIoctl(FAR struct file *filep, int cmd, unsigned long arg)
     switch (cmd) {
         case MTD_IOC_GETINFO: {
             struct MtdInfo mtdInfo;
-            MtdCharGetMtdInfo(mtdDevice, &mtdInfo); 
+            MtdCharGetMtdInfo(mtdDevice, &mtdInfo);
             ret = LOS_CopyFromKernel((void *)(uintptr_t)arg, sizeof(mtdInfo), (void *)&mtdInfo, sizeof(mtdInfo));
             if (ret != 0) {
                 ret = -EINVAL;
