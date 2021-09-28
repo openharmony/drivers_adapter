@@ -110,6 +110,13 @@ config DRIVERS_HDF_PLATFORM_MIPI_DSI
     help
       Answer Y to enable HDF platform mipi dsi driver.
 
+config DRIVERS_HDF_PLATFORM_MIPI_CSI
+    bool "Enable HDF platform mipi csi driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform mipi csi driver.
+
 config DRIVERS_HDF_PLATFORM_HISI_SDK
     bool "Enable HDF hisi sdk driver"
     default n
