@@ -34,13 +34,6 @@ module_switch = defined(LOSCFG_DRIVERS_HDF)
 module_name = "hdf"
 hdf_driver(module_name) {
   sources = [
-    "$HDF_FRAMEWORKS_PATH/ability/config/device_resource_if.c",
-    "$HDF_FRAMEWORKS_PATH/ability/config/hcs_parser/src/hcs_blob_if.c",
-    "$HDF_FRAMEWORKS_PATH/ability/config/hcs_parser/src/hcs_generate_tree.c",
-    "$HDF_FRAMEWORKS_PATH/ability/config/hcs_parser/src/hcs_parser.c",
-    "$HDF_FRAMEWORKS_PATH/ability/config/hcs_parser/src/hcs_tree_if.c",
-    "$HDF_FRAMEWORKS_PATH/ability/sbuf/src/hdf_sbuf.c",
-    "$HDF_FRAMEWORKS_PATH/ability/sbuf/src/hdf_sbuf_impl_raw.c",
     "$HDF_FRAMEWORKS_PATH/core/adapter/vnode/src/hdf_vnode_adapter.c",
     "$HDF_FRAMEWORKS_PATH/core/common/src/devlite_object_config.c",
     "$HDF_FRAMEWORKS_PATH/core/common/src/devmgr_service_start.c",
@@ -70,8 +63,15 @@ hdf_driver(module_name) {
     "$HDF_FRAMEWORKS_PATH/core/shared/src/hdf_io_service.c",
     "$HDF_FRAMEWORKS_PATH/core/shared/src/hdf_object_manager.c",
     "$HDF_FRAMEWORKS_PATH/core/shared/src/hdf_service_record.c",
+    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/device_resource_if.c",
+    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_blob_if.c",
+    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_generate_tree.c",
+    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_parser.c",
+    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_tree_if.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_cstring.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_map.c",
+    "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sbuf.c",
+    "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sbuf_impl_raw.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_slist.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sref.c",
     "osal/src/osal_cdev.c",
@@ -264,7 +264,6 @@ config("hdf_config") {
     "$HDF_FRAMEWORKS_PATH/model/storage/include",
     "$HDF_FRAMEWORKS_PATH/model/storage/include/mmc",
     "$HDF_FRAMEWORKS_PATH/model/storage/include/mtd",
-    "$HDF_FRAMEWORKS_PATH/ability/sbuf/include",
     "$HDF_FRAMEWORKS_PATH/support/platform/include",
     "$HDF_FRAMEWORKS_PATH/core/host/include",
     "$HDF_FRAMEWORKS_PATH/core/manager/include",
@@ -279,8 +278,6 @@ config("hdf_config") {
     "model/storage/include/mtd",
     "$HDF_FRAMEWORKS_PATH/core/adapter/vnode/include",
     "$HDF_FRAMEWORKS_PATH/core/adapter/syscall/include",
-    "$HDF_FRAMEWORKS_PATH/include/config",
-    "$HDF_FRAMEWORKS_PATH/ability/config/hcs_parser/include",
   ]
 }
 

@@ -22,13 +22,6 @@ config("libhdf_host_pub_config") {
     "$hdf_framework_path/core/manager/include",
     "$hdf_framework_path/core/host/include",
     "$hdf_framework_path/core/shared/include",
-    "$hdf_framework_path/include/osal",
-    "$hdf_framework_path/include/utils",
-    "$hdf_framework_path/include/core",
-    "$hdf_framework_path/utils/include",
-    "$hdf_framework_path/ability/sbuf/include",
-    "$hdf_framework_path/include/config",
-    "$hdf_framework_path/ability/config/hcs_parser/include",
     "$hdf_uhdf_path/include/host",
     "$hdf_uhdf_path/shared/include",
     "$hdf_uhdf_path/manager/include",
@@ -43,18 +36,11 @@ ohos_shared_library("libhdf_host") {
     "$hdf_framework_path/core/manager/include",
     "$hdf_framework_path/core/host/include",
     "$hdf_framework_path/core/shared/include",
-    "$hdf_framework_path/include/osal",
-    "$hdf_framework_path/include/utils",
-    "$hdf_framework_path/include/core",
-    "$hdf_framework_path/utils/include",
-    "$hdf_framework_path/ability/sbuf/include",
-    "$hdf_framework_path/include/config",
-    "$hdf_framework_path/ability/config/hcs_parser/include",
-    "$hdf_uhdf_path/include/config",
     "$hdf_uhdf_path/include/host",
     "$hdf_uhdf_path/shared/include",
     "$hdf_uhdf_path/manager/include",
     "$hdf_uhdf_path/security/include",
+    "$hdf_uhdf_path/utils/include",
     "include",
   ]
 
@@ -92,9 +78,8 @@ ohos_shared_library("libhdf_host") {
   ]
 
   deps = [
-    "$hdf_uhdf_path/config:uhdf_hcs_pkg",
     "$hdf_uhdf_path/ipc:libhdf_ipc_adapter",
-    "$hdf_uhdf_path/osal:libhdf_utils",
+    "$hdf_uhdf_path/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
 
@@ -121,16 +106,8 @@ ohos_executable("hdf_devhost") {
     "$hdf_framework_path/core/manager/include",
     "$hdf_framework_path/core/host/include",
     "$hdf_framework_path/core/shared/include",
-    "$hdf_framework_path/include/osal",
-    "$hdf_framework_path/include/utils",
-    "$hdf_framework_path/include/core",
-    "$hdf_framework_path/utils/include",
-    "$hdf_framework_path/ability/sbuf/include",
-    "$hdf_framework_path/include/config",
-    "$hdf_framework_path/ability/config/hcs_parser/include",
     "$hdf_uhdf_path/ipc/include",
     "$hdf_uhdf_path/osal/include",
-    "$hdf_uhdf_path/include/config",
     "$hdf_uhdf_path/include/host",
     "$hdf_uhdf_path/shared/include",
     "$hdf_uhdf_path/manager/include",
@@ -140,10 +117,9 @@ ohos_executable("hdf_devhost") {
   sources = [ "devhost.c" ]
 
   deps = [
-    "$hdf_uhdf_path/config:uhdf_hcs_pkg",
     "$hdf_uhdf_path/host:libhdf_host",
     "$hdf_uhdf_path/ipc:libhdf_ipc_adapter",
-    "$hdf_uhdf_path/osal:libhdf_utils",
+    "$hdf_uhdf_path/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
 

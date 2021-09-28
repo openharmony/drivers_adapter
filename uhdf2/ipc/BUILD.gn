@@ -23,7 +23,6 @@ config("libhdf_ipc_adapter_pub_config") {
     "//drivers/framework/include/osal",
     "//drivers/framework/include/utils",
     "//drivers/framework/utils/include",
-    "//drivers/framework/ability/sbuf/include",
     "//drivers/framework/core/adapter/syscall/include",
     "//drivers/framework/core/adapter/vnode/include",
     "//drivers/framework/core/shared/include",
@@ -48,7 +47,7 @@ ohos_shared_library("libhdf_ipc_adapter") {
   ]
 
   deps = [
-    "$hdf_uhdf_path/osal:libhdf_utils",
+    "$hdf_uhdf_path/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
 

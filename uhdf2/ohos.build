@@ -3,14 +3,13 @@
   "parts": {
     "hdf": {
       "module_list": [
-        "//drivers/adapter/uhdf2/osal:libhdf_utils",
+        "//drivers/adapter/uhdf2/utils:libhdf_utils",
         "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
         "//drivers/adapter/uhdf2/hdi:libhdi",
         "//drivers/adapter/uhdf2/manager:hdf_devmgr",
         "//drivers/adapter/uhdf2/manager:hdf_devmgr.rc",
         "//drivers/adapter/uhdf2/host:hdf_devhost",
         "//drivers/adapter/uhdf2/host:libhdf_host",
-        "//drivers/adapter/uhdf2/config:libhdf_hcs",
         "//drivers/adapter/uhdf2/host/test/unittest/sample_driver:libsample_driver",
         "//drivers/adapter/uhdf2/hcs:hdf_default.hcb",
         "//drivers/peripheral/input/hal:hdi_input",

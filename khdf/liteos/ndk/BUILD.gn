@@ -33,7 +33,6 @@ group("hdf_api") {
   if (ohos_kernel_type == "liteos_a") {
     deps += [ ":platform_notes" ]
     deps += [ ":driver_framework_notes" ]
-    deps += [ ":driver_config_notes" ]
     deps += [ ":hdi_display_notes" ]
     deps += [ ":hdi_input_notes" ]
     deps += [ ":hdi_audio_notes" ]
@@ -53,15 +52,7 @@ ndk_lib("platform_notes") {
 
 ndk_lib("driver_framework_notes") {
   deps = []
-  head_files = [
-    "//drivers/framework/include/core",
-    "//drivers/framework/ability/sbuf/include",
-  ]
-}
-
-ndk_lib("driver_config_notes") {
-  deps = []
-  head_files = [ "//drivers/framework/include/config" ]
+  head_files = [ "//drivers/framework/include/core" ]
 }
 
 ndk_lib("hdi_display_notes") {

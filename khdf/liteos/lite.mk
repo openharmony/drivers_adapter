@@ -46,7 +46,6 @@ HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/model/network/common/netdevice
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/model/storage/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/model/storage/include/mmc
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/model/storage/include/mtd
-HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/ability/sbuf/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/common
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/core/host/include
@@ -63,8 +62,6 @@ HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/model/storage/include/mtd
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/core/adapter/vnode/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/core/adapter/syscall/include
 HDF_INCLUDE += -I $(LITEOSTOPDIR)/bsd/compat/linuxkpi/include
-HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/include/config
-HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/ability/config/hcs_parser/include
 LOCAL_CFLAGS += $(HDF_INCLUDE)
 LOCAL_CFLAGS += $(HDF_CFLAGS)
 
