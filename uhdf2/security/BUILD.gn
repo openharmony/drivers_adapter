@@ -26,17 +26,14 @@ ohos_shared_library("libhdf_sec") {
     "//drivers/framework/core/sec/include",
     "//drivers/framework/include/platform",
     "$hdf_uhdf_path/security/include",
-    "$hdf_framework_path/include/config",
-    "$hdf_framework_path/ability/config/hcs_parser/include",
   ]
 
   sources = [ "src/hdf_security.c" ]
 
   deps = [
     "$hdf_uhdf_path/hdi:libhdi",
-    "$hdf_uhdf_path/osal:libhdf_utils",
     "$hdf_uhdf_path/pal:libhdf_pal",
-    "$hdf_uhdf_path/config:libhdf_hcs",
+    "$hdf_uhdf_path/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
 

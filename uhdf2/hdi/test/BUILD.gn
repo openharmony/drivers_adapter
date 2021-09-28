@@ -25,7 +25,7 @@ ohos_unittest("HdiServiceManagerTest") {
   deps = [
     "$hdf_uhdf_path/hdi:libhdi",
     "$hdf_uhdf_path/ipc:libhdf_ipc_adapter",
-    "$hdf_uhdf_path/osal:libhdf_utils",
+    "$hdf_uhdf_path/utils:libhdf_utils",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
@@ -46,7 +46,7 @@ ohos_unittest("HdiServiceManagerTestCC") {
 
   deps = [
     "$hdf_uhdf_path/hdi:libhdi",
-    "$hdf_uhdf_path/osal:libhdf_utils",
+    "$hdf_uhdf_path/utils:libhdf_utils",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
