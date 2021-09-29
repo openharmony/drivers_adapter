@@ -32,7 +32,8 @@
 #define MTD_LEGACY_LITE_H
 
 #include "hdf_base.h"
-#include "mtd_core.h"
+#include "mtd/mtd_core.h"
+#include "fs/driver.h"
 
 typedef struct erase_info {
     int scrub;
@@ -70,6 +71,9 @@ typedef struct mtd_info {
 
 extern MtdInfoLegacy *nand_mtd;
 
+const struct file_operations_vfs *GetMtdCharFops(void);
+const struct block_operations *GetDevSpinorOps(void);
+const struct block_operations *GetDevNandOps(void);
 void MtdDeviceLegacyFillMtdInfo(struct MtdDevice *mtdDevice);
 
 #define MTD_NORFLASH                3

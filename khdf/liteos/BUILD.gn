@@ -242,11 +242,16 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/support/platform/include/mmc",
     "$HDF_FRAMEWORKS_PATH/include/platform",
     "$HDF_FRAMEWORKS_PATH/include/utils",
+    "$HDF_FRAMEWORKS_PATH/utils/include",
+    "$HDF_FRAMEWORKS_PATH/include/osal",
+    "$HDF_FRAMEWORKS_PATH/model/storage/include",
+    "osal/include",
   ]
 
   configs = [
     "model/bus/usb:public",
     "model/usb/host:public",
+    "model/storage:public",
   ]
 }
 
