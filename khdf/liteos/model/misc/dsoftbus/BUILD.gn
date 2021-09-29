@@ -38,12 +38,19 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_DSOFTBUS_ROOT/src/hdf_dsoftbus_driver.c",
     "$FRAMEWORKS_DSOFTBUS_ROOT/src/module_manager.c",
   ]
+  include_dirs = [ "$FRAMEWORKS_DSOFTBUS_ROOT/include" ]
+  cflags = [ "-Wall" ]
   if (defined(LOSCFG_DSOFTBUS_WLAN_PARAM_MONITOR)) {
     sources += [ "$FRAMEWORKS_DSOFTBUS_ROOT/src/wlan_param_monitor.c" ]
-    cflags = [
-      "-Wall",
-      "-DENABLE_WLAN_PARAM_MONITOR",
-    ]
+    cflags += [ "-DENABLE_WLAN_PARAM_MONITOR" ]
   }
-  include_dirs = [ "$FRAMEWORKS_DSOFTBUS_ROOT/include" ]
+  if (defined(LOSCFG_DSOFTBUS_LWIP_MONITOR)) {
+    sources += [ "src/softbus_lwip_monitor.c" ]
+    include_dirs += [
+      "include",
+      "//kernel/liteos_a/net/lwip-2.1/porting/include",
+      "//third_party/lwip/src/include/lwip",
+    ]
+    cflags += [ "-DENABLE_LWIP_MONITOR" ]
+  }
 }
