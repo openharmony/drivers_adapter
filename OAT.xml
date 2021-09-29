@@ -94,7 +94,7 @@ Note:If the text contains special characters, please escape them according to th
                 <filteritem type="filepath" name="dir name underproject/.*" desc="Describe the reason for filtering scan results"/>
             </filefilter>
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies" >
-                <filteritem type="filepath" name="dir name underproject/.*" desc="Describe the reason for filtering scan results"/>
+                <filteritem type="filepath" name="uhdf2/test/resource/audio/audiofile/audiorendertest.wav" desc="Self-developed voice files are used for testing"/>
             </filefilter>
         </filefilterlist>
     </oatconfig>
