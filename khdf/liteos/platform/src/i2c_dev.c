@@ -30,13 +30,7 @@
 
 #include "i2c_dev.h"
 #include <fs/driver.h>
-#include <limits.h>
-#include <stdio.h>
-#include "hdf_base.h"
-#include "hdf_device_desc.h"
-#include "hdf_log.h"
 #include "i2c_core.h"
-#include "i2c_if.h"
 #include "osal_mem.h"
 #include "plat_log.h"
 #include "user_copy.h"
