@@ -39,3 +39,10 @@ config DSOFTBUS_WLAN_PARAM_MONITOR
     depends on DRIVERS_HDF_DSOFTBUS
     help
       control hdf dsoftbus wlan parameter monitor capability.
+
+config DSOFTBUS_LWIP_MONITOR
+    bool "enable dsoftbus lwip netif status changed monitor"
+    default n
+    depends on DRIVERS_HDF_DSOFTBUS
+    help
+      control hdf dsoftbus lwip netif status monitor capability.
