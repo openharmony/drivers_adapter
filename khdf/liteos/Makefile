@@ -43,11 +43,11 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               ./osal/src/osal_workqueue.c \
               ./osal/src/osal_cdev.c \
               $(HDF_FRAMEWORKS)/utils/src/hdf_cstring.c \
-	      $(HDF_FRAMEWORKS)/utils/src/hdf_map.c \
+              $(HDF_FRAMEWORKS)/utils/src/hdf_map.c \
               $(HDF_FRAMEWORKS)/utils/src/hdf_slist.c \
               $(HDF_FRAMEWORKS)/utils/src/hdf_sref.c \
-              $(HDF_FRAMEWORKS)/ability/sbuf/src/hdf_sbuf.c \
-	      $(HDF_FRAMEWORKS)/ability/sbuf/src/hdf_sbuf_impl_raw.c \
+              $(HDF_FRAMEWORKS)/utils/src/hdf_sbuf.c \
+              $(HDF_FRAMEWORKS)/utils/src/hdf_sbuf_impl_raw.c \
               ./osal/src/osal_mem.c \
               ./osal/src/osal_mutex.c \
               ./osal/src/osal_sem.c \
@@ -80,12 +80,12 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/core/common/src/load_driver_entry.c \
               $(HDF_FRAMEWORKS)/core/common/src/devmgr_service_start.c \
               $(HDF_FRAMEWORKS)/core/common/src/hdf_device_node_ext.c \
-              $(HDF_FRAMEWORKS)/ability/config/hcs_parser/src/hcs_blob_if.c \
-              $(HDF_FRAMEWORKS)/ability/config/hcs_parser/src/hcs_parser.c \
-              $(HDF_FRAMEWORKS)/ability/config/hcs_parser/src/hcs_generate_tree.c \
-              $(HDF_FRAMEWORKS)/ability/config/hcs_parser/src/hcs_tree_if.c \
-              $(HDF_FRAMEWORKS)/ability/config/device_resource_if.c
-
+              $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_blob_if.c \
+              $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_parser.c \
+              $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_generate_tree.c \
+              $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_tree_if.c \
+              $(HDF_FRAMEWORKS)/utils/src/hcs_parser/device_resource_if.c
+LOCAL_CFLAGS += $(HDF_INCLUDE)
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM), y)
               LOCAL_SRCS += ./platform/src/plat_common.c \
               $(HDF_FRAMEWORKS)/support/platform/src/common/platform_device.c \

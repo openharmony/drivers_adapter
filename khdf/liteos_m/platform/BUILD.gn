@@ -43,9 +43,9 @@ static_library("hdf_platform_lite") {
     "$hdf_fwk_path/support/platform/src/gpio_if.c",
     "$hdf_fwk_path/support/platform/src/i2c_core.c",
     "$hdf_fwk_path/support/platform/src/i2c_if.c",
+    "$hdf_fwk_path/support/platform/src/pwm_core.c",
     "$hdf_fwk_path/support/platform/src/uart_core.c",
     "$hdf_fwk_path/support/platform/src/uart_if.c",
-    "$hdf_fwk_path/support/platform/src/pwm_core.c",
     "plat_common.c",
   ]
   include_dirs = [ "kernel/liteos_m/kernel/arch/include" ]

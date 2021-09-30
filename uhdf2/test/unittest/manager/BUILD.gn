@@ -17,14 +17,12 @@ module_output_path = "hdf/manager"
 ohos_unittest("hdf_adapter_uhdf_test_manager") {
   module_out_path = module_output_path
   include_dirs = [
-    "//drivers/framework/ability/sbuf/include",
     "//drivers/framework/include/platform",
     "//drivers/framework/include/core",
     "//drivers/framework/core/common/include/host",
     "//drivers/framework/core/shared/include",
     "//drivers/framework/include/osal",
     "//drivers/framework/include/utils",
-    "//drivers/framework/include/config",
     "//drivers/framework/include",
     "//drivers/framework/test/unittest/include",
     "//drivers/framework/test/unittest/manager",
@@ -33,8 +31,8 @@ ohos_unittest("hdf_adapter_uhdf_test_manager") {
   defines = [ "__USER__" ]
   sources = [ "//drivers/framework/core/manager/test/unittest/common/hdf_lite_manager_test.cpp" ]
   deps = [
-    "//drivers/adapter/uhdf2/osal:libhdf_utils",
     "//drivers/adapter/uhdf2/test/unittest/common:libhdf_test_common",
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
   cflags = [
@@ -56,14 +54,12 @@ module_output_path = "hdf/ioservice"
 ohos_unittest("hdf_adapter_uhdf_test_ioservice") {
   module_out_path = module_output_path
   include_dirs = [
-    "//drivers/framework/ability/sbuf/include",
     "//drivers/framework/include/platform",
     "//drivers/framework/include/core",
     "//drivers/framework/core/common/include/host",
     "//drivers/framework/core/shared/include",
     "//drivers/framework/include/osal",
     "//drivers/framework/include/utils",
-    "//drivers/framework/include/config",
     "//drivers/framework/include",
     "//drivers/framework/test/unittest/include",
     "//drivers/framework/test/unittest/manager",
@@ -72,7 +68,7 @@ ohos_unittest("hdf_adapter_uhdf_test_ioservice") {
   defines = [ "__USER__" ]
   sources = [ "//drivers/framework/core/manager/test/unittest/common/hdf_ioservice_test.cpp" ]
   deps = [
-    "//drivers/adapter/uhdf2/osal:libhdf_utils",
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
   cflags = [
@@ -93,7 +89,6 @@ module_output_path = "hdf/sbuf"
 ohos_unittest("hdf_adapter_uhdf_test_sbuf") {
   module_out_path = module_output_path
   include_dirs = [
-    "//drivers/framework/ability/sbuf/include",
     "//drivers/framework/include/osal",
     "//drivers/framework/include/utils",
     "//drivers/framework/include",
@@ -106,7 +101,7 @@ ohos_unittest("hdf_adapter_uhdf_test_sbuf") {
     "//drivers/framework/core/manager/test/unittest/common/hdf_sbuf_test.cpp",
   ]
   deps = [
-    "//drivers/adapter/uhdf2/osal:libhdf_utils",
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
   cflags = [

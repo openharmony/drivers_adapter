@@ -19,19 +19,17 @@ unittest("hdf_adapter_uhdf_test_config") {
   include_dirs = [
     "//third_party/googletest/googletest/include",
     "//third_party/bounds_checking_function/include",
-    "//drivers/framework/ability/sbuf/include",
     "//drivers/framework/include/platform",
     "//drivers/framework/include/core",
     "//drivers/framework/include/osal",
     "//drivers/adapter/uhdf/posix/include",
     "//drivers/framework/include/utils",
-    "//drivers/framework/include/config",
     "//drivers/framework/include",
     "//drivers/framework/test/unittest/include",
     "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
   ]
 
-  sources = [ "//drivers/framework/ability/config/test/unittest/common/hdf_config_test.cpp" ]
+  sources = [ "//drivers/framework/utils/src/hcs_parser/test/unittest/common/hdf_config_test.cpp" ]
   deps = [
     "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
     "//drivers/adapter/uhdf/manager:hdf_core",
