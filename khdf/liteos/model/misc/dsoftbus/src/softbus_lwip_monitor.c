@@ -32,15 +32,12 @@
 
 #include <lwip/netif.h>
 #include <securec.h>
-
 #include "module_manager.h"
 #include "hdf_dsoftbus_driver.h"
 
 #define HDF_LOG_TAG "softbus_lwip_monitor"
-
 #define NETIF_STATUS_UP 1
 #define NETIF_STATUS_DOWN 0
-
 #define NETIF_NAME_LENGTH 16
 
 typedef enum {
