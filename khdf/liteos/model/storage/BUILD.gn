@@ -37,11 +37,7 @@ hdf_driver(module_name) {
     "storage_block_lite.c",
   ]
 
-  include_dirs = [
-    "//base/hiviewdfx/interfaces/kits",
-    "$FRAMEWORKS_STORAGE_ROOT/include/common",
-    "./include",
-  ]
+  include_dirs = [ "//base/hiviewdfx/interfaces/kits" ]
 
   if (defined(LOSCFG_DRIVERS_HDF_STORAGE_MTD)) {
     sources += [
@@ -54,4 +50,11 @@ hdf_driver(module_name) {
       "mtd_legacy_lite.c",
     ]
   }
+}
+
+config("public") {
+  include_dirs = [
+    "include",
+    "$HDF_FRAMEWORKS_PATH/model/storage/include",
+  ]
 }

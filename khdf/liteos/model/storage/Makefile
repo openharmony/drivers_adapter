@@ -17,6 +17,7 @@ MODULE_NAME := hdf_storage_driver
 
 LOCAL_INCLUDE := $(LITEOSTOPDIR)/../../base/hiviewdfx/interfaces/kits \
                  $(LITEOSTOPDIR)/../../third_party/mtd-utils/include \
+                 $(LITEOSTOPDIR)/../../drivers/framework/model/storage/include \
                  $(LITEOSTOPDIR)/../../drivers/khdf/liteos/model/storage/include \
 
 LOCAL_SRCS += ./storage_block_lite.c
