@@ -27,7 +27,7 @@ ohos_shared_library("libsample_service_cpp") {
   deps = [
     "//drivers/adapter/uhdf2/host:libhdf_host",
     "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
-    "//drivers/adapter/uhdf2/osal:libhdf_utils",
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
 

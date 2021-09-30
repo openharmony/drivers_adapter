@@ -35,13 +35,13 @@ HDF_TEST_FRAMWORK_ROOT = $(LITEOSTOPDIR)/../../drivers/framework/test/unittest
 LOCAL_SRCS := $(HDF_TEST_FRAMWORK_ROOT)/common/hdf_main_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/manager/sample_driver_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/osal/osal_test_entry.c \
-              $(HDF_TEST_FRAMWORK_ROOT)/config/hdf_config_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/osal/osal_all_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/osal/osal_file_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/osal/osal_list_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/osal/osal_work_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/osal/osal_get_case_test.c \
-              $(HDF_TEST_FRAMWORK_ROOT)/ability/config/hcs_parser/unittest/hcs_config_test.c
+              $(HDF_TEST_FRAMWORK_ROOT)/utils/hcs_parser/unittest/hcs_parser_test.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/utils/hcs_parser/unittest/hcs_config_test.c
 
 ifeq ($(LOSCFG_DRIVERS_HDF_WIFI), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/wifi/hdf_wifi_test.c \

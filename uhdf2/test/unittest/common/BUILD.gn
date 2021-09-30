@@ -27,7 +27,7 @@ ohos_shared_library("libhdf_test_common") {
   include_dirs = [ "//drivers/framework/test/unittest/include" ]
 
   deps = [
-    "//drivers/adapter/uhdf2/osal:libhdf_utils",
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
   defines = [ "__OHOS__USER__" ]

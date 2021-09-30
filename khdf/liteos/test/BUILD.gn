@@ -35,9 +35,7 @@ module_switch = defined(LOSCFG_DRIVERS_HDF_TEST)
 module_name = "hdf_test"
 hdf_driver(module_name) {
   sources = [
-    "$HDF_TEST_FRAMWORK_ROOT/ability/config/hcs_parser/unittest/hcs_config_test.c",
     "$HDF_TEST_FRAMWORK_ROOT/common/hdf_main_test.c",
-    "$HDF_TEST_FRAMWORK_ROOT/config/hdf_config_test.c",
     "$HDF_TEST_FRAMWORK_ROOT/manager/sample_driver_test.c",
     "$HDF_TEST_FRAMWORK_ROOT/osal/osal_all_test.c",
     "$HDF_TEST_FRAMWORK_ROOT/osal/osal_file_test.c",
@@ -45,6 +43,8 @@ hdf_driver(module_name) {
     "$HDF_TEST_FRAMWORK_ROOT/osal/osal_list_test.c",
     "$HDF_TEST_FRAMWORK_ROOT/osal/osal_test_entry.c",
     "$HDF_TEST_FRAMWORK_ROOT/osal/osal_work_test.c",
+    "$HDF_TEST_FRAMWORK_ROOT/utils/hcs_parser/unittest/hcs_config_test.c",
+    "$HDF_TEST_FRAMWORK_ROOT/utils/hcs_parser/unittest/hcs_parser_test.c",
   ]
 
   if (defined(LOSCFG_DRIVERS_HDF_WIFI)) {
@@ -67,17 +67,19 @@ hdf_driver(module_name) {
     ]
   }
 
-  if (defined(LOSCFG_DRIVERS_HDF_USB_DDK_HOST) && defined(LOSCFG_DRIVERS_HDF_USB_PNP_NOTIFY)) {
+  if (defined(LOSCFG_DRIVERS_HDF_USB_DDK_HOST) &&
+      defined(LOSCFG_DRIVERS_HDF_USB_PNP_NOTIFY)) {
     sources += [
-      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_test.c",
-      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_raw_test.c",
-      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_raw_io.c",
       "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/hdf_usb_entry_test.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_raw_io.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_raw_test.c",
+      "$HDF_TEST_FRAMWORK_ROOT/model/usb/host/src/usb_test.c",
     ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM)) {
-    sources += [ "$HDF_TEST_FRAMWORK_ROOT/platform/common/platform_driver_test.c" ]
+    sources +=
+        [ "$HDF_TEST_FRAMWORK_ROOT/platform/common/platform_driver_test.c" ]
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO)) {
       sources += [
@@ -178,9 +180,7 @@ config("test_lite") {
     "$HDF_FRAMEWORKS_PATH/utils/include",
     "$HDF_FRAMEWORKS_PATH/include/platform",
     "$HDF_FRAMEWORKS_PATH/include/core",
-    "$HDF_FRAMEWORKS_PATH/include/config",
     "$HDF_FRAMEWORKS_PATH/support/platform/include",
-    "$HDF_FRAMEWORKS_PATH/ability/sbuf/include",
     "$HDF_FRAMEWORKS_PATH/core/host/include",
     "$HDF_FRAMEWORKS_PATH/core/master/include",
     "$HDF_FRAMEWORKS_PATH/core/shared/include",
@@ -200,7 +200,7 @@ config("test_lite") {
     "$HDF_TEST_FRAMWORK_ROOT/osal",
     "$HDF_TEST_FRAMWORK_ROOT/adapter/osal/unittest",
     "$HDF_TEST_FRAMWORK_ROOT/adapter/osal/include",
-    "$HDF_TEST_FRAMWORK_ROOT/ability/config/hcs_parser/unittest",
+    "$HDF_TEST_FRAMWORK_ROOT/utils/hcs_parser/unittest",
     "$HDF_TEST_FRAMWORK_ROOT",
   ]
 

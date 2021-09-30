@@ -34,9 +34,9 @@ module_name = "hdf_eth_model"
 hdf_driver(module_name) {
   FRAMEWORKS_ETHERNET_ROOT = "$HDF_FRAMEWORKS_PATH/model/network/ethernet"
   sources = [
+    "$FRAMEWORKS_ETHERNET_ROOT/src/eth_chip_driver.c",
     "$FRAMEWORKS_ETHERNET_ROOT/src/eth_device.c",
     "$FRAMEWORKS_ETHERNET_ROOT/src/hdf_eth_core.c",
-    "$FRAMEWORKS_ETHERNET_ROOT/src/eth_chip_driver.c",
   ]
 
   include_dirs = [

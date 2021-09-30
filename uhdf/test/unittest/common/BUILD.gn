@@ -16,7 +16,6 @@ shared_library("hdf_test_common") {
 
   include_dirs = [
     "//third_party/bounds_checking_function/include",
-    "//drivers/framework/ability/sbuf/include",
     "//drivers/framework/include/platform",
     "//drivers/framework/include/core",
     "//drivers/framework/include/osal",

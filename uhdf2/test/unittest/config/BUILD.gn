@@ -19,7 +19,7 @@ ohos_unittest("hdf_adapter_uhdf_test_config") {
   module_out_path = module_output_path
   include_dirs = [ "//drivers/framework/test/unittest/include" ]
 
-  sources = [ "//drivers/framework/ability/config/test/unittest/common/hdf_config_test.cpp" ]
+  sources = [ "//drivers/framework/utils/src/hcs_parser/test/unittest/common/hdf_config_test.cpp" ]
   cflags = [
     "-Wall",
     "-Wextra",
@@ -29,8 +29,8 @@ ohos_unittest("hdf_adapter_uhdf_test_config") {
     "-fno-strict-aliasing",
   ]
   deps = [
-    "$hdf_uhdf_path/osal:libhdf_utils",
     "$hdf_uhdf_path/test/unittest/common:libhdf_test_common",
+    "$hdf_uhdf_path/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
   if (is_standard_system) {

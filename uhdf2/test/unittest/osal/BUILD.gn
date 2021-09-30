@@ -18,13 +18,11 @@ ohos_unittest("hdf_adapter_uhdf_test_osal") {
   module_out_path = module_output_path
 
   include_dirs = [
-    "//drivers/framework/ability/sbuf/include",
     "//drivers/framework/include/platform",
     "//drivers/framework/include/core",
     "//drivers/framework/include/osal",
     "//drivers/adapter/uhdf/posix/include",
     "//drivers/framework/include/utils",
-    "//drivers/framework/include/config",
     "//drivers/framework/include",
     "//drivers/framework/test/unittest/include",
     "//drivers/framework/test/unittest/osal",
@@ -35,8 +33,8 @@ ohos_unittest("hdf_adapter_uhdf_test_osal") {
     "//drivers/framework/support/posix/test/unittest/common/hdf_osal_test.cpp",
   ]
   deps = [
-    "//drivers/adapter/uhdf2/osal:libhdf_utils",
     "//drivers/adapter/uhdf2/test/unittest/common:libhdf_test_common",
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
 
@@ -59,13 +57,11 @@ ohos_unittest("hdf_adapter_uhdf_test_osal_posix") {
   module_out_path = module_output_path
 
   include_dirs = [
-    "//drivers/framework/ability/sbuf/include",
     "//drivers/framework/include/platform",
     "//drivers/framework/include/core",
     "//drivers/framework/include/osal",
     "//drivers/adapter/uhdf/posix/include",
     "//drivers/framework/include/utils",
-    "//drivers/framework/include/config",
     "//drivers/framework/include",
     "//drivers/framework/test/unittest/include",
     "//drivers/framework/test/unittest/osal",
@@ -79,7 +75,7 @@ ohos_unittest("hdf_adapter_uhdf_test_osal_posix") {
     "//drivers/framework/test/unittest/osal/osal_list_test.c",
   ]
   deps = [
-    "//drivers/adapter/uhdf2/osal:libhdf_utils",
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
 
