@@ -63,7 +63,7 @@ struct HdfDriverEntry *HdfDriverLoaderGetDriverEntry(const struct HdfDeviceInfo 
     }
     deviceHandle = dlopen(realPath, RTLD_LAZY);
     if (deviceHandle == NULL) {
-        HDF_LOGE("Get device entry failed, %{public}s load fail", realPath);
+        HDF_LOGE("Get device entry failed, %{public}s load fail, %{public}s", realPath, dlerror());
         return NULL;
     }
     fullAttribute->deviceHandle = deviceHandle;
