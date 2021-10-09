@@ -56,6 +56,7 @@ endif
 ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/model/usb/device/src/hdf_usb_device_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/model/usb/device/src/usb_device_lite_cdcacm_test.c \
+              $(HDF_TEST_FRAMWORK_ROOT)/model/usb/device/src/usb_device_lite_sdk_io_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/model/usb/device/src/usb_device_lite_sdk_if_test.c
 endif
 
