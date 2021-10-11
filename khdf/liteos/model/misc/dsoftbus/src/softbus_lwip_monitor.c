@@ -32,8 +32,8 @@
 
 #include <lwip/netif.h>
 #include <securec.h>
-#include "module_manager.h"
 #include "hdf_dsoftbus_driver.h"
+#include "module_manager.h"
 
 #define HDF_LOG_TAG "softbus_lwip_monitor"
 #define NETIF_STATUS_UP 1
