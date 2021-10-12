@@ -29,12 +29,11 @@
  */
 
 #include "mtd_legacy_lite.h"
-#include "string.h"
-
+#include "hdf_log.h"
 #include "mtd_core.h"
 #include "mtd_list.h"
-#include "hdf_log.h"
 #include "osal_mem.h"
+#include "string.h"
 
 struct MtdDevNode {
     char *type;
