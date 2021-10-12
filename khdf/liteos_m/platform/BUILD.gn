@@ -39,8 +39,8 @@ config("libhdf_platform_pub_config") {
 
 static_library("hdf_platform_lite") {
   sources = [
-    "$hdf_fwk_path/support/platform/src/gpio_core.c",
-    "$hdf_fwk_path/support/platform/src/gpio_if.c",
+    "$hdf_fwk_path/support/platform/src/gpio/gpio_core.c",
+    "$hdf_fwk_path/support/platform/src/gpio/gpio_if.c",
     "$hdf_fwk_path/support/platform/src/i2c_core.c",
     "$hdf_fwk_path/support/platform/src/i2c_if.c",
     "$hdf_fwk_path/support/platform/src/pwm_core.c",

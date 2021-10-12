@@ -64,6 +64,7 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_driver_test.c
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/gpio_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/gpio_driver_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_gpio_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2C), y)

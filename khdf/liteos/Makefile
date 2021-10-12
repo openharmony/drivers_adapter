@@ -107,8 +107,9 @@ endif
 
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
-              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/gpio_if.c \
-              $(HDF_FRAMEWORKS)/support/platform/src/gpio_core.c
+              LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/gpio/gpio_if.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/gpio/gpio_core.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/gpio/gpio_service.c
               LOCAL_SRCS += ./platform/src/gpio_dev.c
 endif
 
