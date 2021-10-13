@@ -28,10 +28,10 @@
 
 #define DRIVER_DESC "driverDesc"
 #define HDF_LOG_TAG driver_loader_full
-#ifdef __OHOS_STANDARD_SYS__
-#define DRIVER_PATH "/system/lib/"
-#else
+#ifdef __ARM64__
 #define DRIVER_PATH "/system/lib64/"
+#else
+#define DRIVER_PATH "/system/lib/"
 #endif
 
 static struct DriverLoaderFull *g_fullLoader = NULL;

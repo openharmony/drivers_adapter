@@ -31,6 +31,10 @@ config("libhdi_pub_config") {
 }
 
 ohos_shared_library("libhdi") {
+  if (target_cpu == "arm64") {
+    defines = [ "__ARM64__" ]
+  }
+
   include_dirs = [
     "$hdf_framework_path/core/sec/include",
     "$hdf_framework_path/core/shared/include",
