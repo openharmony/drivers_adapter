@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Huawei Device Co., Ltd.
+# Copyright (c) 2021 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -11,38 +11,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/lite/config/component/lite_component.gni")
+import("//build/ohos.gni")
+import("//drivers/adapter/uhdf2/uhdf.gni")
 
 HDF_FRAMEWORKS = "//drivers/framework"
 
-shared_library("hdf_platform") {
+config("libhdf_platform_pub_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "$hdf_framework_path/include/core",
+    "$hdf_framework_path/include/utils",
+    "$hdf_framework_path/include/osal",
+    "$hdf_framework_path/utils/include",
+    "$hdf_framework_path/include/platform",
+    "$hdf_uhdf_path/osal/include",
+    "$hdf_uhdf_path/utils/include",
+  ]
+}
+
+ohos_shared_library("libhdf_platform") {
+  public_configs = [ ":libhdf_platform_pub_config" ]
   sources = [
     "$HDF_FRAMEWORKS/support/platform/src/gpio/gpio_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/i2c_if.c",
-    "$HDF_FRAMEWORKS/support/platform/src/mmc/emmc_if.c",
-    "$HDF_FRAMEWORKS/support/platform/src/mmc/mmc_if.c",
-    "$HDF_FRAMEWORKS/support/platform/src/uart_if.c",
   ]
 
   include_dirs = [
-    "$HDF_FRAMEWORKS/include/core",
-    "$HDF_FRAMEWORKS/include/utils",
-    "$HDF_FRAMEWORKS/utils/include",
-    "$HDF_FRAMEWORKS/include/osal",
-    "$HDF_FRAMEWORKS/include/platform",
     "$HDF_FRAMEWORKS/support/platform/include",
     "$HDF_FRAMEWORKS/support/platform/include/common",
-    "$HDF_FRAMEWORKS/../adapter/uhdf/posix/include",
-    "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
   ]
 
   deps = [
-    "//drivers/adapter/uhdf/manager:hdf_core",
-    "//drivers/adapter/uhdf/posix:hdf_posix_osal",
-    "//third_party/bounds_checking_function:libsec_shared",
+    "//drivers/adapter/uhdf2/host:libhdf_host",
+    "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
+    "//utils/native/base:utils",
   ]
 
   defines = [ "__USER__" ]
+
+  if (is_standard_system) {
+    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  } else {
+    external_deps = [ "hilog:libhilog" ]
+  }
 
   cflags = [
     "-Wall",
@@ -52,8 +65,8 @@ shared_library("hdf_platform") {
     "-fno-common",
     "-fno-strict-aliasing",
   ]
-}
 
-lite_component("hdf_platform_driver") {
-  features = [ ":hdf_platform" ]
+  # install_images = [ "vendor" ]
+  subsystem_name = "hdf"
+  part_name = "hdf"
 }
