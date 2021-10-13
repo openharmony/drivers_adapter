@@ -30,6 +30,10 @@ config("libhdf_host_pub_config") {
 }
 
 ohos_shared_library("libhdf_host") {
+  if (target_cpu == "arm64") {
+    defines = [ "__ARM64__" ]
+  }
+
   public_configs = [ ":libhdf_host_pub_config" ]
   include_dirs = [
     "//utils/native/base/include",
