@@ -43,32 +43,8 @@ ohos_unittest("OsalTest") {
   }
 }
 
-module_output_path = "hdf/sbuf"
-ohos_unittest("SbufTest") {
-  module_out_path = module_output_path
-  sources = [
-    "$hdf_framework_path/core/manager/test/unittest/common/hdf_sbuf_test.cpp",
-  ]
-
-  deps = [
-    "$hdf_uhdf_path/utils:libhdf_utils",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
-  ]
-
-  if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
-  } else {
-    external_deps = [ "hilog:libhilog" ]
-  }
-}
-
 ###########################end###########################
 group("unittest") {
   testonly = true
-  deps = [
-    ":OsalTest",
-    ":SbufTest",
-  ]
+  deps = [ ":OsalTest" ]
 }
