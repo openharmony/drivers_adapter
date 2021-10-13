@@ -115,8 +115,9 @@ hdf_driver(module_name) {
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO)) {
     sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_service.c",
       "platform/src/gpio_dev.c",
     ]
   }
