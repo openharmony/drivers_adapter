@@ -61,7 +61,6 @@ config DRIVERS_HDF_PLATFORM_ADC
     help
       Answer Y to enable HDF platform adc driver.
 
-
 config DRIVERS_HDF_PLATFORM_MMC
     bool "Enable HDF platform mmc driver"
     default n
