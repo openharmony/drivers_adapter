@@ -107,9 +107,9 @@ struct HdfMessageTask *DevmgrServiceFullGetMessageTask()
     struct DevmgrServiceFull *fullService =
         (struct DevmgrServiceFull *)DevmgrServiceGetInstance();
     if (fullService != NULL) {
-        HDF_LOGE("Get message task failed, fullService is null");
         return &fullService->task;
     }
+    HDF_LOGE("Get message task failed, fullService is null");
     return NULL;
 }
 
