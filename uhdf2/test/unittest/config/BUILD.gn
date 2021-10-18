@@ -28,7 +28,8 @@ ohos_unittest("hdf_adapter_uhdf_test_config") {
     "-fno-common",
     "-fno-strict-aliasing",
   ]
-  resource_config_file = "//drivers/adapter/uhdf2/test/resource/config/ohos_test.xml"
+  resource_config_file =
+      "//drivers/adapter/uhdf2/test/resource/config/ohos_test.xml"
   deps = [
     "$hdf_uhdf_path/test/unittest/common:libhdf_test_common",
     "$hdf_uhdf_path/utils:libhdf_utils",
