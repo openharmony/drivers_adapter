@@ -44,6 +44,8 @@ ohos_unittest("hdf_adapter_uhdf_test_platform") {
     "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
+  resource_config_file =
+      "//drivers/adapter/uhdf2/test/resource/platform/ohos_test.xml"
   cflags = [
     "-Wall",
     "-Wextra",
