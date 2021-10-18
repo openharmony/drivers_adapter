@@ -105,6 +105,8 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_ADC), y)
               $(HDF_FRAMEWORKS)/support/platform/src/adc_core.c
 endif
 
+LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/i3c_if.c \
+$(HDF_FRAMEWORKS)/support/platform/src/i3c_core.c
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/gpio/gpio_if.c \
