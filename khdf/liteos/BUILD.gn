@@ -165,14 +165,6 @@ hdf_driver(module_name) {
     sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/emmc_if.c" ]
   }
 
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_base.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_if.c",
-    ]
-  }
-
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI)) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_common.c",
@@ -190,6 +182,14 @@ hdf_driver(module_name) {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_infoframe.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_ncts.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_scdc.c",
+    ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_base.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_if.c",
     ]
   }
 
