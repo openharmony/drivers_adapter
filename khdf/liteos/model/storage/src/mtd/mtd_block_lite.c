@@ -30,8 +30,8 @@
 
 #include "fs/fs.h"
 #include "hdf_log.h"
-#include "mtd_core.h"
 #include "mtd_block.h"
+#include "mtd_core.h"
 #include "sys/ioctl.h"
 
 #define HDF_LOG_TAG mtd_block_lite_c
