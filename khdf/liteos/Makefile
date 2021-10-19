@@ -140,6 +140,25 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MMC), y)
               $(HDF_FRAMEWORKS)/support/platform/src/mmc/mmc_emmc.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI), y)
+              LOCAL_SRCS += \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_cec.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_common.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_core.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_ddc.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_dfm.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_dispatch.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_edid.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_event.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_frl.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_hdcp.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_hdr.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_if.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_infoframe.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_ncts.c \
+              $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_scdc.c
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO), y)
               LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/mmc/sdio_if.c
 endif
