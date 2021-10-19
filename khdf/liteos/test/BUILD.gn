@@ -166,6 +166,13 @@ hdf_driver(module_name) {
       ]
     }
 
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/hdmi_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_hdmi_entry_test.c",
+      ]
+    }
+
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
       sources += [
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/pwm_test.c",
