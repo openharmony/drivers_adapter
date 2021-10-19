@@ -265,6 +265,7 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/core/common/include/manager",
     "$HDF_FRAMEWORKS_PATH/support/platform/include",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/common",
+    "$HDF_FRAMEWORKS_PATH/support/platform/include/hdmi",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/mmc",
     "$HDF_FRAMEWORKS_PATH/include/platform",
     "$HDF_FRAMEWORKS_PATH/include/utils",
