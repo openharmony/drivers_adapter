@@ -165,6 +165,26 @@ hdf_driver(module_name) {
     sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/emmc_if.c" ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_cec.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_common.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_ddc.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_dfm.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_dispatch.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_edid.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_event.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_frl.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_hdcp.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_hdr.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_infoframe.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_ncts.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_scdc.c",
+    ]
+  }
+
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_base.c",
