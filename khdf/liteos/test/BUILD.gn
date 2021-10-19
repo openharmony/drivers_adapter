@@ -152,6 +152,13 @@ hdf_driver(module_name) {
       ]
     }
 
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_CSI)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/mipi_csi_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_mipi_csi_entry_test.c",
+      ]
+    }
+
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_EMMC)) {
       sources += [
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/emmc_test.c",
