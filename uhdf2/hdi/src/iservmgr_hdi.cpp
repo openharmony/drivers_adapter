@@ -22,7 +22,7 @@ namespace OHOS {
 namespace HDI {
 namespace ServiceManager {
 namespace V1_0 {
-constexpr int DEVICE_SERVICE_MANAGER_SA_ID = 5001;
+constexpr int DEVICE_SERVICE_MANAGER_SA_ID = 5100;
 constexpr int DEVSVC_MANAGER_GET_SERVICE = 2;
 
 class ServiceManagerProxy : public IRemoteProxy<IServiceManager> {

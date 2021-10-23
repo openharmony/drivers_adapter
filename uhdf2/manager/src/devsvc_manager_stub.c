@@ -51,6 +51,7 @@ static int32_t DevSvcManagerStubAddService(struct IDevSvcManager *super, struct 
     if (ret != HDF_SUCCESS) {
         OsalMemFree(deviceObject);
     }
+    HDF_LOGI("add service %{public}s, %{public}d", name, ret);
     return ret;
 }
 
@@ -68,6 +69,7 @@ static int32_t DevSvcManagerStubGetService(
     if (remoteService != NULL) {
         ret = HDF_SUCCESS;
         HdfSBufWriteRemoteService(reply, remoteService);
+        HDF_LOGE("service %{public}s found", name);
     } else {
         HDF_LOGE("service %{public}s not found", name);
     }
@@ -85,6 +87,7 @@ static int32_t DevSvcManagerStubRemoveService(struct IDevSvcManager *super, stru
     struct HdfDeviceObject *deviceObject = super->GetObject(super, name);
     super->RemoveService(super, name);
     OsalMemFree(deviceObject);
+    HDF_LOGE("service %{public}s removed", name);
     return HDF_SUCCESS;
 }
 
