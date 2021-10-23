@@ -43,7 +43,7 @@
         "//drivers/peripheral/wlan/test/hdi_service:unittest",
         "//drivers/peripheral/audio/test/systemtest:systemtest",
         "//drivers/peripheral/usb/test:hdf_test_usb",
-	"//drivers/peripheral/audio/test/unittest:audiotest"
+        "//drivers/peripheral/audio/test/unittest:audiotest"
       ]
     }
   }

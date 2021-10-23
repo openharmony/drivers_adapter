@@ -57,17 +57,17 @@ int DriverInstallerFullStartDeviceHost(uint32_t devHostId, const char* devHostNa
     pid_t fpid;
     fpid = fork();
     if (fpid < 0) {
-        HDF_LOGE("starting device host, fork failed");
+        HDF_LOGE("starting device host %{public}s, fork failed", devHostName);
         return HDF_FAILURE;
     } else if (fpid == 0) {
         char * const args[] = {DEV_HOST_BINARY, cmd, (char * const)devHostName, NULL};
         extern char** environ;
         if (execve(DEV_HOST_BINARY, args, environ) == -1) {
-            HDF_LOGE("start device host, execve failed");
+            HDF_LOGE("start device host %{public}s, execve failed", devHostName);
             abort();
         }
     } else {
-        HDF_LOGI("fork device host success");
+        HDF_LOGI("fork device host %{public}s %{public}d success", devHostName, fpid);
     }
     return HDF_SUCCESS;
 }

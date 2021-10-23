@@ -20,7 +20,7 @@
 #include "hdf_remote_service.h"
 
 #define DEVICE_SERVICE_MANAGER "hdf_device_service_manager"
-#define DEVICE_SERVICE_MANAGER_SA_ID 5001
+#define DEVICE_SERVICE_MANAGER_SA_ID 5100
 
 struct DevSvcManagerStub {
     struct DevSvcManager super;
