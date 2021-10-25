@@ -21,8 +21,6 @@
 #include "osal_mutex.h"
 
 #define DEVICE_MANAGER_SERVICE "hdf_device_manager"
-#define DEVICE_MANAGER_SERVICE_SA_ID 5002
-
 
 struct DevmgrServiceStub {
     struct DevmgrServiceFull super;
