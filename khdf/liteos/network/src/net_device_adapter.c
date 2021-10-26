@@ -41,6 +41,7 @@
 
 #define HDF_LOG_TAG NetDeviceLite
 #define FREE_SPACE_SIZE 2
+#define P2P_HEAD 3
 
 static bool IsInSystemTaskContext(void)
 {
@@ -267,6 +268,21 @@ static void LiteNetifLinkChangeCallback(struct netif *netif)
     }
 }
 
+static int32_t AddP2pNetDev(struct netif *lwipNf, struct NetDevice *lwipNd)
+{
+    if (lwipNf == NULL || lwipNd == NULL) {
+        return HDF_FAILURE;
+    }
+    if  (strncmp(lwipNd->name, "p2p", P2P_HEAD) == 0) {
+        if (strncpy_s(lwipNf->full_name, IFNAMSIZ, lwipNd->name, IFNAMSIZ - FREE_SPACE_SIZE) != EOK) {
+            HDF_LOGE("lite netif add p2p netdevice fail : strncpy_s fail!");
+            return HDF_FAILURE;
+        }
+        lwipNf->full_name[IFNAMSIZ - FREE_SPACE_SIZE] = '\0';
+    }
+    return HDF_SUCCESS;
+}
+
 static int32_t LiteNetDevAdd(struct NetDeviceImpl *netDeviceImpl)
 {
     if (netDeviceImpl == NULL || netDeviceImpl->osPrivate == NULL || netDeviceImpl->netDevice == NULL) {
@@ -289,6 +305,10 @@ static int32_t LiteNetDevAdd(struct NetDeviceImpl *netDeviceImpl)
     }
     if ((ret = netifapi_netif_add(lwipNf, &ipaddr, &netmask, &gw)) != ERR_OK) {
         HDF_LOGE("%s : netifapi_netif_add fail!,ret=%d", __func__, ret);
+        DestroyLwipNetIf(lwipNf);
+        return HDF_FAILURE;
+    }
+    if (AddP2pNetDev(lwipNf, lwipNd) != HDF_SUCCESS) {
         DestroyLwipNetIf(lwipNf);
         return HDF_FAILURE;
     }
