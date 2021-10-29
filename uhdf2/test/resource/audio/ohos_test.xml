@@ -19,6 +19,12 @@
             <option name="push" value="hdf/hdf/libhdf_test_common.z.so -> /system/lib" src="out"/>
         </preparer>
     </target>
+    <target name="hdf_audio_hdi_render_test">
+        <depend resource="audiofile/." pushpath="/system/bin" findpath="res" presetcmd=""/>
+        <preparer>
+            <option name="push" value="audiofile/. -> /system/bin" src="res"/>
+        </preparer>
+    </target>
     <target name="khdf_audio_driver_test">
         <preparer>
             <option name="push" value="hdf/hdf/libhdf_test_common.z.so -> /system/lib" src="out"/>
