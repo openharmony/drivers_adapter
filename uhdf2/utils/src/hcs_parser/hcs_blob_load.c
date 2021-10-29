@@ -14,9 +14,8 @@
  */
 
 #include "hcs_blob_load.h"
-#include <limits.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "hcs_blob_if.h"
 #include "hdf_log.h"
@@ -68,7 +67,7 @@ uint32_t OpenHcsBlobFile(const char *hcsBlobPath, char **hcsBlob)
             break;
         }
         fseek(fp, 0, SEEK_SET);
-        fread((void *)(*hcsBlob), length, 1, fp);
+        (void)fread((void *)(*hcsBlob), length, 1, fp);
     } while (0);
     if (fp != NULL) {
         fclose(fp);
