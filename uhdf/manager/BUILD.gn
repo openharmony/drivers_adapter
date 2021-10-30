@@ -54,6 +54,7 @@ shared_library("hdf_core") {
     "-fsigned-char",
     "-fno-common",
     "-fno-strict-aliasing",
+    "-Wno-format",
   ]
 }
 
