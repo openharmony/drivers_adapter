@@ -106,6 +106,15 @@ hdf_driver(module_name) {
       ]
     }
 
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I3C)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/i3c_driver_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/i3c_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_i3c_entry_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/virtual/i3c_virtual.c",
+      ]
+    }
+
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG)) {
       sources += [
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/watchdog_test.c",
