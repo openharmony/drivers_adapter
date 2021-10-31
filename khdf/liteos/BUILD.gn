@@ -113,10 +113,12 @@ hdf_driver(module_name) {
     ]
   }
 
-  sources += [
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/i3c_core.c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/i3c_if.c",
-  ]
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I3C)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/i3c_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/i3c_if.c",
+    ]
+  }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO)) {
     sources += [
