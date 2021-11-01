@@ -76,7 +76,8 @@ LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/magnetic/sensor_magnetic_driver.c \
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_PROXIMITY), y)
-LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/proximity/sensor_proximity_driver.c
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/proximity/sensor_proximity_driver.c \
+              $(FRAMEWORKS_SENSOR_ROOT)/chipset/proximity/proximity_apds9960.c
 endif
 
 include $(HDF_DRIVER)
