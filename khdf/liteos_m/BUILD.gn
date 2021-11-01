@@ -27,12 +27,52 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-group("hdf_lite") {
+import("//drivers/adapter/khdf/liteos_m/hdf.gni")
+
+module_switch = defined(LOSCFG_DRIVERS_HDF)
+
+hdf_driver("hdf_lite") {
   deps = [
-    "core:hdf_core",
-    "network:hdf_network",
-    "osal:hdf_osal_lite",
-    "platform:hdf_platform_lite",
-    "test\sample_driver:sample_driver",
+    "core",
+    "network",
+    "osal",
+    "platform",
+    "test",
+  ]
+}
+
+config("public") {
+  configs = [
+    "core:public",
+    "network:public",
+    "osal:public",
+    "platform:public",
+  ]
+}
+
+config("hdf_config") {
+  configs = [ ":public" ]
+  include_dirs = [
+    "//utils/native/lite/include",
+    "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
+    "osal/include",
+    "$HDF_FRAMEWORKS_PATH/include",
+    "$HDF_FRAMEWORKS_PATH/include/osal",
+    "$HDF_FRAMEWORKS_PATH/include/utils",
+    "$HDF_FRAMEWORKS_PATH/utils/include",
+    "$HDF_FRAMEWORKS_PATH/include/platform",
+    "$HDF_FRAMEWORKS_PATH/include/core",
+    "$HDF_FRAMEWORKS_PATH/include/net",
+    "$HDF_FRAMEWORKS_PATH/include/wifi",
+    "$HDF_FRAMEWORKS_PATH/model/network/common/netdevice",
+    "$HDF_FRAMEWORKS_PATH/support/platform/include",
+    "$HDF_FRAMEWORKS_PATH/support/platform/include/common",
+    "$HDF_FRAMEWORKS_PATH/core/host/include",
+    "$HDF_FRAMEWORKS_PATH/core/manager/include",
+    "$HDF_FRAMEWORKS_PATH/core/shared/include",
+    "$HDF_FRAMEWORKS_PATH/core/common/include/manager",
+    "$HDF_FRAMEWORKS_PATH/core/common/include/host",
+    "$HDF_FRAMEWORKS_PATH/core/adapter/vnode/include",
+    "$HDF_FRAMEWORKS_PATH/core/adapter/syscall/include",
   ]
 }
