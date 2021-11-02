@@ -242,6 +242,7 @@ hdf_driver(module_name) {
 group("liteos") {
   public_deps = [ ":$module_name" ]
   deps = [
+    "model/audio",
     "model/bus/usb",
     "model/display",
     "model/input",

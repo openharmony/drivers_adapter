@@ -175,5 +175,5 @@ source "../../drivers/adapter/khdf/liteos/model/misc/dsoftbus/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/misc/vibrator/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/usb/device/Kconfig"
 source "../../drivers/adapter/khdf/liteos/model/usb/host/Kconfig"
-
+source "../../drivers/adapter/khdf/liteos/model/audio/Kconfig"
 endif
