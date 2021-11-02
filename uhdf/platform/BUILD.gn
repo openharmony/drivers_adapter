@@ -17,12 +17,12 @@ HDF_FRAMEWORKS = "//drivers/framework"
 
 shared_library("hdf_platform") {
   sources = [
+    "$HDF_FRAMEWORKS/model/storage/src/mmc/emmc_if.c",
+    "$HDF_FRAMEWORKS/model/storage/src/mmc/mmc_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/gpio/gpio_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/hdmi/hdmi_if.c",
-    "$HDF_FRAMEWORKS/support/platform/src/i2c_if.c",
-    "$HDF_FRAMEWORKS/support/platform/src/mmc/emmc_if.c",
-    "$HDF_FRAMEWORKS/support/platform/src/mmc/mmc_if.c",
-    "$HDF_FRAMEWORKS/support/platform/src/uart_if.c",
+    "$HDF_FRAMEWORKS/support/platform/src/i2c/i2c_if.c",
+    "$HDF_FRAMEWORKS/support/platform/src/uart/uart_if.c",
   ]
 
   include_dirs = [
@@ -32,7 +32,11 @@ shared_library("hdf_platform") {
     "$HDF_FRAMEWORKS/include/osal",
     "$HDF_FRAMEWORKS/include/platform",
     "$HDF_FRAMEWORKS/support/platform/include",
-    "$HDF_FRAMEWORKS/support/platform/include/common",
+    "$HDF_FRAMEWORKS/support/platform/include/fwk",
+    "$HDF_FRAMEWORKS/support/platform/include/gpio",
+    "$HDF_FRAMEWORKS/support/platform/include/hdmi",
+    "$HDF_FRAMEWORKS/support/platform/include/i2c",
+    "$HDF_FRAMEWORKS/support/platform/include/uart",
     "$HDF_FRAMEWORKS/../adapter/uhdf/posix/include",
     "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
   ]
