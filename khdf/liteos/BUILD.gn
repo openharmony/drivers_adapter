@@ -88,148 +88,6 @@ hdf_driver(module_name) {
     "osal/src/osal_workqueue.c",
   ]
 
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/common/platform_common.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/common/platform_device.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/common/platform_manager.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/common/platform_queue.c",
-      "platform/src/plat_common.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2C)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c_if.c",
-      "platform/src/i2c_dev.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_ADC)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/adc_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/adc_if.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I3C)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/i3c_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/i3c_if.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_if.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_service.c",
-      "platform/src/gpio_dev.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/watchdog_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/watchdog_if.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_SPI)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/spi_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/spi_if.c",
-      "platform/src/spi_dev.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
-    sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/pwm_core.c" ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MMC)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_dispatch.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_emmc.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_if.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_protocol.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/mmc_sdio.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO)) {
-    sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/sdio_if.c" ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_EMMC)) {
-    sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/mmc/emmc_if.c" ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_cec.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_common.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_ddc.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_dfm.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_dispatch.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_edid.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_event.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_frl.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_hdcp.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_hdr.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_if.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_infoframe.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_ncts.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/hdmi/hdmi_scdc.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_base.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc_if.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi_dsi_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi_dsi_if.c",
-
-      #"platform/src/mipi_tx_dev.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_CSI)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi_csi_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi_csi_if.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_DMAC)) {
-    sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/dmac_core.c" ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_UART)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/uart_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/uart_if.c",
-      "platform/src/uart_dev.c",
-    ]
-  }
-
-  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2S)) {
-    sources += [
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s_core.c",
-      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s_if.c",
-    ]
-  }
-
   if (defined(LOSCFG_NET_LWIP_SACK)) {
     sources += [ "network/src/netbuf_adapter.c" ]
 
@@ -255,6 +113,7 @@ group("liteos") {
     "model/storage",
     "model/usb/device",
     "model/usb/host",
+    "platform",
   ]
 
   if (defined(LOSCFG_DRIVERS_HDF_TEST)) {
@@ -265,11 +124,6 @@ group("liteos") {
 config("public") {
   include_dirs = [
     "$HDF_FRAMEWORKS_PATH/core/common/include/manager",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include/common",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include/hdmi",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include/mmc",
-    "$HDF_FRAMEWORKS_PATH/include/platform",
     "$HDF_FRAMEWORKS_PATH/include/utils",
     "$HDF_FRAMEWORKS_PATH/utils/include",
     "$HDF_FRAMEWORKS_PATH/include/osal",
@@ -278,6 +132,7 @@ config("public") {
   ]
 
   configs = [
+    "platform:public",
     "model/bus/usb:public",
     "model/usb/host:public",
     "model/storage:public",
@@ -298,7 +153,6 @@ config("hdf_config") {
     "$HDF_FRAMEWORKS_PATH/model/storage/include",
     "$HDF_FRAMEWORKS_PATH/model/storage/include/mmc",
     "$HDF_FRAMEWORKS_PATH/model/storage/include/mtd",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include",
     "$HDF_FRAMEWORKS_PATH/core/host/include",
     "$HDF_FRAMEWORKS_PATH/core/manager/include",
     "$HDF_FRAMEWORKS_PATH/core/shared/include",
