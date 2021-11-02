@@ -17,6 +17,7 @@
 #include <ipc_skeleton.h>
 #include <iservice_registry.h>
 #include <string_ex.h>
+#include <unistd.h>
 #include "hdf_log.h"
 #include "hdf_object_manager.h"
 #include "hdf_sbuf_ipc.h"
@@ -208,8 +209,17 @@ int HdfRemoteAdapterAddSa(int32_t saId, struct HdfRemoteService *service)
     }
 
     auto saManager = OHOS::SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    const int32_t WAIT_TIMES = 50;
+    const int32_t SLEEP_INTERVAL = 20000;
+    int32_t timeout = WAIT_TIMES;
+    while (saManager == nullptr && (timeout-- > 0)) {
+        HDF_LOGI("waiting for samgr...");
+        usleep(SLEEP_INTERVAL);
+        saManager = OHOS::SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    }
+
     if (saManager == nullptr) {
-        HDF_LOGE("failed to get sa manager");
+        HDF_LOGE("failed to get sa manager, waiting timeot");
         return HDF_FAILURE;
     }
     struct HdfRemoteServiceHolder *holder = reinterpret_cast<struct HdfRemoteServiceHolder *>(service);
