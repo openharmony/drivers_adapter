@@ -119,7 +119,7 @@ void HdfRemoteAdapterAddDeathRecipient(
     struct HdfRemoteService *service, struct HdfDeathRecipient *recipient)
 {
     struct HdfRemoteServiceHolder *holder = reinterpret_cast<struct HdfRemoteServiceHolder *>(service);
-    if (holder == NULL) {
+    if (holder == nullptr) {
         return;
     }
     OHOS::sptr<OHOS::IRemoteObject> remote = holder->remote_;
