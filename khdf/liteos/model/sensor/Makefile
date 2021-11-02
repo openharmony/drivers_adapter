@@ -43,7 +43,9 @@ LOCAL_INCLUDE := $(FRAMEWORKS_SENSOR_ROOT)/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/hall \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/hall \
                  $(FRAMEWORKS_SENSOR_ROOT)/magnetic \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/magnetic
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/magnetic \
+                 $(FRAMEWORKS_SENSOR_ROOT)/proximity \
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/proximity
 
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
               $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_parser.c \
