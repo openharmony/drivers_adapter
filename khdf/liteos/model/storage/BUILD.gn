@@ -35,13 +35,29 @@ hdf_driver(module_name) {
 
   include_dirs = [ "//base/hiviewdfx/interfaces/kits" ]
 
+  deps = [ "//drivers/adapter/khdf/liteos/platform:hdf_platform" ]
+
   sources = []
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MMC)) {
     sources += [
       "$FRAMEWORKS_STORAGE_ROOT/src/mmc/mmc_block.c",
+      "$FRAMEWORKS_STORAGE_ROOT/src/mmc/mmc_core.c",
+      "$FRAMEWORKS_STORAGE_ROOT/src/mmc/mmc_dispatch.c",
+      "$FRAMEWORKS_STORAGE_ROOT/src/mmc/mmc_emmc.c",
+      "$FRAMEWORKS_STORAGE_ROOT/src/mmc/mmc_if.c",
+      "$FRAMEWORKS_STORAGE_ROOT/src/mmc/mmc_protocol.c",
+      "$FRAMEWORKS_STORAGE_ROOT/src/mmc/mmc_sdio.c",
       "src/mmc/mmc_block_lite.c",
     ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO)) {
+    sources += [ "$HDF_FRAMEWORKS_PATH/model/storage/src/mmc/sdio_if.c" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_EMMC)) {
+    sources += [ "$HDF_FRAMEWORKS_PATH/model/storage/src/mmc/emmc_if.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_STORAGE_MTD)) {
@@ -55,11 +71,15 @@ hdf_driver(module_name) {
       "src/mtd/mtd_legacy_lite.c",
     ]
   }
+
+  public_configs = [ ":public" ]
 }
 
 config("public") {
   include_dirs = [
     "include",
     "$HDF_FRAMEWORKS_PATH/model/storage/include",
+    "$HDF_FRAMEWORKS_PATH/model/storage/include/mmc",
+    "$HDF_FRAMEWORKS_PATH/model/storage/include/mtd",
   ]
 }
