@@ -43,7 +43,9 @@ LOCAL_INCLUDE := $(FRAMEWORKS_SENSOR_ROOT)/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/hall \
                  $(FRAMEWORKS_SENSOR_ROOT)/chipset/hall \
                  $(FRAMEWORKS_SENSOR_ROOT)/magnetic \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/magnetic
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/magnetic \
+                 $(FRAMEWORKS_SENSOR_ROOT)/proximity \
+                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/proximity
 
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
               $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_parser.c \
@@ -76,7 +78,8 @@ LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/magnetic/sensor_magnetic_driver.c \
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_PROXIMITY), y)
-LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/proximity/sensor_proximity_driver.c
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/proximity/sensor_proximity_driver.c \
+              $(FRAMEWORKS_SENSOR_ROOT)/chipset/proximity/proximity_apds9960.c
 endif
 
 include $(HDF_DRIVER)
