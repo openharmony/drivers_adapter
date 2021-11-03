@@ -11,9 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/ohos.gni")
+import("//build/lite/config/component/lite_component.gni")
 import("//drivers/adapter/uhdf2/uhdf.gni")
-
 group("uhdf_utils_pkg") {
   deps = [ ":libhdf_utils" ]
 }
@@ -35,14 +34,9 @@ config("libhdf_utils_pub_config") {
     "$hdf_uhdf_path/osal/include",
     "$hdf_uhdf_path/utils/include",
   ]
-  defines = [ "__OHOS_USER__" ]
-
-  if (is_standard_system) {
-    defines += [ "__OHOS_STANDARD_SYS__" ]
-  }
 }
 
-ohos_shared_library("libhdf_utils") {
+shared_library("libhdf_utils") {
   public_configs = [ ":libhdf_utils_pub_config" ]
   sources = [
     "$hdf_framework_path/core/adapter/syscall/src/hdf_devmgr_adapter.c",
@@ -75,25 +69,11 @@ ohos_shared_library("libhdf_utils") {
     "$hdf_uhdf_path/utils/src/hcs_parser/hcs_dm_parser.c",
   ]
 
-  deps = [ "//utils/native/base:utils" ]
-
-  if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
-  } else {
-    external_deps = [ "hilog:libhilog" ]
-  }
+  deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared" ]
 
   cflags = [
     "-Wall",
     "-Wextra",
     "-Werror",
-  ]
-
-  # install_images = [ "vendor" ]
-  subsystem_name = "hdf"
-  part_name = "hdf"
-  install_images = [
-    "system",
-    "updater",
   ]
 }
