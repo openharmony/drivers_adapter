@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <configuration ver="2.0">
-    <target name="hdf_audio_adm_test">
+    <target name="hdf_unittest_audio_adm">
         <preparer>
             <option name="push" value="hdf/hdf/libhdf_test_common.z.so -> /system/lib" src="out"/>
         </preparer>
