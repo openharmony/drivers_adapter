@@ -88,6 +88,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_INPUT), y)
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/input
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_AUDIO), y)
+    LITEOS_BASELIB += -lhdf_audio_driver
+    LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/audio
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR), y)
     LITEOS_BASELIB += -lhdf_sensor_driver
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/sensor
