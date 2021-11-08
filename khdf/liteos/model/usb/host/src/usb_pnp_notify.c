@@ -290,7 +290,7 @@ static void UsbPnpNotifyAddInterfaceInitInfo(struct UsbPnpDeviceInfo *deviceInfo
             HDF_LOGI("%s:%d i=%d, j=%d, interfaceInfo=0x%x-0x%x-0x%x-0x%x",
                 __func__, __LINE__, i, j-1, infoTable->interfaceInfo[j-1].interfaceClass,
                 infoTable->interfaceInfo[j-1].interfaceSubClass,
-                infoTable->interfaceInfo[j-1].interfaceNumber,
+                infoTable->interfaceInfo[j-1].interfaceProtocol,
                 infoTable->interfaceInfo[j-1].interfaceNumber);
         }
         infoTable->numInfos = j;
@@ -423,7 +423,7 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
 
     ret = UsbPnpNotifyGetDeviceInfo(eventData, &pnpInfoData, &deviceInfo);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%s:%d UsbPnpNotifyInitInfo failed, ret=%d", __func__, __LINE__, ret);
+        HDF_LOGE("%s:%d UsbPnpNotifyGetDeviceInfo failed, ret=%d", __func__, __LINE__, ret);
         goto error_device_info;
     }
 
