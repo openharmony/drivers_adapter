@@ -73,6 +73,7 @@ hdf_driver(module_name) {
       "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/codec/src/hi3516_codec_impl.c",
       "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/codec/src/hi3516_codec_ops.c",
       "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/dsp/src/dsp_adapter.c",
+      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/dsp/src/dsp_ops.c",
       "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/src/hi3516_aiao_impl.c",
       "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/src/hi3516_dai_adapter.c",
       "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/src/hi3516_dai_ops.c",
@@ -83,7 +84,7 @@ hdf_driver(module_name) {
     include_dirs += [
       "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/codec/include",
       "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/include",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/include",
+      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/dsp/include",
     ]
   }
 
