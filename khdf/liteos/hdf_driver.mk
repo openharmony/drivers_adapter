@@ -27,7 +27,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 HC_GEN_DIR = $(abspath $(LITEOSTOPDIR)/../../drivers/framework/tools/hc-gen)
-HC_GEN = $(HC_GEN_DIR)/build/hc-gen
+HC_GEN = $(OUT)/hc_gen_build/hc-gen
 HDF_CONFIG_DIR = $(or $(LOCAL_HCS_ROOT),.)
 CONFIG_OUT_DIR = $(OUT)/hcs_generated/$(MODULE_NAME)
 CONFIG_GEN_SRCS = $(addsuffix .c,$(addprefix $(CONFIG_OUT_DIR)/,$(basename $(LOCAL_HCS_SRCS))))
@@ -39,7 +39,7 @@ LOCAL_INCLUDE += $(dir $(CONFIG_GEN_SRCS) $(DEPENDS_CONFIG_SRCS))
 LOCAL_CFLAGS += $(addprefix -I ,$(LOCAL_INCLUDE))
 
 $(HC_GEN):
-	$(HIDE)make -C $(HC_GEN_DIR)
+	$(HIDE)make -j -C $(HC_GEN_DIR) BUILD_DIR=$(dir $@)
 
 $(CONFIG_GEN_HEX_SRC): $(CONFIG_OUT_DIR)/%_hex.c: $(HDF_CONFIG_DIR)/%.hcs | $(HC_GEN) $(dir $(CONFIG_GEN_HEX_SRC))
 	$(HIDE)echo gen hdf built-in config
