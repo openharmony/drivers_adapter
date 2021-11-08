@@ -151,6 +151,14 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_REGULATOR)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/regulator/regulator_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/regulator/regulator_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/regulator/regulator_tree_mgr.c",
+    ]
+  }
+
   public_configs = [ ":public" ]
 }
 
@@ -170,6 +178,7 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/pwm",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/rtc",
+    "$HDF_FRAMEWORKS_PATH/support/platform/include/regulator",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/spi",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/uart",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/watchdog",
