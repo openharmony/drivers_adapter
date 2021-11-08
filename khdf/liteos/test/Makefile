@@ -67,6 +67,11 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/gpio_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/gpio_driver_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_gpio_entry_test.c
 endif
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PIN), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pin_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pin_driver_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_pin_entry_test.c
+endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2C), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i2c_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i2c_driver_test.c
