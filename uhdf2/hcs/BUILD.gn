@@ -13,8 +13,9 @@
 
 import("//build/ohos.gni")
 import("//drivers/adapter/uhdf2/uhdf.gni")
+import("$hdf_framework_path/tools/hc-gen/hc_gen.gni")
 
-action("build_hcs") {
+hc_gen("build_hcs") {
   gadget = "acm"
   hcs_source = "/hdf.hcs"
   if (gadget == "acm") {
@@ -30,14 +31,7 @@ action("build_hcs") {
   } else {
     hcs_config_path = "//vendor/$product_company/$product_name/hdf_config/uhdf/"
   }
-  script = "$hdf_framework_path/tools/hc-gen/build_hcs.py"
   sources = [ rebase_path(hcs_config_path + hcs_source) ]
-  outputs = [ "$target_gen_dir/hdf_default.hcb" ]
-  args = [
-    "-o",
-    rebase_path(outputs[0]),
-    sources[0],
-  ]
 }
 
 ohos_prebuilt_etc("hdf_default.hcb") {
