@@ -127,6 +127,11 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pwm_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_pwm_entry_test.c
 endif
 endif
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_REGULATOR), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/regulator_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_regulator_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/virtual/regulator_virtual.c
+endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/sensor/hdf_sensor_test.c
