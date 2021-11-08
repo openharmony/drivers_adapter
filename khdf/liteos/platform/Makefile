@@ -64,6 +64,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
     LOCAL_SRCS += ./src/gpio_dev.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PIN), y)
+    LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/pin/pin_if.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/pin/pin_core.c
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG), y)
     LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/watchdog/watchdog_if.c \
     $(HDF_FRAMEWORKS)/support/platform/src/watchdog/watchdog_core.c

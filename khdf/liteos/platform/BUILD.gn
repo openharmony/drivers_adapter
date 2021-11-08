@@ -71,6 +71,13 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PIN)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/pin/pin_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/pin/pin_if.c",
+    ]
+  }
+
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG)) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/watchdog/watchdog_core.c",
@@ -169,6 +176,7 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/support/platform/include/i3c",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/pwm",
+    "$HDF_FRAMEWORKS_PATH/support/platform/include/pin",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/rtc",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/spi",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/uart",
