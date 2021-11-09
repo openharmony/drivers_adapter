@@ -27,29 +27,22 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import("//drivers/framework/tools/hc-gen/hc_gen.gni")
 import("//kernel/liteos_m/config.gni")
 khdf_path = "//drivers/adapter/khdf/liteos_m"
 hdf_fwk_path = "//drivers/framework"
 kernel_path = "//kernel/liteos_m"
 template("hdf_driver") {
   if (defined(invoker.hcs_sources)) {
-    action_foreach("hc_gen") {
-      script = "$hdf_fwk_path/tools/hc-gen/build_hcs.py"
+    hc_gen_hex("hc_gen") {
       sources = invoker.hcs_sources
-      outputs = [ "$target_gen_dir/{{source_name_part}}_hex.c" ]
-      args = [
-        "-i",
-        "-o",
-        rebase_path("$target_gen_dir/{{source_name_part}}"),
-        "{{source}}",
-      ]
     }
   }
   static_library(target_name) {
     if (defined(invoker.hcs_sources)) {
       hc_gen = ":hc_gen"
       generated_sources = get_target_outputs(hc_gen)
-      print(generated_sources)
+      set_sources_assignment_filter([ "*.hcb" ])
       if (defined(invoker.sources)) {
         sources += generated_sources
       } else {
