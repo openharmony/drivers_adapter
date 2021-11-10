@@ -32,6 +32,7 @@ hc_gen("build_hcs") {
     hcs_config_path = "//vendor/$product_company/$product_name/hdf_config/uhdf/"
   }
   sources = [ rebase_path(hcs_config_path + hcs_source) ]
+  outputs = [ "$target_gen_dir/hdf_default.hcb" ]
 }
 
 ohos_prebuilt_etc("hdf_default.hcb") {
