@@ -27,47 +27,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//drivers/framework/tools/hc-gen/hc_gen.gni")
-import("//kernel/liteos_m/liteos.gni")
-
-HDF_FRAMEWORKS_PATH = "//drivers/framework"
-HDF_PERIPHERAL_PATH = "//drivers/peripheral"
-
-template("hdf_driver") {
-  if (defined(invoker.module_switch)) {
-    forward_variables_from(invoker, [ "module_switch" ])
-  } else {
-    module_switch = true
-  }
-
-  if (module_switch && defined(invoker.hcs_sources)) {
-    hc_gen_hex("hc_gen") {
-      sources = invoker.hcs_sources
-    }
-  }
-  kernel_module(target_name) {
-    forward_variables_from(invoker, "*", [ "configs" ])
-    if (defined(invoker.configs)) {
-      configs += invoker.configs
-    }
-    if (module_switch && defined(invoker.hcs_sources)) {
-      hc_gen = ":hc_gen"
-      generated_sources = get_target_outputs(hc_gen)
-      set_sources_assignment_filter([ "*.hcb" ])
-      if (defined(invoker.sources)) {
-        sources += generated_sources
-      } else {
-        sources = generated_sources
-      }
-      if (defined(invoker.deps)) {
-        deps += [ hc_gen ]
-      } else {
-        deps = [ hc_gen ]
-      }
-    }
-  }
-}
-
-set_defaults("hdf_driver") {
-  configs = [ "$HDFTOPDIR:hdf_config" ]
+group("test") {
+  deps = [ "sample_driver" ]
 }
