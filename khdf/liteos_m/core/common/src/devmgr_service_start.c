@@ -28,7 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <power/los_pm.h>
+#include <los_pm.h>
 #include "devmgr_service_start.h"
 #include "devhost_service_clnt.h"
 #include "devmgr_service.h"

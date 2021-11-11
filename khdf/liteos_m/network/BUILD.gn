@@ -29,33 +29,15 @@
 
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 
-config("libhdf_network") {
-  visibility = [ ":*" ]
-  include_dirs = []
-}
-
-static_library("hdf_network") {
-  defines = [ "_BSD_SOURCE" ]
+module_switch = defined(LOSCFG_NET_LWIP_SACK)
+hdf_driver("hdf_network") {
   sources = [
-    "$hdf_fwk_path/model/network/common/netdevice/net_device.c",
+    "$HDF_FRAMEWORKS_PATH/model/network/common/netdevice/net_device.c",
     "src/net_device_adapter.c",
     "src/netbuf_adapter.c",
   ]
-  include_dirs = [
-    "include",
-    "../osal/include",
-    "$kernel_path/kernel/include",
-    "$kernel_path/utils",
-    "$ohos_kernel_liteos_m_lwip_path/porting/include",
-    "$hdf_fwk_path/include/net",
-    "$hdf_fwk_path/include",
-    "$hdf_fwk_path/model/network/common/netdevice",
-    "$hdf_fwk_path/include/utils",
-    "$hdf_fwk_path/include/osal",
-    "//third_party/lwip/src/include",
-    "//third_party/musl/porting/liteos_m/kernel/include",
-  ]
+}
 
-  public_configs = [ ":libhdf_network" ]
-  deps = [ "//third_party/bounds_checking_function:libsec_static" ]
+config("public") {
+  include_dirs = [ "include" ]
 }
