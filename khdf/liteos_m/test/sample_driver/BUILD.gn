@@ -29,6 +29,7 @@
 
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 
+module_switch = defined(LOSCFG_DRIVERS_HDF)
 hdf_driver("sample_driver") {
   sources = [ "src/sample_driver.c" ]
   include_dirs = [ "include" ]

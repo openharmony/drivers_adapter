@@ -29,7 +29,7 @@
 
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 
-module_switch = defined(LOSCFG_NET_LWIP_SACK)
+module_switch = defined(LOSCFG_NET_LWIP_SACK) && defined(LOSCFG_DRIVERS_HDF)
 hdf_driver("hdf_network") {
   sources = [
     "$HDF_FRAMEWORKS_PATH/model/network/common/netdevice/net_device.c",
