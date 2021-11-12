@@ -67,6 +67,7 @@ HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/mipi
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/pwm
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/pin
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/rtc
+HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/regulator
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/spi
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/uart
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/watchdog

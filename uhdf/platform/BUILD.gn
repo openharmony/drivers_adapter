@@ -37,6 +37,7 @@ shared_library("hdf_platform") {
     "$HDF_FRAMEWORKS/support/platform/include/hdmi",
     "$HDF_FRAMEWORKS/support/platform/include/i2c",
     "$HDF_FRAMEWORKS/support/platform/include/uart",
+    "$HDF_FRAMEWORKS/support/platform/include/regulator",
     "$HDF_FRAMEWORKS/../adapter/uhdf/posix/include",
     "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
   ]

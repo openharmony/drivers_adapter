@@ -134,4 +134,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2S), y)
     $(HDF_FRAMEWORKS)/support/platform/src/i2s/i2s_core.c
 endif
 
+
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_REGULATOR), y)
+    LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/regulator/regulator_if.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/regulator/regulator_core.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/regulator/regulator_tree_mgr.c
+endif
+
 include $(HDF_DRIVER)
