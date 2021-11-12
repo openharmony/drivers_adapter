@@ -27,6 +27,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import("//drivers/framework/tools/hc-gen/hc_gen.gni")
 import("//kernel/liteos_a/liteos.gni")
 
 HDF_FRAMEWORKS_PATH = "//drivers/framework"
@@ -40,20 +41,8 @@ template("hdf_driver") {
   }
 
   if (module_switch && defined(invoker.hcs_sources)) {
-    action_foreach("hc_gen") {
-      script = "//build/lite/run_shell_cmd.py"
+    hc_gen_hex("hc_gen") {
       sources = invoker.hcs_sources
-      outputs = [ "$target_gen_dir/{{source_name_part}}_hex.c" ]
-      args = [
-        rebase_path("//drivers/framework/tools/hc-gen/build/hc-gen"),
-        "-b",
-        "-i",
-        "-a",
-        "-o",
-        rebase_path(target_gen_dir, root_build_dir) + "/{{source_name_part}}.c",
-        "{{source}}",
-      ]
-      deps = [ "//drivers/adapter/khdf/liteos:build_hc_gen" ]
     }
   }
   kernel_module(target_name) {
@@ -64,6 +53,7 @@ template("hdf_driver") {
     if (module_switch && defined(invoker.hcs_sources)) {
       hc_gen = ":hc_gen"
       generated_sources = get_target_outputs(hc_gen)
+      set_sources_assignment_filter([ "*.hcb" ])
       if (defined(invoker.sources)) {
         sources += generated_sources
       } else {
@@ -79,5 +69,5 @@ template("hdf_driver") {
 }
 
 set_defaults("hdf_driver") {
-  configs = [ "//drivers/adapter/khdf/liteos:hdf_config" ]
+  configs = [ "$HDFTOPDIR:hdf_config" ]
 }

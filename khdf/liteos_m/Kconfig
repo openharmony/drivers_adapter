@@ -26,10 +26,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-menuconfig DRIVERS_HDF
+config DRIVERS_HDF
     bool "HDF driver framework support"
     default n
     depends on DRIVERS
+    select KERNEL_PM
     help
       Answer Y to enable LiteOS support HDF.
 if DRIVERS_HDF
@@ -47,25 +48,12 @@ config DRIVERS_HDF_PLATFORM_GPIO
     help
       Answer Y to enable HDF platform gpio driver.
 
-config DRIVERS_HDF_PLATFORM_PIN
-    bool "Enable HDF platform pin driver"
-    default n
-    depends on DRIVERS_HDF_PLATFORM
-    help
-      Answer Y to enable HDF platform pin driver.
-
 config DRIVERS_HDF_PLATFORM_I2C
     bool "Enable HDF platform i2c driver"
     default n
     depends on DRIVERS_HDF_PLATFORM
     help
       Answer Y to enable HDF platform i2c driver.
-config DRIVERS_HDF_PLATFORM_REGULATOR
-    bool "Enable HDF platform regulator driver"
-    default n
-    depends on DRIVERS_HDF_PLATFORM
-    help
-      Answer Y to enable HDF platform regulator driver.
 
 config DRIVERS_HDF_PLATFORM_ADC
     bool "Enable HDF platform adc driver"
@@ -73,13 +61,6 @@ config DRIVERS_HDF_PLATFORM_ADC
     depends on DRIVERS_HDF_PLATFORM
     help
       Answer Y to enable HDF platform adc driver.
-
-config DRIVERS_HDF_PLATFORM_I3C
-    bool "Enable HDF platform i3c driver"
-    default n
-    depends on DRIVERS_HDF_PLATFORM
-    help
-      Answer Y to enable HDF platform i3c driver.
 
 config DRIVERS_HDF_PLATFORM_MMC
     bool "Enable HDF platform mmc driver"
@@ -177,8 +158,6 @@ config DRIVERS_HIEDMAC
     depends on DRIVERS && PLATFORM_HI3559AV100
     help
       Answer Y to enable LiteOS support hiedmac.
-source "../../drivers/adapter/khdf/liteos/model/storage/Kconfig"
-source "../../drivers/adapter/khdf/liteos/test/Kconfig"
 
 config DRIVERS_HDF_WIFI
     bool "Enable HDF WiFi Host driver"
@@ -187,13 +166,4 @@ config DRIVERS_HDF_WIFI
     help
       Answer Y to enable HDF WiFi Host driver.
 
-source "../../drivers/adapter/khdf/liteos/model/bus/usb/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/display/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/input/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/sensor/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/misc/dsoftbus/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/misc/vibrator/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/usb/device/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/usb/host/Kconfig"
-source "../../drivers/adapter/khdf/liteos/model/audio/Kconfig"
 endif

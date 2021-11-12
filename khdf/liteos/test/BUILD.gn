@@ -150,6 +150,13 @@ hdf_driver(module_name) {
         "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_i2s_entry_test.c",
       ]
     }
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_REGULATOR)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/regulator_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_regulator_entry_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/virtual/regulator_virtual.c",
+      ]
+    }
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
       sources += [ "$HDF_TEST_FRAMWORK_ROOT/platform/hdf_rtc_entry_test.c" ]

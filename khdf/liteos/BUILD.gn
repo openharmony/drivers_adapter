@@ -27,7 +27,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//build/lite/config/component/lite_component.gni")
 import("//drivers/adapter/khdf/liteos/hdf.gni")
 
 module_switch = defined(LOSCFG_DRIVERS_HDF)
@@ -168,9 +167,4 @@ config("hdf_config") {
     "$HDF_FRAMEWORKS_PATH/core/adapter/vnode/include",
     "$HDF_FRAMEWORKS_PATH/core/adapter/syscall/include",
   ]
-}
-
-build_ext_component("build_hc_gen") {
-  exec_path = rebase_path("//drivers/framework/tools/hc-gen", root_build_dir)
-  command = "make"
 }

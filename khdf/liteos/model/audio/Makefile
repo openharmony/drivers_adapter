@@ -50,8 +50,7 @@ LOCAL_INCLUDE := $(KHDF_AUDIO_BASE_ROOT_DIR)/third_party/bounds_checking_functio
                  $(KHDF_AUDIO_HI3516DV300_DIR)/../tfa9879/accessory/include \
                  $(KHDF_AUDIO_HI3516DV300_DIR)/codec/include \
                  $(KHDF_AUDIO_HI3516DV300_DIR)/soc/include \
-                 $(KHDF_AUDIO_HI3516DV300_DIR)/include \
-                 $(KHDF_AUDIO_HI3516DV300_DIR)/include \
+                 $(KHDF_AUDIO_HI3516DV300_DIR)/dsp/include \
                  $(LITEOSTOPDIR)/kernel/base/include
 
 LOCAL_SRCS += $(KHDF_AUDIO_ROOT_DIR)/core/src/audio_core.c \
@@ -61,8 +60,8 @@ LOCAL_SRCS += $(KHDF_AUDIO_ROOT_DIR)/core/src/audio_core.c \
               $(KHDF_AUDIO_ROOT_DIR)/common/src/audio_codec_base.c \
               $(KHDF_AUDIO_ROOT_DIR)/common/src/audio_platform_base.c \
               $(KHDF_AUDIO_ROOT_DIR)/common/src/audio_dsp_base.c \
-	           $(KHDF_AUDIO_ROOT_DIR)/common/src/audio_dai_base.c \
-	           $(KHDF_AUDIO_ROOT_DIR)/common/src/audio_dma_base.c \
+              $(KHDF_AUDIO_ROOT_DIR)/common/src/audio_dai_base.c \
+              $(KHDF_AUDIO_ROOT_DIR)/common/src/audio_dma_base.c \
               $(KHDF_AUDIO_ROOT_DIR)/sapm/src/audio_sapm.c \
               $(KHDF_AUDIO_ROOT_DIR)/dispatch/src/audio_stream_dispatch.c \
               $(KHDF_AUDIO_ROOT_DIR)/dispatch/src/audio_control_dispatch.c \
@@ -72,8 +71,9 @@ LOCAL_SRCS += $(KHDF_AUDIO_ROOT_DIR)/core/src/audio_core.c \
               $(KHDF_AUDIO_HI3516DV300_DIR)/codec/src/hi3516_codec_impl.c \
               $(KHDF_AUDIO_HI3516DV300_DIR)/codec/src/hi3516_codec_ops.c \
               $(KHDF_AUDIO_HI3516DV300_DIR)/dsp/src/dsp_adapter.c \
+              $(KHDF_AUDIO_HI3516DV300_DIR)/dsp/src/dsp_ops.c \
               $(KHDF_AUDIO_HI3516DV300_DIR)/soc/src/hi3516_dai_adapter.c \
-	           $(KHDF_AUDIO_HI3516DV300_DIR)/soc/src/hi3516_dai_ops.c \
+              $(KHDF_AUDIO_HI3516DV300_DIR)/soc/src/hi3516_dai_ops.c \
               $(KHDF_AUDIO_HI3516DV300_DIR)/soc/src/hi3516_aiao_impl.c \
               $(KHDF_AUDIO_HI3516DV300_DIR)/soc/src/hi3516_dma_ops.c \
               $(KHDF_AUDIO_HI3516DV300_DIR)/soc/src/hi3516_dma_adapter.c

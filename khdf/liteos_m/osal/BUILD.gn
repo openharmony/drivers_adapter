@@ -29,22 +29,7 @@
 
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 
-config("libhdf_osal_pub_config") {
-  visibility = [ ":*" ]
-  include_dirs = [
-    "include",
-    "//utils/native/lite/include",
-    "//drivers/framework/include/osal",
-    "//drivers/framework/include/utils",
-    "//kernel/liteos_m/kernel/arch/include",
-    "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
-    "//third_party/bounds_checking_function/include",
-    "//kernel/liteos_m/kernel/include",
-    "//kernel/liteos_m/utils/",
-  ]
-}
-
-static_library("hdf_osal_lite") {
+hdf_driver("hdf_osal_lite") {
   sources = [
     "src/osal_mem.c",
     "src/osal_mutex.c",
@@ -54,6 +39,4 @@ static_library("hdf_osal_lite") {
     "src/osal_time.c",
     "src/osal_timer.c",
   ]
-  include_dirs = []
-  public_configs = [ ":libhdf_osal_pub_config" ]
 }
