@@ -150,6 +150,8 @@ ifeq ($(LOSCFG_DRIVERS_HDF_TEST), y)
 
     LITEOS_BASELIB += -lhdf_test_config
     LIB_SUBDIRS += $(PRODUCT_CONFIG)/hdf_test
+    LITEOS_BASELIB += -lhdf_test_macro
+    LIB_SUBDIRS += $(PRODUCT_CONFIG)/hdf_test/hcs_macro_test
 else
     LITEOS_BASELIB += -lhdf_config
     ifeq ($(HAVE_PRODUCT_CONFIG), y)
