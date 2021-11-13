@@ -40,12 +40,14 @@ template("hdf_driver") {
     module_switch = true
   }
 
-  if (module_switch && defined(invoker.hcs_sources) && !defined(invoker.sources)) {
+  if (module_switch && defined(invoker.hcs_sources) &&
+      !defined(invoker.sources)) {
     hc_gen_hex("hc_gen") {
       sources = invoker.hcs_sources
     }
   }
-  if (module_switch && defined(invoker.hcs_sources) && defined(invoker.sources) && defined(invoker.outputs)) {
+  if (module_switch && defined(invoker.hcs_sources) &&
+      defined(invoker.sources) && defined(invoker.outputs)) {
     hc_gen_macro("hc_gen_macro") {
       sources = invoker.hcs_sources
       outputs = invoker.outputs
@@ -56,7 +58,8 @@ template("hdf_driver") {
     if (defined(invoker.configs)) {
       configs += invoker.configs
     }
-    if (module_switch && defined(invoker.hcs_sources) && !defined(invoker.sources)) {
+    if (module_switch && defined(invoker.hcs_sources) &&
+        !defined(invoker.sources)) {
       hc_gen = ":hc_gen"
       generated_sources = get_target_outputs(hc_gen)
       set_sources_assignment_filter([ "*.hcb" ])
@@ -72,7 +75,8 @@ template("hdf_driver") {
         deps = [ hc_gen ]
       }
     }
-    if (module_switch && defined(invoker.hcs_sources) && defined(invoker.sources)) {
+    if (module_switch && defined(invoker.hcs_sources) &&
+        defined(invoker.sources)) {
       hc_gen_macro = ":hc_gen_macro"
       generated_include = get_path_info(get_target_outputs(hc_gen_macro), "dir")
       if (defined(invoker.include_dirs)) {
@@ -85,7 +89,7 @@ template("hdf_driver") {
       } else {
         deps = [ hc_gen_macro ]
       }
-   }
+    }
   }
 }
 
