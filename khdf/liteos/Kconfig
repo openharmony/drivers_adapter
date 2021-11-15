@@ -47,6 +47,13 @@ config DRIVERS_HDF_PLATFORM_GPIO
     help
       Answer Y to enable HDF platform gpio driver.
 
+config DRIVERS_HDF_PLATFORM_PIN
+    bool "Enable HDF platform pin driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform pin driver.
+
 config DRIVERS_HDF_PLATFORM_I2C
     bool "Enable HDF platform i2c driver"
     default n
