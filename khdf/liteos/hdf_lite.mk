@@ -150,6 +150,8 @@ ifeq ($(LOSCFG_DRIVERS_HDF_TEST), y)
 
     LITEOS_BASELIB += -lhdf_test_config
     LIB_SUBDIRS += $(PRODUCT_CONFIG)/hdf_test
+    LITEOS_BASELIB += -lhdf_test_macro
+    LIB_SUBDIRS += $(PRODUCT_CONFIG)/hdf_test/hcs_macro_test
 else
     LITEOS_BASELIB += -lhdf_config
     ifeq ($(HAVE_PRODUCT_CONFIG), y)
@@ -163,5 +165,12 @@ endif
 COMPANY_OF_SOC := $(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))
 -include $(LITEOSTOPDIR)/../../device/$(COMPANY_OF_SOC)/drivers/lite.mk
     LITEOS_BASELIB += --no-whole-archive
+
+HC_GEN_DIR = $(abspath $(LITEOSTOPDIR)/../../drivers/framework/tools/hc-gen)
+HC_GEN = $(OUT)/hc_gen_build/hc-gen
+$(warning HC_GEN = $(HC_GEN))
+$(HC_GEN):
+	$(HIDE)make -j -C $(HC_GEN_DIR) BUILD_DIR=$(dir $@)
+$(LITEOS_LIBS_TARGET):$(HC_GEN)
 endif
 
