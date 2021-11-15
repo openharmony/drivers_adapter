@@ -29,6 +29,7 @@
 
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 
+module_switch = defined(LOSCFG_DRIVERS_HDF)
 hdf_driver("hdf_core") {
   sources = [
     "$HDF_FRAMEWORKS_PATH/core/common/src/devlite_object_config.c",
