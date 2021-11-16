@@ -56,7 +56,6 @@ ohos_shared_library("libhdf_host") {
     "$hdf_framework_path/core/host/src/hdf_device_node.c",
     "$hdf_framework_path/core/host/src/hdf_device_object.c",
     "$hdf_framework_path/core/host/src/hdf_device_token.c",
-    "$hdf_framework_path/core/host/src/hdf_driver_loader.c",
     "$hdf_framework_path/core/host/src/hdf_observer_record.c",
     "$hdf_framework_path/core/host/src/hdf_service_observer.c",
     "$hdf_framework_path/core/host/src/hdf_service_subscriber.c",

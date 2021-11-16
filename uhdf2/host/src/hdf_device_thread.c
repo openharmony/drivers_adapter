@@ -26,10 +26,10 @@ int32_t DeviceThreadMessageHandler(struct HdfMessageTask *task, struct HdfMessag
     struct HdfDevice *device = (struct HdfDevice *)msg->data[0];
     switch (msg->messageId) {
         case DEVICE_SERVICE_MESSAGE_LAUNCH: {
+            (void)device;
             struct HdfDeviceNode *devService = (struct HdfDeviceNode *)msg->data[1];
-            struct IDeviceNode *serviceIf = (struct IDeviceNode *)devService;
-            if ((serviceIf != NULL) && (serviceIf->LaunchNode != NULL)) {
-                serviceIf->LaunchNode(devService, &device->super);
+            if (devService != NULL && devService->super.LaunchNode != NULL) {
+                devService->super.LaunchNode(devService);
             }
             break;
         }

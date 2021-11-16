@@ -23,6 +23,7 @@
 #include "hdf_device_info_full.h"
 #include "hdf_device_node.h"
 #include "hdf_log.h"
+#include "hdf_object_manager.h"
 #include "osal_mem.h"
 #include "securec.h"
 
@@ -36,24 +37,19 @@
 
 static struct DriverLoaderFull *g_fullLoader = NULL;
 
-struct HdfDriverEntry *HdfDriverLoaderGetDriverEntry(const struct HdfDeviceInfo *deviceInfo)
+struct HdfDriver *HdfDriverLoaderGetDriver(const char *moduleName)
 {
-    void *deviceHandle = NULL;
-    struct HdfDriverEntry **deviceEntry = NULL;
-    struct HdfDeviceInfoFull *fullAttribute = (struct HdfDeviceInfoFull *)deviceInfo;
     char realPath[PATH_MAX] = { 0 };
     char driverPath[PATH_MAX] = { 0 };
-    if (deviceInfo == NULL || deviceInfo->moduleName == NULL) {
+    if (moduleName == NULL) {
         return NULL;
     }
 
     if (strcat_s(driverPath, sizeof(driverPath) - 1, DRIVER_PATH) != EOK) {
-        HDF_LOGE("%{public}s get driver path failed", __func__);
         return NULL;
     }
 
-    if (strcat_s(driverPath, (sizeof(driverPath) - 1 - sizeof(DRIVER_PATH)), deviceInfo->moduleName) != EOK) {
-        HDF_LOGE("%{public}s get full driver path failed", __func__);
+    if (strcat_s(driverPath, (sizeof(driverPath) - 1 - sizeof(DRIVER_PATH)), moduleName) != EOK) {
         return NULL;
     }
 
@@ -61,27 +57,53 @@ struct HdfDriverEntry *HdfDriverLoaderGetDriverEntry(const struct HdfDeviceInfo 
         HDF_LOGE("%{public}s no valid, errno:%{public}d", driverPath, errno);
         return NULL;
     }
-    deviceHandle = dlopen(realPath, RTLD_LAZY);
-    if (deviceHandle == NULL) {
-        HDF_LOGE("Get device entry failed, %{public}s load fail, %{public}s", realPath, dlerror());
+
+    struct HdfDriver *driver = OsalMemAlloc(sizeof(struct HdfDriver));
+    if (driver == NULL) {
         return NULL;
     }
-    fullAttribute->deviceHandle = deviceHandle;
-    deviceEntry = (struct HdfDriverEntry **)dlsym(deviceHandle, DRIVER_DESC);
-    if (deviceEntry == NULL) {
-        HDF_LOGE("Get device entry failed, dlsym failed");
-        dlclose(deviceHandle);
-        fullAttribute->deviceHandle = NULL;
+
+    void *handle = dlopen(realPath, RTLD_LAZY);
+    if (handle == NULL) {
+        HDF_LOGE("get driver entry failed, %{public}s load fail, %{public}s", realPath, dlerror());
+        OsalMemFree(driver);
         return NULL;
     }
-    return *deviceEntry;
+
+    struct HdfDriverEntry **driverEntry = (struct HdfDriverEntry **)dlsym(handle, DRIVER_DESC);
+    if (driverEntry == NULL) {
+        HDF_LOGE("driver entry %{public}s dlsym failed", realPath);
+        dlclose(handle);
+        OsalMemFree(driver);
+        return NULL;
+    }
+
+    driver->entry = *driverEntry;
+    driver->priv = handle;
+
+    return driver;
 }
+
+void HdfDriverLoaderFullReclaimDriver(struct HdfDriver *driver)
+{
+    if (driver == NULL) {
+        return;
+    }
+
+    if (driver->priv != NULL) {
+        dlclose(driver->priv);
+        driver->priv = NULL;
+    }
+
+    OsalMemFree(driver);
+}
+
 
 void HdfDriverLoaderFullConstruct(struct DriverLoaderFull *inst)
 {
     struct HdfDriverLoader *pvtbl = (struct HdfDriverLoader *)inst;
-    HdfDriverLoaderConstruct(pvtbl);
-    pvtbl->super.GetDriverEntry = HdfDriverLoaderGetDriverEntry;
+    pvtbl->super.GetDriver = HdfDriverLoaderGetDriver;
+    pvtbl->super.ReclaimDriver = HdfDriverLoaderFullReclaimDriver;
 }
 
 struct HdfObject *HdfDriverLoaderFullCreate()
@@ -106,4 +128,13 @@ void HdfDriverLoaderFullRelease(struct HdfObject *object)
     if (instance != NULL) {
         OsalMemFree(instance);
     }
+}
+
+struct IDriverLoader *HdfDriverLoaderGetInstance(void)
+{
+    static struct IDriverLoader *instance = NULL;
+    if (instance == NULL) {
+        instance = (struct IDriverLoader *)HdfObjectManagerGetObject(HDF_OBJECT_ID_DRIVER_LOADER);
+    }
+    return instance;
 }
