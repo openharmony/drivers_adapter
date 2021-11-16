@@ -31,22 +31,15 @@ static int32_t DevHostServiceProxyOpsDevice(
     int status = HDF_FAILURE;
     const struct HdfDeviceInfoFull *fullAttribute = HdfDeviceInfoFullReinterpretCast(attribute);
     struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfRemoteDispatcher *dipatcher = NULL;
-    struct HdfRemoteService *remoteService = NULL;
     struct DevHostServiceProxy *hostClnt = (struct DevHostServiceProxy *)inst;
-    if ((hostClnt->remote == NULL) || (data == NULL) || (reply == NULL)) {
+    if (hostClnt->remote == NULL || data == NULL) {
         HDF_LOGE("Adding device failed, hostClnt->remote or data or reply is null");
         goto finished;
     }
-    remoteService = hostClnt->remote;
-    dipatcher = remoteService->dispatcher;
+
     DeviceAttributeFullWrite(fullAttribute, data);
-    status = dipatcher->Dispatch(remoteService, opsCode, data, reply);
+    status = hostClnt->remote->dispatcher->Dispatch(hostClnt->remote, DEVHOST_SERVICE_ADD_DEVICE, data, NULL);
 finished:
-    if (reply != NULL) {
-        HdfSBufRecycle(reply);
-    }
     if (data != NULL) {
         HdfSBufRecycle(data);
     }
@@ -60,9 +53,24 @@ static int32_t DevHostServiceProxyAddDevice(
 }
 
 static int32_t DevHostServiceProxyDelDevice(
-    struct IDevHostService *inst, const struct HdfDeviceInfo *attribute)
+    struct IDevHostService *inst, devid_t devid)
 {
-    return DevHostServiceProxyOpsDevice(inst, attribute, DEVHOST_SERVICE_DEL_DEVICE);
+    int status = HDF_FAILURE;
+    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct DevHostServiceProxy *hostClnt = (struct DevHostServiceProxy *)inst;
+    if (hostClnt->remote == NULL || data == NULL) {
+        HDF_LOGE("Del device failed, hostClnt->remote or data is null");
+        goto finished;
+    }
+
+    HdfSbufWriteUint32(data, devid);
+    status = hostClnt->remote->dispatcher->Dispatch(hostClnt->remote, DEVHOST_SERVICE_DEL_DEVICE, data, NULL);
+
+finished:
+    if (data != NULL) {
+        HdfSBufRecycle(data);
+    }
+    return status;
 }
 
 void DevHostServiceProxyOnRemoteDied(struct HdfDeathRecipient *recipient, struct HdfRemoteService *service)

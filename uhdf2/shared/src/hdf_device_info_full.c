@@ -28,7 +28,7 @@ void HdfDeviceInfoFullConstruct(struct HdfDeviceInfoFull *attribute)
     attribute->deviceHandle = NULL;
 }
 
-struct HdfDeviceInfoFull* HdfDeviceInfoFullNewInstance()
+struct HdfDeviceInfoFull* HdfDeviceInfoFullNewInstance(void)
 {
     struct HdfDeviceInfoFull *fullAttribute =
         (struct HdfDeviceInfoFull *)OsalMemCalloc(sizeof(struct HdfDeviceInfoFull));
@@ -52,9 +52,6 @@ void HdfDeviceInfoFullFreeInstance(struct HdfDeviceInfoFull *attribute)
         }
         if (attribute->super.private != NULL) {
             OsalMemFree((void *)attribute->super.private);
-        }
-        if (attribute->deviceHandle != NULL) {
-            dlclose(attribute->deviceHandle);
         }
         OsalMemFree(attribute);
     }
