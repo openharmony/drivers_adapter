@@ -32,7 +32,6 @@
 #include <fs/driver.h>
 #include "i2c_core.h"
 #include "osal_mem.h"
-#include "plat_log.h"
 #include "user_copy.h"
 
 #define I2C_FS_MODE                 0660
