@@ -39,52 +39,14 @@
 
 #define HDF_LOG_TAG device_node_ext
 
-static int DeviceNodeExtDispatch(struct HdfObject *stub, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
+static int DeviceNodeExtPublishService(struct HdfDeviceNode *inst)
 {
-    struct IDeviceIoService *deviceMethod = NULL;
-    const struct HdfDeviceInfo *deviceInfo = NULL;
-    struct HdfDeviceNode *devNode = NULL;
-
-    if (stub == NULL) {
-        HDF_LOGE("input ioService null");
-        return HDF_FAILURE;
-    }
-    uint64_t ioClientPtr = 0;
-    if (!HdfSbufReadUint64(reply, &ioClientPtr) || ioClientPtr == 0) {
-        HDF_LOGE("input ioClient null");
-        return HDF_FAILURE;
-    }
-    HdfSbufFlush(reply);
-    devNode = CONTAINER_OF(stub, struct HdfDeviceNode, deviceObject);
-    deviceMethod = devNode->deviceObject.service;
-    if (deviceMethod == NULL) {
-        HDF_LOGE("Device service interface is null");
-        return HDF_FAILURE;
-    }
-    deviceInfo = devNode->deviceInfo;
-    if (deviceInfo == NULL) {
-        HDF_LOGE("Device deviceInfo is null");
-        return HDF_FAILURE;
-    }
-    if (deviceInfo->policy == SERVICE_POLICY_CAPACITY) {
-        if (deviceMethod->Dispatch == NULL) {
-            HDF_LOGE("Remote service dispatch is null");
-            return HDF_FAILURE;
-        }
-        return deviceMethod->Dispatch((struct HdfDeviceIoClient *)((uintptr_t)ioClientPtr), code, data, reply);
-    }
-    return HDF_FAILURE;
-}
-
-static int DeviceNodeExtPublishService(struct HdfDeviceNode *inst, const char *serviceName)
-{
-    const struct HdfDeviceInfo *deviceInfo = NULL;
-    struct HdfDeviceObject *deviceObject = NULL;
     struct DeviceNodeExt *devNodeExt = (struct DeviceNodeExt *)inst;
     if (devNodeExt == NULL) {
         return HDF_FAILURE;
     }
-    int ret = HdfDeviceNodePublishPublicService(inst, serviceName);
+
+    int ret = HdfDeviceNodePublishPublicService(inst);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("Device publish service failed, ret is: %d", ret);
     }
@@ -101,7 +63,7 @@ static void DeviceNodeExtConstruct(struct DeviceNodeExt *inst)
     }
 }
 
-struct HdfObject *DeviceNodeExtCreate()
+struct HdfObject *DeviceNodeExtCreate(void)
 {
     struct DeviceNodeExt *instance =
         (struct DeviceNodeExt *)OsalMemCalloc(sizeof(struct DeviceNodeExt));

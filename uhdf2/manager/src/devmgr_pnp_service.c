@@ -29,7 +29,7 @@ static struct HdfSList *g_deviceInfos = NULL;
 static uint16_t g_hostId = 0xFFFF;
 static uint32_t g_deviceId = 0;
 
-struct HdfSList *DevmgrServiceGetPnpDeviceInfo()
+struct HdfSList *DevmgrServiceGetPnpDeviceInfo(void)
 {
     return g_deviceInfos;
 }
@@ -275,7 +275,7 @@ int32_t DevmgrServiceUnRegPnpDevice(
         if ((strcmp(deviceInfo->moduleName, moduleName) == 0) &&
             (strcmp(deviceInfo->svcName, serviceName) == 0)) {
             deviceInfo->status = HDF_SERVICE_UNUSABLE;
-            ret = devHostSvcIf->DelDevice(devHostSvcIf, deviceInfo);
+            ret = devHostSvcIf->DelDevice(devHostSvcIf, deviceInfo->deviceId);
             DevmgrServiceDelPnpDevice(moduleName, serviceName);
         }
     }

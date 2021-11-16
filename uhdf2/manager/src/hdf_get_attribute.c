@@ -234,6 +234,7 @@ struct HdfSList *HdfAttributeManagerGetDeviceList(uint16_t hostId, const char *h
     while (device != NULL) {
         const struct DeviceResourceNode *deviceNode = device->child;
         while (deviceNode != NULL) {
+            uint8_t deviceNnodeIdx = 0;
             struct HdfDeviceInfoFull *deviceNodeInfo = HdfDeviceInfoFullNewInstance();
             if (deviceNodeInfo == NULL) {
                 HdfSListFlush(deviceList, HdfDeviceInfoDelete);
@@ -255,10 +256,12 @@ struct HdfSList *HdfAttributeManagerGetDeviceList(uint16_t hostId, const char *h
                 deviceNode = deviceNode->sibling;
                 continue;
             }
-            deviceNodeInfo->super.deviceId = deviceIdx++;
+            deviceNodeInfo->super.deviceId = MK_DEVID(hostId, deviceIdx, deviceNnodeIdx);
+            deviceNnodeIdx++;
             deviceNode = deviceNode->sibling;
         }
         device = device->sibling;
+        deviceIdx++;
     }
     if (HdfSListCount(deviceList) == 0) {
         OsalMemFree(deviceList);

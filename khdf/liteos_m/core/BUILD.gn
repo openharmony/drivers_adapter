@@ -34,7 +34,6 @@ hdf_driver("hdf_core") {
   sources = [
     "$HDF_FRAMEWORKS_PATH/core/common/src/devlite_object_config.c",
     "$HDF_FRAMEWORKS_PATH/core/common/src/hdf_attribute.c",
-    "$HDF_FRAMEWORKS_PATH/core/common/src/load_driver_entry.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/devhost_service.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/devmgr_service_clnt.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/devsvc_manager_clnt.c",
@@ -51,6 +50,7 @@ hdf_driver("hdf_core") {
     "$HDF_FRAMEWORKS_PATH/core/manager/src/device_token_clnt.c",
     "$HDF_FRAMEWORKS_PATH/core/manager/src/devmgr_service.c",
     "$HDF_FRAMEWORKS_PATH/core/manager/src/devsvc_manager.c",
+    "$HDF_FRAMEWORKS_PATH/core/manager/src/driver_manager.c",
     "$HDF_FRAMEWORKS_PATH/core/manager/src/hdf_driver_installer.c",
     "$HDF_FRAMEWORKS_PATH/core/manager/src/hdf_host_info.c",
     "$HDF_FRAMEWORKS_PATH/core/manager/src/power_state_token_clnt.c",
