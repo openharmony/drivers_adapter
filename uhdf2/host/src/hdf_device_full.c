@@ -17,8 +17,10 @@
 #include "device_service_stub.h"
 #include "hdf_base.h"
 #include "hdf_device_info_full.h"
+#include "devhost_service.h"
 #include "hdf_log.h"
 #include "osal_mem.h"
+#include "hdf_service_observer.h"
 
 #define HDF_LOG_TAG hdf_device_full
 
@@ -54,29 +56,30 @@ static int HdfDeviceFullAttach(
     return HDF_SUCCESS;
 }
 
-static void HdfDeviceFullDettach(struct IHdfDevice *device, struct HdfDeviceNode *devNode)
+static int HdfDeviceFullDettach(struct IHdfDevice *device, struct HdfDeviceNode *devNode)
 {
     struct HdfDeviceFull *fullDevice = HdfDeviceFullReinterpretCast(device);
     if (fullDevice == NULL || devNode == NULL) {
         HDF_LOGE("%{public}s input is null", __func__);
-        return;
+        return HDF_ERR_INVALID_PARAM;
     }
 
-    if (devNode->driverEntry != NULL && devNode->driverEntry->Release != NULL) {
-        devNode->driverEntry->Release(&devNode->deviceObject);
+    if (devNode->driver->entry != NULL && devNode->driver->entry->Release != NULL) {
+        devNode->driver->entry->Release(&devNode->deviceObject);
     }
     struct DevHostService *hostService = devNode->hostService;
     if (hostService != NULL) {
-        HdfServiceObserverRemoveRecord(&hostService->observer, devNode->deviceInfo->svcName);
+        HdfServiceObserverRemoveRecord(&hostService->observer, devNode->servName);
     }
-    HdfDeviceInfoFullFreeInstance((struct HdfDeviceInfoFull *)devNode->deviceInfo);
-    DeviceServiceStubRelease(&devNode->super.object);
 
+    DeviceServiceStubRelease(&devNode->super.object);
     if (fullDevice->deviceThread != NULL) {
         fullDevice->deviceThread->looper.Stop(&fullDevice->deviceThread->looper);
         DeviceThreadFreeInstance(fullDevice->deviceThread);
         fullDevice->deviceThread = NULL;
     }
+
+    return HDF_SUCCESS;
 }
 
 void HdfDeviceFullConstruct(struct HdfDeviceFull *inst)
@@ -89,7 +92,7 @@ void HdfDeviceFullConstruct(struct HdfDeviceFull *inst)
     }
 }
 
-struct HdfObject *HdfDeviceFullCreate()
+struct HdfObject *HdfDeviceFullCreate(void)
 {
     struct HdfDeviceFull *device =
         (struct HdfDeviceFull *)OsalMemCalloc(sizeof(struct HdfDeviceFull));

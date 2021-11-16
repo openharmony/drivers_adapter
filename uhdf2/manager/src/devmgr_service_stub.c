@@ -33,9 +33,8 @@
 static int32_t DevmgrServiceStubDispatchAttachDevice(
     struct IDevmgrService *devmgrSvc, struct HdfSBuf *data)
 {
-    uint32_t hostId;
     uint32_t deviceId;
-    if (!HdfSbufReadUint32(data, &hostId) || !HdfSbufReadUint32(data, &deviceId)) {
+    if (!HdfSbufReadUint32(data, &deviceId)) {
         HDF_LOGE("%{public}s:failed to get host id and device id", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
@@ -44,11 +43,21 @@ static int32_t DevmgrServiceStubDispatchAttachDevice(
     if (tokenClnt == NULL) {
         return HDF_FAILURE;
     }
-    struct HdfDeviceInfo deviceInfo;
-    deviceInfo.deviceId = deviceId;
-    deviceInfo.hostId = hostId;
-    return devmgrSvc->AttachDevice(devmgrSvc, &deviceInfo, &tokenClnt->super);
+    tokenClnt->super.devid = deviceId;
+    return devmgrSvc->AttachDevice(devmgrSvc, &tokenClnt->super);
 }
+
+static int32_t DevmgrServiceStubDispatchDetachDevice(struct IDevmgrService *devmgrSvc, struct HdfSBuf *data)
+{
+    uint32_t deviceId;
+    if (!HdfSbufReadUint32(data, &deviceId)) {
+        HDF_LOGE("%{public}s:failed to get host id and device id", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    return devmgrSvc->DetachDevice(devmgrSvc, deviceId);
+}
+
 
 static int32_t DevmgrServiceStubDispatchPnpDevice(
     struct IDevmgrService *devmgrSvc, struct HdfSBuf *data, bool isReg)
@@ -96,6 +105,10 @@ int32_t DevmgrServiceStubDispatch(
         }
         case DEVMGR_SERVICE_ATTACH_DEVICE: {
             ret = DevmgrServiceStubDispatchAttachDevice(super, data);
+            break;
+        }
+        case DEVMGR_SERVICE_DETACH_DEVICE: {
+            ret = DevmgrServiceStubDispatchDetachDevice(super, data);
             break;
         }
         case DEVMGR_SERVICE_REGIST_PNP_DEVICE: {
@@ -183,7 +196,7 @@ static void DevmgrServiceStubConstruct(struct DevmgrServiceStub *inst)
     OsalMutexInit(&inst->devmgrStubMutx);
 }
 
-struct HdfObject *DevmgrServiceStubCreate()
+struct HdfObject *DevmgrServiceStubCreate(void)
 {
     static struct DevmgrServiceStub *instance = NULL;
     if (instance == NULL) {

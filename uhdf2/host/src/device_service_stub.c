@@ -46,18 +46,22 @@ static struct HdfRemoteDispatcher g_deviceServiceDispatcher = {
     .Dispatch = DeviceServiceStubDispatch
 };
 
-int DeviceServiceStubPublishService(struct HdfDeviceNode *service, const char *serviceName)
+int DeviceServiceStubPublishService(struct HdfDeviceNode *service)
 {
     int status = HDF_FAILURE;
     struct DeviceServiceStub *fullService = (struct DeviceServiceStub *)service;
-    const struct HdfDeviceInfo *deviceInfo = service->deviceInfo;
 
-    if (fullService->remote != NULL) {
-        HDF_LOGE("%{public}s:service %{public}s already published", __func__, serviceName);
+    if (service->servName == NULL) {
+        HDF_LOGE("device %x miss service name", service->devId);
         return HDF_ERR_INVALID_OBJECT;
     }
 
-    if (deviceInfo->policy == SERVICE_POLICY_PUBLIC || deviceInfo->policy == SERVICE_POLICY_CAPACITY) {
+    if (fullService->remote != NULL) {
+        HDF_LOGE("%{public}s:service %{public}s already published", __func__, service->servName);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    if (service->policy == SERVICE_POLICY_PUBLIC || service->policy == SERVICE_POLICY_CAPACITY) {
         fullService->remote = HdfRemoteServiceObtain((struct HdfObject *)fullService, &g_deviceServiceDispatcher);
         if (fullService->remote == NULL) {
             return HDF_ERR_MALLOC_FAIL;
@@ -65,7 +69,7 @@ int DeviceServiceStubPublishService(struct HdfDeviceNode *service, const char *s
         struct DevSvcManagerClnt *serviceManager =
             (struct DevSvcManagerClnt *)DevSvcManagerClntGetInstance();
         if (serviceManager != NULL) {
-            status = DevSvcManagerClntAddService(serviceName, &fullService->super.deviceObject);
+            status = DevSvcManagerClntAddService(service->servName, &fullService->super.deviceObject);
         }
     }
 
@@ -81,7 +85,7 @@ void DeviceServiceStubConstruct(struct DeviceServiceStub *inst)
     }
 }
 
-struct HdfObject *DeviceServiceStubCreate()
+struct HdfObject *DeviceServiceStubCreate(void)
 {
     struct DeviceServiceStub *instance =
         (struct DeviceServiceStub *)OsalMemCalloc(sizeof(struct DeviceServiceStub));

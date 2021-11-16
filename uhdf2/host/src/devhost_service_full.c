@@ -41,12 +41,11 @@ static int32_t DevHostServiceFullDispatchMessage(struct HdfMessageTask *task, st
             break;
         }
         case DEVHOST_MESSAGE_DEL_DEVICE: {
-            struct HdfDeviceInfo *attribute = (struct HdfDeviceInfo *)msg->data[0];
-            status = DevHostServiceDelDevice(&hostService->super.super, attribute);
+            devid_t devid = (devid_t)((uintptr_t)msg->data[0]);
+            status = DevHostServiceDelDevice(&hostService->super.super, devid);
             if (status != HDF_SUCCESS) {
                 HDF_LOGE("DevHostServiceDelDevice failed and return %{public}d", status);
             }
-            HdfDeviceInfoFullFreeInstance((struct HdfDeviceInfoFull *)attribute);
             break;
         }
         default: {
@@ -59,9 +58,9 @@ static int32_t DevHostServiceFullDispatchMessage(struct HdfMessageTask *task, st
 }
 
 static int DevHostServiceFullOpsDevice(
-    struct IDevHostService *devHostService, const struct HdfDeviceInfo *attribute, int cmdCode)
+    struct IDevHostService *devHostService, uintptr_t parm, int cmdCode)
 {
-    if (devHostService == NULL || attribute == NULL) {
+    if (devHostService == NULL) {
         HDF_LOGE("input is null");
         return HDF_FAILURE;
     }
@@ -74,20 +73,19 @@ static int DevHostServiceFullOpsDevice(
     }
 
     message->messageId = cmdCode;
-    message->data[0] = (void *)attribute;
+    message->data[0] = (void *)parm;
     return task->SendMessage(task, message, true);
 }
 
 static int DevHostServiceFullAddDevice(
     struct IDevHostService *devHostService, const struct HdfDeviceInfo *attribute)
 {
-    return DevHostServiceFullOpsDevice(devHostService, attribute, DEVHOST_MESSAGE_ADD_DEVICE);
+    return DevHostServiceFullOpsDevice(devHostService, (uintptr_t)attribute, DEVHOST_MESSAGE_ADD_DEVICE);
 }
 
-static int DevHostServiceFullDelDevice(
-    struct IDevHostService *devHostService, const struct HdfDeviceInfo *attribute)
+static int DevHostServiceFullDelDevice(struct IDevHostService *devHostService, devid_t devid)
 {
-    return DevHostServiceFullOpsDevice(devHostService, attribute, DEVHOST_MESSAGE_DEL_DEVICE);
+    return DevHostServiceFullOpsDevice(devHostService, (uintptr_t)devid, DEVHOST_MESSAGE_DEL_DEVICE);
 }
 
 static int DevHostServiceFullDispatchPowerState(struct HdfDevice *device, uint32_t state)
@@ -102,7 +100,7 @@ static int DevHostServiceFullDispatchPowerState(struct HdfDevice *device, uint32
                 ret = PowerStateChange(deviceNode->powerToken, state);
                 if (ret != HDF_SUCCESS) {
                     HDF_LOGE("device %{public}s failed to resume(%{public}d) %{public}d",
-                        deviceNode->driverEntry->moduleName, state, ret);
+                        deviceNode->driver->entry->moduleName, state, ret);
                     result = HDF_FAILURE;
                 }
             }
@@ -113,7 +111,7 @@ static int DevHostServiceFullDispatchPowerState(struct HdfDevice *device, uint32
                 ret = PowerStateChange(deviceNode->powerToken, state);
                 if (ret != HDF_SUCCESS) {
                     HDF_LOGE("device %{public}s failed to suspend(%{public}d) %{public}d",
-                        deviceNode->driverEntry->moduleName, state, ret);
+                        deviceNode->driver->entry->moduleName, state, ret);
                     result = HDF_FAILURE;
                 }
             }
