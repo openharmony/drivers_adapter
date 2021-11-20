@@ -14,10 +14,9 @@
  */
 
 #include "devhost_service_proxy.h"
-#include "dev_attribute_parcel.h"
+#include "dev_attribute_serialize.h"
 #include "devmgr_service_full.h"
 #include "hdf_base.h"
-#include "hdf_device_info_full.h"
 #include "hdf_log.h"
 #include "hdf_sbuf.h"
 #include "osal_mem.h"
@@ -29,7 +28,6 @@ static int32_t DevHostServiceProxyOpsDevice(
     struct IDevHostService *inst, const struct HdfDeviceInfo *attribute, int opsCode)
 {
     int status = HDF_FAILURE;
-    const struct HdfDeviceInfoFull *fullAttribute = HdfDeviceInfoFullReinterpretCast(attribute);
     struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
     struct DevHostServiceProxy *hostClnt = (struct DevHostServiceProxy *)inst;
     if (hostClnt->remote == NULL || data == NULL) {
@@ -37,7 +35,7 @@ static int32_t DevHostServiceProxyOpsDevice(
         goto finished;
     }
 
-    DeviceAttributeFullWrite(fullAttribute, data);
+    DeviceAttributeSerialize(attribute, data);
     status = hostClnt->remote->dispatcher->Dispatch(hostClnt->remote, DEVHOST_SERVICE_ADD_DEVICE, data, NULL);
 finished:
     if (data != NULL) {

@@ -23,7 +23,7 @@ namespace HDI {
 namespace ServiceManager {
 namespace V1_0 {
 
-struct IServiceManager : public IRemoteBroker {
+class IServiceManager : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"HDI.IServiceManager.V1_0");
     static ::OHOS::sptr<IServiceManager> Get();

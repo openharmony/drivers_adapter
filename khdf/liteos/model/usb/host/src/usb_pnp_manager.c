@@ -45,45 +45,6 @@ bool UsbPnpManagerWriteModuleName(struct HdfSBuf *sbuf, const char *moduleName)
     return HdfSbufWriteString(sbuf, moduleName);
 }
 
-int32_t UsbPnpManagerRegisterOrUnregisterDevice(struct UsbPnpManagerDeviceInfo managerInfo)
-{
-    if (managerInfo.isReg) {
-        struct HdfDeviceObject *devObj = HdfRegisterDevice(managerInfo.moduleName, managerInfo.serviceName,
-            (const void *)managerInfo.privateData);
-        if (devObj == NULL) {
-            HDF_LOGE("%s:%d devObj is NULL!", __func__, __LINE__);
-            return HDF_FAILURE;
-        }
-    } else {
-        HdfUnregisterDevice(managerInfo.moduleName, managerInfo.serviceName);
-    }
-
-    return HDF_SUCCESS;
-}
-
-bool UsbPnpManagerAddPrivateData(struct HdfDeviceInfo *deviceInfo, const void *privateData)
-{
-    int ret;
-
-    if (privateData != NULL) {
-        deviceInfo->private = (const void *)OsalMemCalloc(sizeof(struct UsbPnpNotifyServiceInfo));
-        if (deviceInfo->private != NULL) {
-            uint32_t length = ((struct UsbPnpNotifyServiceInfo *)(privateData))->length;
-
-            ret = memcpy_s((void *)(deviceInfo->private), sizeof(struct UsbPnpNotifyServiceInfo), privateData, length);
-            if ((ret != EOK) || (deviceInfo->private == NULL)) {
-                HDF_LOGE("%s: memcpy_s private error", __func__);
-                return false;
-            }
-        } else {
-            HDF_LOGE("%s: OsalMemCalloc private error", __func__);
-            return false;
-        }
-    }
-
-    return true;
-}
-
 static int32_t UsbPnpManagerDispatch(struct HdfDeviceIoClient *client, int cmd,
     struct HdfSBuf *data, struct HdfSBuf *reply)
 {
@@ -94,7 +55,7 @@ static int32_t UsbPnpManagerDispatch(struct HdfDeviceIoClient *client, int cmd,
 
     HDF_LOGI("%s:%d received cmd = %d", __func__, __LINE__, cmd);
 
-    return UsbDdkPnpLoaderEventReceived(NULL, cmd, data);
+    return UsbDdkPnpLoaderEventReceived((void *)client->device, cmd, data);
 }
 
 static int32_t UsbPnpManagerBind(struct HdfDeviceObject *device)

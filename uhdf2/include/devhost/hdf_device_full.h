@@ -16,7 +16,6 @@
 #ifndef HDF_DEVICE_FULL_H
 #define HDF_DEVICE_FULL_H
 
-#include "hdf_attribute.h"
 #include "hdf_dev_token.h"
 #include "hdf_device.h"
 
