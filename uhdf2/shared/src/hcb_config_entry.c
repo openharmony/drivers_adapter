@@ -34,20 +34,12 @@
 #define PRODUCT_PROPERTY "ro.build.product"
 #define PRODUCT_NAME_MAX 128
 
-static void StringLower(char *str, int strLen)
-{
-    for (int i = 0; i < strLen; ++i) {
-        str[i] = tolower(str[i]);
-    }
-}
-
 static int GetProductName(char *name, int maxLen)
 {
-    (void)StringLower;
     return  strcpy_s(name, maxLen, "default");
 }
 
-const struct DeviceResourceNode *HdfGetRootNode(void)
+const struct DeviceResourceNode *HdfGetHcsRootNode(void)
 {
     char productName[PRODUCT_NAME_MAX] = { 0 };
     char configPath[PATH_MAX] = { 0 };
@@ -67,18 +59,4 @@ const struct DeviceResourceNode *HdfGetRootNode(void)
     SetHcsBlobPath(configFileName);
     const struct DeviceResourceNode *mgrRoot = HcsGetRootNode();
     return mgrRoot;
-}
-
-bool HdfDeviceListAdd(const char *moduleName, const char *serviceName, const void *privateData)
-{
-    (void)moduleName;
-    (void)serviceName;
-    (void)privateData;
-    return true;
-}
-
-void HdfDeviceListDel(const char *moduleName, const char *serviceName)
-{
-    (void)moduleName;
-    (void)serviceName;
 }

@@ -37,12 +37,16 @@ enum {
     SAMPLE_SERVICE_CALLBACK,
     SAMPLE_STRUCT_TRANS,
     SAMPLE_BUFFER_TRANS,
+    SAMPLE_REGISTER_DEVICE,
+    SAMPLE_UNREGISTER_DEVICE,
 };
 
 struct SampleHdi {
     int32_t (*ping)(struct HdfDeviceObject *device, const char* info, char** infoOut);
     int32_t (*sum)(struct HdfDeviceObject *device, int32_t x0, int32_t x1, int32_t *result);
     int32_t (*callback)(struct HdfDeviceObject *device, struct HdfRemoteService *callback, int32_t code);
+    int32_t (*registerDevice)(struct HdfDeviceObject *device, const char *servName);
+    int32_t (*unregisterDevice)(struct HdfDeviceObject *device, const char *servName);
 };
 
 const struct SampleHdi *SampleHdiImplInstance();

@@ -13,13 +13,14 @@
  * limitations under the License.
  */
 
-#ifndef HDF_ATTRIBUTE_PARCEL_H
-#define HDF_ATTRIBUTE_PARCEL_H
+#ifndef HDF_ATTRIBUTE_SERIALIZE_H
+#define HDF_ATTRIBUTE_SERIALIZE_H
 
-#include "hdf_device_info_full.h"
+#include "hdf_device_info.h"
 #include "hdf_sbuf.h"
 
-bool DeviceAttributeFullWrite(const struct HdfDeviceInfoFull *attribute, struct HdfSBuf *sbuf);
-struct HdfDeviceInfoFull *DeviceAttributeFullRead(struct HdfSBuf *sbuf);
+bool DeviceAttributeSerialize(const struct HdfDeviceInfo *attribute, struct HdfSBuf *sbuf);
+struct HdfDeviceInfo *DeviceAttributeDeserialize(struct HdfSBuf *sbuf);
+void DeviceSerializedAttributeRelease(struct HdfDeviceInfo *attribute);
 
-#endif /* HDF_ATTRIBUTE_PARCEL_H */
+#endif /* HDF_ATTRIBUTE_SERIALIZE_H */

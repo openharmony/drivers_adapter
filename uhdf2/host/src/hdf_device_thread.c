@@ -47,21 +47,23 @@ int32_t DeviceThreadMessageHandler(struct HdfMessageTask *task, struct HdfMessag
     return HDF_SUCCESS;
 }
 
-void DeviceThreadAttach(struct DeviceThread *inst, struct IHdfDevice *device, struct HdfDeviceNode *service)
+int DeviceThreadAttach(struct DeviceThread *inst, struct IHdfDevice *device, struct HdfDeviceNode *service)
 {
-    if (inst != NULL) {
-        // Thread is already running
-        struct HdfMessageTask *task = &inst->task;
-        struct HdfMessage *message = HdfMessageObtain(sizeof(struct HdfDeviceNode *));
-        if (message == NULL) {
-            HDF_LOGE("Get message error");
-            return;
-        }
-        message->messageId = DEVICE_SERVICE_MESSAGE_LAUNCH;
-        message->data[0] = (void *)device;
-        message->data[1] = (void *)service;
-        task->SendMessage(task, message, true);
+    if (inst != NULL || device == NULL || service == NULL) {
+        return HDF_ERR_INVALID_PARAM;
     }
+
+    // Thread is already running
+    struct HdfMessageTask *task = &inst->task;
+    struct HdfMessage *message = HdfMessageObtain(sizeof(struct HdfDeviceNode *));
+    if (message == NULL) {
+        HDF_LOGE("DeviceThreadAttach:obtain message error");
+        return HDF_ERR_MALLOC_FAIL;
+    }
+    message->messageId = DEVICE_SERVICE_MESSAGE_LAUNCH;
+    message->data[0] = (void *)device;
+    message->data[1] = (void *)service;
+    return task->SendMessage(task, message, true);
 }
 
 void DeviceThreadMain(void *args)

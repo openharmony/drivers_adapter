@@ -37,7 +37,7 @@
 #include "osal_time.h"
 #include "devsvc_manager_clnt.h"
 #include "hdf_log.h"
-#include "hdf_device_desc.h"
+#include "hdf_device_object.h"
 #include "implementation/global_implementation.h"
 #include "fs/fs.h"
 #include "usbdi.h"
@@ -830,7 +830,7 @@ static void UsbPnpNotifyReadPnpInfo(struct HdfSBuf *data)
         g_usbPnpInfo.interfaceProtocol);
 }
 
-static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfSBuf *data)
+static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfDeviceObject *device, struct HdfSBuf *data)
 {
     if (data == NULL) {
         return HDF_FAILURE;
@@ -845,11 +845,27 @@ static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfSBuf *data)
         return HDF_FAILURE;
     }
 
-    struct HdfDeviceObject *devObj = HdfRegisterDevice(moduleName, serviceName, NULL);
+    int ret = HDF_FAILURE;
+    struct HdfDeviceObject *devObj = HdfDeviceObjectAlloc(device, moduleName);
     if (devObj == NULL) {
-        return HDF_FAILURE;
+        HDF_LOGE("%s: failed to alloc device object", __func__);
+        return HDF_DEV_ERR_NO_MEMORY;
     }
-    return HDF_SUCCESS;
+
+    ret = HdfDeviceObjectRegister(devObj);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: failed to regitst device %s", __func__, moduleName);
+        HdfDeviceObjectRelease(devObj);
+        return ret;
+    }
+
+    ret = HdfDeviceObjectPublishService(devObj, serviceName, SERVICE_POLICY_CAPACITY, 0664);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: failed to regitst device %s", __func__, serviceName);
+        HdfDeviceObjectRelease(devObj);
+    }
+
+    return ret;
 }
 
 static int32_t UsbPnpNotifyDriverUnregisterDevice(struct HdfSBuf *data)
@@ -866,7 +882,12 @@ static int32_t UsbPnpNotifyDriverUnregisterDevice(struct HdfSBuf *data)
     if (serviceName == NULL) {
         return HDF_FAILURE;
     }
-    HdfUnregisterDevice(moduleName, serviceName);
+
+    struct HdfDeviceObject *devObj = DevSvcManagerClntGetDeviceObject(serviceName);
+    if (devObj == NULL) {
+        return HDF_DEV_ERR_NO_DEVICE;
+    }
+    HdfDeviceObjectRelease(devObj);
     return HDF_SUCCESS;
 }
 
@@ -910,7 +931,7 @@ static int32_t UsbPnpNotifyDispatch(struct HdfDeviceIoClient *client, int cmd,
             break;
 #endif
         case USB_PNP_DRIVER_REGISTER_DEVICE:
-            ret = UsbPnpNotifyDriverRegisterDevice(data);
+            ret = UsbPnpNotifyDriverRegisterDevice(client->device, data);
             break;
         case USB_PNP_DRIVER_UNREGISTER_DEVICE:
             ret = UsbPnpNotifyDriverUnregisterDevice(data);

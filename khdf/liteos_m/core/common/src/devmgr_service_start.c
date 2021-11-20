@@ -45,29 +45,12 @@ static int g_isQuickLoad = DEV_MGR_SLOW_LOAD;
 
 int32_t HdfGetServiceNameByDeviceClass(DeviceClass deviceClass, struct HdfSBuf *reply)
 {
-    struct HdfSListIterator itDeviceInfo;
-    struct HdfDeviceInfo *deviceInfo = NULL;
-    struct DevHostServiceClnt *hostClnt = NULL;
-    struct DevmgrService *devMgrSvc = (struct DevmgrService *)DevmgrServiceGetInstance();
-    if (devMgrSvc == NULL || reply == NULL) {
+    if (reply == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
 
     HdfSbufFlush(reply);
-    DLIST_FOR_EACH_ENTRY(hostClnt, &devMgrSvc->hosts, struct DevHostServiceClnt, node) {
-        HdfSListIteratorInit(&itDeviceInfo, hostClnt->deviceInfos);
-        while (HdfSListIteratorHasNext(&itDeviceInfo)) {
-            deviceInfo = (struct HdfDeviceInfo *)HdfSListIteratorNext(&itDeviceInfo);
-            if (deviceInfo->policy == SERVICE_POLICY_CAPACITY) {
-                struct HdfDeviceObject *deviceObject = DevSvcManagerClntGetDeviceObject(deviceInfo->svcName);
-                if (deviceObject == NULL || (deviceObject->deviceClass != deviceClass)) {
-                    continue;
-                }
-                HdfSbufWriteString(reply, deviceInfo->svcName);
-            }
-        }
-    }
-
+    DevSvcManagerListService(reply, deviceClass);
     HdfSbufWriteString(reply, NULL);
     return HDF_SUCCESS;
 }

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <devmgr_hdi.h>
 #include <hdf_log.h>
 #include <iservmgr_hdi.h>
 #include <ipc_object_stub.h>
@@ -31,8 +32,20 @@ constexpr int PAYLOAD_NUM = 1234;
 
 class HdfServiceMangerHdiTest : public testing::Test {
 public:
-    static void SetUpTestCase() {};
-    static void TearDownTestCase() {};
+    static void SetUpTestCase()
+        {
+        struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
+        if (devmgr != nullptr) {
+            devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
+        }
+    }
+    static void TearDownTestCase()
+    {
+        struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
+        if (devmgr != nullptr) {
+            devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+        }
+    }
     void SetUp() {};
     void TearDown() {};
 };

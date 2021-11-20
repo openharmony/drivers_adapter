@@ -18,7 +18,6 @@
 #include "devmgr_service_proxy.h"
 #include "devsvc_manager_proxy.h"
 #include "driver_loader_full.h"
-#include "hdf_device_full.h"
 #include "device_service_stub.h"
 #include "hdf_log.h"
 #include "hdf_object_manager.h"
@@ -48,8 +47,8 @@ static const struct HdfObjectCreator g_fullDevHostObjectCreators[] = {
         },
     [HDF_OBJECT_ID_DEVICE] =
         {
-            .Create = HdfDeviceFullCreate,
-            .Release = HdfDeviceFullRelease,
+            .Create = HdfDeviceCreate,
+            .Release = HdfDeviceRelease,
         },
     [HDF_OBJECT_ID_DEVICE_TOKEN] =
         {

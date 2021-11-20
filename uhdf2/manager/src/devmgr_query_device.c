@@ -43,7 +43,7 @@ int DevFillQueryDeviceInfo(struct IDevmgrService *inst, struct HdfSBuf *data, st
     }
 
     DLIST_FOR_EACH_ENTRY(hostClnt, &devMgrSvc->hosts, struct DevHostServiceClnt, node) {
-    HdfSListIteratorInit(&itDeviceInfo, hostClnt->deviceInfos);
+    HdfSListIteratorInit(&itDeviceInfo, &hostClnt->unloadDevInfos);
         HDF_LOGD("%{public}s, host:%{public}s %{public}d", __func__, hostClnt->hostName, hostClnt->hostId);
         while (HdfSListIteratorHasNext(&itDeviceInfo)) {
             deviceInfo = (struct HdfDeviceInfo *)HdfSListIteratorNext(&itDeviceInfo);
