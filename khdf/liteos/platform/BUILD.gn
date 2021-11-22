@@ -66,6 +66,7 @@ hdf_driver(module_name) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_manager.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_service.c",
       "src/gpio_dev.c",
     ]
@@ -172,6 +173,8 @@ hdf_driver(module_name) {
 config("public") {
   include_dirs = [
     "include",
+    "$HDF_FRAMEWORKS_PATH/include/core",
+    "$HDF_FRAMEWORKS_PATH/core/common/include/host",
     "$HDF_FRAMEWORKS_PATH/include/platform",
     "$HDF_FRAMEWORKS_PATH/support/platform/include",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/fwk",
