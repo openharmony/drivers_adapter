@@ -39,6 +39,7 @@ HDM_WIFI_LITE_ROOT = $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/model/net
 #WMAC_PATH := $(HDM_WIFI_ROOT)/components/wmac
 WAP_PATH := $(HDM_WIFI_ROOT)/core/components/softap
 WSTA_PATH := $(HDM_WIFI_ROOT)/core/components/sta
+WP2P_PATH := $(HDM_WIFI_ROOT)/core/components/p2p
 WEAPOL_PATH := $(HDM_WIFI_ROOT)/core/components/eapol
 NETDEV_PATH := $(HDM_WIFI_ROOT)/../common/netdevice
 MODULE_PATH := $(HDM_WIFI_ROOT)/core/module
@@ -52,6 +53,7 @@ INC_WIFI_PATH := $(LITEOSTOPDIR)/../../drivers/framework/include/wifi
 WIFI_CFLAGS += -I $(INC_PATH) \
 		-I $(WSTA_PATH) \
 		-I $(WAP_PATH) \
+		-I $(WP2P_PATH) \
 		-I $(WEAPOL_PATH) \
 		-I $(NETDEV_PATH) \
 		-I $(MODULE_PATH) \
@@ -62,6 +64,7 @@ WIFI_CFLAGS += -I $(INC_PATH) \
 LOCAL_SRCS += $(WAP_PATH)/ap.c \
 			$(WEAPOL_PATH)/eapol.c \
 			$(WSTA_PATH)/sta.c \
+			$(WP2P_PATH)/p2p.c \
 			$(NETDEV_PATH)/net_device.c \
 			$(MODULE_PATH)/wifi_module.c \
 			$(MODULE_PATH)/wifi_base.c \
