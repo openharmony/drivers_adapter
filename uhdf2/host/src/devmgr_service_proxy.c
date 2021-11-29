@@ -103,6 +103,43 @@ finished:
     }
     return status;
 }
+int  DevmgrServiceProxyLoadDevice(struct IDevmgrService *inst, const char *svcName)
+{
+    int status = HDF_FAILURE;
+    struct DevmgrServiceProxy *serviceProxy = (struct DevmgrServiceProxy *)inst;
+    if (serviceProxy == NULL || serviceProxy->remote == NULL || svcName == NULL) {
+        HDF_LOGE("DevmgrServiceProxyLoadDevice failed");
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfRemoteService *remoteService = serviceProxy->remote;
+    HdfSbufWriteString(data, svcName);
+
+    status = remoteService->dispatcher->Dispatch(remoteService, DEVMGR_SERVICE_LOAD_DEVICE, data, NULL);
+
+    HdfSBufRecycle(data);
+    return status;
+}
+
+int  DevmgrServiceProxyUnLoadDevice(struct IDevmgrService *inst, const char *svcName)
+{
+    int status = HDF_FAILURE;
+    struct DevmgrServiceProxy *serviceProxy = (struct DevmgrServiceProxy *)inst;
+    if (serviceProxy == NULL || serviceProxy->remote == NULL || svcName == NULL) {
+        HDF_LOGE("DevmgrServiceProxyLoadDevice failed");
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfRemoteService *remoteService = serviceProxy->remote;
+    HdfSbufWriteString(data, svcName);
+
+    status = remoteService->dispatcher->Dispatch(remoteService, DEVMGR_SERVICE_UNLOAD_DEVICE, data, NULL);
+
+    HdfSBufRecycle(data);
+    return status;
+}
 
 static void DevmgrServiceProxyConstruct(struct DevmgrServiceProxy *inst)
 {
@@ -110,6 +147,8 @@ static void DevmgrServiceProxyConstruct(struct DevmgrServiceProxy *inst)
     pvtbl->AttachDeviceHost = DevmgrServiceProxyAttachDeviceHost;
     pvtbl->AttachDevice = DevmgrServiceProxyAttachDevice;
     pvtbl->DetachDevice = DevmgrServiceProxyDetachDevice;
+    pvtbl->LoadDevice = DevmgrServiceProxyLoadDevice;
+    pvtbl->UnloadDevice = DevmgrServiceProxyUnLoadDevice;
     pvtbl->StartService = NULL;
 }
 
@@ -164,16 +203,4 @@ void DevmgrServiceProxyRelease(struct HdfObject *object)
         }
         OsalMemFree(instance);
     }
-}
-
-int DevmgrServiceLoadDevice(const char *svcName)
-{
-    (void)svcName;
-    return HDF_SUCCESS;
-}
-
-int DevmgrServiceUnLoadDevice(const char *svcName)
-{
-    (void)svcName;
-    return HDF_SUCCESS;
 }

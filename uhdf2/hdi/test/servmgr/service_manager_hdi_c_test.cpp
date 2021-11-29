@@ -19,6 +19,7 @@
 #include <hdf_sbuf.h>
 #include <gtest/gtest.h>
 #include <servmgr_hdi.h>
+#include <devmgr_hdi.h>
 #include "sample_hdi.h"
 
 #define HDF_LOG_TAG   service_manager_test
@@ -30,8 +31,20 @@ constexpr int PAYLOAD_NUM = 1234;
 
 class HdfServiceMangerHdiCTest : public testing::Test {
 public:
-    static void SetUpTestCase() {};
-    static void TearDownTestCase() {};
+    static void SetUpTestCase()
+        {
+        struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
+        if (devmgr != nullptr) {
+            devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
+        }
+    }
+    static void TearDownTestCase()
+    {
+        struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
+        if (devmgr != nullptr) {
+            devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+        }
+    }
     void SetUp() {};
     void TearDown() {};
 };
@@ -204,6 +217,75 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest006, TestSize.Level1)
     for (int i = 0; i < buffersize; i++) {
         ASSERT_EQ(retBuffer[i], i);
     }
+
+    HdfSBufRecycle(data);
+    HdfSBufRecycle(reply);
+}
+
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
+{
+    struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
+    ASSERT_TRUE(devmgr != nullptr);
+    devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+
+    struct HDIServiceManager *servmgr = HDIServiceManagerGet();
+    ASSERT_TRUE(servmgr != nullptr);
+
+    struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService == nullptr);
+
+    int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+
+    sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    ASSERT_TRUE(data != nullptr);
+    ASSERT_TRUE(reply != nullptr);
+
+    const char *newServName = "sample_driver_service2";
+    ret = HdfSbufWriteString(data, newServName);
+    ASSERT_TRUE(ret);
+
+    int status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_REGISTER_DEVICE, data, reply);
+    ASSERT_EQ(status, HDF_SUCCESS);
+
+    struct HdfRemoteService *sampleService2 = servmgr->GetService(servmgr, newServName);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    HdfSbufFlush(data);
+    HdfSbufFlush(reply);
+    HdfSbufWriteInt32(data, PAYLOAD_NUM);
+    HdfSbufWriteInt32(data, PAYLOAD_NUM);
+
+    status = sampleService2->dispatcher->Dispatch(sampleService2, SAMPLE_SERVICE_SUM, data, reply);
+    ASSERT_EQ(status, 0);
+    int32_t result;
+    ret = HdfSbufReadInt32(reply, &result);
+    ASSERT_TRUE(ret);
+
+    int32_t expRes = PAYLOAD_NUM + PAYLOAD_NUM;
+    ASSERT_EQ(result, expRes);
+    HdfRemoteServiceRecycle(sampleService2);
+
+    HdfSbufFlush(data);
+    ret = HdfSbufWriteString(data, newServName);
+    ASSERT_TRUE(ret);
+
+    status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_UNREGISTER_DEVICE, data, reply);
+    ASSERT_EQ(status, HDF_SUCCESS);
+
+    sampleService2 = servmgr->GetService(servmgr, newServName);
+    ASSERT_TRUE(sampleService2 == nullptr);
+
+    ret = devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+
+    HdfRemoteServiceRecycle(sampleService);
+    sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService == nullptr);
 
     HdfSBufRecycle(data);
     HdfSBufRecycle(reply);

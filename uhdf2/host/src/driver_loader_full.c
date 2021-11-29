@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "hdf_device.h"
-#include "hdf_device_info_full.h"
+#include "dev_attribute_serialize.h"
 #include "hdf_device_node.h"
 #include "hdf_log.h"
 #include "hdf_object_manager.h"

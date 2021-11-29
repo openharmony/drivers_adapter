@@ -78,9 +78,11 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/core/adapter/vnode/src/hdf_vnode_adapter.c \
               $(HDF_FRAMEWORKS)/core/common/src/devlite_object_config.c \
               $(HDF_FRAMEWORKS)/core/common/src/hdf_attribute.c \
+              $(HDF_FRAMEWORKS)/core/common/src/buildin_config_entry.c, \
               $(HDF_FRAMEWORKS)/core/common/src/devmgr_service_start.c \
               $(HDF_FRAMEWORKS)/core/common/src/hdf_device_node_ext.c \
               $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_blob_if.c \
+              $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_buildin_parser.c \
               $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_parser.c \
               $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_generate_tree.c \
               $(HDF_FRAMEWORKS)/utils/src/hcs_parser/hcs_tree_if.c \

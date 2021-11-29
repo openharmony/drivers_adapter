@@ -77,6 +77,7 @@ static int32_t HdfObtainDeviceInfo(struct DeviceInfoList *list, struct HdfSBuf *
 
     return HDF_SUCCESS;
 }
+
 static int32_t DevmgrQueryDeviceInfo(struct HDIDeviceManager *iDevMgr, struct DeviceInfoList *list, int32_t type)
 {
     struct HdfSBuf *reply = NULL;
@@ -151,57 +152,60 @@ static void DevmgrFreeQueryDeviceList(struct HDIDeviceManager *self, struct Devi
     DevmgrFreeQueryDeviceListImpl(list);
 }
 
-static int32_t HdfOpsDevice(struct HDIDeviceManager *iDevMgr,
-    const char *moduleName, const char *serviceName, int opsId)
+int32_t DevmgrLoadDevice(struct HDIDeviceManager *iDevMgr, const char *serviceName)
 {
     int32_t status = HDF_FAILURE;
-    if (iDevMgr == NULL || moduleName == NULL || serviceName == NULL) {
+    if (iDevMgr == NULL || serviceName == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
 
     struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
-    if (data == NULL || reply == NULL) {
-        status = HDF_ERR_MALLOC_FAIL;
-        goto out;
-    }
+    do {
+        if (data == NULL) {
+            status = HDF_ERR_MALLOC_FAIL;
+            break;
+        }
 
-    if (!HdfSbufWriteString(data, moduleName)) {
-        HDF_LOGE("%{public}s: writing module name failed!", __func__);
-        goto out;
-    }
-    if (!HdfSbufWriteString(data, serviceName)) {
-        HDF_LOGE("%{public}s: writing service name failed!", __func__);
-        goto out;
-    }
-    status = DeviceManagerHdiCall(iDevMgr, opsId, data, reply);
-    if (status == HDF_SUCCESS) {
-        HdfSbufReadInt32(reply, &status);
-    }
-out:
+        if (!HdfSbufWriteString(data, serviceName)) {
+            HDF_LOGE("%{public}s: writing service name failed!", __func__);
+            break;
+        }
+        status = DeviceManagerHdiCall(iDevMgr, DEVMGR_SERVICE_LOAD_DEVICE, data, NULL);
+        if (status != HDF_SUCCESS) {
+            HDF_LOGE("failed to load device %{public}s", serviceName);
+        }
+    } while (0);
+
     HdfSBufRecycle(data);
-    HdfSBufRecycle(reply);
     return status;
 }
 
-static int32_t DevmgrRegPnpDevice(struct HDIDeviceManager *self, const char *moduleName, const char *serviceName)
+int32_t DevmgrUnloadDevice(struct HDIDeviceManager *iDevMgr, const char *serviceName)
 {
-    return HdfOpsDevice(self, moduleName, serviceName, DEVMGR_SERVICE_REGIST_PNP_DEVICE);
-}
+    int32_t status = HDF_FAILURE;
+    if (iDevMgr == NULL || serviceName == NULL) {
+        return HDF_ERR_INVALID_PARAM;
+    }
 
-static int32_t DevmgrUnRegPnpDevice(struct HDIDeviceManager *self, const char *moduleName, const char *serviceName)
-{
-    return HdfOpsDevice(self, moduleName, serviceName, DEVMGR_SERVICE_UNREGIST_PNP_DEVICE);
-}
+    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    do {
+        if (data == NULL) {
+            status = HDF_ERR_MALLOC_FAIL;
+            break;
+        }
 
-static int32_t DevmgrRegVirtualDevice(struct HDIDeviceManager *self, const char *moduleName, const char *serviceName)
-{
-    return HdfOpsDevice(self, moduleName, serviceName, DEVMGR_SERVICE_REGISTER_VIRTUAL_DEVICE);
-}
+        if (!HdfSbufWriteString(data, serviceName)) {
+            HDF_LOGE("%{public}s: writing service name failed!", __func__);
+            break;
+        }
+        status = DeviceManagerHdiCall(iDevMgr, DEVMGR_SERVICE_UNLOAD_DEVICE, data, NULL);
+        if (status != HDF_SUCCESS) {
+            HDF_LOGE("failed to unload device %{public}s", serviceName);
+        }
+    } while (0);
 
-static int32_t DevmgrUnRegVirtualDevice(struct HDIDeviceManager *self, const char *moduleName, const char *serviceName)
-{
-    return HdfOpsDevice(self, moduleName, serviceName, DEVMGR_SERVICE_UNREGISTER_VIRTUAL_DEVICE);
+    HdfSBufRecycle(data);
+    return status;
 }
 
 static void HDIDeviceManagerConstruct(struct HDIDeviceManager *inst)
@@ -209,10 +213,8 @@ static void HDIDeviceManagerConstruct(struct HDIDeviceManager *inst)
     inst->FreeQueryDeviceList = DevmgrFreeQueryDeviceList;
     inst->QueryUsableDeviceInfo = DevmgrQueryUsableDeviceInfo;
     inst->QueryUnusableDeviceInfo = DevmgrQueryUnusableDeviceInfo;
-    inst->RegPnpDevice = DevmgrRegPnpDevice;
-    inst->UnRegPnpDevice = DevmgrUnRegPnpDevice;
-    inst->RegVirtualDevice = DevmgrRegVirtualDevice;
-    inst->UnRegVirtualDevice = DevmgrUnRegVirtualDevice;
+    inst->LoadDevice = DevmgrLoadDevice;
+    inst->UnloadDevice = DevmgrUnloadDevice;
 }
 
 struct HDIDeviceManager *HDIDeviceManagerGet(void)
