@@ -15,7 +15,7 @@
 
 #include "devhost_service_stub.h"
 #include "devhost_service_proxy.h"
-#include "dev_attribute_parcel.h"
+#include "dev_attribute_serialize.h"
 #include "hdf_base.h"
 #include "hdf_log.h"
 #include "hdf_sbuf.h"
@@ -35,6 +35,7 @@ static int DevHostServiceStubDispatch(
 {
     (void)reply;
     int ret = HDF_FAILURE;
+    uint32_t deviceId = 0;
     if (stub == NULL || data == NULL) {
         return ret;
     }
@@ -48,16 +49,16 @@ static int DevHostServiceStubDispatch(
                 HDF_LOGE("serviceIf or serviceIf->AddDevice is NULL");
                 break;
             }
-            struct HdfDeviceInfoFull *attribute = DeviceAttributeFullRead(data);
+            struct HdfDeviceInfo *attribute = DeviceAttributeDeserialize(data);
             if (attribute == NULL) {
                 HDF_LOGE("Dispatch failed, attribute is null");
                 break;
             }
-            ret = serviceIf->AddDevice(serviceIf, &attribute->super);
+            ret = serviceIf->AddDevice(serviceIf, attribute);
             if (ret != HDF_SUCCESS) {
                 HDF_LOGE("Dispatch failed, add service failed and ret is %{public}d", ret);
             }
-            HdfDeviceInfoFullFreeInstance(attribute);
+            DeviceSerializedAttributeRelease(attribute);
             break;
         }
         case DEVHOST_SERVICE_DEL_DEVICE: {
@@ -65,14 +66,14 @@ static int DevHostServiceStubDispatch(
                 HDF_LOGE("serviceIf or serviceIf->DelDevice is NULL");
                 break;
             }
-            struct HdfDeviceInfoFull *attribute = DeviceAttributeFullRead(data);
-            if (attribute == NULL) {
-                HDF_LOGE("Dispatch failed, attribute is null");
+            if (!HdfSbufReadUint32(data, &deviceId)) {
+                HDF_LOGE("failed to del device, invalid device id");
                 break;
             }
-            ret = serviceIf->DelDevice(serviceIf, attribute->super.deviceId);
+
+            ret = serviceIf->DelDevice(serviceIf, deviceId);
             if (ret != HDF_SUCCESS) {
-                HDF_LOGE("Dispatch failed, del service failed and ret is %{public}d", ret);
+                HDF_LOGE("del service failed, ret is %{public}d", ret);
             }
             break;
         }

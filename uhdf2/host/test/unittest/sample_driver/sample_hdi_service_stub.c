@@ -117,6 +117,30 @@ static int32_t SampleServiceStubBufferTrans(struct HdfDeviceIoClient *client,
     return HDF_SUCCESS;
 }
 
+static int32_t SampleServiceRegisterDevice(struct HdfDeviceIoClient *client,
+    struct HdfSBuf *data, struct HdfSBuf *reply)
+{
+    (void)reply;
+    const char *deviceName = HdfSbufReadString(data);
+    if (deviceName == NULL) {
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    return SampleHdiImplInstance()->registerDevice(client->device, deviceName);
+}
+
+static int32_t SampleServiceUnregisterDevice(struct HdfDeviceIoClient *client,
+    struct HdfSBuf *data, struct HdfSBuf *reply)
+{
+    (void)reply;
+    const char *deviceName = HdfSbufReadString(data);
+    if (deviceName == NULL) {
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    return SampleHdiImplInstance()->unregisterDevice(client->device, deviceName);
+}
+
 int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId,
     struct HdfSBuf *data, struct HdfSBuf *reply)
 {
@@ -131,6 +155,10 @@ int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId
             return SampleServiceStubStructTrans(client, data, reply);
         case SAMPLE_BUFFER_TRANS:
             return SampleServiceStubBufferTrans(client, data, reply);
+        case SAMPLE_REGISTER_DEVICE:
+            return SampleServiceRegisterDevice(client, data, reply);
+        case SAMPLE_UNREGISTER_DEVICE:
+            return SampleServiceUnregisterDevice(client, data, reply);
         default:
             HDF_LOGE("SampleServiceDispatch: not support cmd %{public}d", cmdId);
             return HDF_ERR_INVALID_PARAM;

@@ -38,6 +38,6 @@ enum {
 struct DeviceThread *DeviceThreadNewInstance(void);
 void DeviceThreadFreeInstance(struct DeviceThread *thread);
 void DeviceThreadMain(void *args);
-void DeviceThreadAttach(struct DeviceThread *inst, struct IHdfDevice *device, struct HdfDeviceNode *service);
+int DeviceThreadAttach(struct DeviceThread *inst, struct IHdfDevice *device, struct HdfDeviceNode *service);
 
 #endif /* DEVICE_THREAD_H */

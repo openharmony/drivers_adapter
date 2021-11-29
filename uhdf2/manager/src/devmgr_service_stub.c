@@ -17,7 +17,6 @@
 #include "devhost_service_clnt.h"
 #include "devhost_service_proxy.h"
 #include "device_token_proxy.h"
-#include "devmgr_pnp_service.h"
 #include "devmgr_query_device.h"
 #include "devmgr_virtual_service.h"
 #include "devsvc_manager.h"
@@ -26,7 +25,6 @@
 #include "hdf_sbuf.h"
 #include "osal_mem.h"
 #include "osal_sysevent.h"
-#include "usb_pnp_manager.h"
 
 #define HDF_LOG_TAG devmgr_service_stub
 
@@ -58,27 +56,26 @@ static int32_t DevmgrServiceStubDispatchDetachDevice(struct IDevmgrService *devm
     return devmgrSvc->DetachDevice(devmgrSvc, deviceId);
 }
 
-
-static int32_t DevmgrServiceStubDispatchPnpDevice(
-    struct IDevmgrService *devmgrSvc, struct HdfSBuf *data, bool isReg)
+static int32_t DevmgrServiceStubDispatchLoadDevice(struct IDevmgrService *devmgrSvc, struct HdfSBuf *data)
 {
-    int32_t ret = HDF_FAILURE;
-
-    const char *moduleName = HdfSbufReadString(data);
-    if (moduleName == NULL) {
-        return ret;
-    }
     const char *serviceName = HdfSbufReadString(data);
     if (serviceName == NULL) {
-        return ret;
+        HDF_LOGE("%{public}s:service name is null", __func__);
+        return HDF_ERR_INVALID_PARAM;
     }
 
-    if (isReg) {
-        ret = DevmgrServiceRegPnpDevice(devmgrSvc, moduleName, serviceName, NULL, NULL);
-    } else {
-        ret = DevmgrServiceUnRegPnpDevice(devmgrSvc, moduleName, serviceName);
+    return devmgrSvc->LoadDevice(devmgrSvc, serviceName);
+}
+
+static int32_t DevmgrServiceStubDispatchUnloadDevice(struct IDevmgrService *devmgrSvc, struct HdfSBuf *data)
+{
+    const char *serviceName = HdfSbufReadString(data);
+    if (serviceName == NULL) {
+        HDF_LOGE("%{public}s:service name is null", __func__);
+        return HDF_ERR_INVALID_PARAM;
     }
-    return ret;
+
+    return devmgrSvc->UnloadDevice(devmgrSvc, serviceName);
 }
 
 int32_t DevmgrServiceStubDispatch(
@@ -111,24 +108,16 @@ int32_t DevmgrServiceStubDispatch(
             ret = DevmgrServiceStubDispatchDetachDevice(super, data);
             break;
         }
-        case DEVMGR_SERVICE_REGIST_PNP_DEVICE: {
-            ret = DevmgrServiceStubDispatchPnpDevice(super, data, true);
+        case DEVMGR_SERVICE_LOAD_DEVICE: {
+            ret = DevmgrServiceStubDispatchLoadDevice(super, data);
             break;
         }
-        case DEVMGR_SERVICE_UNREGIST_PNP_DEVICE: {
-            ret = DevmgrServiceStubDispatchPnpDevice(super, data, false);
+        case DEVMGR_SERVICE_UNLOAD_DEVICE: {
+            ret = DevmgrServiceStubDispatchUnloadDevice(super, data);
             break;
         }
         case DEVMGR_SERVICE_QUERY_DEVICE: {
             ret = DevFillQueryDeviceInfo(super, data, reply);
-            break;
-        }
-        case DEVMGR_SERVICE_REGISTER_VIRTUAL_DEVICE: {
-            ret = DevmgrServiceVirtualDevice(super, data, reply, true);
-            break;
-        }
-        case DEVMGR_SERVICE_UNREGISTER_VIRTUAL_DEVICE: {
-            ret = DevmgrServiceVirtualDevice(super, data, reply, false);
             break;
         }
         default:
@@ -176,14 +165,7 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
     }
     fullService->remote = remoteService;
 
-    status = DevmgrServiceStartService((struct IDevmgrService *)&fullService->super);
-    if (status == HDF_SUCCESS) {
-        if (DevmgrUsbPnpManageEventHandle(inst) != HDF_SUCCESS) {
-            HDF_LOGE("%s:%d DevmgrUsbPnpManageEventHandle error", __func__, __LINE__);
-        }
-    }
-
-    return status;
+    return DevmgrServiceStartService((struct IDevmgrService *)&fullService->super);
 }
 
 static void DevmgrServiceStubConstruct(struct DevmgrServiceStub *inst)

@@ -177,4 +177,3 @@ void DevSvcManagerProxyRelease(struct HdfObject *object)
         OsalMemFree(instance);
     }
 }
-

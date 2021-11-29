@@ -72,12 +72,10 @@ ohos_shared_library("libhdf_host") {
     "$hdf_uhdf_path/host/src/devmgr_service_proxy.c",
     "$hdf_uhdf_path/host/src/devsvc_manager_proxy.c",
     "$hdf_uhdf_path/host/src/driver_loader_full.c",
-    "$hdf_uhdf_path/host/src/hdf_device_full.c",
     "$hdf_uhdf_path/host/src/hdf_device_thread.c",
     "$hdf_uhdf_path/host/src/hdf_devsvc_manager_clnt.c",
-    "$hdf_uhdf_path/shared/src/dev_attribute_parcel.c",
-    "$hdf_uhdf_path/shared/src/hdf_attribute_full.c",
-    "$hdf_uhdf_path/shared/src/hdf_device_info_full.c",
+    "$hdf_uhdf_path/shared/src/dev_attribute_serialize.c",
+    "$hdf_uhdf_path/shared/src/hcb_config_entry.c",
   ]
 
   deps = [

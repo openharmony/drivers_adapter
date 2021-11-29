@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-#include "hdf_sbuf.h"
 #include "device_service_stub.h"
 #include "devsvc_manager_clnt.h"
 #include "hdf_base.h"
-#include "osal_mem.h"
 #include "hdf_log.h"
+#include "hdf_sbuf.h"
+#include "osal_mem.h"
 
 int DeviceServiceStubDispatch(
     struct HdfRemoteService *stub, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
@@ -61,19 +61,44 @@ int DeviceServiceStubPublishService(struct HdfDeviceNode *service)
         return HDF_ERR_INVALID_OBJECT;
     }
 
-    if (service->policy == SERVICE_POLICY_PUBLIC || service->policy == SERVICE_POLICY_CAPACITY) {
-        fullService->remote = HdfRemoteServiceObtain((struct HdfObject *)fullService, &g_deviceServiceDispatcher);
-        if (fullService->remote == NULL) {
-            return HDF_ERR_MALLOC_FAIL;
-        }
-        struct DevSvcManagerClnt *serviceManager =
-            (struct DevSvcManagerClnt *)DevSvcManagerClntGetInstance();
-        if (serviceManager != NULL) {
-            status = DevSvcManagerClntAddService(service->servName, &fullService->super.deviceObject);
-        }
+    if (service->policy != SERVICE_POLICY_PUBLIC && service->policy != SERVICE_POLICY_CAPACITY) {
+        return HDF_ERR_NOT_SUPPORT;
     }
 
+    fullService->remote = HdfRemoteServiceObtain((struct HdfObject *)fullService, &g_deviceServiceDispatcher);
+    if (fullService->remote == NULL) {
+        return HDF_ERR_MALLOC_FAIL;
+    }
+
+    do {
+        struct DevSvcManagerClnt *serviceManager = DevSvcManagerClntGetInstance();
+        if (serviceManager == NULL) {
+            HDF_LOGE("device service stub failed to publish, svcmgr clnt invalid");
+            status = HDF_DEV_ERR_NO_DEVICE;
+            break;
+        }
+
+        status = DevSvcManagerClntAddService(service->servName, &fullService->super.deviceObject);
+        if (status != HDF_SUCCESS) {
+            break;
+        }
+        service->servStatus = true;
+        return HDF_SUCCESS;
+    } while (0);
+
+    HdfRemoteServiceRecycle(fullService->remote);
+    fullService->remote = NULL;
     return status;
+}
+
+int DeviceServiceStubRemoveService(struct HdfDeviceNode *deviceNode)
+{
+    struct DevSvcManagerClnt *serviceManager = DevSvcManagerClntGetInstance();
+    if (serviceManager == NULL) {
+        return HDF_FAILURE;
+    }
+    DevSvcManagerClntRemoveService(deviceNode->servName);
+    return HDF_SUCCESS;
 }
 
 void DeviceServiceStubConstruct(struct DeviceServiceStub *inst)
@@ -82,6 +107,7 @@ void DeviceServiceStubConstruct(struct DeviceServiceStub *inst)
     struct IDeviceNode *serviceIf = (struct IDeviceNode *)inst;
     if (serviceIf != NULL) {
         serviceIf->PublishService = DeviceServiceStubPublishService;
+        serviceIf->RemoveService = DeviceServiceStubRemoveService;
     }
 }
 

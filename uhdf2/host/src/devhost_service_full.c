@@ -15,13 +15,13 @@
 
 #include "devhost_service_full.h"
 #include "devmgr_service_clnt.h"
+#include "dev_attribute_serialize.h"
 #include "hdf_device_node.h"
 #include "power_state_token.h"
 #include "hdf_base.h"
 #include "hdf_device_info.h"
 #include "hdf_log.h"
 #include "osal_message.h"
-#include "hdf_device_info_full.h"
 
 #define HDF_LOG_TAG devhost_service_full
 

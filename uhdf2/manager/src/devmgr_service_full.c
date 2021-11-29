@@ -33,7 +33,7 @@ static Map g_hostMap = {0};
 
 static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *hostClnt)
 {
-    if (!HdfSListIsEmpty(hostClnt->deviceInfos)) {
+    if (!HdfSListIsEmpty(&hostClnt->devices)) {
         if (g_hostMap.nodeSize == 0) {
             MapInit(&g_hostMap);
         }
@@ -43,13 +43,14 @@ static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *
             MapSet(&g_hostMap, hostClnt->hostName, &hostDieNum, sizeof(int));
         } else {
             if (*hostDieValue > HOST_MAX_DIE_NUM) {
+                HDF_LOGE("host %{public}s die 4 times, remove it", hostClnt->hostName);
                 *hostDieValue = 0;
                 return INVALID_PID;
             }
             (*hostDieValue)++;
         }
         struct IDriverInstaller *installer = DriverInstallerGetInstance();
-        if ((installer != NULL) && (installer->StartDeviceHost)) {
+        if (installer != NULL && installer->StartDeviceHost != NULL) {
             hostClnt->hostPid = installer->StartDeviceHost(hostClnt->hostId, hostClnt->hostName);
             return hostClnt->hostPid;
         }
@@ -69,7 +70,7 @@ void DevmgrServiceFullOnDeviceHostDied(struct DevmgrServiceFull *inst, uint32_t 
     DLIST_FOR_EACH_ENTRY_SAFE(hostClnt, hostClntTmp,  &inst->super.hosts, struct DevHostServiceClnt, node) {
         if (hostClnt->hostId == hostId) {
             int32_t ret = DevmgrServiceFullHandleDeviceHostDied(hostClnt);
-            if (ret == INVALID_PID) {
+            if (ret == INVALID_PID && HdfSListIsEmpty(&hostClnt->dynamicDevInfos)) {
                 DListRemove(&hostClnt->node);
                 DevHostServiceClntFreeInstance(hostClnt);
             }

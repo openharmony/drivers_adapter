@@ -51,7 +51,10 @@ hdf_driver(module_name) {
       "src/usb_pnp_notify.c",
       "src/usb_test_pnp_notify.c",
     ]
-    include_dirs += [ "$USB_PNP_NOTIFY_SHARED_ROOT/include" ]
+    include_dirs += [
+      "$USB_PNP_NOTIFY_SHARED_ROOT/include",
+      "$FRAMEWORKS_USB_DDK_HOST/include",
+    ]
     public_configs = [ ":public" ]
   }
 

@@ -47,10 +47,8 @@ struct HDIDeviceManager {
     void (*FreeQueryDeviceList)(struct HDIDeviceManager *self, struct DeviceInfoList *list);
     int32_t (*QueryUsableDeviceInfo)(struct HDIDeviceManager *self, struct DeviceInfoList *list);
     int32_t (*QueryUnusableDeviceInfo)(struct HDIDeviceManager *self, struct DeviceInfoList *list);
-    int32_t (*RegPnpDevice)(struct HDIDeviceManager *self, const char *moduleName, const char *serviceName);
-    int32_t (*UnRegPnpDevice)(struct HDIDeviceManager *self, const char *moduleName, const char *serviceName);
-    int32_t (*RegVirtualDevice)(struct HDIDeviceManager *self, const char *moduleName, const char *serviceName);
-    int32_t (*UnRegVirtualDevice)(struct HDIDeviceManager *self, const char *moduleName, const char *serviceName);
+    int32_t (*LoadDevice)(struct HDIDeviceManager *self, const char *serviceName);
+    int32_t (*UnloadDevice)(struct HDIDeviceManager *self, const char *serviceName);
 };
 
 struct HDIDeviceManager *HDIDeviceManagerGet(void);
