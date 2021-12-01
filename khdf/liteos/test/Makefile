@@ -86,6 +86,12 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/adc_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/adc_driver_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_adc_entry_test.c
 endif
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_DAC), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/dac_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/dac_driver_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_dac_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/virtual/dac_virtual.c
+endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I3C), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i3c_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i3c_driver_test.c

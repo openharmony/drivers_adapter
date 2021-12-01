@@ -114,6 +114,15 @@ hdf_driver(module_name) {
       ]
     }
 
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_DAC)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/dac_driver_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/dac_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_dac_entry_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/virtual/dac_virtual.c",
+      ]
+    }
+
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I3C)) {
       sources += [
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/i3c_driver_test.c",

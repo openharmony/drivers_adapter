@@ -55,6 +55,13 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_DAC)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/dac/dac_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/dac/dac_if.c",
+    ]
+  }
+
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I3C)) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/i3c/i3c_core.c",
@@ -179,6 +186,7 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/support/platform/include",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/fwk",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/adc",
+    "$HDF_FRAMEWORKS_PATH/support/platform/include/dac",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/dma",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/gpio",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/hdmi",

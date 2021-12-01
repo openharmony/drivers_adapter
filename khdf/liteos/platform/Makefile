@@ -54,6 +54,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_ADC), y)
     $(HDF_FRAMEWORKS)/support/platform/src/adc/adc_core.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_DAC), y)
+    LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/dac/dac_if.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/dac/dac_core.c
+endif
+
 LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/i3c/i3c_if.c \
 $(HDF_FRAMEWORKS)/support/platform/src/i3c/i3c_core.c
 
