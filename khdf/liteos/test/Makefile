@@ -65,76 +65,76 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_driver_test.c
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/gpio_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/gpio_driver_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_gpio_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_gpio_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PIN), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pin_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pin_driver_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_pin_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_pin_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2C), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i2c_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i2c_driver_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_i2c_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_i2c_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2S), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i2s_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_i2s_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_i2s_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_ADC), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/adc_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/adc_driver_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_adc_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_adc_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I3C), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i3c_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/i3c_driver_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_i3c_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_i3c_entry_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/virtual/i3c_virtual.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/watchdog_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_watchdog_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_watchdog_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SPI), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/spi_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_spi_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_spi_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_UART), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/uart_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_uart_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_uart_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_RTC), y)
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_rtc_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_rtc_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/sdio_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_sdio_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_sdio_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/mipi_dsi_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_mipi_dsi_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_mipi_dsi_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_CSI), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/mipi_csi_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_mipi_csi_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_mipi_csi_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/hdmi_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_hdmi_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_hdmi_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_EMMC), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/emmc_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_emmc_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_emmc_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PWM), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pwm_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_pwm_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_pwm_entry_test.c
 endif
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_REGULATOR), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/regulator_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/hdf_regulator_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_regulator_entry_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/virtual/regulator_virtual.c
 endif
 
