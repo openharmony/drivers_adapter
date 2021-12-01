@@ -74,6 +74,13 @@ config DRIVERS_HDF_PLATFORM_ADC
     help
       Answer Y to enable HDF platform adc driver.
 
+config DRIVERS_HDF_PLATFORM_DAC
+    bool "Enable HDF platform dac driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform dac driver.
+
 config DRIVERS_HDF_PLATFORM_I3C
     bool "Enable HDF platform i3c driver"
     default n
