@@ -57,6 +57,7 @@ HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/network/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/osal/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/platform/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/adc
+HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/dac
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/dma
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/gpio
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/hdmi
