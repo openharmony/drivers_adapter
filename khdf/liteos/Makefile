@@ -51,6 +51,7 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               ./osal/src/osal_mem.c \
               ./osal/src/osal_mutex.c \
               ./osal/src/osal_sem.c \
+              ./manager/src/devmgr_pm_reg.c \
               $(HDF_FRAMEWORKS)/core/host/src/devhost_service.c \
               $(HDF_FRAMEWORKS)/core/host/src/devmgr_service_clnt.c \
               $(HDF_FRAMEWORKS)/core/host/src/devsvc_manager_clnt.c \

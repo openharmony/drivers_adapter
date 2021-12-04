@@ -43,6 +43,7 @@ hdf_driver(module_name) {
     "$HDF_TEST_FRAMWORK_ROOT/osal/osal_list_test.c",
     "$HDF_TEST_FRAMWORK_ROOT/osal/osal_test_entry.c",
     "$HDF_TEST_FRAMWORK_ROOT/osal/osal_work_test.c",
+    "$HDF_TEST_FRAMWORK_ROOT/pm/pm_driver_test.c",
     "$HDF_TEST_FRAMWORK_ROOT/utils/hcs_parser/unittest/hcs_config_test.c",
     "$HDF_TEST_FRAMWORK_ROOT/utils/hcs_parser/unittest/hcs_parser_test.c",
   ]
