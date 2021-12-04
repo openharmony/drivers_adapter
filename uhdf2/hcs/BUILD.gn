@@ -16,12 +16,12 @@ import("//drivers/adapter/uhdf2/uhdf.gni")
 import("$hdf_framework_path/tools/hc-gen/hc_gen.gni")
 
 hc_gen("build_hcs") {
-  gadget = "ecm_acm"
   hcs_source = "/hdf.hcs"
 
   if (product_company == "openharmony") {
     hcs_config_path = "default"
   } else {
+    gadget = "ecm_acm"
     if (gadget == "acm") {
       hcs_source = "/hdf.hcs"
     } else if (gadget == "ecm") {
