@@ -75,70 +75,6 @@ hdf_driver(module_name) {
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sbuf_impl_raw.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_slist.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sref.c",
-    "manager/src/devmgr_pm_reg.c",
-    "osal/src/osal_cdev.c",
-    "osal/src/osal_file.c",
-    "osal/src/osal_firmware.c",
-    "osal/src/osal_irq.c",
-    "osal/src/osal_mem.c",
-    "osal/src/osal_mutex.c",
-    "osal/src/osal_sem.c",
-    "osal/src/osal_spinlock.c",
-    "osal/src/osal_thread.c",
-    "osal/src/osal_time.c",
-    "osal/src/osal_timer.c",
-    "osal/src/osal_workqueue.c",
-  ]
-
-  if (defined(LOSCFG_NET_LWIP_SACK)) {
-    sources += [ "network/src/netbuf_adapter.c" ]
-
-    if (defined(LOSCFG_DRIVERS_HDF_WIFI)) {
-      sources += [ "network/src/net_device_adapter.c" ]
-    }
-  }
-
-  public_configs = [ ":public" ]
-}
-
-group("liteos") {
-  public_deps = [ ":$module_name" ]
-  deps = [
-    "model/audio",
-    "model/bus/usb",
-    "model/display",
-    "model/input",
-    "model/misc/dsoftbus",
-    "model/misc/vibrator",
-    "model/network/ethernet",
-    "model/network/wifi",
-    "model/sensor",
-    "model/storage",
-    "model/usb/device",
-    "model/usb/host",
-    "platform",
-  ]
-
-  if (defined(LOSCFG_DRIVERS_HDF_TEST)) {
-    deps += [ "test" ]
-  }
-}
-
-config("public") {
-  include_dirs = [
-    "$HDF_FRAMEWORKS_PATH/core/common/include/manager",
-    "$HDF_FRAMEWORKS_PATH/include/utils",
-    "$HDF_FRAMEWORKS_PATH/utils/include",
-    "$HDF_FRAMEWORKS_PATH/include/osal",
-    "$HDF_FRAMEWORKS_PATH/model/storage/include",
-    "osal/include",
-  ]
-
-  configs = [
-    "platform:public",
-    "model/bus/usb:public",
-    "model/usb/host:public",
-    "model/storage:public",
   ]
 }
 
@@ -152,22 +88,25 @@ config("hdf_config") {
     "$HDF_FRAMEWORKS_PATH/include/core",
     "$HDF_FRAMEWORKS_PATH/include/net",
     "$HDF_FRAMEWORKS_PATH/include/wifi",
-    "$HDF_FRAMEWORKS_PATH/model/network/common/netdevice",
-    "$HDF_FRAMEWORKS_PATH/model/storage/include",
-    "$HDF_FRAMEWORKS_PATH/model/storage/include/mmc",
-    "$HDF_FRAMEWORKS_PATH/model/storage/include/mtd",
     "$HDF_FRAMEWORKS_PATH/core/host/include",
     "$HDF_FRAMEWORKS_PATH/core/manager/include",
     "$HDF_FRAMEWORKS_PATH/core/shared/include",
     "$HDF_FRAMEWORKS_PATH/core/common/include/manager",
     "$HDF_FRAMEWORKS_PATH/core/common/include/host",
-    "network/include",
-    "osal/include",
-    "platform/include",
-    "model/storage/include",
-    "model/storage/include/mmc",
-    "model/storage/include/mtd",
     "$HDF_FRAMEWORKS_PATH/core/adapter/vnode/include",
     "$HDF_FRAMEWORKS_PATH/core/adapter/syscall/include",
   ]
+}
+
+module_group("liteos") {
+  modules = [
+    "manager",
+    "model",
+    "network",
+    "osal",
+    "platform",
+    "test",
+  ]
+  deps = [ ":$module_name" ]
+  configs = [ ":hdf_config" ]
 }
