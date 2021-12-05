@@ -17,7 +17,7 @@ import("$hdf_framework_path/tools/hc-gen/hc_gen.gni")
 
 hc_gen("build_hcs") {
   gadget = "acm"
-  if (product_company == "Hi3516DV300") {
+  if (product_name == "Hi3516DV300") {
     gadget = "ecm_acm"
   }
   hcs_source = "/hdf.hcs"
