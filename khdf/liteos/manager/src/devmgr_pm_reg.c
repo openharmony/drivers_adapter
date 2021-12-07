@@ -33,7 +33,7 @@
 #include "hdf_base.h"
 #include "hdf_log.h"
 
-#define HDF_MODULE_NAME "hdf_pm"
+#define HDF_LOG_TAG devmgr_pm
 
 UINT32 DevmgrPmSuspend(UINT32 mode)
 {
