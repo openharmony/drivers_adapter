@@ -102,7 +102,10 @@ hdf_driver(module_name) {
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
-    sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/pwm/pwm_core.c" ]
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/pwm/pwm_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/pwm/pwm_if.c",
+    ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI)) {
