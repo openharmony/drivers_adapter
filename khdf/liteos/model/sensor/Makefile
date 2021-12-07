@@ -82,4 +82,8 @@ LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/proximity/sensor_proximity_driver.c \
               $(FRAMEWORKS_SENSOR_ROOT)/chipset/proximity/proximity_apds9960.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_GRAVITY), y)
+LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/accel/sensor_gravity_driver.c
+endif
+
 include $(HDF_DRIVER)
