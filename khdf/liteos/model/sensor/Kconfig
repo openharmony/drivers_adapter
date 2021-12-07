@@ -72,7 +72,7 @@ config DRIVERS_HDF_SENSOR_PROXIMITY_APDS9960
 config DRIVERS_HDF_SENSOR_GRAVITY
     bool "Enable HDF gravity sensor driver"
     default n
-    depends on DRIVERS_HDF_SENSOR
+    depends on DRIVERS_HDF_SENSOR_ACCEL
     help
       Answer Y to enable HDF gravity sensor driver.
 config DRIVERS_HDF_SENSOR_GYRO
