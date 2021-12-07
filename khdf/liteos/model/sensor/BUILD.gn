@@ -89,6 +89,10 @@ hdf_driver(module_name) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/magnetic/magnetic_lsm303.c" ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_SENSOR_GRAVITY)) {
+    sources += [ "$FRAMEWORKS_SENSOR_ROOT/accel/sensor_gravity_driver.c" ]
+  }
+
   include_dirs = [
     "$FRAMEWORKS_SENSOR_ROOT/include",
     "$FRAMEWORKS_SENSOR_ROOT/common/include",
