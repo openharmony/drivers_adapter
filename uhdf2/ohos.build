@@ -28,7 +28,10 @@
         "//drivers/peripheral/misc/vibrator/hal:hdi_vibrator",
         "//drivers/peripheral/input/udriver:libhdf_input_hotplug",
         "//drivers/peripheral/codec/hdi_service:codec_client",
-        "//drivers/peripheral/codec/hdi_service:codec_service"
+        "//drivers/peripheral/codec/hdi_service:codec_service",
+        "//drivers/peripheral/sensor/interfaces/hdi/sensor/v1_0:sensor",
+        "//drivers/peripheral/sensor/interfaces/hdi_service:hdf_sensor_service"
+
       ],
       "test_list": [
         "//drivers/peripheral/input/test:hdf_test_input",
