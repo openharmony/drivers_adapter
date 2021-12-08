@@ -220,7 +220,7 @@ static int32_t UsbPnpNotifyAddInitInfo(struct UsbPnpDeviceInfo *deviceInfo, unio
     if (infoData.usbDev->cdesc == NULL) {
         DPRINTFN(0, "%s infoData.usbDev->cdesc=%p is NULL", __func__, infoData.usbDev->cdesc);
         ret = HDF_ERR_INVALID_PARAM;
-        goto out;
+        goto OUT;
     }
     deviceInfo->info.numInfos = infoData.usbDev->cdesc->bNumInterface;
     for (uint8_t i = 0; i < deviceInfo->info.numInfos; i++) {
@@ -228,7 +228,7 @@ static int32_t UsbPnpNotifyAddInitInfo(struct UsbPnpDeviceInfo *deviceInfo, unio
             HDF_LOGE("%s:%d interface[%d].idesc=%p is NULL",
                 __func__, __LINE__, i, infoData.usbDev->ifaces[i].idesc);
             ret = HDF_ERR_INVALID_PARAM;
-            goto out;
+            goto OUT;
         }
         deviceInfo->info.interfaceInfo[i].interfaceClass =
             infoData.usbDev->ifaces[i].idesc->bInterfaceClass;
@@ -246,7 +246,7 @@ static int32_t UsbPnpNotifyAddInitInfo(struct UsbPnpDeviceInfo *deviceInfo, unio
             deviceInfo->info.interfaceInfo[i].interfaceNumber);
     }
 
-out:
+OUT:
     return ret;
 }
 
@@ -325,7 +325,7 @@ static int32_t UsbPnpNotifyInitInfo(
     } else if (g_usbPnpNotifyCmdType == USB_PNP_NOTIFY_REPORT_INTERFACE) {
         ret = UsbPnpNotifyAddInitInfo(deviceInfo, infoData);
         if (ret != HDF_SUCCESS) {
-            goto out;
+            goto OUT;
         }
 
         data = (const void *)(&deviceInfo->info);
@@ -336,10 +336,10 @@ static int32_t UsbPnpNotifyInitInfo(
     if (!HdfSbufWriteBuffer(sbuf, data, sizeof(struct UsbPnpNotifyMatchInfoTable))) {
         HDF_LOGE("%s:%d sbuf write data failed", __func__, __LINE__);
         ret = HDF_FAILURE;
-        goto out;
+        goto OUT;
     }
 
-out:
+OUT:
     return ret;
 }
 
@@ -356,10 +356,10 @@ static int32_t UsbPnpNotifySendEventLoader(struct HdfSBuf *data)
     ret = loaderService->dispatcher->Dispatch(&loaderService->object, g_usbPnpNotifyCmdType, data, NULL);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s:%d Dispatch USB_PNP_DRIVER_REGISTER_DEVICE err", __func__, __LINE__);
-        goto out;
+        goto OUT;
     }
 
-out:
+OUT:
     HdfIoServiceRecycle(loaderService);
 
     return HDF_SUCCESS;
@@ -424,13 +424,13 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
     ret = UsbPnpNotifyGetDeviceInfo(eventData, &pnpInfoData, &deviceInfo);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s:%d UsbPnpNotifyGetDeviceInfo failed, ret=%d", __func__, __LINE__, ret);
-        goto error_device_info;
+        goto ERROR_DEVICE_INFO;
     }
 
     ret = UsbPnpNotifyInitInfo(data, deviceInfo, pnpInfoData);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s:%d UsbPnpNotifyInitInfo failed, ret=%d", __func__, __LINE__, ret);
-        goto out;
+        goto OUT;
     }
 
     HDF_LOGI("%s:%d report one device information, %d usbDevAddr=0x%x, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!",
@@ -444,7 +444,7 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
         if (ret != HDF_SUCCESS) {
             OsalMutexUnlock(&deviceInfo->lock);
             HDF_LOGE("%s:%d UsbPnpNotifySendEventLoader ret=%d", __func__, __LINE__, ret);
-            goto out;
+            goto OUT;
         }
         deviceInfo->status = USB_PNP_DEVICE_ADD_STATUS;
     } else {
@@ -452,13 +452,13 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
     }
     OsalMutexUnlock(&deviceInfo->lock);
 
-out:
+OUT:
     if ((ret != HDF_SUCCESS) || (g_usbPnpNotifyCmdType == USB_PNP_NOTIFY_REMOVE_DEVICE)) {
         if (UsbPnpNotifyDestroyInfo(deviceInfo) != HDF_SUCCESS) {
             HDF_LOGE("%s:%d UsbPnpNotifyDestroyInfo fail", __func__, __LINE__);
         }
     }
-error_device_info:
+ERROR_DEVICE_INFO:
     HdfSBufRecycle(data);
     return ret;
 }
@@ -533,7 +533,7 @@ static int32_t TestPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObj
 
     if (!HdfSbufWriteBuffer(data, (const void *)(&infoTable), sizeof(struct UsbPnpNotifyMatchInfoTable))) {
         HDF_LOGE("%s: sbuf write infoTable failed", __func__);
-        goto out;
+        goto OUT;
     }
 
     HDF_LOGI("%s: report one device information, %d usbDev=0x%x, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!", \
@@ -543,13 +543,13 @@ static int32_t TestPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObj
     ret = UsbPnpNotifySendEventLoader(data);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s: UsbPnpNotifySendEventLoader error=%d", __func__, ret);
-        goto out;
+        goto OUT;
     }
 
     HdfSBufRecycle(data);
     return ret;
 
-out:
+OUT:
     HdfSBufRecycle(data);
     return HDF_FAILURE;
 }
