@@ -36,6 +36,7 @@ hdf_driver("hdf_lite") {
     "osal",
     "platform",
     "test",
+    HDF_ADAPTER_PLATFORM_PATH,
   ]
 }
 
