@@ -35,8 +35,6 @@ hdf_driver(module_name) {
 
   include_dirs = [ "//base/hiviewdfx/interfaces/kits" ]
 
-  deps = [ "//drivers/adapter/khdf/liteos/platform:hdf_platform" ]
-
   sources = []
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MMC)) {
@@ -78,6 +76,8 @@ hdf_driver(module_name) {
 config("public") {
   include_dirs = [
     "include",
+    "include/mmc",
+    "include/mtd",
     "$HDF_FRAMEWORKS_PATH/model/storage/include",
     "$HDF_FRAMEWORKS_PATH/model/storage/include/mmc",
     "$HDF_FRAMEWORKS_PATH/model/storage/include/mtd",
