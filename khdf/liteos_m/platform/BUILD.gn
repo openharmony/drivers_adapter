@@ -32,24 +32,102 @@ import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 module_switch = defined(LOSCFG_DRIVERS_HDF)
 hdf_driver("hdf_platform_lite") {
   sources = [
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_core.c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_if.c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_manager.c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c/i2c_core.c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c/i2c_if.c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/pwm/pwm_core.c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_core.c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_if.c",
+    "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_common.c",
+    "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_device.c",
+    "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_manager.c",
+    "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_queue.c",
     "plat_common.c",
   ]
+
+  include_dirs = []
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_manager.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/gpio" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2C)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c/i2c_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c/i2c_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/i2c" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_ADC)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/adc/adc_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/adc/adc_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/adc" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
+    sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/pwm/pwm_core.c" ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/pwm" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_base.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/rtc" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi/mipi_dsi_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi/mipi_dsi_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_CSI)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi/mipi_csi_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi/mipi_csi_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_SPI)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/spi/spi_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/spi/spi_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/spi" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_UART)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/uart" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2S)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s/i2s_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s/i2s_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/i2s" ]
+  }
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/watchdog/watchdog_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/watchdog/watchdog_if.c",
+    ]
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/watchdog" ]
+  }
 }
 
 config("public") {
-  include_dirs = [
-    "$HDF_FRAMEWORKS_PATH/support/platform/include/fwk",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include/gpio",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include/i2c",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include/pwm",
-    "$HDF_FRAMEWORKS_PATH/support/platform/include/uart",
-  ]
+  include_dirs = [ "$HDF_FRAMEWORKS_PATH/support/platform/include/fwk" ]
 }
