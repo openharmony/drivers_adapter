@@ -41,25 +41,33 @@ template("hdf_driver") {
 
   if (module_switch && defined(invoker.hcs_sources) &&
       !defined(invoker.sources)) {
-    hc_gen_hex("hc_gen") {
+    hc_gen_hex("${target_name}_hc_gen_hex") {
       sources = invoker.hcs_sources
     }
   }
   if (module_switch && defined(invoker.hcs_sources) &&
       defined(invoker.sources) && defined(invoker.outputs)) {
-    hc_gen_macro("hc_gen_macro") {
+    hc_gen_macro("${target_name}_hc_gen_macro") {
       sources = invoker.hcs_sources
       outputs = invoker.outputs
     }
   }
   kernel_module(target_name) {
-    forward_variables_from(invoker, "*", [ "configs" ])
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "configs",
+                             "visibility",
+                           ])
     if (defined(invoker.configs)) {
       configs += invoker.configs
     }
+    if (defined(invoker.visibility)) {
+      visibility += invoker.visibility
+    }
     if (module_switch && defined(invoker.hcs_sources) &&
         !defined(invoker.sources)) {
-      hc_gen = ":hc_gen"
+      hc_gen = ":${target_name}_hc_gen_hex"
       generated_sources = get_target_outputs(hc_gen)
       set_sources_assignment_filter([ "*.hcb" ])
       if (defined(invoker.sources)) {
@@ -76,7 +84,7 @@ template("hdf_driver") {
     }
     if (module_switch && defined(invoker.hcs_sources) &&
         defined(invoker.sources)) {
-      hc_gen_macro = ":hc_gen_macro"
+      hc_gen_macro = ":${target_name}_hc_gen_macro"
       generated_include = get_path_info(get_target_outputs(hc_gen_macro), "dir")
       if (defined(invoker.include_dirs)) {
         include_dirs += generated_include
@@ -94,4 +102,5 @@ template("hdf_driver") {
 
 set_defaults("hdf_driver") {
   configs = [ "$HDFTOPDIR:hdf_config" ]
+  visibility = [ "$HDFTOPDIR:*" ]
 }
