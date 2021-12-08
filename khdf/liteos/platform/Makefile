@@ -87,7 +87,8 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SPI), y)
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PWM), y)
-    LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/pwm/pwm_core.c
+    LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/pwm/pwm_if.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/pwm/pwm_core.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI), y)
