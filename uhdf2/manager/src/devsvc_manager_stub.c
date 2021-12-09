@@ -14,12 +14,8 @@
  */
 
 #include "devsvc_manager_stub.h"
-#include "device_token_proxy.h"
 #include "devmgr_service_stub.h"
-#include "devsvc_manager.h"
 #include "devsvc_manager_proxy.h"
-#include "hdf_base.h"
-#include "hdf_cstring.h"
 #include "hdf_log.h"
 #include "hdf_sbuf.h"
 #include "hdf_slist.h"
