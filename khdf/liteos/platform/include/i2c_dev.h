@@ -36,8 +36,8 @@
 enum I2cIoctlCmd {
     IOCTL_RETRIES      = 0x0701,
     IOCTL_TIMEOUT      = 0x0702,
-    IOCTL_SLAVE        = 0x0703,
-    IOCTL_SLAVE_FORCE  = 0x0706,
+    IOCTL_CLIENT       = 0x0703,
+    IOCTL_CLIENT_FORCE = 0x0706,
     IOCTL_TENBIT       = 0x0704,
     IOCTL_FUNCS        = 0x0705,
     IOCTL_RDWR         = 0x0707,
