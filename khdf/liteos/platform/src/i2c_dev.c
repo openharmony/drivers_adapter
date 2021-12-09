@@ -300,8 +300,8 @@ static int I2cFsIoctl(struct file *filep, int cmd, unsigned long arg)
     struct I2cClient *client = filep->f_priv;
 
     switch (cmd) {
-        case IOCTL_SLAVE_FORCE:
-        case IOCTL_SLAVE:
+        case IOCTL_CLIENT_FORCE:
+        case IOCTL_CLIENT:
             if ((((client->flags & I2C_M_TEN) == 0) && arg > 0xfe) || (arg > 0x3ff)) {
                 HDF_LOGE("%s:Not support arg(%0lu)!!!", __func__, arg);
                 retval = -EINVAL;
