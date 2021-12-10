@@ -76,10 +76,10 @@ template("hdi") {
       "$outputs_dir",
     ]
 
-    if (defined(invoker.mode_name)) {
+    if (defined(invoker.module_name)) {
       args += [
-        "--mode-name",
-        invoker.mode_name,
+        "--module-name",
+        invoker.module_name,
       ]
     }
 
