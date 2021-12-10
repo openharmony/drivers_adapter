@@ -47,6 +47,7 @@ hdf_driver(module_name) {
     "$HDF_FRAMEWORKS_PATH/core/host/src/hdf_device_token.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/hdf_driver_loader.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/hdf_observer_record.c",
+    "$HDF_FRAMEWORKS_PATH/core/host/src/hdf_power_manager.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/hdf_service_observer.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/hdf_service_subscriber.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/power_state_token.c",
@@ -74,6 +75,7 @@ hdf_driver(module_name) {
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sbuf_impl_raw.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_slist.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sref.c",
+    "$HDF_FRAMEWORKS_PATH/utils/src/hdf_task_queue.c",
   ]
 }
 
