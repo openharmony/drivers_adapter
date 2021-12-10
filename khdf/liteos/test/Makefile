@@ -42,7 +42,7 @@ LOCAL_SRCS := $(HDF_TEST_FRAMWORK_ROOT)/common/hdf_main_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/osal/osal_get_case_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/utils/hcs_parser/unittest/hcs_parser_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/utils/hcs_parser/unittest/hcs_config_test.c \
-              $(HDF_TEST_FRAMWORK_ROOT)/pm/pm_driver_test.c
+              $(HDF_TEST_FRAMWORK_ROOT)/pm/hdf_pm_driver_test.c
 
 ifeq ($(LOSCFG_DRIVERS_HDF_WIFI), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/wifi/hdf_wifi_test.c \
