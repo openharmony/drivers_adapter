@@ -29,13 +29,10 @@
  */
 
 #include "usb_pnp_manager.h"
-#include "devsvc_manager_clnt.h"
 #include "hdf_base.h"
 #include "hdf_device_desc.h"
 #include "hdf_io_service_if.h"
 #include "hdf_log.h"
-#include "osal_mem.h"
-#include "securec.h"
 #include "usb_ddk_pnp_loader.h"
 
 #define HDF_LOG_TAG usb_pnp_manager

@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <los_queue.h>
 #include <osal_thread.h>
+#include "osal_file.h"
 #include "osal_mem.h"
 #include "osal_mutex.h"
 #include "osal_time.h"
@@ -288,10 +289,10 @@ static void UsbPnpNotifyAddInterfaceInitInfo(struct UsbPnpDeviceInfo *deviceInfo
             j++;
 
             HDF_LOGI("%s:%d i=%d, j=%d, interfaceInfo=0x%x-0x%x-0x%x-0x%x",
-                __func__, __LINE__, i, j-1, infoTable->interfaceInfo[j-1].interfaceClass,
-                infoTable->interfaceInfo[j-1].interfaceSubClass,
-                infoTable->interfaceInfo[j-1].interfaceProtocol,
-                infoTable->interfaceInfo[j-1].interfaceNumber);
+                __func__, __LINE__, i, j - 1, infoTable->interfaceInfo[j - 1].interfaceClass,
+                infoTable->interfaceInfo[j - 1].interfaceSubClass,
+                infoTable->interfaceInfo[j - 1].interfaceProtocol,
+                infoTable->interfaceInfo[j - 1].interfaceNumber);
         }
         infoTable->numInfos = j;
     }
@@ -845,7 +846,7 @@ static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfDeviceObject *device, 
         return HDF_FAILURE;
     }
 
-    int ret = HDF_FAILURE;
+    int ret;
     struct HdfDeviceObject *devObj = HdfDeviceObjectAlloc(device, moduleName);
     if (devObj == NULL) {
         HDF_LOGE("%s: failed to alloc device object", __func__);
@@ -859,7 +860,8 @@ static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfDeviceObject *device, 
         return ret;
     }
 
-    ret = HdfDeviceObjectPublishService(devObj, serviceName, SERVICE_POLICY_CAPACITY, 0664);
+    ret = HdfDeviceObjectPublishService(devObj, serviceName, SERVICE_POLICY_CAPACITY,
+        OSAL_S_IREAD | OSAL_S_IWRITE | OSAL_S_IRGRP | OSAL_S_IWGRP | OSAL_S_IROTH);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s: failed to regitst device %s", __func__, serviceName);
         HdfDeviceObjectRelease(devObj);
