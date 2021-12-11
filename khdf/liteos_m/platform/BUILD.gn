@@ -46,7 +46,6 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_if.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/gpio/gpio_manager.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/gpio" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2C)) {
@@ -54,7 +53,6 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c/i2c_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c/i2c_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/i2c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_ADC)) {
@@ -62,12 +60,10 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/adc/adc_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/adc/adc_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/adc" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
     sources += [ "$HDF_FRAMEWORKS_PATH/support/platform/src/pwm/pwm_core.c" ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/pwm" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
@@ -76,7 +72,6 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/rtc" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI)) {
@@ -84,7 +79,6 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi/mipi_dsi_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi/mipi_dsi_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_CSI)) {
@@ -92,7 +86,6 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi/mipi_csi_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/mipi/mipi_csi_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_SPI)) {
@@ -100,7 +93,6 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/spi/spi_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/spi/spi_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/spi" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_UART)) {
@@ -108,7 +100,6 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/uart" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2S)) {
@@ -116,7 +107,6 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s/i2s_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/i2s/i2s_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/i2s" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG)) {
@@ -124,10 +114,42 @@ hdf_driver("hdf_platform_lite") {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/watchdog/watchdog_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/watchdog/watchdog_if.c",
     ]
-    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/watchdog" ]
   }
 }
 
 config("public") {
   include_dirs = [ "$HDF_FRAMEWORKS_PATH/support/platform/include/fwk" ]
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/gpio" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2C)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/i2c" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_ADC)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/adc" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/pwm" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/rtc" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_CSI)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_SPI)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/spi" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_UART)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/uart" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2S)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/i2s" ]
+  }
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG)) {
+    include_dirs += [ "$HDF_FRAMEWORKS_PATH/support/platform/include/watchdog" ]
+  }
 }
