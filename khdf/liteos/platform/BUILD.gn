@@ -128,6 +128,14 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PCIE)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/pcie/pcie_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/pcie/pcie_dispatch.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/pcie/pcie_if.c",
+    ]
+  }
+
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_base.c",
@@ -197,6 +205,7 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/support/platform/include/i2s",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/i3c",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/mipi",
+    "$HDF_FRAMEWORKS_PATH/support/platform/include/pcie",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/pwm",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/pin",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/rtc",

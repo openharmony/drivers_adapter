@@ -110,6 +110,13 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI), y)
     $(HDF_FRAMEWORKS)/support/platform/src/hdmi/hdmi_scdc.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PCIE), y)
+    LOCAL_SRCS += \
+    $(HDF_FRAMEWORKS)/support/platform/src/pcie/pcie_core.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/pcie/pcie_dispatch.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/pcie/pcie_if.c
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_RTC), y)
     LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/rtc/rtc_if.c \
     $(HDF_FRAMEWORKS)/support/platform/src/rtc/rtc_core.c \

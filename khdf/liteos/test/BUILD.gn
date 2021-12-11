@@ -207,6 +207,14 @@ hdf_driver(module_name) {
       ]
     }
 
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PCIE)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/pcie_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_pcie_entry_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/virtual/pcie_virtual.c",
+      ]
+    }
+
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
       sources += [
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/pwm_test.c",
