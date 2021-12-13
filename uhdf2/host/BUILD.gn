@@ -57,6 +57,7 @@ ohos_shared_library("libhdf_host") {
     "$hdf_framework_path/core/host/src/hdf_device_object.c",
     "$hdf_framework_path/core/host/src/hdf_device_token.c",
     "$hdf_framework_path/core/host/src/hdf_observer_record.c",
+    "$hdf_framework_path/core/host/src/hdf_power_manager.c",
     "$hdf_framework_path/core/host/src/hdf_service_observer.c",
     "$hdf_framework_path/core/host/src/hdf_service_subscriber.c",
     "$hdf_framework_path/core/host/src/power_state_token.c",
@@ -64,6 +65,7 @@ ohos_shared_library("libhdf_host") {
     "$hdf_framework_path/core/shared/src/hdf_device_info.c",
     "$hdf_framework_path/core/shared/src/hdf_object_manager.c",
     "$hdf_framework_path/core/shared/src/hdf_service_record.c",
+    "$hdf_framework_path/utils/src/hdf_task_queue.c",
     "$hdf_uhdf_path/host/src/devhost_object_config.c",
     "$hdf_uhdf_path/host/src/devhost_service_full.c",
     "$hdf_uhdf_path/host/src/devhost_service_stub.c",
@@ -74,6 +76,7 @@ ohos_shared_library("libhdf_host") {
     "$hdf_uhdf_path/host/src/driver_loader_full.c",
     "$hdf_uhdf_path/host/src/hdf_device_thread.c",
     "$hdf_uhdf_path/host/src/hdf_devsvc_manager_clnt.c",
+    "$hdf_uhdf_path/host/src/hdf_pm_reg.c",
     "$hdf_uhdf_path/shared/src/dev_attribute_serialize.c",
     "$hdf_uhdf_path/shared/src/hcb_config_entry.c",
   ]

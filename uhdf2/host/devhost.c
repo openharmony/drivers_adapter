@@ -23,6 +23,7 @@
 #include "devhost_service_full.h"
 #include "hdf_cstring.h"
 #include "hdf_log.h"
+#include "hdf_power_manager.h"
 #include "securec.h"
 
 #define HDF_LOG_TAG hdf_device_host
@@ -87,6 +88,7 @@ int main(int argc, char **argv)
         DevHostServiceFreeInstance(instance);
         return status;
     }
+    HdfPowerManagerInit();
     struct DevHostServiceFull *fullService = (struct DevHostServiceFull*)instance;
     struct HdfMessageLooper *looper = &fullService->looper;
     if ((looper != NULL) && (looper->Start != NULL)) {
@@ -94,6 +96,8 @@ int main(int argc, char **argv)
     }
 
     DevHostServiceFreeInstance(instance);
+    HdfPowerManagerExit();
+
     return status;
 }
 
