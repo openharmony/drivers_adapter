@@ -48,6 +48,7 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/utils/src/hdf_sref.c \
               $(HDF_FRAMEWORKS)/utils/src/hdf_sbuf.c \
               $(HDF_FRAMEWORKS)/utils/src/hdf_sbuf_impl_raw.c \
+              $(HDF_FRAMEWORKS)/utils/src/hdf_task_queue.c \
               ./osal/src/osal_mem.c \
               ./osal/src/osal_mutex.c \
               ./osal/src/osal_sem.c \
@@ -62,6 +63,7 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/core/host/src/hdf_observer_record.c \
               $(HDF_FRAMEWORKS)/core/host/src/hdf_service_subscriber.c \
               $(HDF_FRAMEWORKS)/core/host/src/hdf_device_object.c \
+              $(HDF_FRAMEWORKS)/core/host/src/hdf_power_manager.c \
               $(HDF_FRAMEWORKS)/core/host/src/hdf_service_observer.c \
               $(HDF_FRAMEWORKS)/core/host/src/power_state_token.c \
               $(HDF_FRAMEWORKS)/core/manager/src/devhost_service_clnt.c \

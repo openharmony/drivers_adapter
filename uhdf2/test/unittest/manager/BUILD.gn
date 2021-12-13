@@ -120,3 +120,34 @@ ohos_unittest("hdf_adapter_uhdf_test_sbuf") {
     external_deps = [ "hilog:libhilog" ]
   }
 }
+module_output_path = "hdf/pm"
+ohos_unittest("hdf_adapter_uhdf_test_pm") {
+  module_out_path = module_output_path
+  include_dirs = [
+    "//drivers/framework/core/shared/include",
+    "//drivers/framework/test/unittest/include",
+    "//drivers/framework/test/unittest/pm",
+  ]
+
+  defines = [ "__USER__" ]
+  sources = [
+    "//drivers/framework/core/manager/test/unittest/common/hdf_pm_test.cpp",
+  ]
+  deps = [
+    "//drivers/adapter/uhdf2/utils:libhdf_utils",
+    "//utils/native/base:utils",
+  ]
+  cflags = [
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fsigned-char",
+    "-fno-common",
+    "-fno-strict-aliasing",
+  ]
+  if (is_standard_system) {
+    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  } else {
+    external_deps = [ "hilog:libhilog" ]
+  }
+}
