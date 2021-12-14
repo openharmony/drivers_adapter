@@ -82,12 +82,12 @@ static void UartRxHandler(enum HAL_UART_ID_T id, union HAL_UART_IRQ_T status)
     int32_t ret;
 
     if (status.TX) {
-        ret = OsalSemPost(&g_uartCtx[id].tx_sem);
+        ret = OsalSemPost(&g_uartCtx[id].txSem);
         ASSERT(ret == HDF_SUCCESS, "%s: Failed to release write_sem: %d", __func__, ret);
     }
 
     if (status.RX || status.RT) {
-        ret = OsalSemPost(&g_uartCtx[id].rx_sem);
+        ret = OsalSemPost(&g_uartCtx[id].rxSem);
         ASSERT(ret == HDF_SUCCESS, "%s: Failed to release read_sem: %d", __func__, ret);
     }
 }
@@ -104,13 +104,13 @@ static void UartDmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IRQ
     }
 
     memset_s(g_uartCtx[uartid].buffer, UART_DMA_RING_BUFFER_SIZE, 0, UART_DMA_RING_BUFFER_SIZE);
-    OsalSemPost(&g_uartCtx[uartid].rx_sem);
+    OsalSemPost(&g_uartCtx[uartid].rxSem);
     HalUartRxStart(uartid);
 }
 
 static void UartDmaTxHandler(uint32_t xferSize, int dmaError)
 {
-    OsalSemPost(&g_uartCtx[0].tx_sem);
+    OsalSemPost(&g_uartCtx[0].txSem);
 }
 
 static void Uart1DmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IRQ_T status)
@@ -123,13 +123,13 @@ static void Uart1DmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IR
         return;
     }
     memset_s(g_uartCtx[uartid].buffer, UART_DMA_RING_BUFFER_SIZE, 0, UART_DMA_RING_BUFFER_SIZE);
-    OsalSemPost(&g_uartCtx[uartid].rx_sem);
+    OsalSemPost(&g_uartCtx[uartid].rxSem);
     HalUartRxStart(uartid);
 }
 
 static void Uart1DmaTxHandler(uint32_t xferSize, int dmaError)
 {
-    OsalSemPost(&g_uartCtx[HAL_UART_ID_1].tx_sem);
+    OsalSemPost(&g_uartCtx[HAL_UART_ID_1].txSem);
 }
 
 /* uart2 */
@@ -144,13 +144,13 @@ static void Uart2DmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IR
     }
 
     memset_s(g_uartCtx[uartid].buffer, UART_DMA_RING_BUFFER_SIZE, 0, UART_DMA_RING_BUFFER_SIZE);
-    OsalSemPost(&g_uartCtx[uartid].rx_sem);
+    OsalSemPost(&g_uartCtx[uartid].rxSem);
     HalUartRxStart(uartid);
 }
 
 static void Uart2DmaTxHandler(uint32_t xferSize, int dmaError)
 {
-    OsalSemPost(&g_uartCtx[HAL_UART_ID_2].tx_sem);
+    OsalSemPost(&g_uartCtx[HAL_UART_ID_2].txSem);
 }
 
 static void HalUartStartRx(uint32_t uartId)
@@ -181,7 +181,7 @@ static int32_t HalUartSend(uint32_t uartId, const void *data, uint32_t size, uin
     }
 
     hal_uart_dma_send(uartId, data, size, &dmaSescTx, &descCnt);
-    OsalSemWait(&g_uartCtx[uartId].tx_sem, timeOut);
+    OsalSemWait(&g_uartCtx[uartId].txSem, timeOut);
 
     return HDF_SUCCESS;
 }
@@ -218,7 +218,7 @@ static int32_t HalUartRecv(uint8_t uartId, void *data, uint32_t expectSize,
             break;
         }
         /* if reaches here, it means need to wait for more data come */
-        OsalSemWait(&g_uartCtx[uartId].rx_sem, timeOut);
+        OsalSemWait(&g_uartCtx[uartId].rxSem, timeOut);
         /* time out break */
         nowTime = TICKS_TO_MS(hal_sys_timer_get());
         if ((uint32_t)(nowTime - beginTime) >= timeOut) {
@@ -243,20 +243,20 @@ static void HalUartHandlerInit(struct UartDevice *device)
     uartId = device->uartId;
     HDF_LOGI("%s %ld\r\n", __func__, uartId);
     if (uartId == HAL_UART_ID_0) {
-        g_uartCtx[uartId].uartDmaRxHandler = UartDmaRxHandler;
-        g_uartCtx[uartId].uartDmaTxHandler = UartDmaTxHandler;
+        g_uartCtx[uartId].UartDmaRxHandler = UartDmaRxHandler;
+        g_uartCtx[uartId].UartDmaTxHandler = UartDmaTxHandler;
         g_uartCtx[uartId].buffer = g_halUartBuf;
     }
 
     if (uartId == HAL_UART_ID_1) {
-        g_uartCtx[uartId].uartDmaRxHandler = Uart1DmaRxHandler;
-        g_uartCtx[uartId].uartDmaTxHandler = Uart1DmaTxHandler;
+        g_uartCtx[uartId].UartDmaRxHandler = Uart1DmaRxHandler;
+        g_uartCtx[uartId].UartDmaTxHandler = Uart1DmaTxHandler;
         g_uartCtx[uartId].buffer = g_halUart1Buf;
     }
 
     if (uartId == HAL_UART_ID_2) {
-        g_uartCtx[uartId].uartDmaRxHandler = Uart2DmaRxHandler;
-        g_uartCtx[uartId].uartDmaTxHandler = Uart2DmaTxHandler;
+        g_uartCtx[uartId].UartDmaRxHandler = Uart2DmaRxHandler;
+        g_uartCtx[uartId].UartDmaTxHandler = Uart2DmaTxHandler;
         g_uartCtx[uartId].buffer = g_halUart2Buf;
     }
 
@@ -269,12 +269,12 @@ static void HalUartHandlerInit(struct UartDevice *device)
         kfifo_init(&g_uartCtx[uartId].fifo, g_uartKfifoBuffer[uartId], UART_FIFO_MAX_BUFFER);
     }
 
-    OsalSemInit(&g_uartCtx[uartId].rx_sem, 0);
-    OsalSemInit(&g_uartCtx[uartId].tx_sem, 0);
+    OsalSemInit(&g_uartCtx[uartId].rxSem, 0);
+    OsalSemInit(&g_uartCtx[uartId].txSem, 0);
 
     if (g_uartCtx[uartId].rxDMA) {
         HDF_LOGE("uart %ld start dma rx\r\n", uartId);
-        hal_uart_irq_set_dma_handler(uartId, g_uartCtx[uartId].uartDmaRxHandler, g_uartCtx[uartId].uartDmaTxHandler);
+        hal_uart_irq_set_dma_handler(uartId, g_uartCtx[uartId].UartDmaRxHandler, g_uartCtx[uartId].UartDmaTxHandler);
         HalUartRxStart(uartId);
     } else {
         HalUartStartRx(uartId);
@@ -285,15 +285,15 @@ static void UartStart(struct UartDevice *device)
 {
     uint32_t uartId;
     struct HAL_UART_CFG_T *uartCfg = NULL;
-    if (device == NULL || device->config == NULL) {
+    if (device == NULL) {
         HDF_LOGE("%s: INVALID PARAM", __func__);
-        return HDF_ERR_INVALID_PARAM;
+        return;
     }
-    uartId = device->uart_id;
+    uartId = device->uartId;
     uartCfg = &device->config;
     if (uartCfg == NULL) {
         HDF_LOGE("%s: INVALID OBJECT", __func__);
-        return HDF_ERR_INVALID_OBJECT;
+        return;
     }
     hal_uart_open(uartId, uartCfg);
     HDF_LOGI("%s %ld\r\n", __FUNCTION__, uartId);
@@ -367,26 +367,26 @@ static int InitUartDevice(struct UartHost *host)
         HDF_LOGE("%s: INVALID OBJECT", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
-    uartDevice->uart_id = resource->num;
+    uartDevice->uartId = resource->num;
     uartCfg->parity = resource->parity;
     uartCfg->stop = resource->stopBit;
-    uartCfg->data = resource->wlen;
+    uartCfg->data = resource->wLen;
     uartCfg->flow = HAL_UART_FLOW_CONTROL_NONE;
     uartCfg->tx_level = HAL_UART_FIFO_LEVEL_1_2;
     uartCfg->rx_level = HAL_UART_FIFO_LEVEL_1_2;
-    uartCfg->baud = resource->baudrate;
+    uartCfg->baud = resource->baudRate;
     uartCfg->dma_rx_stop_on_err = false;
     uartCfg->dma_rx = resource->rxDMA;
     uartCfg->dma_tx = resource->txDMA;
 
-    g_uartCtx[uartDevice->uart_id].txDMA = resource->txDMA;
-    g_uartCtx[uartDevice->uart_id].rxDMA = resource->rxDMA;
+    g_uartCtx[uartDevice->uartId].txDMA = resource->txDMA;
+    g_uartCtx[uartDevice->uartId].rxDMA = resource->rxDMA;
 
-    if (!uartDevice->init_flag) {
-        HDF_LOGE("uart %ld device init\r\n", uartDevice->uart_id);
-        HalSetUartIomux(uartDevice->uart_id);
+    if (!uartDevice->initFlag) {
+        HDF_LOGE("uart %ld device init\r\n", uartDevice->uartId);
+        HalSetUartIomux(uartDevice->uartId);
         UartStart(uartDevice);
-        uartDevice->init_flag = true;
+        uartDevice->initFlag = true;
     }
 
     return HDF_SUCCESS;
@@ -416,7 +416,7 @@ static uint32_t GetUartDeviceResource(
         HDF_LOGE("uart config read num fail");
         return HDF_FAILURE;
     }
-    if (dri->GetUint32(resourceNode, "baudrate", &resource->baudrate, 0) != HDF_SUCCESS) {
+    if (dri->GetUint32(resourceNode, "baudrate", &resource->baudRate, 0) != HDF_SUCCESS) {
         HDF_LOGE("uart config read baudrate fail");
         return HDF_FAILURE;
     }
@@ -428,7 +428,7 @@ static uint32_t GetUartDeviceResource(
         HDF_LOGE("uart config read stopBit fail");
         return HDF_FAILURE;
     }
-    if (dri->GetUint32(resourceNode, "data", &resource->wlen, 0) != HDF_SUCCESS) {
+    if (dri->GetUint32(resourceNode, "data", &resource->wLen, 0) != HDF_SUCCESS) {
         HDF_LOGE("uart config read data fail");
         return HDF_FAILURE;
     }
@@ -437,11 +437,11 @@ static uint32_t GetUartDeviceResource(
     resource->rxDMA = dri->GetBool(resourceNode, "rxDMA");
 
     // copy config
-    device->uart_id = resource->num;
-    device->config.baud = resource->baudrate;
+    device->uartId = resource->num;
+    device->config.baud = resource->baudRate;
     device->config.parity = resource->parity;
     device->config.stop = resource->stopBit;
-    device->config.data = resource->wlen;
+    device->config.data = resource->wLen;
     device->config.dma_rx = resource->rxDMA;
     device->config.dma_tx = resource->txDMA;
     return HDF_SUCCESS;
@@ -515,11 +515,11 @@ static void UartDriverRelease(struct HdfDeviceObject *device)
         HDF_LOGE("%s: INVALID OBJECT", __func__);
         return;
     }
-    uartId = uartDevice->uart_id;
+    uartId = uartDevice->uartId;
     host->method = NULL;
 
-    OsalSemDestroy(&g_uartCtx[uartId].rx_sem);
-    OsalSemDestroy(&g_uartCtx[uartId].tx_sem);
+    OsalSemDestroy(&g_uartCtx[uartId].rxSem);
+    OsalSemDestroy(&g_uartCtx[uartId].txSem);
     OsalMemFree(uartDevice);
     if (host == NULL) {
         return;
@@ -582,8 +582,8 @@ static int32_t UartHostDevDeinit(struct UartHost *host)
         HDF_LOGE("%s: INVALID OBJECT", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
-    uartId = uartDevice->uart_id;
-    uartDevice->init_flag = false;
+    uartId = uartDevice->uartId;
+    uartDevice->initFlag = false;
 
     hal_uart_close(uartId);
 
@@ -611,7 +611,7 @@ static int32_t UartHostDevWrite(struct UartHost *host, uint8_t *data, uint32_t s
         HalUartSend(portId, data, size, HDF_UART_TMO);
     } else {
         for (uint32_t idx = 0; idx < size; idx++) {
-            if (!g_uartCtx[portId].isblock) {
+            if (g_uartCtx[portId].isBlock) {
                 hal_uart_blocked_putc(portId, data[idx]);
             } else {
                 hal_uart_putc(portId, data[idx]);
@@ -648,7 +648,7 @@ static int32_t UartHostDevRead(struct UartHost *host, uint8_t *data, uint32_t si
         }
         ret = recvSize;
     } else {
-        if (!g_uartCtx[uartId].isblock) {
+        if (g_uartCtx[uartId].isBlock) {
             data[0] = hal_uart_blocked_getc(uartId);
         } else {
             data[0] = hal_uart_getc(uartId);
@@ -871,23 +871,28 @@ static int32_t UartHostDevSetTransMode(struct UartHost *host, enum UartTransMode
     }
     uartId = uartDevice->uartId;
 
-    if ((UART_MODE_RD_BLOCK & mode) == 0) {
-        g_uartCtx[uartId].isblock = UART_MODE_RD_BLOCK;
-    } else {
-        g_uartCtx[uartId].isblock = UART_MODE_RD_NONBLOCK;
+    switch (mode) {
+        case UART_MODE_RD_BLOCK:
+            g_uartCtx[uartId].isBlock = true;
+            break;
+        case UART_MODE_RD_NONBLOCK:
+            g_uartCtx[uartId].isBlock = false;
+            break;
+        case UART_MODE_DMA_RX_EN:
+            g_uartCtx[uartId].rxDMA = true;
+            break;
+        case UART_MODE_DMA_RX_DIS:
+            g_uartCtx[uartId].rxDMA = false;
+            break;
+        case UART_MODE_DMA_TX_EN:
+            g_uartCtx[uartId].txDMA = true;
+            break;
+        case UART_MODE_DMA_TX_DIS:
+            g_uartCtx[uartId].txDMA = false;
+            break;     
+        default:
+            HDF_LOGE("%s: UartTransMode(%d) invalid", __func__, mode);
+            break;
     }
-
-    if ((UART_MODE_DMA_RX_EN & mode) == 0) {
-        g_uartCtx[uartId].rxDMA = UART_MODE_DMA_RX_EN;
-    } else {
-        g_uartCtx[uartId].rxDMA = UART_MODE_DMA_RX_DIS;
-    }
-
-    if ((UART_MODE_DMA_TX_EN & mode) == 0) {
-        g_uartCtx[uartId].txDMA = UART_MODE_DMA_TX_EN;
-    } else {
-        g_uartCtx[uartId].txDMA = UART_MODE_DMA_TX_DIS;
-    }
-
     return HDF_SUCCESS;
 }
