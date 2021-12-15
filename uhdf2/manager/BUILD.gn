@@ -55,6 +55,7 @@ ohos_executable("hdf_devmgr") {
     "src/devmgr_service_stub.c",
     "src/devsvc_manager_stub.c",
     "src/driver_installer_full.c",
+    "src/servstat_listener_holder.c",
   ]
 
   deps = [

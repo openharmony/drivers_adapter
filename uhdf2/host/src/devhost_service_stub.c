@@ -54,6 +54,7 @@ static int DevHostServiceStubDispatch(
                 HDF_LOGE("Dispatch failed, attribute is null");
                 break;
             }
+            HDF_LOGI("add device 0x%{public}x", attribute->deviceId);
             ret = serviceIf->AddDevice(serviceIf, attribute);
             if (ret != HDF_SUCCESS) {
                 HDF_LOGE("Dispatch failed, add service failed and ret is %{public}d", ret);
@@ -71,6 +72,7 @@ static int DevHostServiceStubDispatch(
                 break;
             }
 
+            HDF_LOGI("del device 0x%{public}x", deviceId);
             ret = serviceIf->DelDevice(serviceIf, deviceId);
             if (ret != HDF_SUCCESS) {
                 HDF_LOGE("del service failed, ret is %{public}d", ret);

@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-#include "devmgr_hdi.h"
 #include <securec.h>
 /*
  * The "devmgr_service_stub.h" header file should be used. Actually, only the interface ID definition and service name
@@ -25,6 +24,7 @@
 #include <hdf_remote_service.h>
 #include <osal_mem.h>
 #include <servmgr_hdi.h>
+#include "devmgr_hdi.h"
 
 #define HDF_LOG_TAG devmgr_interface
 
@@ -102,12 +102,12 @@ static int32_t DevmgrQueryDeviceInfo(struct HDIDeviceManager *iDevMgr, struct De
     ret = DeviceManagerHdiCall(iDevMgr, DEVMGR_SERVICE_QUERY_DEVICE, data, reply);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("DevmgrProxyQueryDevice failed");
-        goto finished;
+        goto FINISHED;
     }
 
     ret = HdfObtainDeviceInfo(list, reply);
 
-finished:
+FINISHED:
     HdfSBufRecycle(reply);
     HdfSBufRecycle(data);
 

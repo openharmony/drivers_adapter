@@ -78,7 +78,8 @@ int DeviceServiceStubPublishService(struct HdfDeviceNode *service)
             break;
         }
 
-        status = DevSvcManagerClntAddService(service->servName, &fullService->super.deviceObject);
+        status = DevSvcManagerClntAddService(service->servName, service->deviceObject.deviceClass,
+            &fullService->super.deviceObject, service->servInfo);
         if (status != HDF_SUCCESS) {
             break;
         }

@@ -70,6 +70,8 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/core/manager/src/device_token_clnt.c \
               $(HDF_FRAMEWORKS)/core/manager/src/devmgr_service.c \
               $(HDF_FRAMEWORKS)/core/manager/src/devsvc_manager.c \
+              $(HDF_FRAMEWORKS)/core/manager/src/devsvc_manager_ext.c, \
+              $(HDF_FRAMEWORKS)/core/manager/src/servstat_listener_holder.c, \
               $(HDF_FRAMEWORKS)/core/manager/src/hdf_driver_installer.c \
               $(HDF_FRAMEWORKS)/core/manager/src/hdf_host_info.c \
               $(HDF_FRAMEWORKS)/core/manager/src/power_state_token_clnt.c \
@@ -78,6 +80,7 @@ LOCAL_SRCS := ./osal/src/osal_timer.c  \
               $(HDF_FRAMEWORKS)/core/shared/src/hdf_device_info.c \
               $(HDF_FRAMEWORKS)/core/shared/src/hdf_object_manager.c \
               $(HDF_FRAMEWORKS)/core/shared/src/hdf_io_service.c \
+              $(HDF_FRAMEWORKS)/core/shared/src/service_status.c \
               $(HDF_FRAMEWORKS)/core/adapter/vnode/src/hdf_vnode_adapter.c \
               $(HDF_FRAMEWORKS)/core/common/src/devlite_object_config.c \
               $(HDF_FRAMEWORKS)/core/common/src/hdf_attribute.c \

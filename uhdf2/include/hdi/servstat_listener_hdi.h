@@ -12,27 +12,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef HDI_SERVICE_MANAGER_INF_H
-#define HDI_SERVICE_MANAGER_INF_H
+#ifndef HDI_SERVICE_STATUS_LISTENER_INF_H
+#define HDI_SERVICE_STATUS_LISTENER_INF_H
 
-#include "hdf_remote_service.h"
-#include "servstat_listener_hdi.h"
+/*
+ * Copyright (c) 2021 Huawei Device Co., Ltd.
+ *
+ * HDF is dual licensed: you can use it either under the terms of
+ * the GPL, or the BSD license, at your option.
+ * See the LICENSE file in the root of this repository for complete details.
+ */
+#ifndef HDF_HDI_SERVICE_STATUS_H
+#define HDF_HDI_SERVICE_STATUS_H
+
+#include "hdf_types.h"
+#include "hdf_service_status.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-struct HDIServiceManager {
-    struct HdfRemoteService *(*GetService)(struct HDIServiceManager *self, const char* serviceName);
-    int32_t (*RegisterServiceStatusListener)(struct HDIServiceManager *self,
-        struct ServiceStatusListener *listener, uint16_t deviceClass);
-    int32_t (*UnregisterServiceStatusListener)(struct HDIServiceManager *self, struct ServiceStatusListener *listener);
-};
-
-struct HDIServiceManager *HDIServiceManagerGet(void);
-void HDIServiceManagerRelease(struct HDIServiceManager *servmgr);
+struct ServiceStatusListener *HdiServiceStatusListenerNewInstance(void);
+void HdiServiceStatusListenerFree(struct ServiceStatusListener *listener);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* HDI_SERVICE_MANAGER_INF_H */
+#endif /* HDF_HDI_SERVICE_STATUS_H */
+
+#endif /* HDI_SERVICE_STATUS_LISTENER_INF_H */

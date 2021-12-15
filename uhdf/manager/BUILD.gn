@@ -20,6 +20,9 @@ shared_library("hdf_core") {
     "$HDF_FRAMEWORKS/core/adapter/syscall/src/hdf_devmgr_adapter.c",
     "$HDF_FRAMEWORKS/core/adapter/syscall/src/hdf_syscall_adapter.c",
     "$HDF_FRAMEWORKS/core/shared/src/hdf_io_service.c",
+    "$HDF_FRAMEWORKS/core/shared/src/ioserstat_listener.c",
+    "$HDF_FRAMEWORKS/core/shared/src/service_status.c",
+    "$HDF_FRAMEWORKS/core/shared/src/svcmgr_ioservice.c",
     "$HDF_FRAMEWORKS/utils/src/hdf_sbuf.c",
     "$HDF_FRAMEWORKS/utils/src/hdf_sbuf_impl_raw.c",
   ]
