@@ -36,7 +36,7 @@ int main()
 
     if (status == HDF_SUCCESS) {
         struct DevmgrServiceFull *fullService = (struct DevmgrServiceFull *)instance;
-        struct HdfMessageLooper *looper =  &fullService->looper;
+        struct HdfMessageLooper *looper = &fullService->looper;
         if ((looper != NULL) && (looper->Start != NULL)) {
             looper->Start(looper);
         }

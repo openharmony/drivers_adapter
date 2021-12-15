@@ -98,7 +98,7 @@ int32_t SampleServiceUnregisterDevice(struct HdfDeviceObject *device, const char
 {
     struct SampleDevice *sampleDev = NULL;
     struct SampleDevice *sampleDevTmp = NULL;
-
+    HDF_LOGI("remove device %{public}s in", servName);
     DLIST_FOR_EACH_ENTRY_SAFE(sampleDev, sampleDevTmp, &g_sampleDeviceList, struct SampleDevice, listNode) {
         if (sampleDev->devobj == NULL || HdfDeviceGetServiceName(sampleDev->devobj) == NULL) {
             DListRemove(&sampleDev->listNode);
@@ -117,12 +117,22 @@ int32_t SampleServiceUnregisterDevice(struct HdfDeviceObject *device, const char
     return HDF_SUCCESS;
 }
 
+int32_t SampleServiceUpdateDevice(struct HdfDeviceObject *device, const char *servInfo)
+{
+    if (HdfDeviceObjectSetServInfo(device, servInfo) != HDF_SUCCESS) {
+        HDF_LOGE("failed to set service info");
+        return HDF_FAILURE;
+    }
+    return HdfDeviceObjectUpdate(device);
+}
+
 static const struct SampleHdi g_sampleHdiImpl = {
     .ping = SampleServicePing,
     .sum = SampleServiceSum,
     .callback = SampleServiceCallback,
     .registerDevice = SampleServiceRegisterDevice,
     .unregisterDevice = SampleServiceUnregisterDevice,
+    .updateService = SampleServiceUpdateDevice,
 };
 
 const struct SampleHdi *SampleHdiImplInstance()

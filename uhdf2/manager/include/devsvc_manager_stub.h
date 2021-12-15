@@ -26,6 +26,7 @@ struct DevSvcManagerStub {
     struct DevSvcManager super;
     struct HdfRemoteService *remote;
     struct HdfDeathRecipient recipient;
+    bool started;
 };
 
 struct HdfObject *DevSvcManagerStubCreate(void);

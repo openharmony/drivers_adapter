@@ -14,22 +14,30 @@
  */
 
 #include <iservice_registry.h>
+#include <iremote_stub.h>
 #include <string_ex.h>
+#include <hdf_base.h>
+#include <hdf_log.h>
 #include "iservmgr_hdi.h"
-#include "hdf_log.h"
 
 namespace OHOS {
 namespace HDI {
 namespace ServiceManager {
 namespace V1_0 {
 constexpr int DEVICE_SERVICE_MANAGER_SA_ID = 5100;
-constexpr int DEVSVC_MANAGER_GET_SERVICE = 2;
+constexpr int DEVSVC_MANAGER_GET_SERVICE = 3;
+constexpr int DEVSVC_MANAGER_REGISER_SVCLISTENER = 4;
+constexpr int DEVSVC_MANAGER_UNREGISER_SVCLISTENER = 5;
 
 class ServiceManagerProxy : public IRemoteProxy<IServiceManager> {
 public:
     explicit ServiceManagerProxy(const sptr<IRemoteObject>& impl) : IRemoteProxy<IServiceManager>(impl) {}
     ~ServiceManagerProxy() {}
+
     virtual sptr<IRemoteObject> GetService(const char* serviceName) override;
+    virtual int32_t RegisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener,
+        uint16_t deviceClass) override;
+    virtual int32_t UnregisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener) override;
 private:
     static inline BrokerDelegator<ServiceManagerProxy> delegator_;
 };
@@ -50,6 +58,42 @@ sptr<IServiceManager> IServiceManager::Get()
     return nullptr;
 }
 
+int32_t ServiceManagerProxy::RegisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener,
+    uint16_t deviceClass)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!data.WriteUint16(deviceClass) ||
+        !data.WriteRemoteObject(listener->AsObject())) {
+        return HDF_FAILURE;
+    }
+
+    int status = Remote()->SendRequest(DEVSVC_MANAGER_REGISER_SVCLISTENER, data, reply, option);
+    if (status) {
+        HDF_LOGE("failed to register servstat listener, %{public}d", status);
+    }
+    return status;
+}
+
+int32_t ServiceManagerProxy::UnregisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!data.WriteRemoteObject(listener->AsObject())) {
+        return HDF_FAILURE;
+    }
+
+    int status = Remote()->SendRequest(DEVSVC_MANAGER_UNREGISER_SVCLISTENER, data, reply, option);
+    if (status) {
+        HDF_LOGE("failed to unregister servstat listener, %{public}d", status);
+    }
+    return status;
+}
+
 sptr<IRemoteObject> ServiceManagerProxy::GetService(const char* serviceName)
 {
     MessageParcel data;
@@ -61,10 +105,10 @@ sptr<IRemoteObject> ServiceManagerProxy::GetService(const char* serviceName)
     MessageOption option;
     int status = Remote()->SendRequest(DEVSVC_MANAGER_GET_SERVICE, data, reply, option);
     if (status) {
-        HDF_LOGE("get hdi service call failed, %{public}d", status);
+        HDF_LOGE("get hdi service %{public}s failed, %{public}d", serviceName, status);
         return nullptr;
     }
-    HDF_LOGE("get hdi service call success, %{public}d", status);
+    HDF_LOGD("get hdi service %{public}s success ", serviceName);
     return reply.ReadRemoteObject();
 }
 } // namespace V1_0

@@ -74,7 +74,8 @@ void HdfDeathNotifier::OnRemoteDied(const OHOS::wptr<OHOS::IRemoteObject> &) /* 
     }
 }
 
-static int HdfRemoteAdapterDispatch(struct HdfRemoteService *service, int code, HdfSBuf *data, HdfSBuf *reply)
+static int HdfRemoteAdapterOptionalDispatch(struct HdfRemoteService *service, int code,
+    HdfSBuf *data, HdfSBuf *reply, bool sync)
 {
     if (service == nullptr) {
         return HDF_ERR_INVALID_PARAM;
@@ -96,8 +97,8 @@ static int HdfRemoteAdapterDispatch(struct HdfRemoteService *service, int code, 
         HDF_LOGE("%{public}s:invalid data sbuf object to dispatch", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-
-    OHOS::MessageOption option;
+    int flag = sync ? OHOS::MessageOption::TF_SYNC : OHOS::MessageOption::TF_ASYNC;
+    OHOS::MessageOption option(flag);
     struct HdfRemoteServiceHolder *holder = reinterpret_cast<struct HdfRemoteServiceHolder *>(service);
     if (dataParcel != nullptr) {
         OHOS::sptr<OHOS::IRemoteObject> remote = holder->remote_;
@@ -106,6 +107,18 @@ static int HdfRemoteAdapterDispatch(struct HdfRemoteService *service, int code, 
         }
     }
     return HDF_FAILURE;
+}
+
+static int HdfRemoteAdapterDispatch(struct HdfRemoteService *service,
+    int code, HdfSBuf *data, HdfSBuf *reply)
+{
+    return HdfRemoteAdapterOptionalDispatch(service, code, data, reply, true);
+}
+
+static int HdfRemoteAdapterDispatchAsync(struct HdfRemoteService *service,
+    int code, HdfSBuf *data, HdfSBuf *reply)
+{
+    return HdfRemoteAdapterOptionalDispatch(service, code, data, reply, false);
 }
 
 HdfRemoteServiceHolder::HdfRemoteServiceHolder() : remote_(nullptr)
@@ -134,7 +147,8 @@ struct HdfRemoteService *HdfRemoteAdapterBind(OHOS::sptr<OHOS::IRemoteObject> bi
 {
     struct HdfRemoteService *remoteService = nullptr;
     static HdfRemoteDispatcher dispatcher = {
-        .Dispatch = HdfRemoteAdapterDispatch
+        .Dispatch = HdfRemoteAdapterDispatch,
+        .DispatchAsync = HdfRemoteAdapterDispatchAsync,
     };
 
     struct HdfRemoteServiceHolder *holder = new HdfRemoteServiceHolder();
@@ -142,6 +156,7 @@ struct HdfRemoteService *HdfRemoteAdapterBind(OHOS::sptr<OHOS::IRemoteObject> bi
         holder->remote_ = binder;
         remoteService = &holder->service_;
         remoteService->dispatcher = &dispatcher;
+        remoteService->index = (uint64_t)binder.GetRefPtr();
         return remoteService;
     }
     return nullptr;
