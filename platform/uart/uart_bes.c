@@ -889,7 +889,7 @@ static int32_t UartHostDevSetTransMode(struct UartHost *host, enum UartTransMode
             break;
         case UART_MODE_DMA_TX_DIS:
             g_uartCtx[uartId].txDMA = false;
-            break;     
+            break;
         default:
             HDF_LOGE("%s: UartTransMode(%d) invalid", __func__, mode);
             break;
