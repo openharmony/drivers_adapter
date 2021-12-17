@@ -12,28 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef HDI_ISERVICE_MANAGER_INF_H
-#define HDI_ISERVICE_MANAGER_INF_H
+#ifndef HDI_DEVICE_MANAGER_HDI_INF_H
+#define HDI_DEVICE_MANAGER_HDI_INF_H
 
 #include <refbase.h>
 #include <iremote_broker.h>
-#include "iservstat_listener_hdi.h"
 
 namespace OHOS {
 namespace HDI {
-namespace ServiceManager {
+namespace DeviceManager {
 namespace V1_0 {
-class IServiceManager : public IRemoteBroker {
+class IDeviceManager : public IRemoteBroker {
 public:
-    DECLARE_INTERFACE_DESCRIPTOR(u"HDI.IServiceManager.V1_0");
-    static ::OHOS::sptr<IServiceManager> Get();
-    virtual ::OHOS::sptr<IRemoteObject> GetService(const char* serviceName) = 0;
-    virtual int32_t RegisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener, uint16_t deviceClass) = 0;
-    virtual int32_t UnregisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener) = 0;
+    DECLARE_INTERFACE_DESCRIPTOR(u"HDI.IDeviceManager.V1_0");
+    static ::OHOS::sptr<IDeviceManager> Get();
+    virtual int32_t LoadDevice(const std::string &serviceName) = 0;
+    virtual int32_t UnloadDevice(const std::string &serviceName) = 0;
 };
 } // namespace V1_0
-} // namespace ServiceManager
+} // namespace DeviceManager
 } // namespace HDI
 } // namespace OHOS
 
-#endif /* HDI_ISERVICE_MANAGER_INF_H */
+#endif /* HDI_DEVICE_MANAGER_HDI_INF_H */

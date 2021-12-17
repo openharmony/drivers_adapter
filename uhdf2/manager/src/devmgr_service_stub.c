@@ -63,7 +63,7 @@ static int32_t DevmgrServiceStubDispatchLoadDevice(struct IDevmgrService *devmgr
         HDF_LOGE("%{public}s:service name is null", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-
+    HDF_LOGI("%{public}s:load service %{public}s", __func__, serviceName);
     return devmgrSvc->LoadDevice(devmgrSvc, serviceName);
 }
 
@@ -74,7 +74,7 @@ static int32_t DevmgrServiceStubDispatchUnloadDevice(struct IDevmgrService *devm
         HDF_LOGE("%{public}s:service name is null", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-
+    HDF_LOGI("%{public}s:unload service %{public}s", __func__, serviceName);
     return devmgrSvc->UnloadDevice(devmgrSvc, serviceName);
 }
 
@@ -137,29 +137,36 @@ static struct HdfRemoteDispatcher g_devmgrDispatcher = {
 
 int DevmgrServiceStubStartService(struct IDevmgrService *inst)
 {
-    int status = HDF_FAILURE;
-    struct HdfRemoteService *remoteService = NULL;
     struct DevmgrServiceStub *fullService = (struct DevmgrServiceStub *)inst;
-    struct IDevSvcManager *serviceManager = DevSvcManagerGetInstance();
     if (fullService == NULL) {
-        HDF_LOGI("Start service failed, fullService is null");
-        return HDF_FAILURE;
+        return HDF_ERR_INVALID_PARAM;
     }
-    remoteService = HdfRemoteServiceObtain((struct HdfObject *)inst, &g_devmgrDispatcher);
-    if ((remoteService == NULL) || (serviceManager == NULL)) {
-        HDF_LOGI("Start service failed, remoteService or serviceManager is null");
-        return HDF_FAILURE;
+
+    struct IDevSvcManager *serviceManager = DevSvcManagerGetInstance();
+    if (serviceManager == NULL) {
+        HDF_LOGI("Start service failed, fullService is null");
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    int status = DevSvcManagerStartService();
+    if (status != HDF_SUCCESS) {
+        return status;
+    }
+
+    struct HdfRemoteService *remoteService = HdfRemoteServiceObtain((struct HdfObject *)inst, &g_devmgrDispatcher);
+    if (remoteService == NULL) {
+        HDF_LOGI("failed to start devmgr, remoteService obtain err");
+        return HDF_ERR_MALLOC_FAIL;
     }
     struct HdfDeviceObject *deviceObject = OsalMemCalloc(sizeof(struct HdfDeviceObject));
     if (deviceObject == NULL) {
-        return HDF_FAILURE;
+        HdfRemoteServiceRecycle(remoteService);
+        return HDF_ERR_MALLOC_FAIL;
     }
     deviceObject->service = (struct IDeviceIoService *)remoteService;
-    if (serviceManager->AddService != NULL) {
-        status = DevSvcManagerAddService(
-            serviceManager, DEVICE_MANAGER_SERVICE, deviceObject);
-    }
+    status = DevSvcManagerAddService(serviceManager, DEVICE_MANAGER_SERVICE, DEVICE_CLASS_DEFAULT, deviceObject, NULL);
     if (status != HDF_SUCCESS) {
+        HdfRemoteServiceRecycle(remoteService);
         OsalMemFree(deviceObject);
         return status;
     }

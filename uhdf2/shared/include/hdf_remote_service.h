@@ -25,6 +25,7 @@ extern "C" {
 
 struct HdfRemoteDispatcher {
     int (*Dispatch)(struct HdfRemoteService *, int, struct HdfSBuf *, struct HdfSBuf *);
+    int (*DispatchAsync)(struct HdfRemoteService *, int, struct HdfSBuf *, struct HdfSBuf *);
 };
 
 struct HdfDeathRecipient {
@@ -35,7 +36,7 @@ struct HdfRemoteService {
     struct HdfObject object_;
     struct HdfObject *target;
     struct HdfRemoteDispatcher *dispatcher;
-    bool isHw;
+    uint64_t index;
 };
 
 struct HdfRemoteService *HdfRemoteServiceObtain(

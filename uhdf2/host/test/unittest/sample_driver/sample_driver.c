@@ -13,19 +13,20 @@
  * limitations under the License.
  */
 
+#include "sample_hdi.h"
 #include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <hdf_log.h>
 #include <hdf_base.h>
 #include <hdf_device_desc.h>
+#include <hdf_device_object.h>
+#include <hdf_log.h>
 #include <hdf_remote_service.h>
-#include "sample_hdi.h"
+#include <sys/ioctl.h>
+#include <sys/stat.h>
 
 #define HDF_LOG_TAG sample_driver
 
-static int32_t SampleServiceDispatch(struct HdfDeviceIoClient *client, int cmdId,
-    struct HdfSBuf *data, struct HdfSBuf *reply)
+static int32_t SampleServiceDispatch(
+    struct HdfDeviceIoClient *client, int cmdId, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     return SampleServiceOnRemoteRequest(client, cmdId, data, reply);
 }
@@ -51,7 +52,9 @@ int HdfSampleDriverBind(struct HdfDeviceObject *deviceObject)
 int HdfSampleDriverInit(struct HdfDeviceObject *deviceObject)
 {
     HDF_LOGE("HdfSampleDriverInit enter, new hdi impl");
-
+    if (HdfDeviceObjectSetServInfo(deviceObject, "sample_driver_service") != HDF_SUCCESS) {
+        HDF_LOGE("failed to set service info");
+    }
     return HDF_SUCCESS;
 }
 
