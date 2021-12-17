@@ -23,6 +23,7 @@ config("libhdi_pub_config") {
   include_dirs = [
     "//utils/native/base/include",
     "$hdf_framework_path/utils/include",
+    "$hdf_framework_path/core/shared/include",
     "$hdf_uhdf_path/ipc/include",
     "$hdf_uhdf_path/hdi/include",
     "$hdf_uhdf_path/include/hdi",
@@ -49,10 +50,14 @@ ohos_shared_library("libhdi") {
   ]
   public_configs = [ ":libhdi_pub_config" ]
   sources = [
-    "src/devmgr_hdi.c",
+    "$hdf_framework_path/core/shared/src/service_status.c",
+    "src/devmgr_client.c",
     "src/hdf_load_hdi.c",
-    "src/iservmgr_hdi.cpp",
-    "src/servmgr_hdi.c",
+    "src/idevmgr_client.cpp",
+    "src/iservmgr_client.cpp",
+    "src/servmgr_client.c",
+    "src/servstat_listener.c",
+    "src/servstat_listener_stub.cpp",
   ]
 
   deps = [

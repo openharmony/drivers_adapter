@@ -39,6 +39,7 @@ enum {
     SAMPLE_BUFFER_TRANS,
     SAMPLE_REGISTER_DEVICE,
     SAMPLE_UNREGISTER_DEVICE,
+    SAMPLE_UPDATE_SERVIE,
 };
 
 struct SampleHdi {
@@ -47,6 +48,7 @@ struct SampleHdi {
     int32_t (*callback)(struct HdfDeviceObject *device, struct HdfRemoteService *callback, int32_t code);
     int32_t (*registerDevice)(struct HdfDeviceObject *device, const char *servName);
     int32_t (*unregisterDevice)(struct HdfDeviceObject *device, const char *servName);
+    int32_t (*updateService)(struct HdfDeviceObject *device, const char *info);
 };
 
 const struct SampleHdi *SampleHdiImplInstance();
@@ -82,9 +84,11 @@ static inline struct DataBlock *DataBlockBlockUnmarshalling(struct HdfSBuf *data
     if (dataBlock == NULL) {
         return NULL;
     }
-    HDF_LOGE("%{public}s: DataBlock mem: %{public}d %{public}d %{public}d", __func__,
+    HDF_LOGD("%{public}s: DataBlock mem: %{public}d %{public}d %{public}d", __func__,
         dataBlock_->a, dataBlock_->b, dataBlock_->c);
-    (void)memcpy_s(dataBlock, sizeof(*dataBlock), dataBlock_, sizeof(*dataBlock));
+    if (memcpy_s(dataBlock, sizeof(*dataBlock), dataBlock_, sizeof(*dataBlock)) != EOK) {
+        return NULL;
+    }
 
     const char *str = NULL;
     if (!HdfSbufReadBuffer(data, (const void **)&str, &readSize)) {

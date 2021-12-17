@@ -33,7 +33,6 @@ module_switch = defined(LOSCFG_DRIVERS_HDF)
 hdf_driver("hdf_core") {
   sources = [
     "$HDF_FRAMEWORKS_PATH/core/common/src/buildin_config_entry.c",
-    "$HDF_FRAMEWORKS_PATH/core/common/src/devlite_object_config.c",
     "$HDF_FRAMEWORKS_PATH/core/common/src/hdf_attribute.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/devhost_service.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/devmgr_service_clnt.c",
@@ -71,6 +70,7 @@ hdf_driver("hdf_core") {
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_slist.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sref.c",
     "common/src/devmgr_service_start.c",
+    "common/src/devsmall_object_config.c",
     "common/src/hdf_device_node_ext.c",
   ]
 }

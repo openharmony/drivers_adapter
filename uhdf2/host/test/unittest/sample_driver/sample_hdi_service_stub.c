@@ -141,9 +141,20 @@ static int32_t SampleServiceUnregisterDevice(struct HdfDeviceIoClient *client,
     return SampleHdiImplInstance()->unregisterDevice(client->device, deviceName);
 }
 
+static int32_t SampleServiceUpdateDevice(struct HdfDeviceIoClient *client, struct HdfSBuf *data)
+{
+    const char *servInfo = HdfSbufReadString(data);
+    if (servInfo == NULL) {
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    return SampleHdiImplInstance()->updateService(client->device, servInfo);
+}
+
 int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId,
     struct HdfSBuf *data, struct HdfSBuf *reply)
 {
+    HDF_LOGI("SampleServiceDispatch: not support cmd %{public}d", cmdId);
     switch (cmdId) {
         case SAMPLE_SERVICE_PING:
             return SampleServiceStubPing(client, data, reply);
@@ -159,6 +170,8 @@ int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId
             return SampleServiceRegisterDevice(client, data, reply);
         case SAMPLE_UNREGISTER_DEVICE:
             return SampleServiceUnregisterDevice(client, data, reply);
+        case SAMPLE_UPDATE_SERVIE:
+            return SampleServiceUpdateDevice(client, data);
         default:
             HDF_LOGE("SampleServiceDispatch: not support cmd %{public}d", cmdId);
             return HDF_ERR_INVALID_PARAM;

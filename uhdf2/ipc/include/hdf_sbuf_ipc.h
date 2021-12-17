@@ -13,13 +13,20 @@
  * limitations under the License.
  */
 
-#ifndef __HDF_SBUF_IPC_IMPL_H_
-#define __HDF_SBUF_IPC_IMPL_H_
+#ifndef HDF_SBUF_IPC_IMPL_H
+#define HDF_SBUF_IPC_IMPL_H
 
 #include <message_parcel.h>
 #include "hdf_sbuf.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 struct HdfSBuf *ParcelToSbuf(OHOS::MessageParcel *parcel);
 int32_t SbufToParcel(struct HdfSBuf *sbuf, OHOS::MessageParcel **parcel);
 
-#endif // __HDF_SBUF_IPC_IMPL_H_
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+#endif // HDF_SBUF_IPC_IMPL_H

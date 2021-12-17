@@ -13,16 +13,19 @@
  * limitations under the License.
  */
 
-
+#include <devmgr_hdi.h>
+#include <gtest/gtest.h>
+#include <hdf_io_service_if.h>
 #include <hdf_log.h>
 #include <hdf_remote_service.h>
 #include <hdf_sbuf.h>
-#include <gtest/gtest.h>
+#include <hdf_service_status.h>
+#include <osal_time.h>
 #include <servmgr_hdi.h>
-#include <devmgr_hdi.h>
+#include <string>
 #include "sample_hdi.h"
 
-#define HDF_LOG_TAG   service_manager_test
+#define HDF_LOG_TAG service_manager_test
 
 using namespace testing::ext;
 
@@ -32,7 +35,7 @@ constexpr int PAYLOAD_NUM = 1234;
 class HdfServiceMangerHdiCTest : public testing::Test {
 public:
     static void SetUpTestCase()
-        {
+    {
         struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
         if (devmgr != nullptr) {
             devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
@@ -82,8 +85,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest002, TestSize.Level1)
 
 static int32_t g_callbackPayload = 0;
 
-int ServiceManagerTestCallbackDispatch(struct HdfRemoteService *service, int code,
-    struct HdfSBuf *data, struct HdfSBuf *reply)
+int ServiceManagerTestCallbackDispatch(
+    struct HdfRemoteService *service, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     HDF_LOGI("ServiceManagerTestCallbackDispatch called, code = %{public}d", code);
     HdfSbufReadInt32(data, &g_callbackPayload);
@@ -165,7 +168,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest005, TestSize.Level1)
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
 
-    struct DataBlock dataBlock = { 1, 2, "dataBolck", 3};
+    struct DataBlock dataBlock = { 1, 2, "dataBolck", 3 };
     bool ret = DataBlockBlockMarshalling(&dataBlock, data);
     ASSERT_TRUE(ret);
 
@@ -289,4 +292,204 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
 
     HdfSBufRecycle(data);
     HdfSBufRecycle(reply);
+}
+
+struct ServiceStatusData {
+    ServiceStatusData() : devClass(0), servStatus(0), callbacked(false) {}
+    ~ServiceStatusData() = default;
+    std::string servName;
+    std::string servInfo;
+    uint16_t devClass;
+    uint16_t servStatus;
+    bool callbacked;
+};
+
+static void TestOnServiceStatusReceived(struct ServiceStatusListener *listener, struct ServiceStatus *servstat)
+{
+    struct ServiceStatusData *ssd = (struct ServiceStatusData *)listener->priv;
+    if (ssd == nullptr) {
+        return;
+    }
+    ssd->servName = servstat->serviceName;
+    ssd->servInfo = servstat->info != NULL ? servstat->info : "";
+    ssd->devClass = servstat->deviceClass;
+    ssd->servStatus = servstat->status;
+    ssd->callbacked = true;
+
+    HDF_LOGI("service status listener callback: %{public}s, %{public}s, %{public}d",
+        servstat->serviceName, ssd->servName.data(), ssd->servStatus);
+}
+
+/*
+ * Test service start status listener
+ */
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest008, TestSize.Level1)
+{
+    struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
+    ASSERT_TRUE(devmgr != nullptr);
+    devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+
+    struct HDIServiceManager *servmgr = HDIServiceManagerGet();
+    ASSERT_TRUE(servmgr != nullptr);
+
+    struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService == nullptr);
+
+    struct ServiceStatusData ssd;
+    struct ServiceStatusListener *listener = HdiServiceStatusListenerNewInstance();
+    listener->callback = TestOnServiceStatusReceived;
+    listener->priv = (void *)&ssd;
+
+    int status = servmgr->RegisterServiceStatusListener(servmgr, listener, DEVICE_CLASS_DEFAULT);
+    ASSERT_EQ(status, HDF_SUCCESS);
+
+    int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+
+    sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    int count = 10;
+    while (!ssd.callbacked && count > 0) {
+        OsalMSleep(1);
+        count--;
+    }
+
+    ASSERT_TRUE(ssd.callbacked);
+    ASSERT_EQ(ssd.servName, std::string(TEST_SERVICE_NAME));
+    ASSERT_EQ(ssd.devClass, DEVICE_CLASS_DEFAULT);
+    ASSERT_EQ(ssd.servInfo, std::string(TEST_SERVICE_NAME));
+    ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_START);
+
+    ret = devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+
+    count = 10;
+    while (!ssd.callbacked && count > 0) {
+        OsalMSleep(1);
+        count--;
+    }
+    ASSERT_TRUE(ssd.callbacked);
+    ASSERT_EQ(ssd.servName, std::string(TEST_SERVICE_NAME));
+    ASSERT_EQ(ssd.devClass, DEVICE_CLASS_DEFAULT);
+    ASSERT_EQ(ssd.servInfo, std::string(TEST_SERVICE_NAME));
+    ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_STOP);
+
+    status = servmgr->UnregisterServiceStatusListener(servmgr, listener);
+    ASSERT_EQ(status, HDF_SUCCESS);
+
+    HdiServiceStatusListenerFree(listener);
+}
+
+/*
+ * Test service status listener update service info
+ */
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
+{
+    struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
+    ASSERT_TRUE(devmgr != nullptr);
+    devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+
+    struct HDIServiceManager *servmgr = HDIServiceManagerGet();
+    ASSERT_TRUE(servmgr != nullptr);
+
+    struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService == nullptr);
+
+    int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+
+    sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    struct ServiceStatusData ssd;
+    struct ServiceStatusListener *listener = HdiServiceStatusListenerNewInstance();
+    listener->callback = TestOnServiceStatusReceived;
+    listener->priv = (void *)&ssd;
+
+    int status = servmgr->RegisterServiceStatusListener(servmgr, listener, DEVICE_CLASS_DEFAULT);
+    ASSERT_EQ(status, HDF_SUCCESS);
+
+    std::string info = "foo";
+    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    ASSERT_TRUE(data != nullptr);
+    ASSERT_TRUE(reply != nullptr);
+
+    ret = HdfSbufWriteString(data, info.data());
+    ASSERT_TRUE(ret);
+
+    status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_UPDATE_SERVIE, data, reply);
+    ASSERT_EQ(status, HDF_SUCCESS);
+
+    int count = 10;
+    while (!ssd.callbacked && count > 0) {
+        OsalMSleep(1);
+        count--;
+    }
+    ASSERT_TRUE(ssd.callbacked);
+    ASSERT_EQ(ssd.servName, std::string(TEST_SERVICE_NAME));
+    ASSERT_EQ(ssd.devClass, DEVICE_CLASS_DEFAULT);
+    ASSERT_EQ(ssd.servInfo, info);
+    ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_CHANGE);
+
+    ret = devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+
+    status = servmgr->UnregisterServiceStatusListener(servmgr, listener);
+    ASSERT_EQ(status, HDF_SUCCESS);
+
+    HdiServiceStatusListenerFree(listener);
+}
+
+/*
+ * Test service status listener unregister
+ */
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest010, TestSize.Level1)
+{
+    struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
+    ASSERT_TRUE(devmgr != nullptr);
+    devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+
+    struct HDIServiceManager *servmgr = HDIServiceManagerGet();
+    ASSERT_TRUE(servmgr != nullptr);
+
+    struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService == nullptr);
+
+    struct ServiceStatusData ssd;
+    struct ServiceStatusListener *listener = HdiServiceStatusListenerNewInstance();
+    listener->callback = TestOnServiceStatusReceived;
+    listener->priv = (void *)&ssd;
+
+    int status = servmgr->RegisterServiceStatusListener(servmgr, listener, DEVICE_CLASS_DEFAULT);
+    ASSERT_EQ(status, HDF_SUCCESS);
+
+    int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+
+    int count = 10;
+    while (!ssd.callbacked && count > 0) {
+        OsalMSleep(1);
+        count--;
+    }
+    ASSERT_TRUE(ssd.callbacked);
+    ASSERT_EQ(ssd.servName, std::string(TEST_SERVICE_NAME));
+    ASSERT_EQ(ssd.devClass, DEVICE_CLASS_DEFAULT);
+    ASSERT_EQ(ssd.servInfo, std::string(TEST_SERVICE_NAME));
+    ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_START);
+
+    sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    status = servmgr->UnregisterServiceStatusListener(servmgr, listener);
+    ASSERT_EQ(status, HDF_SUCCESS);
+    HdiServiceStatusListenerFree(listener);
+
+    ret = devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+
+    ssd.callbacked = false;
+    OsalMSleep(10);
+    ASSERT_FALSE(ssd.callbacked);
 }
