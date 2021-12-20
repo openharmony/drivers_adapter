@@ -19,10 +19,10 @@
 #include "osal_mem.h"
 #include "securec.h"
 
-#define HDF_LOG_TAG dev_attribute_serialze
+#define HDF_LOG_TAG dev_attr_serialze
 
-#define ATTRIBUTE_PRIVATE_DATA_LENGTH_NULL      0
-#define ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL    1
+#define ATTRIBUTE_PRIVATE_DATA_LENGTH_NULL 0
+#define ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL 1
 
 bool DeviceAttributeSerialize(const struct HdfDeviceInfo *attribute, struct HdfSBuf *sbuf)
 {
@@ -31,11 +31,12 @@ bool DeviceAttributeSerialize(const struct HdfDeviceInfo *attribute, struct HdfS
     }
 
     uint8_t ret = 1;
-    ret &= HdfSbufWriteInt32(sbuf, attribute->deviceId);
-    ret &= HdfSbufWriteInt32(sbuf, attribute->hostId);
-    ret &= HdfSbufWriteInt32(sbuf, attribute->policy);
-    ret &= HdfSbufWriteString(sbuf, attribute->svcName);
-    ret &= HdfSbufWriteString(sbuf, attribute->moduleName);
+    if (!HdfSbufWriteUint32(sbuf, attribute->deviceId) ||
+        !HdfSbufWriteUint16(sbuf, attribute->policy) ||
+        !HdfSbufWriteString(sbuf, attribute->svcName) ||
+        !HdfSbufWriteString(sbuf, attribute->moduleName)) {
+        return false;
+    }
 
     if (attribute->deviceMatchAttr != NULL) {
         ret &= HdfSbufWriteUint32(sbuf, ATTRIBUTE_PRIVATE_DATA_LENGTH_NORMAL);
@@ -62,9 +63,12 @@ struct HdfDeviceInfo *DeviceAttributeDeserialize(struct HdfSBuf *sbuf)
         HDF_LOGE("OsalMemCalloc failed, attribute is null");
         return NULL;
     }
-    HdfSbufReadUint16(sbuf, &attribute->deviceId);
-    HdfSbufReadUint16(sbuf, &attribute->hostId);
-    HdfSbufReadUint16(sbuf, &attribute->policy);
+    if (!HdfSbufReadUint32(sbuf, &attribute->deviceId) ||
+        !HdfSbufReadUint16(sbuf, &attribute->policy)) {
+        HDF_LOGE("invalid deviceId or policy");
+        return NULL;
+    }
+
     do {
         const char *svcName = HdfSbufReadString(sbuf);
         if (svcName == NULL) {
