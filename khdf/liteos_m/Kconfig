@@ -167,3 +167,9 @@ config DRIVERS_HDF_WIFI
       Answer Y to enable HDF WiFi Host driver.
 
 endif
+config DRIVERS_HDF_PLATFORM_REGULATOR
+    bool "Enable HDF platform regulator driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform regulator driver.
