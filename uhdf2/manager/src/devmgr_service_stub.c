@@ -14,17 +14,13 @@
  */
 
 #include "devmgr_service_stub.h"
-#include "devhost_service_clnt.h"
 #include "devhost_service_proxy.h"
 #include "device_token_proxy.h"
 #include "devmgr_query_device.h"
-#include "devmgr_virtual_service.h"
 #include "devsvc_manager.h"
-#include "hdf_base.h"
 #include "hdf_log.h"
 #include "hdf_sbuf.h"
 #include "osal_mem.h"
-#include "osal_sysevent.h"
 
 #define HDF_LOG_TAG devmgr_service_stub
 
