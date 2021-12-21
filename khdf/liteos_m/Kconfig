@@ -43,20 +43,20 @@ config DRIVERS_HDF_PLATFORM
 
 config DRIVERS_HDF_PLATFORM_GPIO
     bool "Enable HDF platform gpio driver"
-    default y
+    default n
     depends on DRIVERS_HDF_PLATFORM
     help
       Answer Y to enable HDF platform gpio driver.
 
 config DRIVERS_HDF_PLATFORM_I2C
     bool "Enable HDF platform i2c driver"
-    default y
+    default n
     depends on DRIVERS_HDF_PLATFORM
     help
       Answer Y to enable HDF platform i2c driver.
 config DRIVERS_HDF_PLATFORM_UART
     bool "Enable HDF platform uart driver"
-    default y
+    default n
     depends on DRIVERS_HDF_PLATFORM
     help
       Answer Y to enable HDF platform uart driver.
