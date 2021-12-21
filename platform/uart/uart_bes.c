@@ -521,9 +521,6 @@ static void UartDriverRelease(struct HdfDeviceObject *device)
     OsalSemDestroy(&g_uartCtx[uartId].rxSem);
     OsalSemDestroy(&g_uartCtx[uartId].txSem);
     OsalMemFree(uartDevice);
-    if (host == NULL) {
-        return;
-    }
     OsalMemFree(host);
 }
 
