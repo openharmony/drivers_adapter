@@ -13,16 +13,11 @@
  * limitations under the License.
  */
 
-#include <ctype.h>
-#include <string.h>
-#include <limits.h>
 #include <securec.h>
-#include "hcs_parser.h"
 #include "hcs_dm_parser.h"
 #include "hcs_tree_if.h"
 #include "hdf_attribute_manager.h"
 #include "hdf_log.h"
-#include "osal_mem.h"
 
 #define HDF_LOG_TAG attribute_manager
 
