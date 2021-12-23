@@ -18,7 +18,6 @@
 #include "i2c_core.h"
 #include "i2c_if.h"
 #include "hdf_device_desc.h"
-#include "hdf_platform.h"
 #include "hdf_log.h"
 
 #define DEC_NUM 10
