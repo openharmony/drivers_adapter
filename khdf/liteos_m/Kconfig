@@ -54,7 +54,13 @@ config DRIVERS_HDF_PLATFORM_I2C
     depends on DRIVERS_HDF_PLATFORM
     help
       Answer Y to enable HDF platform i2c driver.
-
+config DRIVERS_HDF_PLATFORM_UART
+    bool "Enable HDF platform uart driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform uart driver.
+  
 config DRIVERS_HDF_PLATFORM_ADC
     bool "Enable HDF platform adc driver"
     default n
