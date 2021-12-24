@@ -170,7 +170,6 @@ COMPANY_OF_SOC := $(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))
 
 HC_GEN_DIR = $(abspath $(LITEOSTOPDIR)/../../drivers/framework/tools/hc-gen)
 HC_GEN = $(OUT)/hc_gen_build/hc-gen
-$(warning HC_GEN = $(HC_GEN))
 $(HC_GEN):
 	$(HIDE)make -j -C $(HC_GEN_DIR) BUILD_DIR=$(dir $@)
 $(LITEOS_LIBS_TARGET):$(HC_GEN)
