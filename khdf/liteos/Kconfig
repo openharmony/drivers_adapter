@@ -60,6 +60,7 @@ config DRIVERS_HDF_PLATFORM_I2C
     depends on DRIVERS_HDF_PLATFORM
     help
       Answer Y to enable HDF platform i2c driver.
+
 config DRIVERS_HDF_PLATFORM_REGULATOR
     bool "Enable HDF platform regulator driver"
     default n
