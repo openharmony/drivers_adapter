@@ -68,8 +68,7 @@ hdf_driver(module_name) {
     ]
   }
 
-  libs =
-      [ "//device/soc/hisilicon/common/platform/libs/ohos/llvm/hi3516dv300/libusb_dwc3.a" ]
+  libs = [ "//device/soc/hisilicon/common/platform/libs/ohos/llvm/hi3516dv300/libusb_dwc3.a" ]
 
   include_dirs = [
     "$USB_DEVICE_ROOT",
