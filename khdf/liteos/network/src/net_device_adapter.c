@@ -91,7 +91,6 @@ static int32_t LiteNetDevInit(struct NetDeviceImpl *netDeviceImpl)
         HDF_LOGE("%s fail : malloc fail!", __func__);
         return HDF_ERR_MALLOC_FAIL;
     }
-    (void)memset_s(liteNdPri, sizeof(struct NetDeviceAdapterLite), 0, sizeof(struct NetDeviceAdapterLite));
     netDeviceImpl->osPrivate = (void *)liteNdPri;
     HDF_LOGI("%s Success!", __func__);
     return HDF_SUCCESS;
@@ -210,7 +209,6 @@ static struct netif *CreateLwipNetIf(const struct NetDeviceImpl *netDeviceImpl, 
         HDF_LOGE("%s fail : netif malloc fail!", __func__);
         return NULL;
     }
-    (void)memset_s(lwipNf, sizeof(struct netif), 0, sizeof(struct netif));
 
     /* register netif to lwip */
     lwipNf->state = (void *)netDeviceImpl;
