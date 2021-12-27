@@ -257,7 +257,7 @@ static int32_t GpioDriverBind(struct HdfDeviceObject *device)
     }
 
     gpioCntlr.device.hdfDev = device;
-    device->service = gpioCntlr.device.service;
+    device->service = (struct IDeviceIoService *)&gpioCntlr;
 
     return HDF_SUCCESS;
 }
