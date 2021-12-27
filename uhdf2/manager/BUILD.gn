@@ -15,6 +15,7 @@ import("//build/ohos.gni")
 import("//drivers/adapter/uhdf2/uhdf.gni")
 
 ohos_executable("hdf_devmgr") {
+  defines = [ "__USER__" ]
   include_dirs = [
     "//utils/native/base/include",
     "$hdf_framework_path/core/manager/include",
