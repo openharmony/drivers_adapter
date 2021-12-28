@@ -130,6 +130,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_HDMI), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/hdmi_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_hdmi_entry_test.c
 endif
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PCIE), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pcie_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_pcie_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/virtual/pcie_virtual.c
+endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_EMMC), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/emmc_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_emmc_entry_test.c

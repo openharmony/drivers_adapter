@@ -171,6 +171,13 @@ config DRIVERS_HDF_PLATFORM_HDMI
     help
       Answer Y to enable HDF platform hdmi driver.
 
+config DRIVERS_HDF_PLATFORM_PCIE
+    bool "Enable HDF platform pcie driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform pcie driver.
+
 config DRIVERS_HDF_PLATFORM_WATCHDOG
     bool "Enable HDF platform watchdog driver"
     default n
