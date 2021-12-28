@@ -27,7 +27,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ifeq ($(LOSCFG_DRIVERS_HDF_USB_DDK_DEVICE), y)
-LITEOS_BASELIB += -L$(LITEOSTOPDIR)/../../device/hisilicon/drivers/libs/ohos/llvm/hi3516dv300
+LITEOS_BASELIB += -L$(LITEOSTOPDIR)/../../device/soc/hisilicon/common/platform/libs/ohos/llvm/hi3516dv300
 LITEOS_BASELIB += -lusb_dwc3
 endif
 
@@ -165,8 +165,13 @@ endif
 
 # vendor lib
 COMPANY_OF_SOC := $(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))
+ifeq ($(COMPANY_OF_SOC), hisilicon)
+-include $(LITEOSTOPDIR)/../../device/soc/$(COMPANY_OF_SOC)/common/platform/lite.mk
+else
 -include $(LITEOSTOPDIR)/../../device/$(COMPANY_OF_SOC)/drivers/lite.mk
-    LITEOS_BASELIB += --no-whole-archive
+endif
+
+LITEOS_BASELIB += --no-whole-archive
 
 HC_GEN_DIR = $(abspath $(LITEOSTOPDIR)/../../drivers/framework/tools/hc-gen)
 HC_GEN = $(OUT)/hc_gen_build/hc-gen
