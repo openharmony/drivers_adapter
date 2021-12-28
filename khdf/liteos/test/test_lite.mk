@@ -36,6 +36,7 @@ HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/include/platform
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/include/core
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/support/platform/include
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/support/platform/include/rtc
+HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/support/platform/include/pcie
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/core/host/include
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/core/master/include
 HDF_TEST_INCLUDE += -I $(HDF_ROOT_TEST_DIR)/framework/core/shared/include
