@@ -37,6 +37,9 @@ hdf_driver(module_name) {
   if (defined(LOSCFG_SOC_COMPANY_BESTECHNIC)) {
     sources += [ "gpio_bes.c" ]
   }
+  if (defined(LOSCFG_SOC_COMPANY_GOODIX)) {
+    sources += [ "gpio_gr5xx.c" ]
+  }
 
   include_dirs = [ "." ]
 }
