@@ -1,5 +1,7 @@
 The khdf/liteos and khdf/liteos_m subdirectories are licensed under 3-Clause BSD License.
 The uhdf and uhdf2 subdirectories are licensed under Apache License, Version 2.0.
+The platform subdirectory is is dual licensed: you can use it either under the terms of
+the GPL V2, or the 3-Clause BSD Licens, at your option.
 
 a) The 3-Clause BSD License, (https://opensource.org/licenses/BSD-3-Clause)
 Redistribution and use in source and binary forms, with or
@@ -208,3 +210,19 @@ b) The Apache License, Version 2.0, (https://www.apache.org/licenses/LICENSE-2.0
       of your accepting any such warranty or additional liability.
 
    END OF TERMS AND CONDITIONS
+
+c) GNU General Public License version 2, (https://opensource.org/licenses/GPL-2.0)
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public
+License along with this library; if not, write to the Free
+Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+MA 02110-1301 USA
