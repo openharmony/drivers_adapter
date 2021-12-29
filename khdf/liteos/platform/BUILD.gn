@@ -35,6 +35,7 @@ hdf_driver(module_name) {
   sources = [
     "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_common.c",
     "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_device.c",
+    "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_event.c",
     "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_manager.c",
     "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_queue.c",
     "src/plat_common.c",
@@ -191,6 +192,7 @@ hdf_driver(module_name) {
 config("public") {
   include_dirs = [
     "include",
+    "//kernel/liteos_a/kernel/include/",
     "$HDF_FRAMEWORKS_PATH/include/core",
     "$HDF_FRAMEWORKS_PATH/core/common/include/host",
     "$HDF_FRAMEWORKS_PATH/include/platform",
