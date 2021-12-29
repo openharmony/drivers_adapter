@@ -38,6 +38,7 @@ LOCAL_INCLUDE := $(LITEOSTOPDIR)/../../base/hiviewdfx/interfaces/kits \
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM), y)
     LOCAL_SRCS += ./src/plat_common.c \
     $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_device.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_event.c \
     $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_manager.c \
     $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_queue.c \
     $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_common.c

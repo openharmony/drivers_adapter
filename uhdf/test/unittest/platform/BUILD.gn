@@ -37,6 +37,10 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
     }
     sources = [
       "//drivers/framework/support/platform/test/unittest/common/hdf_gpio_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_device_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_event_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_manager_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_queue_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_pwm_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_regulator_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_rtc_test.cpp",
@@ -101,6 +105,10 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
 
     defines = [ "__USER__" ]
     sources = [
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_device_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_event_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_manager_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_queue_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_spi_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_uart_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_watchdog_test.cpp",
