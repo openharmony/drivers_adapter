@@ -76,6 +76,7 @@ ohos_shared_library("libhdf_utils") {
     "$hdf_uhdf_path/osal/src/osal_sysevent.c",
     "$hdf_uhdf_path/utils/src/hcs_parser/hcs_blob_load.c",
     "$hdf_uhdf_path/utils/src/hcs_parser/hcs_dm_parser.c",
+    "$hdf_uhdf_path/utils/src/shared_mem.cpp",
   ]
 
   deps = [ "//utils/native/base:utils" ]

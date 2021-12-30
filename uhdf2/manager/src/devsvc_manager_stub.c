@@ -14,10 +14,11 @@
  */
 
 #include "devsvc_manager_stub.h"
-#include "devsvc_listener_holder.h"
 #include "device_token_proxy.h"
 #include "devmgr_service_stub.h"
+#include "devsvc_listener_holder.h"
 #include "devsvc_manager_proxy.h"
+#include "hdf_cstring.h"
 #include "hdf_log.h"
 #include "hdf_sbuf.h"
 #include "hdf_slist.h"
@@ -49,9 +50,15 @@ static int32_t DevSvcManagerStubAddService(struct IDevSvcManager *super, struct 
     HdfRemoteServiceAddDeathRecipient(service, &stub->recipient);
     struct HdfDeviceObject *deviceObject = OsalMemCalloc(sizeof(struct HdfDeviceObject));
     if (deviceObject == NULL) {
-        return ret;
+        return HDF_ERR_MALLOC_FAIL;
+    }
+    deviceObject->priv = (void *)HdfStringCopy(name);
+    if (deviceObject->priv == NULL) {
+        OsalMemFree(deviceObject);
+        return HDF_ERR_MALLOC_FAIL;
     }
     deviceObject->service = (struct IDeviceIoService *)service;
+    service->target = (struct HdfObject *)deviceObject;
     ret = super->AddService(super, name, devClass, deviceObject, servInfo);
     if (ret != HDF_SUCCESS) {
         OsalMemFree(deviceObject);
@@ -93,8 +100,7 @@ static int32_t DevSvcManagerStubUpdateService(struct IDevSvcManager *super, stru
     return ret;
 }
 
-static int32_t DevSvcManagerStubGetService(
-    struct IDevSvcManager *super, struct HdfSBuf *data, struct HdfSBuf *reply)
+static int32_t DevSvcManagerStubGetService(struct IDevSvcManager *super, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int ret = HDF_FAILURE;
     const char *name = HdfSbufReadString(data);
@@ -102,8 +108,7 @@ static int32_t DevSvcManagerStubGetService(
         HDF_LOGE("%{public}s failed, name is null", __func__);
         return ret;
     }
-    struct HdfRemoteService *remoteService =
-        (struct HdfRemoteService *)super->GetService(super, name);
+    struct HdfRemoteService *remoteService = (struct HdfRemoteService *)super->GetService(super, name);
     if (remoteService != NULL) {
         ret = HDF_SUCCESS;
         HdfSBufWriteRemoteService(reply, remoteService);
@@ -139,8 +144,8 @@ static int32_t DevSvcManagerStubRegisterServListener(struct IDevSvcManager *supe
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct ServStatListenerHolder *listenerHolder =
-        ServStatListenerHolderCreate((uintptr_t)listenerRemote, listenClass);
+    struct ServStatListenerHolder *listenerHolder
+        = ServStatListenerHolderCreate((uintptr_t)listenerRemote, listenClass);
     if (listenerHolder == NULL) {
         return HDF_ERR_MALLOC_FAIL;
     }
@@ -161,8 +166,7 @@ static int32_t DevSvcManagerStubUnregisterServListener(struct IDevSvcManager *su
     if (listenerRemote == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
-    struct ServStatListenerHolder *listenerHolder =
-        ServStatListenerHolderGet(listenerRemote->index);
+    struct ServStatListenerHolder *listenerHolder = ServStatListenerHolderGet(listenerRemote->index);
     if (listenerHolder == NULL) {
         HDF_LOGE("failed to unregister svcstat listener, unknown listener");
         HdfRemoteServiceRecycle(listenerRemote);
@@ -175,8 +179,7 @@ static int32_t DevSvcManagerStubUnregisterServListener(struct IDevSvcManager *su
     return HDF_SUCCESS;
 }
 
-int DevSvcManagerStubDispatch(
-    struct HdfRemoteService* service, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
+int DevSvcManagerStubDispatch(struct HdfRemoteService *service, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int ret = HDF_FAILURE;
     struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)service;
@@ -211,21 +214,42 @@ int DevSvcManagerStubDispatch(
     return ret;
 }
 
-void DevSvcManagerOnServiceDied(struct HdfDeathRecipient *recipient, struct HdfRemoteService *service)
+void DevSvcManagerOnServiceDied(struct HdfDeathRecipient *recipient, struct HdfRemoteService *remote)
 {
-    (void)service;
-    struct DevSvcManagerStub *stub =
-        HDF_SLIST_CONTAINER_OF(struct HdfDeathRecipient, recipient, struct DevSvcManagerStub, recipient);
-    if (stub != NULL) {
-        struct IDevSvcManager *svcOps = (struct IDevSvcManager *)stub;
-        if (svcOps->RemoveService != NULL) {
-            svcOps->RemoveService(svcOps, NULL);
-        }
+    struct DevSvcManagerStub *stub
+        = HDF_SLIST_CONTAINER_OF(struct HdfDeathRecipient, recipient, struct DevSvcManagerStub, recipient);
+    if (stub == NULL) {
         return;
     }
+
+    struct IDevSvcManager *iSvcMgr = &stub->super.super;
+    struct HdfDeviceObject *serviceObject = (struct HdfDeviceObject *)remote->target;
+
+    if (serviceObject == NULL || serviceObject->priv == NULL) {
+        HDF_LOGI("%{public}s:invalid service object", __func__);
+        return;
+    }
+
+    if (iSvcMgr->GetService == NULL || iSvcMgr->RemoveService == NULL) {
+        HDF_LOGI("%{public}s:invalid svcmgr object", __func__);
+        return;
+    }
+
+    char *serviceName = (char *)serviceObject->priv;
+    struct HdfObject *service = iSvcMgr->GetService(iSvcMgr, serviceName);
+    HDF_LOGI("service %{public}s died", serviceName);
+
+    if ((uintptr_t)service == (uintptr_t)remote) {
+        HDF_LOGI("%{public}s: remove died service %{public}s", __func__, serviceName);
+        iSvcMgr->RemoveService(iSvcMgr, serviceName);
+    }
+
+    OsalMemFree(serviceObject->priv);
+    OsalMemFree(serviceObject);
+    HdfRemoteServiceRecycle(remote);
 }
 
-int DevSvcManagerStubStart(struct IDevSvcManager * svcmgr)
+int DevSvcManagerStubStart(struct IDevSvcManager *svcmgr)
 {
     struct DevSvcManagerStub *inst = (struct DevSvcManagerStub *)svcmgr;
     if (inst == NULL) {
@@ -237,9 +261,7 @@ int DevSvcManagerStubStart(struct IDevSvcManager * svcmgr)
 
     ServStatListenerHolderinit();
 
-    static struct HdfRemoteDispatcher dispatcher = {
-        .Dispatch = DevSvcManagerStubDispatch
-    };
+    static struct HdfRemoteDispatcher dispatcher = { .Dispatch = DevSvcManagerStubDispatch };
     inst->remote = HdfRemoteServiceObtain((struct HdfObject *)inst, &dispatcher);
     if (inst->remote == NULL) {
         HDF_LOGE("failed to obtain device service manager remote service");
@@ -273,7 +295,7 @@ static bool DevSvcManagerStubConstruct(struct DevSvcManagerStub *inst)
     return true;
 }
 
-struct HdfObject *DevSvcManagerStubCreate()
+struct HdfObject *DevSvcManagerStubCreate(void)
 {
     static struct DevSvcManagerStub *instance;
     if (instance != NULL) {
@@ -299,4 +321,3 @@ void DevSvcManagerStubRelease(struct HdfObject *object)
         }
     }
 }
-

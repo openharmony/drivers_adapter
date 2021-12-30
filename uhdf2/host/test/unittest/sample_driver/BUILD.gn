@@ -19,23 +19,23 @@ group("sample_driver") {
 
 ohos_shared_library("libsample_driver") {
   sources = [
-    "sample_driver.c",
-    "sample_hdi_service.c",
-    "sample_hdi_service_stub.c",
+    "sample_driver.cpp",
+    "sample_hdi_service.cpp",
+    "sample_hdi_service_stub.cpp",
   ]
 
   deps = [
+    "//drivers/adapter/uhdf2/hdi:libhdi",
     "//drivers/adapter/uhdf2/host:libhdf_host",
     "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
     "//drivers/adapter/uhdf2/utils:libhdf_utils",
     "//utils/native/base:utils",
   ]
 
-  if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
-  } else {
-    external_deps = [ "hilog:libhilog" ]
-  }
+  external_deps = [
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+  ]
 
   # install_images = [ "vendor" ]
   subsystem_name = "hdf"

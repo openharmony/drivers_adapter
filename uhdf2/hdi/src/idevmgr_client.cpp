@@ -20,11 +20,13 @@
 #include "idevmgr_hdi.h"
 #include "iservmgr_hdi.h"
 
+#define HDF_LOG_TAG idevmgr_client
+
 namespace OHOS {
 namespace HDI {
 namespace DeviceManager {
 namespace V1_0 {
-enum DevngrCmdId {
+enum DevngrCmdId : uint32_t {
     DEVMGR_SERVICE_ATTACH_DEVICE_HOST = 1,
     DEVMGR_SERVICE_ATTACH_DEVICE,
     DEVMGR_SERVICE_DETACH_DEVICE,
@@ -48,6 +50,7 @@ int32_t DeviceManagerProxy::LoadDevice(const std::string &serviceName)
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
+    HDF_LOGI("load device: %{public}s", serviceName.data());
     if (!data.WriteCString(serviceName.data())) {
         return HDF_FAILURE;
     }
@@ -64,6 +67,7 @@ int32_t DeviceManagerProxy::UnloadDevice(const std::string &serviceName)
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
+    HDF_LOGI("unload device: %{public}s", serviceName.data());
     if (!data.WriteCString(serviceName.data())) {
         return HDF_FAILURE;
     }

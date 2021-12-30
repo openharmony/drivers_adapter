@@ -23,6 +23,8 @@
 #include <osal_time.h>
 #include <servmgr_hdi.h>
 #include <string>
+#include <shared_mem.h>
+#include <sys/mman.h>
 #include "sample_hdi.h"
 
 #define HDF_LOG_TAG service_manager_test
@@ -85,7 +87,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest002, TestSize.Level1)
 
 static int32_t g_callbackPayload = 0;
 
-int ServiceManagerTestCallbackDispatch(
+static int ServiceManagerTestCallbackDispatch(
     struct HdfRemoteService *service, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     HDF_LOGI("ServiceManagerTestCallbackDispatch called, code = %{public}d", code);
@@ -93,7 +95,7 @@ int ServiceManagerTestCallbackDispatch(
     return HDF_SUCCESS;
 }
 
-struct HdfRemoteDispatcher g_callbackDispatcher {
+static struct HdfRemoteDispatcher g_callbackDispatcher {
     .Dispatch = ServiceManagerTestCallbackDispatch,
 };
 
@@ -106,7 +108,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest003, TestSize.Level1)
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
 
-    struct HdfRemoteService *callback = HdfRemoteServiceObtain(NULL, &g_callbackDispatcher);
+    struct HdfRemoteService *callback = HdfRemoteServiceObtain(nullptr, &g_callbackDispatcher);
     ASSERT_NE(callback, nullptr);
     struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
     struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
@@ -311,7 +313,7 @@ static void TestOnServiceStatusReceived(struct ServiceStatusListener *listener, 
         return;
     }
     ssd->servName = servstat->serviceName;
-    ssd->servInfo = servstat->info != NULL ? servstat->info : "";
+    ssd->servInfo = servstat->info != nullptr ? servstat->info : "";
     ssd->devClass = servstat->deviceClass;
     ssd->servStatus = servstat->status;
     ssd->callbacked = true;
@@ -492,4 +494,31 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest010, TestSize.Level1)
     ssd.callbacked = false;
     OsalMSleep(10);
     ASSERT_FALSE(ssd.callbacked);
+}
+
+/*
+ * Test shared mem interface
+ */
+HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest011, TestSize.Level1)
+{
+    constexpr int mapSize = 128;
+    int memFd = SharedMemCreate("shared_mem_test", mapSize);
+    ASSERT_TRUE(memFd >= 0);
+
+    void *ptr = mmap(nullptr, mapSize, PROT_READ | PROT_WRITE, MAP_SHARED, memFd, 0);
+    ASSERT_NE(ptr, MAP_FAILED);
+
+    uint8_t *data = reinterpret_cast<uint8_t *>(ptr);
+    for (int i = 0; i < mapSize; i++) {
+        data[i] = i;
+    }
+
+    for (int i = 0; i < mapSize; i++) {
+        ASSERT_EQ(data[i], i);
+    }
+
+    auto ret = munmap(ptr, mapSize);
+    ASSERT_EQ(ret, 0);
+
+    close(memFd);
 }
