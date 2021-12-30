@@ -1,0 +1,52 @@
+{
+    "name": "@ohos/adapter_uhdf",
+    "version": "",
+    "description": "用户态驱动框架",
+    "homePage": "https://gitee.com/openharmony",
+    "license": "",
+    "repository": "",
+    "domain": "os",
+    "language": "",
+    "publishAs": "",
+    "private": false,
+    "scripts": {},
+    "tags": [],
+    "keywords": [],
+    "envs": [],
+    "dirs": [],
+    "author": {
+        "name": "",
+        "email": "",
+        "url": ""
+    },
+    "contributors": [
+        {
+            "name": "",
+            "email": "",
+            "url": ""
+        }
+    ],
+    "segment": {},
+    "component": {
+        "name": "adapter_uhdf",
+        "subsystem": "hdf",
+        "syscap": [],
+        "features": [],
+        "adated_system_type": [
+            "min",
+            "small",
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}
