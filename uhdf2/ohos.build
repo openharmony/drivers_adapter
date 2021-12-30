@@ -13,6 +13,7 @@
         "//drivers/adapter/uhdf2/host/test/unittest/sample_driver:libsample_driver",
         "//drivers/adapter/uhdf2/hcs:hdf_default.hcb",
         "//drivers/adapter/uhdf2/platform:libhdf_platform",
+        "//drivers/peripheral/bluetooth/hdi:bluetooth_hdi",
         "//drivers/peripheral/input/hal:hdi_input",
         "//drivers/peripheral/display/hal:hdi_display",
         "//drivers/peripheral/wlan/client:wifi_driver_client",
