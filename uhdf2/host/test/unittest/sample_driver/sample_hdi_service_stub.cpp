@@ -14,10 +14,15 @@
  */
 
 #include <hdf_base.h>
-#include <hdf_log.h>
-#include <osal_mem.h>
 #include <hdf_device_desc.h>
+#include <hdf_log.h>
+#include <hdi_smq_meta.h>
+#include <message_parcel.h>
+#include <osal_mem.h>
+#include "hdf_sbuf_ipc.h"
 #include "sample_hdi.h"
+
+using OHOS::HDI::Base::SharedMemQueueMeta;
 
 static int32_t SampleServiceStubPing(struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
@@ -74,8 +79,8 @@ static int32_t SampleServiceStubCallback(struct HdfDeviceIoClient *client, struc
     return SampleHdiImplInstance()->callback(client->device, callback, code);
 }
 
-static int32_t SampleServiceStubStructTrans(struct HdfDeviceIoClient *client,
-    struct HdfSBuf *data, struct HdfSBuf *reply)
+static int32_t SampleServiceStubStructTrans(
+    struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     HDF_LOGI("SampleServiceStubStructTrans: in");
     struct DataBlock *dataBlock = DataBlockBlockUnmarshalling(data);
@@ -95,12 +100,12 @@ static int32_t SampleServiceStubStructTrans(struct HdfDeviceIoClient *client,
     return ret;
 }
 
-#define SAMPLE_TEST_BUFFER_SIZE 10
-static int32_t SampleServiceStubBufferTrans(struct HdfDeviceIoClient *client,
-    struct HdfSBuf *data, struct HdfSBuf *reply)
+static int32_t SampleServiceStubBufferTrans(
+    struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     HDF_LOGI("SampleServiceStubBufferTrans: in");
 
+    constexpr int SAMPLE_TEST_BUFFER_SIZE = 10;
     const uint8_t *buffer = HdfSbufReadUnpadBuffer(data, SAMPLE_TEST_BUFFER_SIZE);
     if (buffer == NULL) {
         HDF_LOGI("SampleServiceStubBufferTrans: read buffer failed");
@@ -117,8 +122,8 @@ static int32_t SampleServiceStubBufferTrans(struct HdfDeviceIoClient *client,
     return HDF_SUCCESS;
 }
 
-static int32_t SampleServiceRegisterDevice(struct HdfDeviceIoClient *client,
-    struct HdfSBuf *data, struct HdfSBuf *reply)
+static int32_t SampleServiceRegisterDevice(
+    struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     (void)reply;
     const char *deviceName = HdfSbufReadString(data);
@@ -129,8 +134,8 @@ static int32_t SampleServiceRegisterDevice(struct HdfDeviceIoClient *client,
     return SampleHdiImplInstance()->registerDevice(client->device, deviceName);
 }
 
-static int32_t SampleServiceUnregisterDevice(struct HdfDeviceIoClient *client,
-    struct HdfSBuf *data, struct HdfSBuf *reply)
+static int32_t SampleServiceUnregisterDevice(
+    struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     (void)reply;
     const char *deviceName = HdfSbufReadString(data);
@@ -151,10 +156,27 @@ static int32_t SampleServiceUpdateDevice(struct HdfDeviceIoClient *client, struc
     return SampleHdiImplInstance()->updateService(client->device, servInfo);
 }
 
-int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId,
-    struct HdfSBuf *data, struct HdfSBuf *reply)
+static int32_t SampleServiceSmqTrans(struct HdfDeviceIoClient *client, struct HdfSBuf *data)
 {
-    HDF_LOGI("SampleServiceDispatch: not support cmd %{public}d", cmdId);
+    OHOS::MessageParcel *parcel = nullptr;
+    if (SbufToParcel(data, &parcel) != HDF_SUCCESS) {
+        return HDF_FAILURE;
+    }
+    SharedMemQueueMeta<SampleSmqElement> *smqMeta = SharedMemQueueMeta<SampleSmqElement>::UnMarshalling(*parcel);
+    if (smqMeta == nullptr) {
+        HDF_LOGE("failed to read smq meta form parcel");
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    uint32_t element = parcel->ReadUint32();
+
+    return SampleHdiImplInstance()->tansSmq(client->device, smqMeta, element);
+}
+
+int32_t SampleServiceOnRemoteRequest(
+    struct HdfDeviceIoClient *client, int cmdId, struct HdfSBuf *data, struct HdfSBuf *reply)
+{
+    HDF_LOGI("SampleServiceDispatch: cmd %{public}d", cmdId);
     switch (cmdId) {
         case SAMPLE_SERVICE_PING:
             return SampleServiceStubPing(client, data, reply);
@@ -172,6 +194,8 @@ int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId
             return SampleServiceUnregisterDevice(client, data, reply);
         case SAMPLE_UPDATE_SERVIE:
             return SampleServiceUpdateDevice(client, data);
+        case SAMPLE_TRANS_SMQ:
+            return SampleServiceSmqTrans(client, data);
         default:
             HDF_LOGE("SampleServiceDispatch: not support cmd %{public}d", cmdId);
             return HDF_ERR_INVALID_PARAM;

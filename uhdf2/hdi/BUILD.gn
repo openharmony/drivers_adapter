@@ -27,6 +27,7 @@ config("libhdi_pub_config") {
     "$hdf_uhdf_path/ipc/include",
     "$hdf_uhdf_path/hdi/include",
     "$hdf_uhdf_path/include/hdi",
+    "$hdf_uhdf_path/include/hdi/base",
     "$hdf_uhdf_path/shared/include",
   ]
 }
@@ -53,6 +54,7 @@ ohos_shared_library("libhdi") {
     "$hdf_framework_path/core/shared/src/service_status.c",
     "src/devmgr_client.c",
     "src/hdf_load_hdi.c",
+    "src/hdi_smq_syncer.cpp",
     "src/idevmgr_client.cpp",
     "src/iservmgr_client.cpp",
     "src/servmgr_client.c",

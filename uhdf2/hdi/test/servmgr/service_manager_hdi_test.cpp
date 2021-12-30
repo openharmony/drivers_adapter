@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 #include <hdf_io_service_if.h>
 #include <hdf_log.h>
+#include <hdi_smq.h>
 #include <idevmgr_hdi.h>
 #include <iostream>
 #include <ipc_object_stub.h>
@@ -30,14 +31,18 @@
 using namespace testing::ext;
 using OHOS::IRemoteObject;
 using OHOS::sptr;
+using OHOS::HDI::Base::SharedMemQueue;
+using OHOS::HDI::Base::SharedMemQueueMeta;
+using OHOS::HDI::Base::SmqType;
 using OHOS::HDI::DeviceManager::V1_0::IDeviceManager;
 using OHOS::HDI::ServiceManager::V1_0::IServiceManager;
 using OHOS::HDI::ServiceManager::V1_0::IServStatListener;
 using OHOS::HDI::ServiceManager::V1_0::ServiceStatus;
 using OHOS::HDI::ServiceManager::V1_0::ServStatListenerStub;
-
 constexpr const char *TEST_SERVICE_NAME = "sample_driver_service";
 constexpr int PAYLOAD_NUM = 1234;
+constexpr int SMQ_TEST_QUEUE_SIZE = 10;
+constexpr int SMQ_TEST_WAIT_TIME = 100;
 
 class HdfServiceMangerHdiTest : public testing::Test {
 public:
@@ -87,8 +92,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest002, TestSize.Level1)
 
 class IPCObjectStubTest : public OHOS::IPCObjectStub {
 public:
-    explicit IPCObjectStubTest()
-        : OHOS::IPCObjectStub(u"") {};
+    explicit IPCObjectStubTest() : OHOS::IPCObjectStub(u"") {};
     virtual ~IPCObjectStubTest() = default;
     int OnRemoteRequest(
         uint32_t code, OHOS::MessageParcel &data, OHOS::MessageParcel &reply, OHOS::MessageOption &option) override
@@ -246,8 +250,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest007, TestSize.Level1)
 class ServStatListener : public OHOS::HDI::ServiceManager::V1_0::ServStatListenerStub {
 public:
     using StatusCallback = std::function<void(const ServiceStatus &)>;
-    explicit ServStatListener(StatusCallback callback)
-        : callback_(std::move(callback))
+    explicit ServStatListener(StatusCallback callback) : callback_(std::move(callback))
     {
     }
     ~ServStatListener() = default;
@@ -450,4 +453,127 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest010, TestSize.Level1)
 
     OsalMSleep(10);
     ASSERT_FALSE(callbacked);
+
+    ret = devmgr->LoadDevice(TEST_SERVICE_NAME);
+    ASSERT_EQ(ret, HDF_SUCCESS);
+}
+
+/*
+ * smq test normal read/write
+ */
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest011, TestSize.Level1)
+{
+    HDF_LOGI("%{public}s:%{public}d", __func__, __LINE__);
+    auto servmgr = IServiceManager::Get();
+    ASSERT_TRUE(servmgr != nullptr);
+
+    auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    OHOS::MessageParcel data;
+    OHOS::MessageParcel reply;
+    OHOS::MessageOption option;
+    std::unique_ptr<SharedMemQueue<SampleSmqElement>> smq
+        = std::make_unique<SharedMemQueue<SampleSmqElement>>(SMQ_TEST_QUEUE_SIZE, SmqType::SYNCED_SMQ);
+    ASSERT_TRUE(smq->IsGood());
+
+    auto ret = smq->GetMeta()->Marshalling(data);
+    ASSERT_TRUE(ret);
+    data.WriteUint32(1);
+
+    int status = sampleService->SendRequest(SAMPLE_TRANS_SMQ, data, reply, option);
+    ASSERT_EQ(status, 0);
+
+    constexpr int SEND_TIMES = 20;
+    for (size_t i = 0; i < SEND_TIMES; i++) {
+        SampleSmqElement t = { 0 };
+        t.data32 = i;
+        t.data64 = i + 1;
+
+        HDF_LOGI("%{public}s:write smq message %{public}zu", __func__, i);
+        auto status = smq->Write(&t, 1,  OHOS::MillisecToNanosec(SMQ_TEST_WAIT_TIME));
+        ASSERT_EQ(status, 0);
+    }
+}
+
+/*
+ * smq test with overflow wait
+ */
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest012, TestSize.Level1)
+{
+    auto servmgr = IServiceManager::Get();
+    ASSERT_TRUE(servmgr != nullptr);
+
+    auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    OHOS::MessageParcel data;
+    OHOS::MessageParcel reply;
+    OHOS::MessageOption option;
+    std::unique_ptr<SharedMemQueue<SampleSmqElement>> smq
+        = std::make_unique<SharedMemQueue<SampleSmqElement>>(SMQ_TEST_QUEUE_SIZE, SmqType::SYNCED_SMQ);
+    ASSERT_TRUE(smq->IsGood());
+
+    constexpr uint32_t ELEMENT_SIZE = 2;
+
+    auto ret = smq->GetMeta()->Marshalling(data);
+    ASSERT_TRUE(ret);
+
+    data.WriteUint32(ELEMENT_SIZE);
+    int status = sampleService->SendRequest(SAMPLE_TRANS_SMQ, data, reply, option);
+    ASSERT_EQ(status, 0);
+
+    constexpr int SEND_TIMES = 20;
+    for (int i = 0; i < SEND_TIMES; i++) {
+        SampleSmqElement t[ELEMENT_SIZE] = {};
+        t[0].data32 = i;
+        t[0].data64 = i + 1;
+        t[1].data32 = i + 1;
+        t[1].data64 = i + 1;
+        HDF_LOGI("%{public}s:write smq message %{public}zu", __func__, i);
+        auto status = smq->Write(&t[0], ELEMENT_SIZE, OHOS::MillisecToNanosec(SMQ_TEST_WAIT_TIME));
+        ASSERT_EQ(status, 0);
+    }
+}
+
+/*
+ * smq test UNSYNC_SMQ
+ */
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest013, TestSize.Level1)
+{
+    auto servmgr = IServiceManager::Get();
+    ASSERT_TRUE(servmgr != nullptr);
+
+    auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    OHOS::MessageParcel data;
+    OHOS::MessageParcel reply;
+    OHOS::MessageOption option;
+
+    std::unique_ptr<SharedMemQueue<SampleSmqElement>> smq
+        = std::make_unique<SharedMemQueue<SampleSmqElement>>(SMQ_TEST_QUEUE_SIZE, SmqType::UNSYNC_SMQ);
+    ASSERT_TRUE(smq->IsGood());
+
+    constexpr uint32_t ELEMENT_SIZE = 2;
+
+    auto ret = smq->GetMeta()->Marshalling(data);
+    ASSERT_TRUE(ret);
+    data.WriteUint32(ELEMENT_SIZE);
+    auto status = sampleService->SendRequest(SAMPLE_TRANS_SMQ, data, reply, option);
+    ASSERT_EQ(status, 0);
+
+    SampleSmqElement t[ELEMENT_SIZE] = {};
+    status = smq->Write(&t[0], ELEMENT_SIZE);
+    EXPECT_NE(status, 0);
+    constexpr int SEND_TIMES = 20;
+    for (int i = 0; i < SEND_TIMES; i++) {
+        t[0].data32 = i;
+        t[0].data64 = i + 1;
+        t[1].data32 = i + 1;
+        t[1].data64 = i + 1;
+        HDF_LOGI("%{public}s:write smq message %{public}zu", __func__, i);
+        status = smq->WriteNonBlocking(&t[0], ELEMENT_SIZE);
+        ASSERT_EQ(status, 0);
+    }
 }
