@@ -12,15 +12,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "gpio_bes.h"
 #include <stdlib.h>
-#include "hal_iomux.h"
-#include "gpio_if.h"
 #include "device_resource_if.h"
-#include "osal_irq.h"
+#include "gpio_core.h"
+#include "hal_gpio.h"
+#include "hal_iomux.h"
 #include "hdf_log.h"
+#include "osal_irq.h"
 
-#define HDF_LOG_TAG gpioDriver
+#define HDF_LOG_TAG gpio_bes_c
+
+/*
+ * Pin configuration
+ */
+enum GPIO_CONFIG {
+    ANALOG_MODE,               /* Used as a function pin, input and output analog */
+    IRQ_MODE,                  /* Used to trigger interrupt */
+    INPUT_PULL_UP,             /* Input with an internal pull-up resistor - use with devices
+                                  that actively drive the signal low - e.g. button connected to ground */
+    INPUT_PULL_DOWN,           /* Input with an internal pull-down resistor - use with devices
+                                  that actively drive the signal high - e.g. button connected to a power rail */
+    INPUT_HIGH_IMPEDANCE,      /* Input - must always be driven, either actively or by an external pullup resistor */
+    OUTPUT_PUSH_PULL,          /* Output actively driven high and actively driven low -
+                                  must not be connected to other active outputs - e.g. LED output */
+    OUTPUT_OPEN_DRAIN_NO_PULL, /* Output actively driven low but is high-impedance when set high -
+                                  can be connected to other open-drain/open-collector outputs.
+                                  Needs an external pull-up resistor */
+    OUTPUT_OPEN_DRAIN_PULL_UP, /* Output actively driven low and is pulled high
+                                  with an internal resistor when set high -
+                                  can be connected to other open-drain/open-collector outputs. */
+};
+
+struct GpioResource {
+    uint32_t pin;
+    uint32_t realPin;
+    uint32_t config;
+    uint32_t pinNum;
+    uint32_t type; /**< Type of the input event EV_KEY */
+    uint32_t code; /**< Specific code item of the input event KEY_POWER*/
+    unsigned long physBase;
+};
+
+enum GpioDeviceState {
+    GPIO_DEVICE_UNINITIALIZED = 0x0u,
+    GPIO_DEVICE_INITIALIZED = 0x1u,
+};
+
+struct GpioDevice {
+    uint8_t port; /* gpio port */
+    struct GpioResource resource;
+    enum GPIO_CONFIG config; /* gpio config */
+};
+
+typedef int32_t (*oem_gpio_irq_handler_t)(uint16_t gpio, void *data);
+
+#define DECIMALNUM 10
+#define OCTALNUM 8
+
 static struct GpioCntlr gpioCntlr;
 struct OemGpioIrqHandler {
     uint8_t port;
@@ -29,7 +77,6 @@ struct OemGpioIrqHandler {
 };
 
 enum HAL_GPIO_PIN_T g_gpioPinReflectionMap[HAL_GPIO_PIN_LED_NUM] = {0};
-static struct OemGpioIrqHandler g_oemGpioIrqHandler[HAL_GPIO_PIN_LED_NUM] = {0};
 static struct HAL_GPIO_IRQ_CFG_T g_gpioIrqCfg[HAL_GPIO_PIN_LED_NUM] = {0};
 
 static struct HAL_GPIO_IRQ_CFG_T HalGpioGetIrqConfig(enum HAL_GPIO_PIN_T pin)
@@ -88,7 +135,7 @@ static int32_t GpioDevWrite(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t val
 static int32_t GpioDevRead(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t *val);
 static int32_t GpioDevSetDir(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t dir);
 static int32_t GpioDevGetDir(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t *dir);
-static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mode, GpioIrqFunc func, void *arg);
+static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mode);
 static int32_t GpioDevUnSetIrq(struct GpioCntlr *cntlr, uint16_t gpio);
 static int32_t GpioDevEnableIrq(struct GpioCntlr *cntlr, uint16_t gpio);
 static int32_t GpioDevDisableIrq(struct GpioCntlr *cntlr, uint16_t gpio);
@@ -342,7 +389,7 @@ static int32_t GpioDevGetDir(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t *d
     return HDF_SUCCESS;
 }
 
-static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mode, GpioIrqFunc func, void *arg)
+static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mode)
 {
     (void)cntlr;
     enum HAL_GPIO_PIN_T pin = (enum HAL_GPIO_PIN_T)g_gpioPinReflectionMap[gpio];
@@ -360,10 +407,6 @@ static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mo
         return HDF_ERR_NOT_SUPPORT;
     }
 
-    g_oemGpioIrqHandler[pin].port = gpio;
-    g_oemGpioIrqHandler[pin].func = func;
-    g_oemGpioIrqHandler[pin].arg = arg;
-
     g_gpioIrqCfg[pin].irq_polarity = mode;
 
     return HDF_SUCCESS;
@@ -377,9 +420,6 @@ static int32_t GpioDevUnSetIrq(struct GpioCntlr *cntlr, uint16_t gpio)
         HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, pin);
         return HDF_ERR_NOT_SUPPORT;
     }
-
-    g_oemGpioIrqHandler[pin].func = NULL;
-    g_oemGpioIrqHandler[pin].arg = NULL;
 
     return HDF_SUCCESS;
 }
