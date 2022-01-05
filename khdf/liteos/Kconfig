@@ -177,6 +177,13 @@ config DRIVERS_HDF_PLATFORM_WATCHDOG
     depends on DRIVERS_HDF_PLATFORM
     help
       Answer Y to enable HDF platform watchdog driver.
+      
+config DRIVERS_HDF_PLATFORM_TIMER
+    bool "Enable HDF platform timer driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform timer driver.
 
 config DRIVERS_HIEDMAC
     bool "Enable HIEDMAC"
