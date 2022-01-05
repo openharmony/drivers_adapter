@@ -177,6 +177,13 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_TIMER)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/timer/timer_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/timer/timer_if.c",
+    ]
+  }
+
   public_configs = [ ":public" ]
 }
 
@@ -204,5 +211,6 @@ config("public") {
     "$HDF_FRAMEWORKS_PATH/support/platform/include/spi",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/uart",
     "$HDF_FRAMEWORKS_PATH/support/platform/include/watchdog",
+    "$HDF_FRAMEWORKS_PATH/support/platform/include/timer",
   ]
 }

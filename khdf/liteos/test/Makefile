@@ -138,6 +138,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_PWM), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pwm_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_pwm_entry_test.c
 endif
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_TIMER), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/timer_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_timer_entry_test.c
+endif
+
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_REGULATOR), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/regulator_test.c

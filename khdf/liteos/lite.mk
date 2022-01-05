@@ -72,6 +72,7 @@ HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/regulator
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/spi
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/uart
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/watchdog
+HDF_INCLUDE += -I $(HDF_ROOT_DIR)/framework/support/platform/include/timer
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/model/storage/include
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/model/storage/include/mmc
 HDF_INCLUDE += -I $(HDF_ROOT_DIR)/adapter/khdf/liteos/model/storage/include/mtd
