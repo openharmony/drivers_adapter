@@ -119,7 +119,7 @@ config DRIVERS_HDF_PLATFORM_RTC
 config DRIVERS_HDF_PLATFORM_SDIO
     bool "Enable HDF platform sdio driver"
     default n
-    depends on DRIVERS_HDF_PLATFORM
+    depends on DRIVERS_HDF_PLATFORM && DRIVERS_HDF_PLATFORM_MMC
     help
       Answer Y to enable HDF platform sdio driver.
 
@@ -198,7 +198,7 @@ source "../../drivers/adapter/khdf/liteos/test/Kconfig"
 config DRIVERS_HDF_WIFI
     bool "Enable HDF WiFi Host driver"
     default n
-    depends on DRIVERS_HDF && NET_LWIP_SACK
+    depends on DRIVERS_HDF && NET_LWIP_SACK && DRIVERS_HDF_PLATFORM_SDIO
     help
       Answer Y to enable HDF WiFi Host driver.
 
