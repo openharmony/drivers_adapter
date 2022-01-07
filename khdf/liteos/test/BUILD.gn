@@ -227,6 +227,13 @@ hdf_driver(module_name) {
         "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_pwm_entry_test.c",
       ]
     }
+
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_TIMER)) {
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/timer_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_timer_entry_test.c",
+      ]
+    }
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR)) {

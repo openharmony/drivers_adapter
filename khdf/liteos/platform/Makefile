@@ -156,4 +156,9 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_REGULATOR), y)
     $(HDF_FRAMEWORKS)/support/platform/src/regulator/regulator_tree_mgr.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_TIMER), y)
+    LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/timer/timer_if.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/timer/timer_core.c
+endif
+
 include $(HDF_DRIVER)
