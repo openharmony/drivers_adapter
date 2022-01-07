@@ -24,9 +24,9 @@
 #define HDF_LOG_TAG dev_load_hdi
 
 #ifdef __ARM64__
-#define HDI_SO_PATH "/system/lib64"
+#define HDI_SO_PATH HDF_LIBRARY_DIR"64"
 #else
-#define HDI_SO_PATH "/system/lib"
+#define HDI_SO_PATH HDF_LIBRARY_DIR
 #endif
 struct HdiObject *LoadHdi(const char *name, uint32_t version)
 {
