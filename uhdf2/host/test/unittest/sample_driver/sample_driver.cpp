@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-#include "sample_hdi.h"
 #include <fcntl.h>
 #include <hdf_base.h>
 #include <hdf_device_desc.h>
@@ -22,6 +21,7 @@
 #include <hdf_remote_service.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
+#include "sample_hdi.h"
 
 #define HDF_LOG_TAG sample_driver
 
@@ -31,25 +31,25 @@ static int32_t SampleServiceDispatch(
     return SampleServiceOnRemoteRequest(client, cmdId, data, reply);
 }
 
-void HdfSampleDriverRelease(struct HdfDeviceObject *deviceObject)
+static void HdfSampleDriverRelease(struct HdfDeviceObject *deviceObject)
 {
     (void)deviceObject;
     return;
 }
 
-int HdfSampleDriverBind(struct HdfDeviceObject *deviceObject)
+static int HdfSampleDriverBind(struct HdfDeviceObject *deviceObject)
 {
     HDF_LOGE("HdfSampleDriverBind enter!");
     static struct IDeviceIoService testService = {
+        .Open = nullptr,
         .Dispatch = SampleServiceDispatch,
-        .Open = NULL,
-        .Release = NULL,
+        .Release = nullptr,
     };
     deviceObject->service = &testService;
     return HDF_SUCCESS;
 }
 
-int HdfSampleDriverInit(struct HdfDeviceObject *deviceObject)
+static int HdfSampleDriverInit(struct HdfDeviceObject *deviceObject)
 {
     HDF_LOGE("HdfSampleDriverInit enter, new hdi impl");
     if (HdfDeviceObjectSetServInfo(deviceObject, "sample_driver_service") != HDF_SUCCESS) {
@@ -58,7 +58,7 @@ int HdfSampleDriverInit(struct HdfDeviceObject *deviceObject)
     return HDF_SUCCESS;
 }
 
-struct HdfDriverEntry g_sampleDriverEntry = {
+static struct HdfDriverEntry g_sampleDriverEntry = {
     .moduleVersion = 1,
     .moduleName = "sample_driver",
     .Bind = HdfSampleDriverBind,
@@ -66,5 +66,6 @@ struct HdfDriverEntry g_sampleDriverEntry = {
     .Release = HdfSampleDriverRelease,
 };
 
+extern "C" {
 HDF_INIT(g_sampleDriverEntry);
-
+}

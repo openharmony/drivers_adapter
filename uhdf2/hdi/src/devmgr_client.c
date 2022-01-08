@@ -158,7 +158,7 @@ int32_t DevmgrLoadDevice(struct HDIDeviceManager *iDevMgr, const char *serviceNa
     if (iDevMgr == NULL || serviceName == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
-
+    HDF_LOGI("load device: %{public}s", serviceName);
     struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
     do {
         if (data == NULL) {
@@ -186,6 +186,7 @@ int32_t DevmgrUnloadDevice(struct HDIDeviceManager *iDevMgr, const char *service
     if (iDevMgr == NULL || serviceName == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
+    HDF_LOGI("unload device: %{public}s", serviceName);
 
     struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
     do {
