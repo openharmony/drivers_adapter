@@ -36,9 +36,7 @@
 struct Gr5xxGpioPortConfig {
     app_io_mode_t mode;
     app_io_pull_t pull;
-    GpioIrqFunc   irqFunc;
     app_handle_mode_t handleMode;
-    void         *arg;
 };
 
 static struct GpioCntlr g_GpioCntlr;
@@ -63,8 +61,6 @@ static void PortConfigInit(void)
     uint16_t cnt;
 
     for (cnt = 0; cnt < IO_NUM_MAX; cnt++) {
-        g_portCfg[cnt].irqFunc    = NULL;
-        g_portCfg[cnt].arg        = NULL;
         g_portCfg[cnt].pull       = IO_PULL_DEFAULT;
         g_portCfg[cnt].mode       = IO_MODE_DEFAULT;
         g_portCfg[cnt].handleMode = APP_IO_NONE_WAKEUP;
@@ -191,9 +187,7 @@ static void GR5xxGpioIrqHdl(app_gpiote_evt_t *event)
         HDF_LOGE("%s, event type error", __func__);
     }
 
-    if (g_portCfg[gpio].irqFunc != NULL) {
-        g_portCfg[gpio].irqFunc(gpio, g_portCfg[gpio].arg);
-    }
+    GpioCntlrIrqCallback(&g_GpioCntlr, gpio);
 }
 
 static int32_t GpioDevEnableIrq(struct GpioCntlr *cntlr, uint16_t gpio)
@@ -206,11 +200,6 @@ static int32_t GpioDevEnableIrq(struct GpioCntlr *cntlr, uint16_t gpio)
     if (gpio >= IO_NUM_MAX) {
         HDF_LOGE("%s, gpio index is greater than the maximum", __func__);
         return HDF_ERR_INVALID_PARAM;
-    }
-
-    if (g_portCfg[gpio].irqFunc == NULL) {
-        HDF_LOGE("%s, irq function is NULL", __func__);
-        return HDF_FAILURE;
     }
 
     ioType = GpioDevPinMap(gpio, &pin);
@@ -237,11 +226,6 @@ static int32_t GpioDevDisableIrq(struct GpioCntlr *cntlr, uint16_t gpio)
         return HDF_ERR_INVALID_PARAM;
     }
 
-    if (g_portCfg[gpio].irqFunc == NULL) {
-        HDF_LOGE("%s, irq function is NULL", __func__);
-        return HDF_FAILURE;
-    }
-
     ioType = GpioDevPinMap(gpio, &pin);
     gpioteParam.type = ioType;
     gpioteParam.pin  = pin;
@@ -254,7 +238,7 @@ static int32_t GpioDevDisableIrq(struct GpioCntlr *cntlr, uint16_t gpio)
     return HDF_SUCCESS;
 }
 
-static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mode, GpioIrqFunc func, void *arg)
+static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mode)
 {
     (void)cntlr;
     uint32_t pin = 0;
@@ -294,9 +278,6 @@ static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mo
             return HDF_ERR_INVALID_PARAM;
     }
 
-    g_portCfg[gpio].irqFunc = func;
-    g_portCfg[gpio].arg     = arg;
-
     return HDF_SUCCESS;
 }
 
@@ -311,13 +292,6 @@ static int32_t GpioDevUnSetIrq(struct GpioCntlr *cntlr, uint16_t gpio)
         HDF_LOGE("%s, gpio index is greater than the maximum", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-
-    if (g_portCfg[gpio].irqFunc == NULL) {
-        return HDF_SUCCESS;
-    }
-
-    g_portCfg[gpio].irqFunc = NULL;
-    g_portCfg[gpio].arg     = NULL;
 
     ioType = GpioDevPinMap(gpio, &pin);
     gpioteParam.type = ioType;
