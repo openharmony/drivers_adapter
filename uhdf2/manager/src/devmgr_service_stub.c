@@ -120,7 +120,8 @@ int32_t DevmgrServiceStubDispatch(
             break;
     }
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%{public}s devmgr service stub dispach failed, cmd id is %{public}d", __func__, code);
+        HDF_LOGE("%{public}s devmgr service stub dispach failed, cmd id is %{public}d, ret = %{public}d",
+            __func__, code, ret);
         HdfSbufWriteInt32(reply, ret);
     }
 

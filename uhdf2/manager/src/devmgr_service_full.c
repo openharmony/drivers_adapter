@@ -16,6 +16,7 @@
 #include "devmgr_service_full.h"
 #include "devhost_service.h"
 #include "devhost_service_clnt.h"
+#include "devhost_service_proxy.h"
 #include "device_token_clnt.h"
 #include "hdf_device_token.h"
 #include "hdf_driver_installer.h"
@@ -31,29 +32,48 @@ static Map g_hostMap = {0};
 #define HOST_INIT_DIE_NUM 1
 #define HOST_MAX_DIE_NUM 3
 
+static void CleanupDiedHostResources(struct DevHostServiceClnt *hostClnt)
+{
+    hostClnt->hostPid = INVALID_PID;
+    if (hostClnt->hostService != NULL) {
+        struct DevHostServiceProxy *hostProxy = (struct DevHostServiceProxy *)hostClnt->hostService;
+        DevHostServiceProxyRecycle(hostProxy);
+        hostClnt->hostService = NULL;
+    }
+
+    HdfSListFlush(&hostClnt->devices, DeviceTokenClntDelete);
+}
+
 static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *hostClnt)
 {
-    if (!HdfSListIsEmpty(&hostClnt->devices)) {
-        if (g_hostMap.nodeSize == 0) {
-            MapInit(&g_hostMap);
+    bool isHostEmpty = HdfSListIsEmpty(&hostClnt->devices);
+
+    CleanupDiedHostResources(hostClnt);
+    if (isHostEmpty) {
+        return INVALID_PID;
+    }
+
+    if (g_hostMap.nodeSize == 0) {
+        MapInit(&g_hostMap);
+    }
+    int *hostDieValue = (int *)MapGet(&g_hostMap, hostClnt->hostName);
+    if (hostDieValue == NULL) {
+        int hostDieNum = HOST_INIT_DIE_NUM;
+        MapSet(&g_hostMap, hostClnt->hostName, &hostDieNum, sizeof(int));
+    } else {
+        if (*hostDieValue > HOST_MAX_DIE_NUM) {
+            HDF_LOGE("host %{public}s die 4 times, remove it", hostClnt->hostName);
+            *hostDieValue = 0;
+            return INVALID_PID;
         }
-        int *hostDieValue = (int *)MapGet(&g_hostMap, hostClnt->hostName);
-        if (hostDieValue == NULL) {
-            int hostDieNum = HOST_INIT_DIE_NUM;
-            MapSet(&g_hostMap, hostClnt->hostName, &hostDieNum, sizeof(int));
-        } else {
-            if (*hostDieValue > HOST_MAX_DIE_NUM) {
-                HDF_LOGE("host %{public}s die 4 times, remove it", hostClnt->hostName);
-                *hostDieValue = 0;
-                return INVALID_PID;
-            }
-            (*hostDieValue)++;
-        }
-        struct IDriverInstaller *installer = DriverInstallerGetInstance();
-        if (installer != NULL && installer->StartDeviceHost != NULL) {
-            hostClnt->hostPid = installer->StartDeviceHost(hostClnt->hostId, hostClnt->hostName);
-            return hostClnt->hostPid;
-        }
+        (*hostDieValue)++;
+    }
+    HDF_LOGI("%{public}s:%{public}d", __func__, __LINE__);
+    struct IDriverInstaller *installer = DriverInstallerGetInstance();
+    if (installer != NULL && installer->StartDeviceHost != NULL) {
+        HDF_LOGI("%{public}s:%{public}d", __func__, __LINE__);
+        hostClnt->hostPid = installer->StartDeviceHost(hostClnt->hostId, hostClnt->hostName);
+        return hostClnt->hostPid;
     }
     return INVALID_PID;
 }
@@ -70,9 +90,8 @@ void DevmgrServiceFullOnDeviceHostDied(struct DevmgrServiceFull *inst, uint32_t 
     DLIST_FOR_EACH_ENTRY_SAFE(hostClnt, hostClntTmp,  &inst->super.hosts, struct DevHostServiceClnt, node) {
         if (hostClnt->hostId == hostId) {
             int32_t ret = DevmgrServiceFullHandleDeviceHostDied(hostClnt);
-            if (ret == INVALID_PID && HdfSListIsEmpty(&hostClnt->dynamicDevInfos)) {
-                DListRemove(&hostClnt->node);
-                DevHostServiceClntFreeInstance(hostClnt);
+            if (ret == INVALID_PID) {
+                HDF_LOGE("%{public}s: failed to respawn host %{public}s", __func__, hostClnt->hostName);
             }
             break;
         }
@@ -96,14 +115,14 @@ int32_t DevmgrServiceFullDispatchMessage(struct HdfMessageTask *task, struct Hdf
             break;
         }
         default: {
-            HDF_LOGE("Message is wrong, message is %{public}u", msg->messageId);
+            HDF_LOGE("wrong message(%{public}u)", msg->messageId);
         }
     }
 
     return HDF_SUCCESS;
 }
 
-struct HdfMessageTask *DevmgrServiceFullGetMessageTask()
+struct HdfMessageTask *DevmgrServiceFullGetMessageTask(void)
 {
     struct DevmgrServiceFull *fullService =
         (struct DevmgrServiceFull *)DevmgrServiceGetInstance();
@@ -126,7 +145,7 @@ void DevmgrServiceFullConstruct(struct DevmgrServiceFull *inst)
     }
 }
 
-struct HdfObject *DevmgrServiceFullCreate()
+struct HdfObject *DevmgrServiceFullCreate(void)
 {
     static struct DevmgrServiceFull *instance = NULL;
     if (instance == NULL) {

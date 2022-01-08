@@ -74,7 +74,7 @@ int main(int argc, char **argv)
         return HDF_ERR_INVALID_PARAM;
     }
     const char *hostName = argv[argc - 1];
-    HDF_LOGD("hdf device host %{public}s start", hostName);
+    HDF_LOGD("hdf device host %{public}s %{public}d start", hostName, hostId);
     SetProcTitle(argv, hostName);
 
     struct IDevHostService *instance = DevHostServiceNewInstance(hostId, hostName);

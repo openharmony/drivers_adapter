@@ -20,6 +20,7 @@
 #include <hdf_log.h>
 #include <osal_mem.h>
 #include <securec.h>
+#include <hdi_smq_meta.h>
 
 struct HdfDeviceObject;
 struct HdfDeviceIoClient;
@@ -31,6 +32,11 @@ struct DataBlock {
     int c;
 };
 
+struct SampleSmqElement {
+    int32_t data32;
+    uint64_t data64;
+};
+
 enum {
     SAMPLE_SERVICE_PING = 0,
     SAMPLE_SERVICE_SUM,
@@ -40,6 +46,7 @@ enum {
     SAMPLE_REGISTER_DEVICE,
     SAMPLE_UNREGISTER_DEVICE,
     SAMPLE_UPDATE_SERVIE,
+    SAMPLE_TRANS_SMQ,
 };
 
 struct SampleHdi {
@@ -49,9 +56,11 @@ struct SampleHdi {
     int32_t (*registerDevice)(struct HdfDeviceObject *device, const char *servName);
     int32_t (*unregisterDevice)(struct HdfDeviceObject *device, const char *servName);
     int32_t (*updateService)(struct HdfDeviceObject *device, const char *info);
+    int32_t (*tansSmq)(struct HdfDeviceObject *device, OHOS::HDI::Base::SharedMemQueueMeta<SampleSmqElement> *smqMeta,
+        uint32_t element);
 };
 
-const struct SampleHdi *SampleHdiImplInstance();
+const struct SampleHdi *SampleHdiImplInstance(void);
 
 int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId,
     struct HdfSBuf *data, struct HdfSBuf *reply);
@@ -59,7 +68,7 @@ int32_t SampleServiceOnRemoteRequest(struct HdfDeviceIoClient *client, int cmdId
 
 static inline void DataBlockFree(struct DataBlock *dataBlock)
 {
-    if (dataBlock != NULL) {
+    if (dataBlock != nullptr) {
         OsalMemFree((void *)dataBlock->str);
         OsalMemFree(dataBlock);
     }
@@ -67,39 +76,39 @@ static inline void DataBlockFree(struct DataBlock *dataBlock)
 
 static inline struct DataBlock *DataBlockBlockUnmarshalling(struct HdfSBuf *data)
 {
-    const struct DataBlock *dataBlock_ = NULL;
+    const struct DataBlock *dataBlock_ = nullptr;
     uint32_t readSize = 0;
 
     if (!HdfSbufReadBuffer(data, (const void **)&dataBlock_, &readSize)) {
         HDF_LOGE("%{public}s: failed to read dataBlock", __func__);
-        return NULL;
+        return nullptr;
     }
 
     if (readSize != sizeof(struct DataBlock)) {
         HDF_LOGE("%{public}s: dataBlock size mismatch %{public}d", __func__, readSize);
-        return NULL;
+        return nullptr;
     }
 
     struct DataBlock *dataBlock = (struct DataBlock *)OsalMemAlloc(sizeof(struct DataBlock));
-    if (dataBlock == NULL) {
-        return NULL;
+    if (dataBlock == nullptr) {
+        return nullptr;
     }
     HDF_LOGD("%{public}s: DataBlock mem: %{public}d %{public}d %{public}d", __func__,
         dataBlock_->a, dataBlock_->b, dataBlock_->c);
     if (memcpy_s(dataBlock, sizeof(*dataBlock), dataBlock_, sizeof(*dataBlock)) != EOK) {
-        return NULL;
+        return nullptr;
     }
 
-    const char *str = NULL;
+    const char *str = nullptr;
     if (!HdfSbufReadBuffer(data, (const void **)&str, &readSize)) {
         HDF_LOGE("%{public}s: failed to read dataBlock.str", __func__);
-        return NULL;
+        return nullptr;
     }
 
     dataBlock->str = strdup(str);
-    if (dataBlock->str == NULL) {
+    if (dataBlock->str == nullptr) {
         OsalMemFree(dataBlock);
-        return NULL;
+        return nullptr;
     }
 
     return dataBlock;
@@ -117,6 +126,5 @@ static inline bool DataBlockBlockMarshalling(struct DataBlock *dataBlock, struct
 
     return true;
 }
-
 
 #endif // SAMPLE_SERVICE_HDF_H
