@@ -17,6 +17,7 @@
 
 #include <atomic>
 #include <cstddef>
+#include <memory>
 #include <message_parcel.h>
 #include <unistd.h>
 
@@ -62,7 +63,7 @@ public:
 
     MemZone *GetMemZone(uint32_t type);
     bool Marshalling(MessageParcel &parcel);
-    static SharedMemQueueMeta<T> *UnMarshalling(MessageParcel &parcel);
+    static std::shared_ptr<SharedMemQueueMeta<T>> UnMarshalling(MessageParcel &parcel);
 
     size_t AlignToWord(size_t num)
     {
@@ -183,7 +184,7 @@ bool SharedMemQueueMeta<T>::Marshalling(MessageParcel &parcel)
 }
 
 template <typename T>
-SharedMemQueueMeta<T> *SharedMemQueueMeta<T>::UnMarshalling(MessageParcel &parcel)
+std::shared_ptr<SharedMemQueueMeta<T>> SharedMemQueueMeta<T>::UnMarshalling(MessageParcel &parcel)
 {
     auto readMeta = reinterpret_cast<const SharedMemQueueMeta<T> *>(parcel.ReadBuffer(sizeof(SharedMemQueueMeta<T>)));
     if (readMeta == nullptr) {
@@ -197,7 +198,7 @@ SharedMemQueueMeta<T> *SharedMemQueueMeta<T>::UnMarshalling(MessageParcel &parce
         return nullptr;
     }
 
-    auto meta = new SharedMemQueueMeta<T>(*readMeta);
+    auto meta = std::make_shared<SharedMemQueueMeta<T>>(*readMeta);
     meta->SetFd(fd);
 
     return meta;

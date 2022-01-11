@@ -177,7 +177,6 @@ static int32_t SampleServiceTansSmq(
         }
     });
     t.detach();
-    HDF_LOGI("YDEBUG:%{public}s %{public}d", __func__, __LINE__);
 
     return HDF_SUCCESS;
 }
