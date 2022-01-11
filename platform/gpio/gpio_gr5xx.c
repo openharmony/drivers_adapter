@@ -244,11 +244,6 @@ static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mo
     uint32_t pin = 0;
     app_io_type_t ioType;
 
-    if (func == NULL) {
-        HDF_LOGE("%s, irq function is NULL", __func__);
-        return HDF_ERR_INVALID_PARAM;
-    }
-
     if (gpio >= IO_NUM_MAX) {
         HDF_LOGE("%s, gpio index is greater than the maximum", __func__);
         return HDF_ERR_INVALID_PARAM;
