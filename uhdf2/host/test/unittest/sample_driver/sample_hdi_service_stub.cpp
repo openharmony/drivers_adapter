@@ -162,7 +162,8 @@ static int32_t SampleServiceSmqTrans(struct HdfDeviceIoClient *client, struct Hd
     if (SbufToParcel(data, &parcel) != HDF_SUCCESS) {
         return HDF_FAILURE;
     }
-    SharedMemQueueMeta<SampleSmqElement> *smqMeta = SharedMemQueueMeta<SampleSmqElement>::UnMarshalling(*parcel);
+    std::shared_ptr<SharedMemQueueMeta<SampleSmqElement>> smqMeta =
+        SharedMemQueueMeta<SampleSmqElement>::UnMarshalling(*parcel);
     if (smqMeta == nullptr) {
         HDF_LOGE("failed to read smq meta form parcel");
         return HDF_ERR_INVALID_PARAM;
@@ -170,7 +171,7 @@ static int32_t SampleServiceSmqTrans(struct HdfDeviceIoClient *client, struct Hd
 
     uint32_t element = parcel->ReadUint32();
 
-    return SampleHdiImplInstance()->tansSmq(client->device, smqMeta, element);
+    return SampleHdiImplInstance()->tansSmq(client->device, smqMeta.get(), element);
 }
 
 int32_t SampleServiceOnRemoteRequest(

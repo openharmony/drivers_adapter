@@ -26,7 +26,6 @@ namespace V1_0 {
 int ServStatListenerStub::OnRemoteRequest(uint32_t code,
     OHOS::MessageParcel &data, OHOS::MessageParcel &reply, OHOS::MessageOption &option)
 {
-    HDF_LOGI("ServStatListenerStub OnRemoteRequest called");
     switch (code) {
         case SERVIE_STATUS_LISTENER_NOTIFY:
             return ServStatListenerStubOnReceive(data, reply, option);

@@ -256,7 +256,6 @@ public:
     ~ServStatListener() = default;
     void OnReceive(const ServiceStatus &status) override
     {
-        HDF_LOGI("service status on receive");
         callback_(status);
     }
 
@@ -279,20 +278,21 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest008, TestSize.Level1)
     auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
-    std::string servName;
     std::string servInfo;
     uint16_t devClass;
     uint16_t servStatus;
     bool callbacked = false;
     ::OHOS::sptr<IServStatListener> listener
-        = new ServStatListener(ServStatListener::StatusCallback([&](const ServiceStatus &status) {
-              HDF_LOGI("service status callback");
-              servName = status.serviceName;
-              servInfo = status.info;
-              devClass = status.deviceClass;
-              servStatus = status.status;
-              callbacked = true;
-          }));
+        = new ServStatListener(
+            ServStatListener::StatusCallback([&](const ServiceStatus &status) {
+                HDF_LOGI("service status callback");
+                if (status.serviceName == std::string(TEST_SERVICE_NAME)) {
+                    servInfo = status.info;
+                    devClass = status.deviceClass;
+                    servStatus = status.status;
+                    callbacked = true;
+                }
+            }));
 
     int status = servmgr->RegisterServiceStatusListener(listener, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(status, HDF_SUCCESS);
@@ -305,7 +305,6 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest008, TestSize.Level1)
         count--;
     }
     ASSERT_TRUE(callbacked);
-    ASSERT_EQ(servName, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(servInfo, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(servStatus, OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_START);
@@ -320,7 +319,6 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest008, TestSize.Level1)
         count--;
     }
     ASSERT_TRUE(callbacked);
-    ASSERT_EQ(servName, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(servInfo, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(servStatus, OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_STOP);
@@ -350,20 +348,22 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
     sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
-    std::string servName;
     std::string servInfo;
     uint16_t devClass;
     uint16_t servStatus;
     bool callbacked = false;
     ::OHOS::sptr<IServStatListener> listener
-        = new ServStatListener(ServStatListener::StatusCallback([&](const ServiceStatus &status) {
-              HDF_LOGI("service status callback");
-              servName = status.serviceName;
-              servInfo = status.info;
-              devClass = status.deviceClass;
-              servStatus = status.status;
-              callbacked = true;
-          }));
+        = new ServStatListener(
+            ServStatListener::StatusCallback([&](const ServiceStatus &status) {
+                if (status.serviceName == std::string(TEST_SERVICE_NAME)) {
+                    servInfo = status.info;
+                    devClass = status.deviceClass;
+                    servStatus = status.status;
+                    callbacked = true;
+                }
+            }));
+    constexpr int FIRST_WAIT = 20;
+    OsalMSleep(FIRST_WAIT); // skip callback on register
 
     int status = servmgr->RegisterServiceStatusListener(listener, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(status, HDF_SUCCESS);
@@ -373,6 +373,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
     OHOS::MessageOption option;
     std::string info = "foo";
     data.WriteCString(info.data());
+    callbacked = false;
     status = sampleService->SendRequest(SAMPLE_UPDATE_SERVIE, data, reply, option);
     ASSERT_EQ(status, HDF_SUCCESS);
 
@@ -382,7 +383,6 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
         count--;
     }
     ASSERT_TRUE(callbacked);
-    ASSERT_EQ(servName, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(servInfo, info);
     ASSERT_EQ(servStatus, OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_CHANGE);
@@ -409,20 +409,21 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest010, TestSize.Level1)
     auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
-    std::string servName;
     std::string servInfo;
     uint16_t devClass;
     uint16_t servStatus;
     bool callbacked = false;
     ::OHOS::sptr<IServStatListener> listener
-        = new ServStatListener(ServStatListener::StatusCallback([&](const ServiceStatus &status) {
-              HDF_LOGI("service status callback");
-              servName = status.serviceName;
-              servInfo = status.info;
-              devClass = status.deviceClass;
-              servStatus = status.status;
-              callbacked = true;
-          }));
+        = new ServStatListener(
+            ServStatListener::StatusCallback([&](const ServiceStatus &status) {
+                HDF_LOGI("service status callback");
+                if (status.serviceName == std::string(TEST_SERVICE_NAME)) {
+                    servInfo = status.info;
+                    devClass = status.deviceClass;
+                    servStatus = status.status;
+                    callbacked = true;
+                }
+            }));
 
     int status = servmgr->RegisterServiceStatusListener(listener, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(status, HDF_SUCCESS);
@@ -436,7 +437,6 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest010, TestSize.Level1)
         count--;
     }
     ASSERT_TRUE(callbacked);
-    ASSERT_EQ(servName, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(servInfo, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(servStatus, OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_START);
@@ -491,7 +491,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest011, TestSize.Level1)
         t.data64 = i + 1;
 
         HDF_LOGI("%{public}s:write smq message %{public}zu", __func__, i);
-        auto status = smq->Write(&t, 1,  OHOS::MillisecToNanosec(SMQ_TEST_WAIT_TIME));
+        auto status = smq->Write(&t, 1, OHOS::MillisecToNanosec(SMQ_TEST_WAIT_TIME));
         ASSERT_EQ(status, 0);
     }
 }
@@ -576,4 +576,44 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest013, TestSize.Level1)
         status = smq->WriteNonBlocking(&t[0], ELEMENT_SIZE);
         ASSERT_EQ(status, 0);
     }
+}
+
+/*
+ * Test service status listener get serviec callback on register
+ */
+HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest014, TestSize.Level1)
+{
+    auto servmgr = IServiceManager::Get();
+    ASSERT_TRUE(servmgr != nullptr);
+
+    auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
+    ASSERT_NE(sampleService, nullptr);
+
+    bool callbacked = false;
+    bool sampleServiceStarted = false;
+    uint16_t servStatus = 0;
+    ::OHOS::sptr<IServStatListener> listener
+        = new ServStatListener(
+            ServStatListener::StatusCallback([&](const ServiceStatus &status) {
+                HDF_LOGI("service status callback, service is %{public}s", status.serviceName.data());
+                callbacked = true;
+                if (status.serviceName == std::string(TEST_SERVICE_NAME)) {
+                    sampleServiceStarted = true;
+                    servStatus = status.status;
+                }
+            }));
+
+    int status = servmgr->RegisterServiceStatusListener(listener, DEVICE_CLASS_DEFAULT);
+    ASSERT_EQ(status, HDF_SUCCESS);
+    constexpr int WAIT_COUNT = 10;
+    int count = WAIT_COUNT;
+    while (!sampleServiceStarted && count > 0) {
+        OsalMSleep(1);
+        count--;
+    }
+    ASSERT_TRUE(callbacked);
+    ASSERT_TRUE(sampleServiceStarted);
+    ASSERT_EQ(servStatus, OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_START);
+    status = servmgr->UnregisterServiceStatusListener(listener);
+    ASSERT_EQ(status, HDF_SUCCESS);
 }
