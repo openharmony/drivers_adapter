@@ -40,4 +40,5 @@ hdf_driver("hdf_osal_lite") {
     "src/osal_time.c",
     "src/osal_timer.c",
   ]
+  deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static" ]
 }
