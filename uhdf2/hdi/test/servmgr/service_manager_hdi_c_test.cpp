@@ -299,7 +299,6 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
 struct ServiceStatusData {
     ServiceStatusData() : devClass(0), servStatus(0), callbacked(false) {}
     ~ServiceStatusData() = default;
-    std::string servName;
     std::string servInfo;
     uint16_t devClass;
     uint16_t servStatus;
@@ -312,14 +311,14 @@ static void TestOnServiceStatusReceived(struct ServiceStatusListener *listener, 
     if (ssd == nullptr) {
         return;
     }
-    ssd->servName = servstat->serviceName;
-    ssd->servInfo = servstat->info != nullptr ? servstat->info : "";
-    ssd->devClass = servstat->deviceClass;
-    ssd->servStatus = servstat->status;
-    ssd->callbacked = true;
+    if (strcmp(servstat->serviceName, TEST_SERVICE_NAME) == 0) {
+        ssd->servInfo = servstat->info != nullptr ? servstat->info : "";
+        ssd->devClass = servstat->deviceClass;
+        ssd->servStatus = servstat->status;
+        ssd->callbacked = true;
+    }
 
-    HDF_LOGI("service status listener callback: %{public}s, %{public}s, %{public}d",
-        servstat->serviceName, ssd->servName.data(), ssd->servStatus);
+    HDF_LOGI("service status listener callback: %{public}s, %{public}d", servstat->serviceName, servstat->status);
 }
 
 /*
@@ -351,28 +350,28 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest008, TestSize.Level1)
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
-    int count = 10;
+    constexpr int WAIT_COUNT = 10;
+    int count = WAIT_COUNT;
     while (!ssd.callbacked && count > 0) {
         OsalMSleep(1);
         count--;
     }
 
     ASSERT_TRUE(ssd.callbacked);
-    ASSERT_EQ(ssd.servName, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(ssd.devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(ssd.servInfo, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_START);
 
+    ssd.callbacked = false;
     ret = devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
-    count = 10;
+    count = WAIT_COUNT;
     while (!ssd.callbacked && count > 0) {
         OsalMSleep(1);
         count--;
     }
     ASSERT_TRUE(ssd.callbacked);
-    ASSERT_EQ(ssd.servName, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(ssd.devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(ssd.servInfo, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_STOP);
@@ -411,6 +410,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
 
     int status = servmgr->RegisterServiceStatusListener(servmgr, listener, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(status, HDF_SUCCESS);
+    constexpr int FIRST_WAIT = 20;
+    OsalMSleep(FIRST_WAIT); // skip callback on register
 
     std::string info = "foo";
     struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
@@ -421,16 +422,17 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
     ret = HdfSbufWriteString(data, info.data());
     ASSERT_TRUE(ret);
 
+    ssd.callbacked = false;
     status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_UPDATE_SERVIE, data, reply);
     ASSERT_EQ(status, HDF_SUCCESS);
 
-    int count = 10;
+    constexpr int WAIT_COUNT = 10;
+    int count = WAIT_COUNT;
     while (!ssd.callbacked && count > 0) {
         OsalMSleep(1);
         count--;
     }
     ASSERT_TRUE(ssd.callbacked);
-    ASSERT_EQ(ssd.servName, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(ssd.devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(ssd.servInfo, info);
     ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_CHANGE);
@@ -470,13 +472,13 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest010, TestSize.Level1)
     int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
-    int count = 10;
+    constexpr int WAIT_COUNT = 10;
+    int count = WAIT_COUNT;
     while (!ssd.callbacked && count > 0) {
         OsalMSleep(1);
         count--;
     }
     ASSERT_TRUE(ssd.callbacked);
-    ASSERT_EQ(ssd.servName, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(ssd.devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(ssd.servInfo, std::string(TEST_SERVICE_NAME));
     ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_START);
@@ -492,7 +494,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest010, TestSize.Level1)
     ASSERT_EQ(ret, HDF_SUCCESS);
 
     ssd.callbacked = false;
-    OsalMSleep(10);
+    OsalMSleep(WAIT_COUNT);
     ASSERT_FALSE(ssd.callbacked);
 }
 
