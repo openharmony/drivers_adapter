@@ -40,6 +40,7 @@ ohos_shared_library("libhdf_test_common") {
     "-fno-strict-aliasing",
   ]
   subsystem_name = "hdf"
+  part_name = "device_driver_framework"
   if (is_standard_system) {
     external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
   } else {

@@ -80,7 +80,7 @@ ohos_executable("hdf_devmgr") {
   # install_images = [ "vendor" ]
   install_enable = true
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "device_driver_framework"
 }
 
 ohos_prebuilt_etc("hdf_devmgr.rc") {
@@ -91,5 +91,5 @@ ohos_prebuilt_etc("hdf_devmgr.rc") {
   }
   relative_install_dir = "init"
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "device_driver_framework"
 }
