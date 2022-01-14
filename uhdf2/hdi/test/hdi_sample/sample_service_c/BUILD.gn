@@ -39,5 +39,5 @@ ohos_shared_library("libsample_service_c") {
 
   # install_images = [ "vendor" ]
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "device_driver_framework"
 }
