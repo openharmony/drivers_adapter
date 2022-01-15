@@ -101,7 +101,7 @@ ohos_shared_library("libhdf_host") {
 
   # install_images = [ "vendor" ]
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "device_driver_framework"
 }
 
 ohos_executable("hdf_devhost") {
@@ -142,5 +142,5 @@ ohos_executable("hdf_devhost") {
   # install_images = [ "vendor" ]
   install_enable = true
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "device_driver_framework"
 }

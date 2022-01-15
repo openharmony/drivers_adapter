@@ -68,5 +68,5 @@ ohos_shared_library("libhdf_platform") {
 
   # install_images = [ "vendor" ]
   subsystem_name = "hdf"
-  part_name = "hdf"
+  part_name = "device_driver_framework"
 }
