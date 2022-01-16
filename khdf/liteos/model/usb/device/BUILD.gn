@@ -77,5 +77,6 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_USB_DDK_DEVICE/../../interfaces/ddk/device",
     "$FRAMEWORKS_USB_DDK_DEVICE/include",
     "$FRAMEWORKS_USB_DRIVERS/include",
+    "$LITEOSTOPDIR/../../vendor/hisilicon/Hi3516DV300/usb",
   ]
 }
