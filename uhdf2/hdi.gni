@@ -17,14 +17,20 @@ import("//drivers/adapter/uhdf2/uhdf.gni")
 hdf_fwk_path = "//drivers/framework"
 
 template("hdi") {
-  lib_client = "lib" + target_name + "_proxy"
-  lib_server = "lib" + target_name + "_stub"
-
   assert(defined(invoker.package), "package are must")
   assert(defined(invoker.sources), "sources are must")
   assert(defined(invoker.language), "language are must")
   assert(defined(invoker.subsystem_name), "subsystem_name are must")
   assert(defined(invoker.part_name), "part_name are must")
+
+  get_version_args = [ "-v" ]
+  get_version_args += rebase_path(invoker.sources)
+  version = exec_script("$hdf_fwk_path/tools/hdi-gen/build_hdi_files.py",
+                        get_version_args,
+                        "string")
+
+  lib_client = "lib" + target_name + "_proxy" + "_" + version
+  lib_server = "lib" + target_name + "_stub" + "_" + version
 
   config("hdi_public_config") {
     package = invoker.package
@@ -39,10 +45,6 @@ template("hdi") {
       "$target_gen_dir",
       "$package_root_dir",
     ]
-  }
-
-  config("hdi_public_server_config") {
-    defines = [ "__HDI_SERVER__" ]
   }
 
   action("hdi_gen") {
@@ -144,10 +146,7 @@ template("hdi") {
                             get_source_args,
                             "list lines")
 
-      public_configs = [
-        ":hdi_public_config",
-        ":hdi_public_server_config",
-      ]
+      public_configs = [ ":hdi_public_config" ]
 
       deps = [
         "$hdf_uhdf_path/hdi:libhdi",
