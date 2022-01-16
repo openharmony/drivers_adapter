@@ -61,7 +61,8 @@ FRAMEWORKS_USB_DEVICE_DEMO_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/usb/g
 
 LOCAL_INCLUDE += $(FRAMEWORKS_USB_DDK_DEVICE)/../../interfaces/ddk/common \
                  $(FRAMEWORKS_USB_DDK_DEVICE)/../../interfaces/ddk/device \
-                 $(FRAMEWORKS_USB_DEVICE_DEMO_ROOT)/include
+                 $(FRAMEWORKS_USB_DEVICE_DEMO_ROOT)/include \
+                 $(LITEOSTOPDIR)/../../vendor/hisilicon/Hi3516DV300/usb
 
 LOCAL_SRCS += $(FRAMEWORKS_USB_DEVICE_DEMO_ROOT)/master/dev_master.c \
               $(FRAMEWORKS_USB_DEVICE_DEMO_ROOT)/acm/cdcacm.c \
