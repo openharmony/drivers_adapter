@@ -61,14 +61,14 @@ static struct HdfSysEventNotifier *HdfSysEventNotifierGetInstance(void)
 
 static int FinishEvent(struct HdfIoService *service, const struct HdfSysEvent *event)
 {
-    struct HdfSBuf *sbuf = HdfSBufObtain(sizeof(uint64_t));
+    struct HdfSBuf *sbuf = HdfSbufObtain(sizeof(uint64_t));
 
     if (sbuf == NULL) {
         return HDF_ERR_MALLOC_FAIL;
     }
 
     if (!HdfSbufWriteUint64(sbuf, event->syncToken)) {
-        HdfSBufRecycle(sbuf);
+        HdfSbufRecycle(sbuf);
         return HDF_FAILURE;
     }
 
@@ -77,7 +77,7 @@ static int FinishEvent(struct HdfIoService *service, const struct HdfSysEvent *e
         HDF_LOGE("failed to finish sysevent, %{public}d", ret);
     }
 
-    HdfSBufRecycle(sbuf);
+    HdfSbufRecycle(sbuf);
     return ret;
 }
 

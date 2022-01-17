@@ -57,13 +57,13 @@ static int32_t SampleServiceSum(struct HdfDeviceObject *device, int32_t x0, int3
 static int32_t SampleServiceCallback(struct HdfDeviceObject *device, struct HdfRemoteService *callback, int32_t code)
 {
     (void)device;
-    struct HdfSBuf *dataSbuf = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *dataSbuf = HdfSbufTypedObtain(SBUF_IPC);
     HdfSbufWriteInt32(dataSbuf, code);
     int ret = callback->dispatcher->Dispatch(callback, 0, dataSbuf, nullptr);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("failed to do callback, ret = %{public}d", ret);
     }
-    HdfSBufRecycle(dataSbuf);
+    HdfSbufRecycle(dataSbuf);
     return ret;
 }
 

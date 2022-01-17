@@ -70,8 +70,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest002, TestSize.Level1)
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
 
@@ -81,8 +81,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest002, TestSize.Level1)
     int status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_SERVICE_PING, data, reply);
     ASSERT_EQ(status, 0);
 
-    HdfSBufRecycle(data);
-    HdfSBufRecycle(reply);
+    HdfSbufRecycle(data);
+    HdfSbufRecycle(reply);
 }
 
 static int32_t g_callbackPayload = 0;
@@ -110,21 +110,21 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest003, TestSize.Level1)
 
     struct HdfRemoteService *callback = HdfRemoteServiceObtain(nullptr, &g_callbackDispatcher);
     ASSERT_NE(callback, nullptr);
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
 
     int32_t payload = PAYLOAD_NUM;
     HdfSbufWriteInt32(data, payload);
-    HdfSBufWriteRemoteService(data, callback);
+    HdfSbufWriteRemoteService(data, callback);
 
     int status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_SERVICE_CALLBACK, data, reply);
     ASSERT_EQ(status, 0);
     ASSERT_EQ(g_callbackPayload, payload);
 
-    HdfSBufRecycle(data);
-    HdfSBufRecycle(reply);
+    HdfSbufRecycle(data);
+    HdfSbufRecycle(reply);
 }
 
 HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest004, TestSize.Level1)
@@ -136,8 +136,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest004, TestSize.Level1)
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
     HdfSbufWriteInt32(data, PAYLOAD_NUM);
@@ -152,8 +152,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest004, TestSize.Level1)
     int32_t expRes = PAYLOAD_NUM + PAYLOAD_NUM;
     ASSERT_EQ(result, expRes);
 
-    HdfSBufRecycle(data);
-    HdfSBufRecycle(reply);
+    HdfSbufRecycle(data);
+    HdfSbufRecycle(reply);
 }
 
 HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest005, TestSize.Level1)
@@ -165,8 +165,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest005, TestSize.Level1)
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
 
@@ -186,8 +186,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest005, TestSize.Level1)
     ASSERT_TRUE(!strcmp(dataBlock_->str, dataBlock.str));
     DataBlockFree(dataBlock_);
 
-    HdfSBufRecycle(data);
-    HdfSBufRecycle(reply);
+    HdfSbufRecycle(data);
+    HdfSbufRecycle(reply);
 }
 
 HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest006, TestSize.Level1)
@@ -199,8 +199,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest006, TestSize.Level1)
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
 
@@ -223,8 +223,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest006, TestSize.Level1)
         ASSERT_EQ(retBuffer[i], i);
     }
 
-    HdfSBufRecycle(data);
-    HdfSBufRecycle(reply);
+    HdfSbufRecycle(data);
+    HdfSbufRecycle(reply);
 }
 
 HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
@@ -245,8 +245,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
 
@@ -292,8 +292,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
-    HdfSBufRecycle(data);
-    HdfSBufRecycle(reply);
+    HdfSbufRecycle(data);
+    HdfSbufRecycle(reply);
 }
 
 struct ServiceStatusData {
@@ -414,8 +414,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
     OsalMSleep(FIRST_WAIT); // skip callback on register
 
     std::string info = "foo";
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
 

@@ -30,8 +30,8 @@ int DevmgrServiceProxyAttachDeviceHost(
     struct IDevmgrService *inst, uint16_t hostId, struct IDevHostService *service)
 {
     int status = HDF_FAILURE;
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfRemoteDispatcher *dipatcher = NULL;
     struct HdfRemoteService *remoteService = NULL;
     struct DevmgrServiceProxy *serviceProxy = (struct DevmgrServiceProxy *)inst;
@@ -43,15 +43,15 @@ int DevmgrServiceProxyAttachDeviceHost(
     remoteService = serviceProxy->remote;
     dipatcher = remoteService->dispatcher;
     HdfSbufWriteInt32(data, hostId);
-    HdfSBufWriteRemoteService(data, hostStub->remote);
+    HdfSbufWriteRemoteService(data, hostStub->remote);
     status = dipatcher->Dispatch(remoteService, DEVMGR_SERVICE_ATTACH_DEVICE_HOST, data, reply);
     HDF_LOGI("Attach device host dispatch finish, status is %{public}d", status);
 finished:
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     return status;
 }
@@ -60,8 +60,8 @@ int DevmgrServiceProxyAttachDevice(
     struct IDevmgrService *inst, struct IHdfDeviceToken *token)
 {
     int status = HDF_FAILURE;
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     struct DevmgrServiceProxy *serviceProxy = (struct DevmgrServiceProxy *)inst;
     if (serviceProxy == NULL || serviceProxy->remote == NULL || data == NULL ||
         reply == NULL || token == NULL) {
@@ -73,10 +73,10 @@ int DevmgrServiceProxyAttachDevice(
     status = remoteService->dispatcher->Dispatch(remoteService, DEVMGR_SERVICE_ATTACH_DEVICE, data, reply);
 finished:
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     return status;
 }
@@ -84,8 +84,8 @@ finished:
 int DevmgrServiceProxyDetachDevice(struct IDevmgrService *inst, devid_t devid)
 {
     int status = HDF_FAILURE;
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     struct DevmgrServiceProxy *serviceProxy = (struct DevmgrServiceProxy *)inst;
     if (serviceProxy == NULL || serviceProxy->remote == NULL || data == NULL || reply == NULL) {
         HDF_LOGE("DevmgrServiceProxyDetachDevice failed");
@@ -96,10 +96,10 @@ int DevmgrServiceProxyDetachDevice(struct IDevmgrService *inst, devid_t devid)
     status = remoteService->dispatcher->Dispatch(remoteService, DEVMGR_SERVICE_DETACH_DEVICE, data, reply);
 finished:
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     return status;
 }
@@ -112,13 +112,13 @@ int  DevmgrServiceProxyLoadDevice(struct IDevmgrService *inst, const char *svcNa
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfRemoteService *remoteService = serviceProxy->remote;
     HdfSbufWriteString(data, svcName);
 
     status = remoteService->dispatcher->Dispatch(remoteService, DEVMGR_SERVICE_LOAD_DEVICE, data, NULL);
 
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return status;
 }
 
@@ -131,13 +131,13 @@ int  DevmgrServiceProxyUnLoadDevice(struct IDevmgrService *inst, const char *svc
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfRemoteService *remoteService = serviceProxy->remote;
     HdfSbufWriteString(data, svcName);
 
     status = remoteService->dispatcher->Dispatch(remoteService, DEVMGR_SERVICE_UNLOAD_DEVICE, data, NULL);
 
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return status;
 }
 

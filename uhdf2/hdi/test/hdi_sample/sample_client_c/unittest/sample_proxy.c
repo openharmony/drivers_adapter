@@ -45,8 +45,8 @@ static int32_t SampleProxyBooleanTypeTest(struct ISample *self, const bool input
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         HDF_LOGE("%{public}s: HdfSubf malloc failed!", __func__);
@@ -73,10 +73,10 @@ static int32_t SampleProxyBooleanTypeTest(struct ISample *self, const bool input
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -88,8 +88,8 @@ static int32_t SampleProxyByteTypeTest(struct ISample *self, const int8_t input,
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -115,10 +115,10 @@ static int32_t SampleProxyByteTypeTest(struct ISample *self, const int8_t input,
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -130,8 +130,8 @@ static int32_t SampleProxyShortTypeTest(struct ISample *self, const int16_t inpu
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -157,10 +157,10 @@ static int32_t SampleProxyShortTypeTest(struct ISample *self, const int16_t inpu
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -172,8 +172,8 @@ static int32_t SampleProxyIntTypeTest(struct ISample *self, const int32_t input,
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -199,10 +199,10 @@ static int32_t SampleProxyIntTypeTest(struct ISample *self, const int32_t input,
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -214,8 +214,8 @@ static int32_t SampleProxyLongTypeTest(struct ISample *self, const int64_t input
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -241,10 +241,10 @@ static int32_t SampleProxyLongTypeTest(struct ISample *self, const int64_t input
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -256,8 +256,8 @@ static int32_t SampleProxyFloatTypeTest(struct ISample *self, const float input,
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -283,10 +283,10 @@ static int32_t SampleProxyFloatTypeTest(struct ISample *self, const float input,
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
 
     return ec;
@@ -299,8 +299,8 @@ static int32_t SampleProxyDoubleTypeTest(struct ISample *self, const double inpu
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -326,10 +326,10 @@ static int32_t SampleProxyDoubleTypeTest(struct ISample *self, const double inpu
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
 
     return ec;
@@ -342,8 +342,8 @@ static int32_t SampleProxyStringTypeTest(struct ISample *self, const char* input
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -371,10 +371,10 @@ static int32_t SampleProxyStringTypeTest(struct ISample *self, const char* input
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -386,8 +386,8 @@ static int32_t SampleProxyUcharTypeTest(struct ISample *self, const uint8_t inpu
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -413,10 +413,10 @@ static int32_t SampleProxyUcharTypeTest(struct ISample *self, const uint8_t inpu
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -428,8 +428,8 @@ static int32_t SampleProxyUshortTypeTest(struct ISample *self, const uint16_t in
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -455,10 +455,10 @@ static int32_t SampleProxyUshortTypeTest(struct ISample *self, const uint16_t in
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -470,8 +470,8 @@ static int32_t SampleProxyUintTypeTest(struct ISample *self, const uint32_t inpu
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -497,10 +497,10 @@ static int32_t SampleProxyUintTypeTest(struct ISample *self, const uint32_t inpu
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -512,8 +512,8 @@ static int32_t SampleProxyUlongTypeTest(struct ISample *self, const uint64_t inp
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -539,10 +539,10 @@ static int32_t SampleProxyUlongTypeTest(struct ISample *self, const uint64_t inp
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -555,8 +555,8 @@ static int32_t SampleProxyListTypeTest(struct ISample *self, const int8_t *input
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -610,10 +610,10 @@ static int32_t SampleProxyListTypeTest(struct ISample *self, const int8_t *input
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -626,8 +626,8 @@ static int32_t SampleProxyArrayTypeTest(struct ISample *self, const int8_t *inpu
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -681,10 +681,10 @@ static int32_t SampleProxyArrayTypeTest(struct ISample *self, const int8_t *inpu
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -697,8 +697,8 @@ static int32_t SampleProxyStructTypeTest(struct ISample *self, const struct Stru
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
         goto finished;
@@ -733,10 +733,10 @@ static int32_t SampleProxyStructTypeTest(struct ISample *self, const struct Stru
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
@@ -748,8 +748,8 @@ static int32_t SampleProxyEnumTypeTest(struct ISample *self, const enum EnumSamp
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
 
     if (data == NULL || reply == NULL) {
         ec = HDF_ERR_MALLOC_FAIL;
@@ -775,10 +775,10 @@ static int32_t SampleProxyEnumTypeTest(struct ISample *self, const enum EnumSamp
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     return ec;
 }
