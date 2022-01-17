@@ -66,7 +66,7 @@ ohos_shared_library("libhdf_platform") {
     "-fno-strict-aliasing",
   ]
 
-  # install_images = [ "vendor" ]
+  install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
   part_name = "device_driver_framework"
 }

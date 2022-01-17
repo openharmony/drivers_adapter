@@ -99,7 +99,7 @@ ohos_shared_library("libhdf_host") {
     "-Werror",
   ]
 
-  # install_images = [ "vendor" ]
+  install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
   part_name = "device_driver_framework"
 }
@@ -139,8 +139,8 @@ ohos_executable("hdf_devhost") {
     "-Werror",
   ]
 
-  # install_images = [ "vendor" ]
   install_enable = true
+  install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
   part_name = "device_driver_framework"
 }
