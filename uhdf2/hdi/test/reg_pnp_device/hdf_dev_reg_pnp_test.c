@@ -159,8 +159,8 @@ static void HdfRegPnpDriverTest_003()
     struct HdfRemoteService *remote = hdiServMgr->GetService(hdiServMgr, PNP_SERVICE_NAME);
     UT_TEST_CHECK_RET(remote != NULL);
     if (remote != NULL) {
-        struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-        struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+        struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+        struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
         HdfSbufWriteString(data, "test for pnp dispatch!");
         int32_t processIdBefor = GetProcessId("pnp_host");
         ret = remote->dispatcher->Dispatch(remote, 0, data, reply);
@@ -169,8 +169,8 @@ static void HdfRegPnpDriverTest_003()
         int32_t result = 0;
         HdfParcelReadInt(reply, &result);
         UT_TEST_CHECK_RET(result == 1);
-        HdfSBufRecycle(data);
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(data);
+        HdfSbufRecycle(reply);
     }
     UT_TEST_CHECK_RET(ret == HDF_SUCCESS);
     HDIServiceManagerRelease(hdiServMgr);
@@ -251,15 +251,15 @@ static void HdfRestore_001()
     struct HdfRemoteService *remote = hdiServMgr->GetService(hdiServMgr, PNP_SERVICE_NAME);
     UT_TEST_CHECK_RET(remote != NULL);
     if (remote != NULL) {
-        struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-        struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+        struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+        struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
         HdfSbufWriteString(data, "test for pnp dispatch!");
         int32_t processIdBefor = GetProcessId("pnp_host");
         ret = remote->dispatcher->Dispatch(remote, 1, data, reply);
         int32_t processIdAfter = GetProcessId("pnp_host");
         UT_TEST_CHECK_RET(processIdBefor != processIdAfter);
-        HdfSBufRecycle(data);
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(data);
+        HdfSbufRecycle(reply);
     }
     UT_TEST_CHECK_RET(ret != HDF_SUCCESS);
     HDIServiceManagerRelease(hdiServMgr);

@@ -49,8 +49,8 @@ int HdfRemoteServiceStub::OnRemoteRequest(uint32_t code,
         HDF_LOGE("dispatcher or dispatcher->Dispatch is null, flags is: %{public}d", option.GetFlags());
     }
 
-    HdfSBufRecycle(dataSbuf);
-    HdfSBufRecycle(replySbuf);
+    HdfSbufRecycle(dataSbuf);
+    HdfSbufRecycle(replySbuf);
     return ret;
 }
 

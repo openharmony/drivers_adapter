@@ -49,8 +49,8 @@ struct HdfRemoteService *HDIServMgrGetService(struct HDIServiceManager *iServMgr
     struct HdfRemoteService *service = NULL;
 
     do {
-        data = HdfSBufTypedObtain(SBUF_IPC);
-        reply = HdfSBufTypedObtain(SBUF_IPC);
+        data = HdfSbufTypedObtain(SBUF_IPC);
+        reply = HdfSbufTypedObtain(SBUF_IPC);
         if (data == NULL || reply == NULL) {
             break;
         }
@@ -60,17 +60,17 @@ struct HdfRemoteService *HDIServMgrGetService(struct HDIServiceManager *iServMgr
         }
         int status = ServiceManagerHdiCall(servMgrClient, DEVSVC_MANAGER_GET_SERVICE, data, reply);
         if (status == HDF_SUCCESS) {
-            service = HdfSBufReadRemoteService(reply);
+            service = HdfSbufReadRemoteService(reply);
         } else {
             HDF_LOGI("%{public}s: %{public}s not found", __func__, serviceName);
         }
     } while (0);
 
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     return service;
 }
@@ -83,7 +83,7 @@ int32_t HDIServMgrRegisterServiceStatusListener(struct HDIServiceManager *self,
     }
     struct HDIServiceManagerClient *servMgrClient = CONTAINER_OF(self, struct HDIServiceManagerClient, iservmgr);
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     if (data == NULL) {
         return HDF_ERR_MALLOC_FAIL;
     }
@@ -97,7 +97,7 @@ int32_t HDIServMgrRegisterServiceStatusListener(struct HDIServiceManager *self,
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("failed to register hdi service listener");
     }
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return ret;
 }
 
@@ -108,7 +108,7 @@ int32_t HDIServMgrUnregisterServiceStatusListener(struct HDIServiceManager *self
         return HDF_ERR_INVALID_PARAM;
     }
     struct HDIServiceManagerClient *servMgrClient = CONTAINER_OF(self, struct HDIServiceManagerClient, iservmgr);
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     if (data == NULL) {
         return HDF_ERR_MALLOC_FAIL;
     }
@@ -121,7 +121,7 @@ int32_t HDIServMgrUnregisterServiceStatusListener(struct HDIServiceManager *self
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("failed to unregister hdi service listener");
     }
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return ret;
 }
 
