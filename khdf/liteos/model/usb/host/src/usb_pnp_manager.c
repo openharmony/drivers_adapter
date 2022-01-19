@@ -61,7 +61,7 @@ static int32_t UsbPnpManagerBind(struct HdfDeviceObject *device)
         .Dispatch = UsbPnpManagerDispatch,
     };
 
-    dprintf("%s:%d enter!, device=%p\n", __func__, __LINE__, device);
+    dprintf("%s:%d enter!\n", __func__, __LINE__);
 
     if (device == NULL) {
         dprintf("%s: device is NULL!\n", __func__);
@@ -78,7 +78,7 @@ static int32_t UsbPnpManagerInit(struct HdfDeviceObject *device)
 {
     int ret;
 
-    dprintf("%s:%d enter!, device=%p\n", __func__, __LINE__, device);
+    dprintf("%s:%d enter!\n", __func__, __LINE__);
 
     if (device == NULL) {
         dprintf("%s: device is NULL\n", __func__);
