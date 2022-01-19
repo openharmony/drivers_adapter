@@ -37,7 +37,7 @@ ohos_shared_library("libsample_service_c") {
     external_deps = [ "hilog:libhilog" ]
   }
 
-  # install_images = [ "vendor" ]
+  install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
   part_name = "device_driver_framework"
 }

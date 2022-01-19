@@ -93,11 +93,10 @@ ohos_shared_library("libhdf_utils") {
     "-Werror",
   ]
 
-  # install_images = [ "vendor" ]
   subsystem_name = "hdf"
   part_name = "device_driver_framework"
   install_images = [
-    "system",
+    chipset_base_dir,
     "updater",
   ]
 }

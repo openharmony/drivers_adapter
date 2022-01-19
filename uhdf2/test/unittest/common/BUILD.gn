@@ -39,6 +39,7 @@ ohos_shared_library("libhdf_test_common") {
     "-fno-common",
     "-fno-strict-aliasing",
   ]
+  install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
   part_name = "device_driver_framework"
   if (is_standard_system) {
