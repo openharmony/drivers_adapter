@@ -45,7 +45,7 @@ ohos_shared_library("libsample_client_cpp") {
     ]
   }
 
-  # install_images = [ "vendor" ]
+  install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
   part_name = "device_driver_framework"
 }

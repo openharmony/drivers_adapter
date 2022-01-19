@@ -43,6 +43,6 @@ ohos_shared_library("libhdf_sec") {
     external_deps = [ "hilog:libhilog" ]
   }
 
-  # install_images = [ "vendor" ]
+  install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
 }
