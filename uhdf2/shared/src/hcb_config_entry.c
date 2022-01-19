@@ -22,7 +22,7 @@
 #define HDF_LOG_TAG attribute_manager
 
 #ifdef __OHOS_STANDARD_SYS__
-#define HOST_CONFIG_PATH "/system/etc/hdfconfig"
+#define HOST_CONFIG_PATH HDF_CONFIG_DIR
 #else
 #define HOST_CONFIG_PATH "/system/etc/hdfconfig"
 #endif
