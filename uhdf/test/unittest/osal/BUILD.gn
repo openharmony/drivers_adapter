@@ -36,9 +36,9 @@ unittest("hdf_adapter_uhdf_test_osal") {
   ]
   deps = [
     "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
+    "//drivers/adapter/build/test_common:libhdf_test_common",
     "//drivers/adapter/uhdf/manager:hdf_core",
     "//drivers/adapter/uhdf/posix:hdf_posix_osal",
-    "//drivers/adapter/uhdf/test/unittest/common:hdf_test_common",
   ]
   public_deps = [ "//third_party/bounds_checking_function:libsec_shared" ]
   cflags = [

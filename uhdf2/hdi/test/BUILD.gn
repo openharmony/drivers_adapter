@@ -28,7 +28,6 @@ ohos_unittest("HdiServiceManagerTest") {
     "$hdf_uhdf_path/utils:libhdf_utils",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   include_dirs = [ "$hdf_uhdf_path/host/test/unittest/sample_driver" ]
@@ -36,6 +35,7 @@ ohos_unittest("HdiServiceManagerTest") {
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "utils_base:utils",
   ]
 }
 
@@ -48,7 +48,6 @@ ohos_unittest("HdiServiceManagerTestCC") {
     "$hdf_uhdf_path/utils:libhdf_utils",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   include_dirs = [ "$hdf_uhdf_path/host/test/unittest/sample_driver" ]
@@ -56,6 +55,7 @@ ohos_unittest("HdiServiceManagerTestCC") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "samgr_standard:samgr_proxy",
+    "utils_base:utils",
   ]
 }
 

@@ -62,11 +62,13 @@ ohos_executable("hdf_devmgr") {
   deps = [
     "$hdf_uhdf_path/ipc:libhdf_ipc_adapter",
     "$hdf_uhdf_path/utils:libhdf_utils",
-    "//utils/native/base:utils",
   ]
 
   if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+    external_deps = [
+      "hiviewdfx_hilog_native:libhilog",
+      "utils_base:utils",
+    ]
   } else {
     external_deps = [ "hilog:libhilog" ]
   }
