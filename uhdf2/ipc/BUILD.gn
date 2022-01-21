@@ -31,47 +31,50 @@ config("libhdf_ipc_adapter_pub_config") {
     "include",
   ]
 }
-
-ohos_shared_library("libhdf_ipc_adapter") {
-  include_dirs = []
-
-  public_configs = [ ":libhdf_ipc_adapter_pub_config" ]
-
-  sources = [
-    # "src/hdf_parcel_adapter.cpp",
-    "src/hdf_remote_adapter.cpp",
-    "src/hdf_remote_service.c",
-    "src/hdf_sbuf_impl_hipc.cpp",
-
-    # "$hdf_uhdf_path/shared/src/hdf_parcel.c",
-  ]
-
-  deps = [
-    "$hdf_uhdf_path/utils:libhdf_utils",
-    "//utils/native/base:utils",
-  ]
-
-  if (is_standard_system) {
-    external_deps = [
-      "hiviewdfx_hilog_native:libhilog",
-      "ipc:ipc_core",
-      "samgr_standard:samgr_proxy",
-    ]
-  } else {
-    external_deps = [
-      "hilog:libhilog",
-      "ipc:ipc_core",
-      "samgr:samgr_proxy",
-    ]
+if (defined(ohos_lite)) {
+  group("libhdf_ipc_adapter") {
+    deps = []
   }
+} else {
+  ohos_shared_library("libhdf_ipc_adapter") {
+    include_dirs = []
 
-  cflags = [
-    "-Wall",
-    "-Wextra",
-    "-Werror",
-  ]
+    public_configs = [ ":libhdf_ipc_adapter_pub_config" ]
 
-  install_images = [ chipset_base_dir ]
-  subsystem_name = "hdf"
-  part_name = "device_driver_framework"
+    sources = [
+      # "src/hdf_parcel_adapter.cpp",
+      "src/hdf_remote_adapter.cpp",
+      "src/hdf_remote_service.c",
+      "src/hdf_sbuf_impl_hipc.cpp",
+
+      # "$hdf_uhdf_path/shared/src/hdf_parcel.c",
+    ]
+
+    deps = [ "$hdf_uhdf_path/utils:libhdf_utils" ]
+
+    if (is_standard_system) {
+      external_deps = [
+        "hiviewdfx_hilog_native:libhilog",
+        "ipc:ipc_core",
+        "samgr_standard:samgr_proxy",
+        "utils_base:utils",
+      ]
+    } else {
+      external_deps = [
+        "hilog:libhilog",
+        "ipc:ipc_core",
+        "samgr:samgr_proxy",
+      ]
+    }
+
+    cflags = [
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+    ]
+
+    install_images = [ chipset_base_dir ]
+    subsystem_name = "hdf"
+    part_name = "device_driver_framework"
+  }
 }
