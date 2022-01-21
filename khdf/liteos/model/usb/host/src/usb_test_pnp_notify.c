@@ -39,7 +39,7 @@
 #endif
 
 int32_t UsbTestPnpNotifyDispatch(struct HdfDeviceIoClient *client,
-    int cmdId, struct HdfSBuf *data, struct HdfSBuf *reply)
+    int32_t cmdId, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int32_t ret = HDF_SUCCESS;
     if (reply == NULL || client == NULL) {
@@ -51,7 +51,7 @@ int32_t UsbTestPnpNotifyDispatch(struct HdfDeviceIoClient *client,
     return ret;
 }
 
-int UsbTestPnpNotifyBind(struct HdfDeviceObject *deviceObject)
+int32_t UsbTestPnpNotifyBind(struct HdfDeviceObject *deviceObject)
 {
     if (deviceObject == NULL) {
         return HDF_FAILURE;
@@ -65,7 +65,7 @@ int UsbTestPnpNotifyBind(struct HdfDeviceObject *deviceObject)
     return HDF_SUCCESS;
 }
 
-int UsbTestPnpNotifyInit(struct HdfDeviceObject *deviceObject)
+int32_t UsbTestPnpNotifyInit(struct HdfDeviceObject *deviceObject)
 {
     if (deviceObject == NULL) {
         HDF_LOGE("%s::ptr is null!", __func__);

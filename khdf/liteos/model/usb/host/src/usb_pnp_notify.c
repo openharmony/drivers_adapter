@@ -345,7 +345,7 @@ OUT:
 
 static int32_t UsbPnpNotifySendEventLoader(struct HdfSBuf *data)
 {
-    int ret;
+    int32_t ret;
 
     struct HdfIoService *loaderService = HdfIoServiceBind(USB_PNP_LOADER_SERVICE_NAME);
     if (loaderService == NULL) {
@@ -554,7 +554,7 @@ OUT:
 }
 #endif
 
-static int UsbPnpNotifyFirstReportDevice(struct HdfDeviceIoClient *client)
+static int32_t UsbPnpNotifyFirstReportDevice(struct HdfDeviceIoClient *client)
 {
     struct UsbPnpNotifyDeviceList *pnpNotifyDevicePos = NULL;
     struct UsbPnpNotifyDeviceList *pnpNotifyDeviceTemp = NULL;
@@ -578,9 +578,9 @@ static int UsbPnpNotifyFirstReportDevice(struct HdfDeviceIoClient *client)
     return HDF_SUCCESS;
 }
 
-static int UsbPnpNotifyReportThread(void* arg)
+static int32_t UsbPnpNotifyReportThread(void* arg)
 {
-    int ret;
+    int32_t ret;
     struct HdfDeviceObject *deviceObject = (struct HdfDeviceObject *)arg;
 
     while (g_usbPnpThreadRunningFlag) {
@@ -674,7 +674,7 @@ static void UsbPnpNotifyAddDevice(struct usb_device *udev)
 static void UsbPnpNotifyAttachDevice(struct usb_device *udev)
 {
     int32_t error;
-    static int listLockInit = 0;
+    static int32_t listLockInit = 0;
 
     if ((udev->ddesc.bDeviceClass == UICLASS_HUB) || UsbPnpNotifyFindDeviceList(udev, false) == true) {
         PRINTK("%s:%d findDeviceList is true!\n", __func__, __LINE__);
@@ -840,7 +840,7 @@ static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfDeviceObject *device, 
         return HDF_FAILURE;
     }
 
-    int ret;
+    int32_t ret;
     struct HdfDeviceObject *devObj = HdfDeviceObjectAlloc(device, moduleName);
     if (devObj == NULL) {
         HDF_LOGE("%s: failed to alloc device object", __func__);
@@ -887,7 +887,7 @@ static int32_t UsbPnpNotifyDriverUnregisterDevice(struct HdfSBuf *data)
     return HDF_SUCCESS;
 }
 
-static int32_t UsbPnpNotifyDispatch(struct HdfDeviceIoClient *client, int cmd,
+static int32_t UsbPnpNotifyDispatch(struct HdfDeviceIoClient *client, int32_t cmd,
     struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int32_t ret = HDF_SUCCESS;
