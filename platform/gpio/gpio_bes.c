@@ -20,7 +20,7 @@
 #include "hdf_log.h"
 #include "osal_irq.h"
 
-#define HDF_LOG_TAG gpio_bes_c
+#define HDF_LOG_TAG GPIO_BES
 
 /*
  * Pin configuration
@@ -69,7 +69,7 @@ typedef int32_t (*oem_gpio_irq_handler_t)(uint16_t gpio, void *data);
 #define DECIMALNUM 10
 #define OCTALNUM 8
 
-static struct GpioCntlr gpioCntlr;
+static struct GpioCntlr g_gpioCntlr;
 struct OemGpioIrqHandler {
     uint8_t port;
     GpioIrqFunc func;
@@ -99,7 +99,7 @@ static void OemGpioIrqHdl(enum HAL_GPIO_PIN_T pin)
     }
     for (size_t i = 0; i < HAL_GPIO_PIN_LED_NUM; i++) {
         if (pin == (enum HAL_GPIO_PIN_T)g_gpioPinReflectionMap[i]) {
-            GpioCntlrIrqCallback(&gpioCntlr, i);
+            GpioCntlrIrqCallback(&g_gpioCntlr, i);
             return;
         }
     }
@@ -275,9 +275,9 @@ static int32_t GpioDriverInit(struct HdfDeviceObject *device)
         return HDF_ERR_INVALID_PARAM;
     }
 
-    gpioCntlr = GpioCntlrFromDevice(device);
+    gpioCntlr = GpioCntlrFromHdfDev(device);
     if (gpioCntlr == NULL) {
-        HDF_LOGE("GpioCntlrFromDevice fail\r\n");
+        HDF_LOGE("GpioCntlrFromHdfDev fail\r\n");
         return HDF_DEV_ERR_NO_DEVICE_SERVICE;
     }
 
@@ -303,10 +303,7 @@ static int32_t GpioDriverBind(struct HdfDeviceObject *device)
         return HDF_ERR_INVALID_PARAM;
     }
 
-    gpioCntlr.device.hdfDev = device;
-    device->service = (struct IDeviceIoService *)&gpioCntlr;
-
-    return HDF_SUCCESS;
+    return PlatformDeviceBind(&g_gpioCntlr.device, device);
 }
 
 static void GpioDriverRelease(struct HdfDeviceObject *device)
@@ -318,14 +315,14 @@ static void GpioDriverRelease(struct HdfDeviceObject *device)
         return;
     }
 
-    gpioCntlr = GpioCntlrFromDevice(device);
+    gpioCntlr = GpioCntlrFromHdfDev(device);
     if (gpioCntlr == NULL) {
-        HDF_LOGE("%s: host is NULL", __func__);
-        return;
+        HDF_LOGE("GpioCntlrFromHdfDev fail\r\n");
+        return HDF_DEV_ERR_NO_DEVICE_SERVICE;
     }
 
-    gpioCntlr->ops = NULL;
-    OsalMemFree(gpioCntlr);
+    (void)OsalMemFree(gpioCntlr->priv);
+    gpioCntlr->count = 0;
 }
 
 /* dev api */
