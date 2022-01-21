@@ -33,11 +33,7 @@ module_name = "hdf_light_driver"
 hdf_driver(module_name) {
   FRAMEWORKS_LIGHT_ROOT = "$HDF_FRAMEWORKS_PATH/model/misc/light/driver"
 
-  sources = [
-    "$FRAMEWORKS_LIGHT_ROOT/src/light_driver.c",
-  ]
+  sources = [ "$FRAMEWORKS_LIGHT_ROOT/src/light_driver.c" ]
 
-  include_dirs = [
-    "$FRAMEWORKS_LIGHT_ROOT/include",
-  ]
+  include_dirs = [ "$FRAMEWORKS_LIGHT_ROOT/include" ]
 }
