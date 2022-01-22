@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd. All rights reserved.
+# Copyright (c) 2022 Huawei Device Co., Ltd. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -26,22 +26,14 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//drivers/adapter/khdf/liteos/hdf.gni")
+include $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/lite.mk
 
-module_group("model") {
-  modules = [
-    "audio",
-    "bus/usb",
-    "display",
-    "input",
-    "misc/dsoftbus",
-    "misc/light",
-    "misc/vibrator",
-    "network/ethernet",
-    "network/wifi",
-    "sensor",
-    "storage",
-    "usb/device",
-    "usb/host",
-  ]
-}
+MODULE_NAME := hdf_light_driver
+
+FRAMEWORKS_LIGHT_ROOT = $(LITEOSTOPDIR)/../../drivers/framework/model/misc/light/driver
+
+LOCAL_INCLUDE := $(FRAMEWORKS_LIGHT_ROOT)/include
+
+LOCAL_SRCS += $(FRAMEWORKS_LIGHT_ROOT)/src/light_driver.c
+
+include $(HDF_DRIVER)

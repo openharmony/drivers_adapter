@@ -105,6 +105,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_STORAGE), y)
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/storage
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_LIGHT), y)
+    LITEOS_BASELIB += -lhdf_light_driver
+    LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/misc/light
+endif
+
 ifeq ($(LOSCFG_DRIVERS_HDF_VIBRATOR), y)
     LITEOS_BASELIB += -lhdf_vibrator_driver
     LIB_SUBDIRS    += $(LITEOS_DRIVERS_HDF)/model/misc/vibrator
