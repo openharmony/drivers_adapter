@@ -1,6 +1,6 @@
 {
   "name": "@ohos/device_driver_framework",
-  "description": "drivers adapter",
+  "description": "device driver framework",
   "version": "3.1",
   "license": "Apache License 2.0",
   "component": {
@@ -12,9 +12,10 @@
     "ram": "1000KB",
     "deps": {
       "components": [
-        "developer_test",
-        "hilog",
-        "utils_base"
+        "hiviewdfx_hilog_native",
+        "utils_base",
+        "ipc",
+        "samgr_standard"
       ],
       "third_part": [
         "bounds_checking_function"
@@ -62,12 +63,21 @@
           }
         },
         {
-          "name": "//drivers/adapter/uhdf2/test/unittest/common:libhdf_test_common",
+          "name": "//drivers/adapter/build/test_common:libhdf_test_common",
             "header": {
               "header_files": [
                 "hdf_uhdf_test.h"
               ],
               "header_base": "//drivers/framework/test/unittest/include"
+          }
+        },
+        {
+          "name": "//drivers/adapter/uhdf/posix:hdf_posix_osal",
+            "header": {
+              "header_files": [
+                "osal.h"
+              ],
+              "header_base": "//drivers/framework/include"
           }
         }
       ],

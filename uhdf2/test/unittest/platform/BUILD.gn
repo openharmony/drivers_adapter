@@ -40,9 +40,8 @@ ohos_unittest("hdf_adapter_uhdf_test_platform") {
   ]
 
   deps = [
-    "//drivers/adapter/uhdf2/test/unittest/common:libhdf_test_common",
+    "//drivers/adapter/build/test_common:libhdf_test_common",
     "//drivers/adapter/uhdf2/utils:libhdf_utils",
-    "//utils/native/base:utils",
   ]
   resource_config_file =
       "//drivers/adapter/uhdf2/test/resource/platform/ohos_test.xml"
@@ -55,7 +54,10 @@ ohos_unittest("hdf_adapter_uhdf_test_platform") {
     "-fno-strict-aliasing",
   ]
   if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+    external_deps = [
+      "hiviewdfx_hilog_native:libhilog",
+      "utils_base:utils",
+    ]
   } else {
     external_deps = [ "hilog:libhilog" ]
   }

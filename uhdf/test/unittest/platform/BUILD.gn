@@ -71,10 +71,10 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
     }
     deps = [
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
+      "//drivers/adapter/build/test_common:libhdf_test_common",
       "//drivers/adapter/uhdf/manager:hdf_core",
       "//drivers/adapter/uhdf/platform:hdf_platform",
       "//drivers/adapter/uhdf/posix:hdf_posix_osal",
-      "//drivers/adapter/uhdf/test/unittest/common:hdf_test_common",
     ]
     public_deps = [ "//third_party/bounds_checking_function:libsec_shared" ]
     cflags = [
@@ -122,10 +122,10 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
     }
     deps = [
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
+      "//drivers/adapter/build/test_common:libhdf_test_common",
       "//drivers/adapter/uhdf/manager:hdf_core",
       "//drivers/adapter/uhdf/platform:hdf_platform",
       "//drivers/adapter/uhdf/posix:hdf_posix_osal",
-      "//drivers/adapter/uhdf/test/unittest/common:hdf_test_common",
     ]
     public_deps = [ "//third_party/bounds_checking_function:libsec_shared" ]
     cflags = [
