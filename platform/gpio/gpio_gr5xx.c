@@ -406,7 +406,7 @@ static int32_t GpioDriverInit(struct HdfDeviceObject *device)
     gpioCntlr->count = IO_NUM_MAX;
     gpioCntlr->priv = (void *)device->property;
     gpioCntlr->ops = &g_GpioCntlrMethod;
-    gpioCntlr->device.hdfDev = device;
+    (void)PlatformDeviceBind(&gpioCntlr->device, device);
     ret = GpioCntlrAdd(gpioCntlr);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s: err add controller:%d", __func__, ret);
@@ -425,7 +425,7 @@ static void GpioDriverRelease(struct HdfDeviceObject *device)
         return;
     }
 
-    gpioCntlr = GpioCntlrFromDevice(device);
+    gpioCntlr = GpioCntlrFromHdfDev(device);
     if (gpioCntlr == NULL) {
         HDF_LOGE("%s: no service binded!", __func__);
         return;
