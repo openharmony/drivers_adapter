@@ -40,7 +40,6 @@ if (defined(ohos_lite)) {
 
     public_configs = [ ":libhdf_host_pub_config" ]
     include_dirs = [
-      "//utils/native/base/include",
       "$hdf_framework_path/core/manager/include",
       "$hdf_framework_path/core/host/include",
       "$hdf_framework_path/core/shared/include",
