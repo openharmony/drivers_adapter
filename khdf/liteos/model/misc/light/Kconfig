@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd. All rights reserved.
+# Copyright (c) 2022 Huawei Device Co., Ltd. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -26,22 +26,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//drivers/adapter/khdf/liteos/hdf.gni")
-
-module_group("model") {
-  modules = [
-    "audio",
-    "bus/usb",
-    "display",
-    "input",
-    "misc/dsoftbus",
-    "misc/light",
-    "misc/vibrator",
-    "network/ethernet",
-    "network/wifi",
-    "sensor",
-    "storage",
-    "usb/device",
-    "usb/host",
-  ]
-}
+config DRIVERS_HDF_LIGHT
+    bool "Enable HDF light driver"
+    default n
+    depends on DRIVERS_HDF
+    help
+      Answer Y to enable HDF light driver.
