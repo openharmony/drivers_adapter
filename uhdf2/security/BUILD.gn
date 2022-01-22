@@ -34,15 +34,18 @@ ohos_shared_library("libhdf_sec") {
     "$hdf_uhdf_path/hdi:libhdi",
     "$hdf_uhdf_path/pal:libhdf_pal",
     "$hdf_uhdf_path/utils:libhdf_utils",
-    "//utils/native/base:utils",
   ]
 
   if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+    external_deps = [
+      "hiviewdfx_hilog_native:libhilog",
+      "utils_base:utils",
+    ]
   } else {
     external_deps = [ "hilog:libhilog" ]
   }
 
   install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
+  part_name = "device_driver_framework"
 }

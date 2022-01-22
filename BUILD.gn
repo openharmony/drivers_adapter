@@ -14,15 +14,16 @@
 if (defined(ohos_lite)) {
   group("uhdf_entry") {
     deps = [
-      "//drivers/adapter/uhdf/manager:hdf_manager",
-      "//drivers/adapter/uhdf/platform:hdf_platform_driver",
-      "//drivers/adapter/uhdf/posix:hdf_posix",
+      "//drivers/adapter/uhdf/manager:hdf_core",
+      "//drivers/adapter/uhdf/platform:hdf_platform",
+      "//drivers/adapter/uhdf/posix:hdf_posix_osal",
+      "//drivers/adapter/uhdf/posix/old:hdf_posix",
     ]
   }
   group("uhdf_test_entry") {
     deps = [
+      "//drivers/adapter/build/test_common:libhdf_test_common",
       "//drivers/adapter/uhdf/test:hdf_test_uhdf",
-      "//drivers/adapter/uhdf/test/unittest/common:hdf_test_common",
     ]
   }
 } else {
@@ -44,11 +45,11 @@ if (defined(ohos_lite)) {
   group("uhdf_test_entry") {
     testonly = true
     deps = [
+      "//drivers/adapter/build/test_common:libhdf_test_common",
       "//drivers/adapter/uhdf2/hdi/test:unittest",
       "//drivers/adapter/uhdf2/host/test:unittest",
       "//drivers/adapter/uhdf2/osal/test:unittest",
       "//drivers/adapter/uhdf2/test:hdf_test_uhdf",
-      "//drivers/adapter/uhdf2/test/unittest/common:libhdf_test_common",
     ]
   }
 }

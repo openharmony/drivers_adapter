@@ -11,22 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/lite/config/component/lite_component.gni")
+import("//build/ohos.gni")
 
-shared_library("hdf_posix_osal") {
-  output_name = "hdf_osal"
-  deps = [
-    "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-    "//third_party/bounds_checking_function:libsec_shared",
-  ]
-  sources = [
-    "//drivers/framework/support/posix/src/osal_mem.c",
-    "//drivers/framework/support/posix/src/osal_mutex.c",
-    "//drivers/framework/support/posix/src/osal_sem.c",
-    "//drivers/framework/support/posix/src/osal_spinlock.c",
-    "//drivers/framework/support/posix/src/osal_thread.c",
-    "//drivers/framework/support/posix/src/osal_time.c",
-  ]
+config("hdf_osal_pub_config") {
+  visibility = [ ":*" ]
+
   include_dirs = [
     "//drivers/framework/include",
     "//drivers/framework/include/osal",
@@ -35,20 +24,47 @@ shared_library("hdf_posix_osal") {
     "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
     "//third_party/bounds_checking_function/include",
   ]
-  defines = [ "__USER__" ]
-  ldflags = [ "-lpthread" ]
-  cflags = [
-    "-Wall",
-    "-Wextra",
-    "-Werror",
-    "-fsigned-char",
-    "-fno-common",
-    "-fno-strict-aliasing",
-    "-Wno-format",
-    "-Wno-format-extra-args",
-  ]
 }
+if (defined(ohos_lite)) {
+  ohos_shared_library("hdf_posix_osal") {
+    output_extension = "z.so"
+    include_dirs = []
 
-lite_component("hdf_posix") {
-  features = [ ":hdf_posix_osal" ]
+    public_configs = [ ":hdf_osal_pub_config" ]
+
+    sources = [
+      "//drivers/framework/support/posix/src/osal_mem.c",
+      "//drivers/framework/support/posix/src/osal_mutex.c",
+      "//drivers/framework/support/posix/src/osal_sem.c",
+      "//drivers/framework/support/posix/src/osal_spinlock.c",
+      "//drivers/framework/support/posix/src/osal_thread.c",
+      "//drivers/framework/support/posix/src/osal_time.c",
+    ]
+
+    deps = [
+      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
+      "//third_party/bounds_checking_function:libsec_shared",
+    ]
+
+    defines = [ "__USER__" ]
+    ldflags = [ "-lpthread" ]
+    cflags = [
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fsigned-char",
+      "-fno-common",
+      "-fno-strict-aliasing",
+      "-Wno-format",
+      "-Wno-format-extra-args",
+    ]
+
+    # install_images = [ "vendor" ]
+    subsystem_name = "hdf"
+    part_name = "device_driver_framework"
+  }
+} else {
+  group("hdf_posix_osal") {
+    deps = []
+  }
 }

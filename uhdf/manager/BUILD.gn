@@ -11,21 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/lite/config/component/lite_component.gni")
-
+import("//build/ohos.gni")
 HDF_FRAMEWORKS = "//drivers/framework"
 
-shared_library("hdf_core") {
-  sources = [
-    "$HDF_FRAMEWORKS/core/adapter/syscall/src/hdf_devmgr_adapter.c",
-    "$HDF_FRAMEWORKS/core/adapter/syscall/src/hdf_syscall_adapter.c",
-    "$HDF_FRAMEWORKS/core/shared/src/hdf_io_service.c",
-    "$HDF_FRAMEWORKS/core/shared/src/ioserstat_listener.c",
-    "$HDF_FRAMEWORKS/core/shared/src/service_status.c",
-    "$HDF_FRAMEWORKS/core/shared/src/svcmgr_ioservice.c",
-    "$HDF_FRAMEWORKS/utils/src/hdf_sbuf.c",
-    "$HDF_FRAMEWORKS/utils/src/hdf_sbuf_impl_raw.c",
-  ]
+config("hdf_core_pub_config") {
+  visibility = [ ":*" ]
 
   include_dirs = [
     "$HDF_FRAMEWORKS/core/adapter/vnode/include",
@@ -41,10 +31,27 @@ shared_library("hdf_core") {
     "//third_party/bounds_checking_function/include",
     "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
   ]
+}
+
+ohos_shared_library("hdf_core") {
+  include_dirs = []
+
+  public_configs = [ ":hdf_core_pub_config" ]
+
+  sources = [
+    "$HDF_FRAMEWORKS/core/adapter/syscall/src/hdf_devmgr_adapter.c",
+    "$HDF_FRAMEWORKS/core/adapter/syscall/src/hdf_syscall_adapter.c",
+    "$HDF_FRAMEWORKS/core/shared/src/hdf_io_service.c",
+    "$HDF_FRAMEWORKS/core/shared/src/ioserstat_listener.c",
+    "$HDF_FRAMEWORKS/core/shared/src/service_status.c",
+    "$HDF_FRAMEWORKS/core/shared/src/svcmgr_ioservice.c",
+    "$HDF_FRAMEWORKS/utils/src/hdf_sbuf.c",
+    "$HDF_FRAMEWORKS/utils/src/hdf_sbuf_impl_raw.c",
+  ]
 
   deps = [
     "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-    "//drivers/adapter/uhdf/posix:hdf_posix",
+    "//drivers/adapter/uhdf/posix:hdf_posix_osal",
     "//third_party/bounds_checking_function:libsec_shared",
   ]
 
@@ -59,8 +66,8 @@ shared_library("hdf_core") {
     "-fno-strict-aliasing",
     "-Wno-format",
   ]
-}
 
-lite_component("hdf_manager") {
-  features = [ ":hdf_core" ]
+  # install_images = [ "vendor" ]
+  subsystem_name = "hdf"
+  part_name = "device_driver_framework"
 }

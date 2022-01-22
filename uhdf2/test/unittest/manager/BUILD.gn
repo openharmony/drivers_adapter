@@ -31,9 +31,8 @@ ohos_unittest("hdf_adapter_uhdf_test_manager") {
   defines = [ "__USER__" ]
   sources = [ "//drivers/framework/core/manager/test/unittest/common/hdf_lite_manager_test.cpp" ]
   deps = [
-    "//drivers/adapter/uhdf2/test/unittest/common:libhdf_test_common",
+    "//drivers/adapter/build/test_common:libhdf_test_common",
     "//drivers/adapter/uhdf2/utils:libhdf_utils",
-    "//utils/native/base:utils",
   ]
   cflags = [
     "-Wall",
@@ -44,7 +43,10 @@ ohos_unittest("hdf_adapter_uhdf_test_manager") {
     "-fno-strict-aliasing",
   ]
   if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+    external_deps = [
+      "hiviewdfx_hilog_native:libhilog",
+      "utils_base:utils",
+    ]
   } else {
     external_deps = [ "hilog:libhilog" ]
   }
@@ -67,10 +69,7 @@ ohos_unittest("hdf_adapter_uhdf_test_ioservice") {
 
   defines = [ "__USER__" ]
   sources = [ "//drivers/framework/core/manager/test/unittest/common/hdf_ioservice_test.cpp" ]
-  deps = [
-    "//drivers/adapter/uhdf2/utils:libhdf_utils",
-    "//utils/native/base:utils",
-  ]
+  deps = [ "//drivers/adapter/uhdf2/utils:libhdf_utils" ]
   cflags = [
     "-Wall",
     "-Wextra",
@@ -80,7 +79,10 @@ ohos_unittest("hdf_adapter_uhdf_test_ioservice") {
     "-fno-strict-aliasing",
   ]
   if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+    external_deps = [
+      "hiviewdfx_hilog_native:libhilog",
+      "utils_base:utils",
+    ]
   } else {
     external_deps = [ "hilog:libhilog" ]
   }
@@ -100,10 +102,7 @@ ohos_unittest("hdf_adapter_uhdf_test_sbuf") {
   sources = [
     "//drivers/framework/core/manager/test/unittest/common/hdf_sbuf_test.cpp",
   ]
-  deps = [
-    "//drivers/adapter/uhdf2/utils:libhdf_utils",
-    "//utils/native/base:utils",
-  ]
+  deps = [ "//drivers/adapter/uhdf2/utils:libhdf_utils" ]
   resource_config_file =
       "//drivers/adapter/uhdf2/test/resource/manager/ohos_test.xml"
   cflags = [
@@ -115,7 +114,10 @@ ohos_unittest("hdf_adapter_uhdf_test_sbuf") {
     "-fno-strict-aliasing",
   ]
   if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+    external_deps = [
+      "hiviewdfx_hilog_native:libhilog",
+      "utils_base:utils",
+    ]
   } else {
     external_deps = [ "hilog:libhilog" ]
   }
@@ -133,10 +135,7 @@ ohos_unittest("hdf_adapter_uhdf_test_pm") {
   sources = [
     "//drivers/framework/core/manager/test/unittest/common/hdf_pm_test.cpp",
   ]
-  deps = [
-    "//drivers/adapter/uhdf2/utils:libhdf_utils",
-    "//utils/native/base:utils",
-  ]
+  deps = [ "//drivers/adapter/uhdf2/utils:libhdf_utils" ]
   cflags = [
     "-Wall",
     "-Wextra",
@@ -146,7 +145,10 @@ ohos_unittest("hdf_adapter_uhdf_test_pm") {
     "-fno-strict-aliasing",
   ]
   if (is_standard_system) {
-    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+    external_deps = [
+      "hiviewdfx_hilog_native:libhilog",
+      "utils_base:utils",
+    ]
   } else {
     external_deps = [ "hilog:libhilog" ]
   }
