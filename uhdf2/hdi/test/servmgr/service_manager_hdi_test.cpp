@@ -362,12 +362,11 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
                     callbacked = true;
                 }
             }));
-    constexpr int FIRST_WAIT = 20;
-    OsalMSleep(FIRST_WAIT); // skip callback on register
 
     int status = servmgr->RegisterServiceStatusListener(listener, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(status, HDF_SUCCESS);
-
+    constexpr int FIRST_WAIT = 20;
+    OsalMSleep(FIRST_WAIT); // skip callback on register
     OHOS::MessageParcel data;
     OHOS::MessageParcel reply;
     OHOS::MessageOption option;
