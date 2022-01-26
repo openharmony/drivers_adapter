@@ -126,7 +126,7 @@ template("hdi") {
       }
 
       if (invoker.language == "cpp") {
-        external_deps += [ "ipc:ipc_core" ]
+        external_deps += [ "ipc:ipc_single" ]
       }
 
       subsystem_name = invoker.subsystem_name
@@ -167,7 +167,7 @@ template("hdi") {
       }
 
       if (invoker.language == "cpp") {
-        external_deps += [ "ipc:ipc_core" ]
+        external_deps += [ "ipc:ipc_single" ]
       }
 
       subsystem_name = invoker.subsystem_name
