@@ -28,6 +28,7 @@ ohos_unittest("hdf_adapter_uhdf_test_platform") {
   ]
 
   sources = [
+    "//drivers/framework/support/platform/test/unittest/common/hdf_adc_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_emmc_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_gpio_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_i2c_test.cpp",
@@ -36,6 +37,7 @@ ohos_unittest("hdf_adapter_uhdf_test_platform") {
     "//drivers/framework/support/platform/test/unittest/common/hdf_spi_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_uart_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_watchdog_test.cpp",
+    "//drivers/framework/test/unittest/platform/common/adc_test.c",
     "//drivers/framework/test/unittest/platform/common/i2c_test.c",
   ]
 
