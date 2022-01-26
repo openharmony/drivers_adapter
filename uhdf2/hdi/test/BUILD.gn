@@ -34,7 +34,7 @@ ohos_unittest("HdiServiceManagerTest") {
 
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
-    "ipc:ipc_core",
+    "ipc:ipc_single",
     "utils_base:utils",
   ]
 }
@@ -53,7 +53,7 @@ ohos_unittest("HdiServiceManagerTestCC") {
   include_dirs = [ "$hdf_uhdf_path/host/test/unittest/sample_driver" ]
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
-    "ipc:ipc_core",
+    "ipc:ipc_single",
     "samgr_standard:samgr_proxy",
     "utils_base:utils",
   ]
