@@ -28,7 +28,7 @@ static int32_t DevHostServiceProxyOpsDevice(
     struct IDevHostService *inst, const struct HdfDeviceInfo *attribute, int opsCode)
 {
     int status = HDF_FAILURE;
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct DevHostServiceProxy *hostClnt = (struct DevHostServiceProxy *)inst;
     if (hostClnt->remote == NULL || data == NULL) {
         HDF_LOGE("Adding device failed, hostClnt->remote or data or reply is null");
@@ -39,7 +39,7 @@ static int32_t DevHostServiceProxyOpsDevice(
     status = hostClnt->remote->dispatcher->Dispatch(hostClnt->remote, DEVHOST_SERVICE_ADD_DEVICE, data, NULL);
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     return status;
 }
@@ -54,7 +54,7 @@ static int32_t DevHostServiceProxyDelDevice(
     struct IDevHostService *inst, devid_t devid)
 {
     int status = HDF_FAILURE;
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct DevHostServiceProxy *hostClnt = (struct DevHostServiceProxy *)inst;
     if (hostClnt->remote == NULL || data == NULL) {
         HDF_LOGE("Del device failed, hostClnt->remote or data is null");
@@ -66,7 +66,7 @@ static int32_t DevHostServiceProxyDelDevice(
 
 finished:
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     return status;
 }

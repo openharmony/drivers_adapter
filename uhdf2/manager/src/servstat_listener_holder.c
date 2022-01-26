@@ -65,7 +65,7 @@ void UServStatListenerHolderNotifyStatus(struct ServStatListenerHolder *holder,
         return;
     }
     HDF_LOGI("notify service status %{public}s", status->serviceName);
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     if (data == NULL) {
         HDF_LOGE("failed to notify service status, oom");
         return;
@@ -73,7 +73,7 @@ void UServStatListenerHolderNotifyStatus(struct ServStatListenerHolder *holder,
 
     if (ServiceStatusMarshalling(status, data) != HDF_SUCCESS) {
         HDF_LOGE("failed to marshalling service status");
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
         return;
     }
 
@@ -84,7 +84,7 @@ void UServStatListenerHolderNotifyStatus(struct ServStatListenerHolder *holder,
     } else {
         HDF_LOGD("notify service status success");
     }
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
 }
 
 struct ServStatListenerHolder *ServStatListenerHolderGet(uint64_t index)
