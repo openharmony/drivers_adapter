@@ -45,7 +45,7 @@ static int WriteServiceInfo(struct HdfSBuf *data, const char *svcName,
         return ret;
     }
 
-    if (HdfSBufWriteRemoteService(data, deviceFullService->remote) != HDF_SUCCESS) {
+    if (HdfSbufWriteRemoteService(data, deviceFullService->remote) != HDF_SUCCESS) {
         HDF_LOGE("Add service failed, failed to write remote object");
         return ret;
     }
@@ -77,8 +77,8 @@ static int DevSvcManagerProxyAddService(    struct IDevSvcManager *inst, const c
     }
 
     int status = HDF_FAILURE;
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     do {
         if (data == NULL || reply == NULL) {
             HDF_LOGE("Add service failed, failed to obtain sbuf");
@@ -93,10 +93,10 @@ static int DevSvcManagerProxyAddService(    struct IDevSvcManager *inst, const c
     } while (0);
 
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     return status;
 }
@@ -120,8 +120,8 @@ static int DevSvcManagerProxyUpdateService(    struct IDevSvcManager *inst, cons
     }
 
     int status = HDF_FAILURE;
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     do {
         if (data == NULL || reply == NULL) {
             HDF_LOGE("Add service failed, failed to obtain sbuf");
@@ -136,10 +136,10 @@ static int DevSvcManagerProxyUpdateService(    struct IDevSvcManager *inst, cons
     } while (0);
 
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     return status;
 }
@@ -147,8 +147,8 @@ static int DevSvcManagerProxyUpdateService(    struct IDevSvcManager *inst, cons
 struct HdfObject *DevSvcManagerProxyGetService(struct IDevSvcManager *inst, const char *svcName)
 {
     int status = HDF_FAILURE;
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfRemoteDispatcher *dispatcher = NULL;
     struct HdfRemoteService *remoteService = NULL;
     struct DevSvcManagerProxy *serviceProxy = (struct DevSvcManagerProxy *)inst;
@@ -160,14 +160,14 @@ struct HdfObject *DevSvcManagerProxyGetService(struct IDevSvcManager *inst, cons
     HdfSbufWriteString(data, svcName);
     status = dispatcher->Dispatch(serviceProxy->remote, DEVSVC_MANAGER_GET_SERVICE, data, reply);
     if (status == HDF_SUCCESS) {
-        remoteService = HdfSBufReadRemoteService(reply);
+        remoteService = HdfSbufReadRemoteService(reply);
     }
 FINISHED:
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
     HDF_LOGI("DevSvcManagerProxyGetService finish, and status is %{public}d", status);
     return (remoteService == NULL) ? NULL : &remoteService->object_;
@@ -178,8 +178,8 @@ void DevSvcManagerProxyRemoveService(struct IDevSvcManager *inst, const char *sv
     if (inst == NULL || svcName == NULL) {
         return;
     }
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
-    struct HdfSBuf *reply = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfRemoteDispatcher *dispatcher = NULL;
     struct HdfRemoteService *remoteService = NULL;
     struct DevSvcManagerProxy *serviceProxy = (struct DevSvcManagerProxy *)inst;
@@ -194,10 +194,10 @@ void DevSvcManagerProxyRemoveService(struct IDevSvcManager *inst, const char *sv
     HDF_LOGD("Device service manager proxy remove service status is %{public}d", status);
 FINISHED:
     if (reply != NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
     }
     if (data != NULL) {
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
     }
 }
 

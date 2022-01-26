@@ -84,14 +84,14 @@ static int32_t DevmgrQueryDeviceInfo(struct HDIDeviceManager *iDevMgr, struct De
     struct HdfSBuf *data = NULL;
     int32_t ret;
 
-    reply = HdfSBufTypedObtain(SBUF_IPC);
+    reply = HdfSbufTypedObtain(SBUF_IPC);
     if (reply == NULL) {
         return HDF_ERR_MALLOC_FAIL;
     }
 
-    data = HdfSBufTypedObtain(SBUF_IPC);
+    data = HdfSbufTypedObtain(SBUF_IPC);
     if (data == NULL) {
-        HdfSBufRecycle(reply);
+        HdfSbufRecycle(reply);
         return HDF_ERR_MALLOC_FAIL;
     }
 
@@ -108,8 +108,8 @@ static int32_t DevmgrQueryDeviceInfo(struct HDIDeviceManager *iDevMgr, struct De
     ret = HdfObtainDeviceInfo(list, reply);
 
 FINISHED:
-    HdfSBufRecycle(reply);
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(reply);
+    HdfSbufRecycle(data);
 
     return ret;
 }
@@ -159,7 +159,7 @@ int32_t DevmgrLoadDevice(struct HDIDeviceManager *iDevMgr, const char *serviceNa
         return HDF_ERR_INVALID_PARAM;
     }
     HDF_LOGI("load device: %{public}s", serviceName);
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     do {
         if (data == NULL) {
             status = HDF_ERR_MALLOC_FAIL;
@@ -176,7 +176,7 @@ int32_t DevmgrLoadDevice(struct HDIDeviceManager *iDevMgr, const char *serviceNa
         }
     } while (0);
 
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return status;
 }
 
@@ -188,7 +188,7 @@ int32_t DevmgrUnloadDevice(struct HDIDeviceManager *iDevMgr, const char *service
     }
     HDF_LOGI("unload device: %{public}s", serviceName);
 
-    struct HdfSBuf *data = HdfSBufTypedObtain(SBUF_IPC);
+    struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     do {
         if (data == NULL) {
             status = HDF_ERR_MALLOC_FAIL;
@@ -205,7 +205,7 @@ int32_t DevmgrUnloadDevice(struct HDIDeviceManager *iDevMgr, const char *service
         }
     } while (0);
 
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return status;
 }
 

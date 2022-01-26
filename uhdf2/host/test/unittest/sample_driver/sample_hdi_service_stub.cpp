@@ -71,7 +71,7 @@ static int32_t SampleServiceStubCallback(struct HdfDeviceIoClient *client, struc
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HdfRemoteService *callback = HdfSBufReadRemoteService(data);
+    struct HdfRemoteService *callback = HdfSbufReadRemoteService(data);
     if (callback == NULL) {
         HDF_LOGE("SampleHdi.callback: miss parameter callback");
         return HDF_ERR_INVALID_PARAM;

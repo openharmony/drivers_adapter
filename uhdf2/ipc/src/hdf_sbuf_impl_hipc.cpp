@@ -22,7 +22,7 @@
 
 using namespace OHOS;
 
-static void MParcelImplInterfaceAssign(struct HdfSbufImpl *inf);
+static void MParcelImplInterfaceAssign(struct HdfSBufImpl *inf);
 
 struct SBufMParcelImpl {
     SBufMParcelImpl(OHOS::MessageParcel *parcel, bool owned = true): realParcel_(parcel), owned_(owned)
@@ -36,19 +36,19 @@ struct SBufMParcelImpl {
             realParcel_ = nullptr;
         }
     }
-    struct HdfSbufImpl infImpl;
+    struct HdfSBufImpl infImpl;
     OHOS::MessageParcel *realParcel_;
     std::vector<std::u16string> str16Pool_;
     bool owned_;
 };
 
-static MessageParcel *MParcelCast(struct HdfSbufImpl *impl)
+static MessageParcel *MParcelCast(struct HdfSBufImpl *impl)
 {
     SBufMParcelImpl *sbufImpl = reinterpret_cast<SBufMParcelImpl *>(impl);
     return sbufImpl->realParcel_;
 }
 
-static bool SbufMParcelImplWriteBuffer(struct HdfSbufImpl *sbuf, const uint8_t *data, uint32_t writeSize)
+static bool SbufMParcelImplWriteBuffer(struct HdfSBufImpl *sbuf, const uint8_t *data, uint32_t writeSize)
 {
     if (sbuf == nullptr) {
         return false;
@@ -60,7 +60,7 @@ static bool SbufMParcelImplWriteBuffer(struct HdfSbufImpl *sbuf, const uint8_t *
     return parcel->WriteUnpadBuffer((const void *)data, writeSize);
 }
 
-static bool SbufMParcelImplWriteUnpadBuffer(struct HdfSbufImpl *sbuf, const uint8_t *data, uint32_t writeSize)
+static bool SbufMParcelImplWriteUnpadBuffer(struct HdfSBufImpl *sbuf, const uint8_t *data, uint32_t writeSize)
 {
     if (sbuf == nullptr) {
         return false;
@@ -68,7 +68,7 @@ static bool SbufMParcelImplWriteUnpadBuffer(struct HdfSbufImpl *sbuf, const uint
     return MParcelCast(sbuf)->WriteUnpadBuffer(static_cast<const void *>(data), writeSize);
 }
 
-static bool SbufMParcelImplWriteUint64(struct HdfSbufImpl *sbuf, uint64_t value)
+static bool SbufMParcelImplWriteUint64(struct HdfSBufImpl *sbuf, uint64_t value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -76,7 +76,7 @@ static bool SbufMParcelImplWriteUint64(struct HdfSbufImpl *sbuf, uint64_t value)
     return MParcelCast(sbuf)->WriteUint64(value);
 }
 
-static bool SbufMParcelImplWriteUint32(struct HdfSbufImpl *sbuf, uint32_t value)
+static bool SbufMParcelImplWriteUint32(struct HdfSBufImpl *sbuf, uint32_t value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -84,7 +84,7 @@ static bool SbufMParcelImplWriteUint32(struct HdfSbufImpl *sbuf, uint32_t value)
     return MParcelCast(sbuf)->WriteUint32(value);
 }
 
-static bool SbufMParcelImplWriteUint16(struct HdfSbufImpl *sbuf, uint16_t value)
+static bool SbufMParcelImplWriteUint16(struct HdfSBufImpl *sbuf, uint16_t value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -92,7 +92,7 @@ static bool SbufMParcelImplWriteUint16(struct HdfSbufImpl *sbuf, uint16_t value)
     return MParcelCast(sbuf)->WriteUint16(value);
 }
 
-static bool SbufMParcelImplWriteUint8(struct HdfSbufImpl *sbuf, uint8_t value)
+static bool SbufMParcelImplWriteUint8(struct HdfSBufImpl *sbuf, uint8_t value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -100,7 +100,7 @@ static bool SbufMParcelImplWriteUint8(struct HdfSbufImpl *sbuf, uint8_t value)
     return MParcelCast(sbuf)->WriteUint8(value);
 }
 
-static bool SbufMParcelImplWriteInt64(struct HdfSbufImpl *sbuf, int64_t value)
+static bool SbufMParcelImplWriteInt64(struct HdfSBufImpl *sbuf, int64_t value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -108,7 +108,7 @@ static bool SbufMParcelImplWriteInt64(struct HdfSbufImpl *sbuf, int64_t value)
     return MParcelCast(sbuf)->WriteInt64(value);
 }
 
-static bool SbufMParcelImplWriteInt32(struct HdfSbufImpl *sbuf, int32_t value)
+static bool SbufMParcelImplWriteInt32(struct HdfSBufImpl *sbuf, int32_t value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -116,7 +116,7 @@ static bool SbufMParcelImplWriteInt32(struct HdfSbufImpl *sbuf, int32_t value)
     return MParcelCast(sbuf)->WriteInt32(value);
 }
 
-static bool SbufMParcelImplWriteInt16(struct HdfSbufImpl *sbuf, int16_t value)
+static bool SbufMParcelImplWriteInt16(struct HdfSBufImpl *sbuf, int16_t value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -124,7 +124,7 @@ static bool SbufMParcelImplWriteInt16(struct HdfSbufImpl *sbuf, int16_t value)
     return MParcelCast(sbuf)->WriteInt16(value);
 }
 
-static bool SbufMParcelImplWriteInt8(struct HdfSbufImpl *sbuf, int8_t value)
+static bool SbufMParcelImplWriteInt8(struct HdfSBufImpl *sbuf, int8_t value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -132,7 +132,7 @@ static bool SbufMParcelImplWriteInt8(struct HdfSbufImpl *sbuf, int8_t value)
     return MParcelCast(sbuf)->WriteInt8(value);
 }
 
-static bool SbufMParcelImplWriteString(struct HdfSbufImpl *sbuf, const char *value)
+static bool SbufMParcelImplWriteString(struct HdfSBufImpl *sbuf, const char *value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -140,7 +140,7 @@ static bool SbufMParcelImplWriteString(struct HdfSbufImpl *sbuf, const char *val
     return MParcelCast(sbuf)->WriteCString(value);
 }
 
-static bool SbufMParcelImplWriteString16(struct HdfSbufImpl *sbuf, const char16_t *value, uint32_t size)
+static bool SbufMParcelImplWriteString16(struct HdfSBufImpl *sbuf, const char16_t *value, uint32_t size)
 {
     if (sbuf == nullptr) {
         return false;
@@ -148,7 +148,7 @@ static bool SbufMParcelImplWriteString16(struct HdfSbufImpl *sbuf, const char16_
     return MParcelCast(sbuf)->WriteString16WithLength(value, size);
 }
 
-static bool SbufMParcelImplWriteFileDescriptor(struct HdfSbufImpl *sbuf, int fd)
+static bool SbufMParcelImplWriteFileDescriptor(struct HdfSBufImpl *sbuf, int fd)
 {
     if (sbuf == nullptr) {
         return false;
@@ -156,7 +156,7 @@ static bool SbufMParcelImplWriteFileDescriptor(struct HdfSbufImpl *sbuf, int fd)
     return MParcelCast(sbuf)->WriteFileDescriptor(fd);
 }
 
-static bool SbufMParcelImplWriteDouble(struct HdfSbufImpl *sbuf, double value)
+static bool SbufMParcelImplWriteDouble(struct HdfSBufImpl *sbuf, double value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -164,7 +164,7 @@ static bool SbufMParcelImplWriteDouble(struct HdfSbufImpl *sbuf, double value)
     return MParcelCast(sbuf)->WriteDouble(value);
 }
 
-static bool SbufMParcelImplWriteFloat(struct HdfSbufImpl *sbuf, float value)
+static bool SbufMParcelImplWriteFloat(struct HdfSBufImpl *sbuf, float value)
 {
     if (sbuf == nullptr) {
         return false;
@@ -172,7 +172,7 @@ static bool SbufMParcelImplWriteFloat(struct HdfSbufImpl *sbuf, float value)
     return MParcelCast(sbuf)->WriteFloat(value);
 }
 
-static bool SbufMParcelImplReadFloat(struct HdfSbufImpl *sbuf, float *value)
+static bool SbufMParcelImplReadFloat(struct HdfSBufImpl *sbuf, float *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -183,7 +183,7 @@ static bool SbufMParcelImplReadFloat(struct HdfSbufImpl *sbuf, float *value)
     return ret;
 }
 
-static bool SbufMParcelImplReadDouble(struct HdfSbufImpl *sbuf, double *value)
+static bool SbufMParcelImplReadDouble(struct HdfSBufImpl *sbuf, double *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -194,7 +194,7 @@ static bool SbufMParcelImplReadDouble(struct HdfSbufImpl *sbuf, double *value)
     return ret;
 }
 
-static int SbufMParcelImplReadFileDescriptor(struct HdfSbufImpl *sbuf)
+static int SbufMParcelImplReadFileDescriptor(struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return false;
@@ -202,7 +202,7 @@ static int SbufMParcelImplReadFileDescriptor(struct HdfSbufImpl *sbuf)
     return MParcelCast(sbuf)->ReadFileDescriptor();
 }
 
-static bool SbufMParcelImplReadBuffer(struct HdfSbufImpl *sbuf, const uint8_t **data, uint32_t *readSize)
+static bool SbufMParcelImplReadBuffer(struct HdfSBufImpl *sbuf, const uint8_t **data, uint32_t *readSize)
 {
     if (sbuf == nullptr || data == nullptr || readSize == nullptr) {
         return false;
@@ -213,7 +213,7 @@ static bool SbufMParcelImplReadBuffer(struct HdfSbufImpl *sbuf, const uint8_t **
     return *data != nullptr;
 }
 
-static const uint8_t *SbufMParcelImplReadUnpadBuffer(struct HdfSbufImpl *sbuf, size_t length)
+static const uint8_t *SbufMParcelImplReadUnpadBuffer(struct HdfSBufImpl *sbuf, size_t length)
 {
     if (sbuf == nullptr) {
         return nullptr;
@@ -221,7 +221,7 @@ static const uint8_t *SbufMParcelImplReadUnpadBuffer(struct HdfSbufImpl *sbuf, s
     return MParcelCast(sbuf)->ReadUnpadBuffer(length);
 }
 
-static bool SbufMParcelImplReadUint64(struct HdfSbufImpl *sbuf, uint64_t *value)
+static bool SbufMParcelImplReadUint64(struct HdfSBufImpl *sbuf, uint64_t *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -232,7 +232,7 @@ static bool SbufMParcelImplReadUint64(struct HdfSbufImpl *sbuf, uint64_t *value)
     return ret;
 }
 
-static bool SbufMParcelImplReadUint32(struct HdfSbufImpl *sbuf, uint32_t *value)
+static bool SbufMParcelImplReadUint32(struct HdfSBufImpl *sbuf, uint32_t *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -243,7 +243,7 @@ static bool SbufMParcelImplReadUint32(struct HdfSbufImpl *sbuf, uint32_t *value)
     return ret;
 }
 
-static bool SbufMParcelImplReadUint16(struct HdfSbufImpl *sbuf, uint16_t *value)
+static bool SbufMParcelImplReadUint16(struct HdfSBufImpl *sbuf, uint16_t *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -254,7 +254,7 @@ static bool SbufMParcelImplReadUint16(struct HdfSbufImpl *sbuf, uint16_t *value)
     return ret;
 }
 
-static bool SbufMParcelImplReadUint8(struct HdfSbufImpl *sbuf, uint8_t *value)
+static bool SbufMParcelImplReadUint8(struct HdfSBufImpl *sbuf, uint8_t *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -265,7 +265,7 @@ static bool SbufMParcelImplReadUint8(struct HdfSbufImpl *sbuf, uint8_t *value)
     return ret;
 }
 
-static bool SbufMParcelImplReadInt64(struct HdfSbufImpl *sbuf, int64_t *value)
+static bool SbufMParcelImplReadInt64(struct HdfSBufImpl *sbuf, int64_t *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -276,7 +276,7 @@ static bool SbufMParcelImplReadInt64(struct HdfSbufImpl *sbuf, int64_t *value)
     return ret;
 }
 
-static bool SbufMParcelImplReadInt32(struct HdfSbufImpl *sbuf, int32_t *value)
+static bool SbufMParcelImplReadInt32(struct HdfSBufImpl *sbuf, int32_t *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -287,7 +287,7 @@ static bool SbufMParcelImplReadInt32(struct HdfSbufImpl *sbuf, int32_t *value)
     return ret;
 }
 
-static bool SbufMParcelImplReadInt16(struct HdfSbufImpl *sbuf, int16_t *value)
+static bool SbufMParcelImplReadInt16(struct HdfSBufImpl *sbuf, int16_t *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -298,7 +298,7 @@ static bool SbufMParcelImplReadInt16(struct HdfSbufImpl *sbuf, int16_t *value)
     return ret;
 }
 
-static bool SbufMParcelImplReadInt8(struct HdfSbufImpl *sbuf, int8_t *value)
+static bool SbufMParcelImplReadInt8(struct HdfSBufImpl *sbuf, int8_t *value)
 {
     if (sbuf == nullptr || value == nullptr) {
         return false;
@@ -309,7 +309,7 @@ static bool SbufMParcelImplReadInt8(struct HdfSbufImpl *sbuf, int8_t *value)
     return ret;
 }
 
-static const char *SbufMParcelImplReadString(struct HdfSbufImpl *sbuf)
+static const char *SbufMParcelImplReadString(struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return nullptr;
@@ -317,7 +317,7 @@ static const char *SbufMParcelImplReadString(struct HdfSbufImpl *sbuf)
     return MParcelCast(sbuf)->ReadCString();
 }
 
-static const char16_t *SbufMParcelImplReadString16(struct HdfSbufImpl *sbuf)
+static const char16_t *SbufMParcelImplReadString16(struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return nullptr;
@@ -327,7 +327,7 @@ static const char16_t *SbufMParcelImplReadString16(struct HdfSbufImpl *sbuf)
     return sbufImpl->str16Pool_.rbegin()->c_str();
 }
 
-static int32_t SbufMParcelImplWriteRemoteService(struct HdfSbufImpl *sbuf, const struct HdfRemoteService *service)
+static int32_t SbufMParcelImplWriteRemoteService(struct HdfSBufImpl *sbuf, const struct HdfRemoteService *service)
 {
     if (sbuf == nullptr || service == nullptr) {
         return false;
@@ -340,7 +340,7 @@ static int32_t SbufMParcelImplWriteRemoteService(struct HdfSbufImpl *sbuf, const
     return HDF_FAILURE;
 }
 
-static struct HdfRemoteService *SbufMParcelImplReadRemoteService(struct HdfSbufImpl *sbuf)
+static struct HdfRemoteService *SbufMParcelImplReadRemoteService(struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return nullptr;
@@ -353,15 +353,15 @@ static struct HdfRemoteService *SbufMParcelImplReadRemoteService(struct HdfSbufI
     return HdfRemoteAdapterBind(remote);
 }
 
-static const uint8_t *SbufMParcelImplGetData(const struct HdfSbufImpl *sbuf)
+static const uint8_t *SbufMParcelImplGetData(const struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return nullptr;
     }
-    return reinterpret_cast<const uint8_t *>(MParcelCast(const_cast<struct HdfSbufImpl *>(sbuf))->GetData());
+    return reinterpret_cast<const uint8_t *>(MParcelCast(const_cast<struct HdfSBufImpl *>(sbuf))->GetData());
 }
 
-static void SbufMParcelImplFlush(struct HdfSbufImpl *sbuf)
+static void SbufMParcelImplFlush(struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return;
@@ -369,24 +369,24 @@ static void SbufMParcelImplFlush(struct HdfSbufImpl *sbuf)
     return MParcelCast(sbuf)->FlushBuffer();
 }
 
-static size_t SbufMParcelImplGetCapacity(const struct HdfSbufImpl *sbuf)
+static size_t SbufMParcelImplGetCapacity(const struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return HDF_FAILURE;
     }
 
-    return MParcelCast(const_cast<struct HdfSbufImpl *>(sbuf))->GetDataCapacity();
+    return MParcelCast(const_cast<struct HdfSBufImpl *>(sbuf))->GetDataCapacity();
 }
 
-static size_t SbufMParcelImplGetDataSize(const struct HdfSbufImpl *sbuf)
+static size_t SbufMParcelImplGetDataSize(const struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return HDF_FAILURE;
     }
-    return MParcelCast(const_cast<struct HdfSbufImpl *>(sbuf))->GetDataSize();
+    return MParcelCast(const_cast<struct HdfSBufImpl *>(sbuf))->GetDataSize();
 }
 
-static void SbufMParcelImplSetDataSize(struct HdfSbufImpl *sbuf, size_t size)
+static void SbufMParcelImplSetDataSize(struct HdfSBufImpl *sbuf, size_t size)
 {
     if (sbuf == nullptr) {
         return;
@@ -394,7 +394,7 @@ static void SbufMParcelImplSetDataSize(struct HdfSbufImpl *sbuf, size_t size)
     MParcelCast(sbuf)->SetDataSize(size);
 }
 
-static void SbufMParcelImplRecycle(struct HdfSbufImpl *sbuf)
+static void SbufMParcelImplRecycle(struct HdfSBufImpl *sbuf)
 {
     if (sbuf == nullptr) {
         return;
@@ -403,7 +403,7 @@ static void SbufMParcelImplRecycle(struct HdfSbufImpl *sbuf)
     delete sbufImpl;
 }
 
-static void MParcelImplInterfaceAssign(struct HdfSbufImpl *inf)
+static void MParcelImplInterfaceAssign(struct HdfSBufImpl *inf)
 {
     inf->writeBuffer = SbufMParcelImplWriteBuffer;
     inf->writeUnpadBuffer = SbufMParcelImplWriteUnpadBuffer;
@@ -448,7 +448,7 @@ static void MParcelImplInterfaceAssign(struct HdfSbufImpl *inf)
     inf->move = nullptr;
 }
 
-extern "C" struct HdfSbufImpl *SbufObtainIpc(size_t capacity)
+extern "C" struct HdfSBufImpl *SbufObtainIpc(size_t capacity)
 {
     (void)capacity;
     struct SBufMParcelImpl *sbuf = new SBufMParcelImpl(new MessageParcel());
@@ -476,7 +476,7 @@ public:
     }
 };
 
-extern "C" struct HdfSbufImpl *SbufBindIpc(uintptr_t base, size_t size)
+extern "C" struct HdfSBufImpl *SbufBindIpc(uintptr_t base, size_t size)
 {
     struct SBufMParcelImpl *sbuf = new SBufMParcelImpl(new MessageParcel(new SbufAllocator()));
     sbuf->realParcel_->ParseFrom(base, size);
@@ -486,7 +486,7 @@ extern "C" struct HdfSbufImpl *SbufBindIpc(uintptr_t base, size_t size)
 struct HdfSBuf *ParcelToSbuf(OHOS::MessageParcel *parcel)
 {
     struct SBufMParcelImpl *sbuf = new SBufMParcelImpl(parcel, false);
-    return HdfSBufTypedObtainInplace(SBUF_IPC, &sbuf->infImpl);
+    return HdfSbufTypedObtainInplace(SBUF_IPC, &sbuf->infImpl);
 }
 
 int32_t SbufToParcel(struct HdfSBuf *sbuf, OHOS::MessageParcel **parcel)

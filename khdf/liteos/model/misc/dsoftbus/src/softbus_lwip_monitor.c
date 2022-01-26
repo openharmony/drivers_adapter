@@ -56,7 +56,7 @@ typedef struct {
 
 static void ReportEvent(const LwipMonitorReportInfo *reportInfo)
 {
-    struct HdfSBuf *data = data = HdfSBufObtainDefaultSize();
+    struct HdfSBuf *data = data = HdfSbufObtainDefaultSize();
 
     if (data == NULL) {
         dprintf("get sbuf fail\n");
@@ -64,11 +64,11 @@ static void ReportEvent(const LwipMonitorReportInfo *reportInfo)
     }
     if (!HdfSbufWriteBuffer(data, (const void *)reportInfo, sizeof(LwipMonitorReportInfo))) {
         dprintf("sbuf write report value fail\n");
-        HdfSBufRecycle(data);
+        HdfSbufRecycle(data);
         return;
     }
     HdfSoftbusBroadcastEvent(SOFTBUS_MODULE_LWIP_MONITOR, data);
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
 }
 
 static void NetifStatusCallback(struct netif *netif, netif_nsc_reason_t reason,

@@ -41,7 +41,7 @@ static int32_t DevSvcManagerStubAddService(struct IDevSvcManager *super, struct 
         return ret;
     }
 
-    struct HdfRemoteService *service = HdfSBufReadRemoteService(data);
+    struct HdfRemoteService *service = HdfSbufReadRemoteService(data);
     if (service == NULL) {
         HDF_LOGE("%{public}s failed, service is null", __func__);
         return ret;
@@ -81,7 +81,7 @@ static int32_t DevSvcManagerStubUpdateService(struct IDevSvcManager *super, stru
         return ret;
     }
 
-    struct HdfRemoteService *service = HdfSBufReadRemoteService(data);
+    struct HdfRemoteService *service = HdfSbufReadRemoteService(data);
     if (service == NULL) {
         HDF_LOGE("%{public}s failed, service is null", __func__);
         return ret;
@@ -111,7 +111,7 @@ static int32_t DevSvcManagerStubGetService(struct IDevSvcManager *super, struct 
     struct HdfRemoteService *remoteService = (struct HdfRemoteService *)super->GetService(super, name);
     if (remoteService != NULL) {
         ret = HDF_SUCCESS;
-        HdfSBufWriteRemoteService(reply, remoteService);
+        HdfSbufWriteRemoteService(reply, remoteService);
         HDF_LOGE("service %{public}s found", name);
     } else {
         HDF_LOGE("service %{public}s not found", name);
@@ -139,7 +139,7 @@ static int32_t DevSvcManagerStubRegisterServListener(struct IDevSvcManager *supe
     if (!HdfSbufReadUint16(data, &listenClass)) {
         return HDF_ERR_INVALID_PARAM;
     }
-    struct HdfRemoteService *listenerRemote = HdfSBufReadRemoteService(data);
+    struct HdfRemoteService *listenerRemote = HdfSbufReadRemoteService(data);
     if (listenerRemote == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
@@ -162,7 +162,7 @@ static int32_t DevSvcManagerStubRegisterServListener(struct IDevSvcManager *supe
 
 static int32_t DevSvcManagerStubUnregisterServListener(struct IDevSvcManager *super, struct HdfSBuf *data)
 {
-    struct HdfRemoteService *listenerRemote = HdfSBufReadRemoteService(data);
+    struct HdfRemoteService *listenerRemote = HdfSbufReadRemoteService(data);
     if (listenerRemote == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }

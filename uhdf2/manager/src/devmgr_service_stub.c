@@ -91,7 +91,7 @@ int32_t DevmgrServiceStubDispatch(
                 HDF_LOGE("invalid host id");
                 return HDF_FAILURE;
             }
-            struct HdfRemoteService *service = HdfSBufReadRemoteService(data);
+            struct HdfRemoteService *service = HdfSbufReadRemoteService(data);
             struct IDevHostService *hostIf = DevHostServiceProxyObtain(hostId, service);
             ret = super->AttachDeviceHost(super, hostId, hostIf);
             break;

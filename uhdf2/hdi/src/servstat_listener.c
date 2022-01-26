@@ -57,7 +57,7 @@ int ServiceStatusListenerMarshalling(struct ServiceStatusListener *listener, str
     if (listenerStub->remote == NULL) {
         return HDF_ERR_INVALID_OBJECT;
     }
-    return HdfSBufWriteRemoteService(buf, listenerStub->remote);
+    return HdfSbufWriteRemoteService(buf, listenerStub->remote);
 }
 
 struct ServiceStatusListener *HdiServiceStatusListenerNewInstance(void)

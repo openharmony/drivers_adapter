@@ -416,7 +416,7 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
         return HDF_ERR_INVALID_PARAM;
     }
 
-    data = HdfSBufObtainDefaultSize();
+    data = HdfSbufObtainDefaultSize();
     if (data == NULL) {
         HDF_LOGE("%s:%d InitDataBlock failed", __func__, __LINE__);
         return HDF_FAILURE;
@@ -460,7 +460,7 @@ OUT:
         }
     }
 ERROR_DEVICE_INFO:
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return ret;
 }
 
@@ -524,7 +524,7 @@ static int32_t TestPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObj
         return HDF_ERR_INVALID_PARAM;
     }
 
-    data = HdfSBufObtainDefaultSize();
+    data = HdfSbufObtainDefaultSize();
     if (data == NULL) {
         HDF_LOGE("%s InitDataBlock failed", __func__);
         return HDF_FAILURE;
@@ -547,11 +547,11 @@ static int32_t TestPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObj
         goto OUT;
     }
 
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return ret;
 
 OUT:
-    HdfSBufRecycle(data);
+    HdfSbufRecycle(data);
     return HDF_FAILURE;
 }
 #endif
