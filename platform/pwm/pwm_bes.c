@@ -190,7 +190,7 @@ static int32_t PwmDriverInit(struct HdfDeviceObject *device)
 
     HDF_LOGI("Enter %s:\r\n", __func__);
 
-    host = (struct PwmDev *)OsalMemAlloc(sizeof(struct PwmDev));
+    host = (struct PwmDev *)device->service;
     if (host == NULL) {
         HDF_LOGE("%s: host is NULL\r\n", __func__);
         return HDF_ERR_MALLOC_FAIL;
@@ -198,7 +198,6 @@ static int32_t PwmDriverInit(struct HdfDeviceObject *device)
 
     ret = AttachPwmDevice(host, device);
     if (ret != HDF_SUCCESS) {
-        OsalMemFree(host);
         HDF_LOGE("%s:attach error\r\n", __func__);
         return HDF_DEV_ERR_ATTACHDEV_FAIL;
     }
@@ -208,7 +207,6 @@ static int32_t PwmDriverInit(struct HdfDeviceObject *device)
     if (ret != HDF_SUCCESS) {
         PwmDeviceRemove(device, host);
         OsalMemFree(host->device);
-        OsalMemFree(host);
         return HDF_DEV_ERR_NO_DEVICE;
     }
 
@@ -229,7 +227,6 @@ static void PwmDriverRelease(struct HdfDeviceObject *device)
     if (host != NULL && host->device != NULL) {
         host->method = NULL;
         OsalMemFree(host->device);
-        OsalMemFree(host);
         host->device = NULL;
         host = NULL;
     }
