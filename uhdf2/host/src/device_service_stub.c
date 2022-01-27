@@ -99,6 +99,9 @@ int DeviceServiceStubRemoveService(struct HdfDeviceNode *deviceNode)
         return HDF_FAILURE;
     }
     DevSvcManagerClntRemoveService(deviceNode->servName);
+    struct DeviceServiceStub *instance = (struct DeviceServiceStub *)deviceNode;
+    HdfRemoteServiceRecycle(instance->remote);
+    instance->remote = NULL;
     return HDF_SUCCESS;
 }
 
