@@ -21,7 +21,7 @@
 #include "hdf_log.h"
 
 #define HDF_LOG_TAG gpioDriver
-static struct GpioCntlr gpioCntlr;
+static struct GpioCntlr g_gpioCntlr;
 struct OemGpioIrqHandler {
     uint8_t port;
     GpioIrqFunc func;
@@ -29,7 +29,6 @@ struct OemGpioIrqHandler {
 };
 
 enum HAL_GPIO_PIN_T g_gpioPinReflectionMap[HAL_GPIO_PIN_LED_NUM] = {0};
-static struct OemGpioIrqHandler g_oemGpioIrqHandler[HAL_GPIO_PIN_LED_NUM] = {0};
 static struct HAL_GPIO_IRQ_CFG_T g_gpioIrqCfg[HAL_GPIO_PIN_LED_NUM] = {0};
 
 static struct HAL_GPIO_IRQ_CFG_T HalGpioGetIrqConfig(enum HAL_GPIO_PIN_T pin)
@@ -52,7 +51,7 @@ static void OemGpioIrqHdl(enum HAL_GPIO_PIN_T pin)
     }
     for (size_t i = 0; i < HAL_GPIO_PIN_LED_NUM; i++) {
         if (pin == (enum HAL_GPIO_PIN_T)g_gpioPinReflectionMap[i]) {
-            GpioCntlrIrqCallback(&gpioCntlr, i);
+            GpioCntlrIrqCallback(&g_gpioCntlr, i);
             return;
         }
     }
@@ -214,7 +213,7 @@ static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObj
     }
 
     gpioCntlr->count = gpioDevice->resource.pinNum;
-
+    gpioCntlr->priv = (void *)gpioDevice;
     return HDF_SUCCESS;
 }
 
@@ -256,8 +255,8 @@ static int32_t GpioDriverBind(struct HdfDeviceObject *device)
         return HDF_ERR_INVALID_PARAM;
     }
 
-    gpioCntlr.device.hdfDev = device;
-    device->service = gpioCntlr.device.service;
+    g_gpioCntlr.device.hdfDev = device;
+    device->service = (struct IDeviceIoService *)&g_gpioCntlr;
 
     return HDF_SUCCESS;
 }
@@ -278,7 +277,8 @@ static void GpioDriverRelease(struct HdfDeviceObject *device)
     }
 
     gpioCntlr->ops = NULL;
-    OsalMemFree(gpioCntlr);
+    (void)OsalMemFree(gpioCntlr->priv);
+    gpioCntlr->count = 0;
 }
 
 /* dev api */
@@ -360,10 +360,6 @@ static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mo
         return HDF_ERR_NOT_SUPPORT;
     }
 
-    g_oemGpioIrqHandler[pin].port = gpio;
-    g_oemGpioIrqHandler[pin].func = func;
-    g_oemGpioIrqHandler[pin].arg = arg;
-
     g_gpioIrqCfg[pin].irq_polarity = mode;
 
     return HDF_SUCCESS;
@@ -377,10 +373,6 @@ static int32_t GpioDevUnSetIrq(struct GpioCntlr *cntlr, uint16_t gpio)
         HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, pin);
         return HDF_ERR_NOT_SUPPORT;
     }
-
-    g_oemGpioIrqHandler[pin].func = NULL;
-    g_oemGpioIrqHandler[pin].arg = NULL;
-
     return HDF_SUCCESS;
 }
 
