@@ -149,6 +149,7 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/pwm_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_pwm_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_TIMER), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/timer_driver_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/timer_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_timer_entry_test.c
 endif
