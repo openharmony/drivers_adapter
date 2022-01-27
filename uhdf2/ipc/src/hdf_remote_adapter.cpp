@@ -121,7 +121,7 @@ static int HdfRemoteAdapterDispatchAsync(struct HdfRemoteService *service,
     return HdfRemoteAdapterOptionalDispatch(service, code, data, reply, false);
 }
 
-HdfRemoteServiceHolder::HdfRemoteServiceHolder() : remote_(nullptr)
+HdfRemoteServiceHolder::HdfRemoteServiceHolder() : remote_(nullptr), deathRecipient_(nullptr)
 {
     service_.object_.objectId = HDF_OBJECT_ID_REMOTE_SERVICE;
     service_.dispatcher = nullptr;
@@ -139,8 +139,28 @@ void HdfRemoteAdapterAddDeathRecipient(
     if (remote == nullptr) {
         return;
     }
-    HdfDeathNotifier *notifier = new HdfDeathNotifier(service, recipient);
-    remote->AddDeathRecipient(notifier);
+    if (holder->deathRecipient_ != nullptr) {
+        remote->RemoveDeathRecipient(holder->deathRecipient_);
+    }
+    holder->deathRecipient_ = new HdfDeathNotifier(service, recipient);
+    remote->AddDeathRecipient(holder->deathRecipient_);
+}
+
+void HdfRemoteAdapterRemoveDeathRecipient(
+    struct HdfRemoteService *service, struct HdfDeathRecipient *recipient)
+{
+    struct HdfRemoteServiceHolder *holder = reinterpret_cast<struct HdfRemoteServiceHolder *>(service);
+    if (holder == nullptr) {
+        return;
+    }
+    OHOS::sptr<OHOS::IRemoteObject> remote = holder->remote_;
+    if (remote == nullptr) {
+        return;
+    }
+    if (holder->deathRecipient_ != nullptr) {
+        remote->RemoveDeathRecipient(holder->deathRecipient_);
+        holder->deathRecipient_ = nullptr;
+    }
 }
 
 struct HdfRemoteService *HdfRemoteAdapterBind(OHOS::sptr<OHOS::IRemoteObject> binder)

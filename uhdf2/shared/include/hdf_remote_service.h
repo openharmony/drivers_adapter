@@ -46,6 +46,8 @@ void HdfRemoteServiceRecycle(struct HdfRemoteService *service);
 
 void HdfRemoteServiceAddDeathRecipient(struct HdfRemoteService *service, struct HdfDeathRecipient *recipient);
 
+void HdfRemoteServiceRemoveDeathRecipient(struct HdfRemoteService *service, struct HdfDeathRecipient *recipient);
+
 int HdfRemoteServiceRegister(int32_t serviceId, struct HdfRemoteService *service);
 
 struct HdfRemoteService *HdfRemoteServiceGet(int32_t serviceId);
