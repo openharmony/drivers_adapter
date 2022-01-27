@@ -34,9 +34,11 @@ ohos_unittest("hdf_adapter_uhdf_test_platform") {
     "//drivers/framework/support/platform/test/unittest/common/hdf_pwm_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_rtc_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_spi_test.cpp",
+    "//drivers/framework/support/platform/test/unittest/common/hdf_timer_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_uart_test.cpp",
     "//drivers/framework/support/platform/test/unittest/common/hdf_watchdog_test.cpp",
     "//drivers/framework/test/unittest/platform/common/i2c_test.c",
+    "//drivers/framework/test/unittest/platform/common/timer_test.c",
   ]
 
   deps = [
