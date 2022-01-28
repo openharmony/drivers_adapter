@@ -116,7 +116,6 @@ int32_t GpioDispatch(struct HdfDeviceIoClient *client, int cmdId, struct HdfSBuf
 }
 
 /* HdfDriverEntry method definitions */
-static int32_t GpioDriverBind(struct HdfDeviceObject *device);
 static int32_t GpioDriverInit(struct HdfDeviceObject *device);
 static void GpioDriverRelease(struct HdfDeviceObject *device);
 
@@ -124,7 +123,6 @@ static void GpioDriverRelease(struct HdfDeviceObject *device);
 struct HdfDriverEntry g_GpioDriverEntry = {
     .moduleVersion = 1,
     .moduleName = "BES_GPIO_MODULE_HDF",
-    .Bind = GpioDriverBind,
     .Init = GpioDriverInit,
     .Release = GpioDriverRelease,
 };
@@ -275,6 +273,12 @@ static int32_t GpioDriverInit(struct HdfDeviceObject *device)
         return HDF_ERR_INVALID_PARAM;
     }
 
+    ret = PlatformDeviceBind(&g_gpioCntlr.device, device);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: bind hdf device failed:%d", __func__, ret);
+        return ret;
+    }
+
     gpioCntlr = GpioCntlrFromHdfDev(device);
     if (gpioCntlr == NULL) {
         HDF_LOGE("GpioCntlrFromHdfDev fail\r\n");
@@ -294,16 +298,6 @@ static int32_t GpioDriverInit(struct HdfDeviceObject *device)
         return HDF_FAILURE;
     }
     return HDF_SUCCESS;
-}
-
-static int32_t GpioDriverBind(struct HdfDeviceObject *device)
-{
-    if (device == NULL) {
-        HDF_LOGE("Sample device object is null!");
-        return HDF_ERR_INVALID_PARAM;
-    }
-
-    return PlatformDeviceBind(&g_gpioCntlr.device, device);
 }
 
 static void GpioDriverRelease(struct HdfDeviceObject *device)
