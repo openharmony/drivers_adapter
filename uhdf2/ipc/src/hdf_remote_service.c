@@ -22,6 +22,12 @@ void HdfRemoteServiceAddDeathRecipient(
     HdfRemoteAdapterAddDeathRecipient(service, recipient);
 }
 
+void HdfRemoteServiceRemoveDeathRecipient(
+    struct HdfRemoteService *service, struct HdfDeathRecipient *recipient)
+{
+    HdfRemoteAdapterRemoveDeathRecipient(service, recipient);
+}
+
 struct HdfRemoteService *HdfRemoteServiceObtain(struct HdfObject *object, struct HdfRemoteDispatcher *dispatcher)
 {
     struct HdfRemoteService *service = HdfRemoteAdapterObtain();
