@@ -50,6 +50,7 @@ ohos_shared_library("hdf_platform") {
     "$HDF_FRAMEWORKS/support/platform/src/hdmi/hdmi_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/i2c/i2c_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/pcie/pcie_if.c",
+    "$HDF_FRAMEWORKS/support/platform/src/timer/timer_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/uart/uart_if.c",
   ]
 
