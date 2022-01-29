@@ -24,7 +24,7 @@
 #include "osal_mem.h"
 #include "securec.h"
 
-#define DEV_HOST_BINARY "/system/bin/hdf_devhost"
+#define DEV_HOST_BINARY "/vendor/bin/hdf_devhost"
 #define HDF_LOG_TAG driver_installer_full
 #define MAX_CMD_LEN 256
 
