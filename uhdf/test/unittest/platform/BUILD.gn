@@ -61,6 +61,7 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
         "//drivers/framework/support/platform/test/unittest/common/hdf_timer_test.cpp",
         "//drivers/framework/test/unittest/platform/common/adc_test.c",
         "//drivers/framework/test/unittest/platform/common/timer_test.c",
+        "//drivers/framework/test/unittest/platform/common/dac_test.c",
       ]
     }
     if (storage_type == "emmc") {
