@@ -41,6 +41,7 @@ ohos_unittest("hdf_adapter_uhdf_test_platform") {
     "//drivers/framework/test/unittest/platform/common/adc_test.c",
     "//drivers/framework/test/unittest/platform/common/i2c_test.c",
     "//drivers/framework/test/unittest/platform/common/timer_test.c",
+    "//drivers/framework/test/unittest/platform/common/uart_test.c",
   ]
 
   deps = [
