@@ -174,8 +174,11 @@ hdf_driver(module_name) {
     }
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_RTC)) {
-      sources +=
-          [ "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_rtc_entry_test.c" ]
+      sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/rtc_driver_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/rtc_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_rtc_entry_test.c",
+      ]
     }
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO)) {
