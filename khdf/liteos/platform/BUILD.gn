@@ -142,6 +142,7 @@ hdf_driver(module_name) {
       "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_base.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/rtc/rtc_service.c",
     ]
   }
 
