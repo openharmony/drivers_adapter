@@ -155,6 +155,7 @@ hdf_driver(module_name) {
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_UART)) {
       sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/uart_driver_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/uart_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_uart_entry_test.c",
       ]
