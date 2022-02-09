@@ -140,7 +140,8 @@ endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_UART), y)
     LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/uart/uart_if.c \
-    $(HDF_FRAMEWORKS)/support/platform/src/uart/uart_core.c
+    $(HDF_FRAMEWORKS)/support/platform/src/uart/uart_core.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/uart/uart_service.c
     LOCAL_SRCS += ./src/uart_dev.c
 endif
 
