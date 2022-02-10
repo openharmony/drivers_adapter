@@ -40,6 +40,7 @@ ohos_unittest("hdf_adapter_uhdf_test_platform") {
     "//drivers/framework/support/platform/test/unittest/common/hdf_watchdog_test.cpp",
     "//drivers/framework/test/unittest/platform/common/adc_test.c",
     "//drivers/framework/test/unittest/platform/common/i2c_test.c",
+    "//drivers/framework/test/unittest/platform/common/spi_test.c",
     "//drivers/framework/test/unittest/platform/common/timer_test.c",
     "//drivers/framework/test/unittest/platform/common/uart_test.c",
   ]

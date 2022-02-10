@@ -28,6 +28,7 @@ config("hdf_platform_pub_config") {
     "$HDF_FRAMEWORKS/support/platform/include/gpio",
     "$HDF_FRAMEWORKS/support/platform/include/hdmi",
     "$HDF_FRAMEWORKS/support/platform/include/i2c",
+    "$HDF_FRAMEWORKS/support/platform/include/spi",
     "$HDF_FRAMEWORKS/support/platform/include/uart",
     "$HDF_FRAMEWORKS/support/platform/include/adc",
     "$HDF_FRAMEWORKS/support/platform/include/dac",
@@ -50,8 +51,9 @@ ohos_shared_library("hdf_platform") {
     "$HDF_FRAMEWORKS/support/platform/src/dac/dac_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/gpio/gpio_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/hdmi/hdmi_if.c",
-    "$HDF_FRAMEWORKS/support/platform/src/i2c/i2c_if.c",
+    "$HDF_FRAMEWORKS/support/platform/src/i2c/i2c_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/pcie/pcie_if.c",
+    "$HDF_FRAMEWORKS/support/platform/src/spi/spi_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/timer/timer_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/uart/uart_if_u.c",
   ]

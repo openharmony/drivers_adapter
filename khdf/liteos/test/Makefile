@@ -109,6 +109,7 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/watchdog_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_watchdog_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SPI), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/spi_driver_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/spi_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_spi_entry_test.c
 endif
