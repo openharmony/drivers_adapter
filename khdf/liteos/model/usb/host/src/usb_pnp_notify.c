@@ -670,9 +670,6 @@ static void UsbPnpNotifyAddDevice(struct usb_device *udev)
             OsalMutexUnlock(&g_usbSendEventLock);
             wake_up_interruptible(&g_usbPnpNotifyReportWait);
         }
-
-        PRINTK("%s:%d Exit device=%p-%d-%d!\n", __func__, __LINE__, g_usbDevice, g_usbDevice->address,
-            g_usbDevice->port_no);
     }
 }
 
