@@ -168,6 +168,7 @@ hdf_driver(module_name) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_core.c",
       "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/uart/uart_service.c",
       "src/uart_dev.c",
     ]
   }

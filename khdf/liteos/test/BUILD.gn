@@ -140,6 +140,7 @@ hdf_driver(module_name) {
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_WATCHDOG)) {
       sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/watchdog_driver_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/watchdog_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_watchdog_entry_test.c",
       ]
@@ -147,6 +148,7 @@ hdf_driver(module_name) {
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_SPI)) {
       sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/spi_driver_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/spi_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_spi_entry_test.c",
       ]
@@ -154,6 +156,7 @@ hdf_driver(module_name) {
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_UART)) {
       sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/uart_driver_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/uart_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_uart_entry_test.c",
       ]
@@ -226,6 +229,7 @@ hdf_driver(module_name) {
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_PWM)) {
       sources += [
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/pwm_driver_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/pwm_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_pwm_entry_test.c",
       ]
