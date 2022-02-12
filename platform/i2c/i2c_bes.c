@@ -19,6 +19,12 @@
 #include "i2c_if.h"
 #include "hdf_device_desc.h"
 #include "hdf_log.h"
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#include "hcs_macro.h"
+#include "hdf_config_macro.h"
+#else
+#include "device_resource_if.h"
+#endif
 
 #define DEC_NUM 10
 #define GROUP_PIN_NUM 8
@@ -147,7 +153,44 @@ static int32_t HostRestI2cDevice(struct I2cDevice *device)
     }
     return ret;
 }
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#define I2C_FIND_CONFIG(node, name, resource) \
+    do { \
+        if (strcmp(HCS_PROP(node, match_attr), name) == 0) { \
+            resource->port = HCS_PROP(node, port); \
+            tempPin = HCS_PROP(node, sclPin); \
+            resource->sclPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
+            tempPin = HCS_PROP(node, sdaPin); \
+            resource->sdaPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
+            resource->speed = HCS_PROP(node, speed); \
+            resource->mode = HCS_PROP(node, mode); \
+            resource->useDma = HCS_PROP(node, useDma); \
+            resource->useSync = HCS_PROP(node, useSync); \
+            resource->asMaster = HCS_PROP(node, asMaster); \
+            break; \
+        } \
+    } while (0)
 
+#define PLATFORM_I2C_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), i2c_config)
+static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
+                                     const char *deviceMatchAttr)
+{
+    uint32_t tempPin = 0;
+    struct I2cResource *resource = NULL;
+    if (device == NULL) {
+        HDF_LOGE("device or resourceNode is NULL\r\n");
+        return HDF_ERR_INVALID_PARAM;
+    }
+    resource = &device->resource;
+    if (resource == NULL) {
+        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    HCS_FOREACH_CHILD_VARGS(PLATFORM_I2C_CONFIG, I2C_FIND_CONFIG, deviceMatchAttr, resource);
+    return HDF_SUCCESS;
+}
+#else
 static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
                                      const struct DeviceResourceNode *resourceNode)
 {
@@ -212,7 +255,7 @@ static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
     }
     return HDF_SUCCESS;
 }
-
+#endif
 static int32_t AttachI2cDevice(struct I2cCntlr *host, struct HdfDeviceObject *device)
 {
     int32_t ret;
@@ -229,7 +272,11 @@ static int32_t AttachI2cDevice(struct I2cCntlr *host, struct HdfDeviceObject *de
         return HDF_ERR_MALLOC_FAIL;
     }
     (void)memset_s(i2cDevice, sizeof(struct I2cDevice), 0, sizeof(struct I2cDevice));
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    ret = GetI2cDeviceResource(i2cDevice, device->deviceMatchAttr);
+#else
     ret = GetI2cDeviceResource(i2cDevice, device->property);
+#endif
     if (ret != HDF_SUCCESS) {
         OsalMemFree(i2cDevice);
         return HDF_FAILURE;
