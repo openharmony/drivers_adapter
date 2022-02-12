@@ -121,7 +121,8 @@ endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_RTC), y)
     LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/rtc/rtc_if.c \
     $(HDF_FRAMEWORKS)/support/platform/src/rtc/rtc_core.c \
-    $(HDF_FRAMEWORKS)/support/platform/src/rtc/rtc_base.c
+    $(HDF_FRAMEWORKS)/support/platform/src/rtc/rtc_base.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/rtc/rtc_service.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_MIPI_DSI), y)
