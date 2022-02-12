@@ -32,8 +32,6 @@ import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 module_switch = defined(LOSCFG_DRIVERS_HDF)
 hdf_driver("hdf_core") {
   sources = [
-    "$HDF_FRAMEWORKS_PATH/core/common/src/buildin_config_entry.c",
-    "$HDF_FRAMEWORKS_PATH/core/common/src/hdf_attribute.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/devhost_service.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/devmgr_service_clnt.c",
     "$HDF_FRAMEWORKS_PATH/core/host/src/devsvc_manager_clnt.c",
@@ -57,12 +55,6 @@ hdf_driver("hdf_core") {
     "$HDF_FRAMEWORKS_PATH/core/shared/src/hdf_device_info.c",
     "$HDF_FRAMEWORKS_PATH/core/shared/src/hdf_object_manager.c",
     "$HDF_FRAMEWORKS_PATH/core/shared/src/hdf_service_record.c",
-    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/device_resource_if.c",
-    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_blob_if.c",
-    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_buildin_parser.c",
-    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_generate_tree.c",
-    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_parser.c",
-    "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_tree_if.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_cstring.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_map.c",
     "$HDF_FRAMEWORKS_PATH/utils/src/hdf_sbuf.c",
@@ -73,4 +65,22 @@ hdf_driver("hdf_core") {
     "common/src/devsmall_object_config.c",
     "common/src/hdf_device_node_ext.c",
   ]
+  if (defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
+    sources += [ "$HDF_FRAMEWORKS_PATH/core/common/src/hdf_attribute_macro.c" ]
+  } else {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/core/common/src/buildin_config_entry.c",
+      "$HDF_FRAMEWORKS_PATH/core/common/src/hdf_attribute.c",
+      "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/device_resource_if.c",
+      "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_blob_if.c",
+      "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_buildin_parser.c",
+      "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_generate_tree.c",
+      "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_parser.c",
+      "$HDF_FRAMEWORKS_PATH/utils/src/hcs_parser/hcs_tree_if.c",
+    ]
+  }
+  if (defined(LOSCFG_SHIELD_V200ZR_EVB_T1) &&
+      defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
+    deps = [ "//device/board/fnlink/shields" ]
+  }
 }

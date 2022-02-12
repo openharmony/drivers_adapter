@@ -16,10 +16,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "spi_core.h"
-#include "device_resource_if.h"
 #include "hal_cache.h"
 #include "hal_trace.h"
 #include "hdf_log.h"
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#include "hcs_macro.h"
+#include "hdf_config_macro.h"
+#else
+#include "device_resource_if.h"
+#endif
 
 #define SPI_DMA_MAX 4095
 #define DEC_NUM 10
@@ -389,6 +394,11 @@ static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
 }
 
 /* get spi config from hcs file */
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice)
+{
+}
+#else
 static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const struct DeviceResourceNode *resourceNode)
 {
     uint32_t relPin;
@@ -478,13 +488,16 @@ static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const struct De
 
     return HDF_SUCCESS;
 }
-
+#endif
 int32_t AttachSpiDevice(struct SpiCntlr *spiCntlr, struct HdfDeviceObject *device)
 {
     int32_t ret;
     struct SpiDevice *spiDevice = NULL;
-
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    if (spiCntlr == NULL || device == NULL) {
+#else
     if (spiCntlr == NULL || device == NULL || device->property == NULL) {
+#endif
         HDF_LOGE("%s: property is NULL\r\n", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
@@ -494,8 +507,11 @@ int32_t AttachSpiDevice(struct SpiCntlr *spiCntlr, struct HdfDeviceObject *devic
         HDF_LOGE("%s: OsalMemAlloc spiDevice error\r\n", __func__);
         return HDF_ERR_MALLOC_FAIL;
     }
-
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    ret = GetSpiDeviceResource(spiDevice);
+#else
     ret = GetSpiDeviceResource(spiDevice, device->property);
+#endif
     if (ret != HDF_SUCCESS) {
         (void)OsalMemFree(spiDevice);
         return HDF_FAILURE;
