@@ -120,6 +120,8 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/uart_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_uart_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_RTC), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/rtc_driver_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/rtc_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_rtc_entry_test.c
 endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_SDIO), y)
