@@ -15,7 +15,6 @@
 
 #include <iservice_registry.h>
 #include <iremote_stub.h>
-#include <string_ex.h>
 #include <hdf_base.h>
 #include <hdf_log.h>
 #include "iservmgr_hdi.h"
