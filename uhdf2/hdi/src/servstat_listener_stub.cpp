@@ -14,7 +14,6 @@
  */
 
 #include <hdf_service_status.h>
-#include <iremote_stub.h>
 #include "hdf_base.h"
 #include "hdf_log.h"
 #include "iservmgr_hdi.h"

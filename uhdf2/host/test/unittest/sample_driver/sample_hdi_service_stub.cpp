@@ -13,10 +13,8 @@
  * limitations under the License.
  */
 
-#include <hdf_base.h>
 #include <hdf_device_desc.h>
 #include <hdf_log.h>
-#include <hdi_smq_meta.h>
 #include <message_parcel.h>
 #include <osal_mem.h>
 #include "hdf_sbuf_ipc.h"
