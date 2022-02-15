@@ -34,6 +34,7 @@ template("hdi") {
 
   config("hdi_public_config") {
     package = invoker.package
+    package = string_replace(package, "OHOS.HDI.", "")
     package_dir = string_replace(package, ".", "/")
     package_root_dir =
         string_replace(rebase_path("${target_gen_dir}"), "$package_dir", "")
@@ -55,6 +56,7 @@ template("hdi") {
     }
 
     package = invoker.package
+    package = string_replace(package, "OHOS.HDI", "drivers/interface")
     package_dir = string_replace(package, ".", "/")
     outputs_dir =
         string_replace(rebase_path("${target_gen_dir}"), "$package_dir", "")
@@ -91,6 +93,10 @@ template("hdi") {
       args += [ "-c" ]
       args += [ rebase_path(idl_file) ]
     }
+    args += [
+      "-r",
+      "OHOS.HDI:drivers/interface",
+    ]
   }
 
   ohos_shared_library(lib_client) {
