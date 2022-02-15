@@ -13,14 +13,9 @@
  * limitations under the License.
  */
 
-#include <fcntl.h>
-#include <hdf_base.h>
 #include <hdf_device_desc.h>
 #include <hdf_device_object.h>
 #include <hdf_log.h>
-#include <hdf_remote_service.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
 #include "sample_hdi.h"
 
 #define HDF_LOG_TAG sample_driver

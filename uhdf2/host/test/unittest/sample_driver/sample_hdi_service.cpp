@@ -13,14 +13,11 @@
  * limitations under the License.
  */
 
-#include <datetime_ex.h>
-#include <hdf_base.h>
 #include <hdf_device_object.h>
 #include <hdf_dlist.h>
 #include <hdf_log.h>
 #include <hdf_remote_service.h>
 #include <hdi_smq.h>
-#include <memory>
 #include <thread>
 #include "sample_hdi.h"
 
