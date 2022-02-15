@@ -14,7 +14,6 @@
  */
 
 #include <iservice_registry.h>
-#include <string_ex.h>
 #include <hdf_base.h>
 #include <hdf_log.h>
 #include "idevmgr_hdi.h"

@@ -312,7 +312,7 @@ static void TestOnServiceStatusReceived(struct ServiceStatusListener *listener, 
         return;
     }
     if (strcmp(servstat->serviceName, TEST_SERVICE_NAME) == 0) {
-        ssd->servInfo = servstat->info != nullptr ? servstat->info : "";
+        ssd->servInfo = ((servstat->info != nullptr) ? (servstat->info) : (""));
         ssd->devClass = servstat->deviceClass;
         ssd->servStatus = servstat->status;
         ssd->callbacked = true;

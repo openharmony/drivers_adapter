@@ -52,7 +52,6 @@ int SharedMemQueueSyncer::FutexWait(uint32_t bitset, int64_t timeoutNanoSec)
 {
     // clean wait bit
     uint32_t syncWordOld = std::atomic_fetch_and(syncAddr_, ~bitset);
-
     // if sync bit already set, not nedd futex wait
     if (syncWordOld & bitset) {
         return HDF_SUCCESS;
@@ -85,7 +84,6 @@ int SharedMemQueueSyncer::FutexWait(uint32_t bitset, int64_t timeoutNanoSec)
 int SharedMemQueueSyncer::Wake(uint32_t bitset)
 {
     uint32_t syncWordOld = std::atomic_fetch_or(syncAddr_, bitset);
-
     // if sync bit already set, not nedd futex wake
     if (syncWordOld & bitset) {
         return HDF_SUCCESS;
