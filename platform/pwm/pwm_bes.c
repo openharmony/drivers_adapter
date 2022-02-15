@@ -15,13 +15,18 @@
 #include "pwm_bes.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include "device_resource_if.h"
 #include "hdf_device_desc.h"
 #include "hal_trace.h"
 #include "hal_timer.h"
 #include "hal_iomux.h"
 #include "pwm_core.h"
 #include "hdf_log.h"
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#include "hcs_macro.h"
+#include "hdf_config_macro.h"
+#else
+#include "device_resource_if.h"
+#endif
 
 #define PWM_MAX_FUNCTION 8
 #define UNTIL_NAN0SECONDS 1000000000
@@ -82,6 +87,11 @@ static int InitPwmDevice(struct PwmDev *host)
     return HDF_SUCCESS;
 }
 
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+static uint32_t GetPwmDeviceResource(struct PwmDevice *device)
+{
+}
+#else
 static uint32_t GetPwmDeviceResource(
     struct PwmDevice *device, const struct DeviceResourceNode *resourceNode)
 {
@@ -118,12 +128,16 @@ static uint32_t GetPwmDeviceResource(
 
     return HDF_SUCCESS;
 }
-
+#endif
 static int32_t AttachPwmDevice(struct PwmDev *host, struct HdfDeviceObject *device)
 {
     int32_t ret;
     struct PwmDevice *pwmDevice = NULL;
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    if (device == NULL || host == NULL) {
+#else
     if (device == NULL || device->property == NULL || host == NULL) {
+#endif
         HDF_LOGE("%s: param is NULL\r\n", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
@@ -133,8 +147,11 @@ static int32_t AttachPwmDevice(struct PwmDev *host, struct HdfDeviceObject *devi
         HDF_LOGE("%s: OsalMemAlloc pwmDevice error\r\n", __func__);
         return HDF_ERR_MALLOC_FAIL;
     }
-
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    ret = GetPwmDeviceResource(pwmDevice);
+#else
     ret = GetPwmDeviceResource(pwmDevice, device->property);
+#endif
     if (ret != HDF_SUCCESS) {
         (void)OsalMemFree(pwmDevice);
         return HDF_FAILURE;

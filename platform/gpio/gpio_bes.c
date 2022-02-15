@@ -13,12 +13,17 @@
  * limitations under the License.
  */
 #include <stdlib.h>
-#include "device_resource_if.h"
 #include "gpio_core.h"
 #include "hal_gpio.h"
 #include "hal_iomux.h"
 #include "hdf_log.h"
 #include "osal_irq.h"
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#include "hcs_macro.h"
+#include "hdf_config_macro.h"
+#else
+#include "device_resource_if.h"
+#endif
 
 #define HDF_LOG_TAG GPIO_BES
 
@@ -176,7 +181,47 @@ static int InitGpioDevice(struct GpioDevice *device)
 
     return HDF_SUCCESS;
 }
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#define PLATFORM_GPIO_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), gpio_config)
+static uint32_t GetGpioDeviceResource(struct GpioDevice *device)
+{
+    uint32_t relPin;
+    int32_t ret;
+    struct GpioResource *resource = NULL;
+    if (device == NULL) {
+        HDF_LOGE("%s: device is NULL", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    resource = &device->resource;
+    if (resource == NULL) {
+        HDF_LOGE("%s: resource is NULL", __func__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+    resource->pinNum = HCS_PROP(PLATFORM_GPIO_CONFIG, pinNum);
+    uint32_t pins[] = HCS_ARRAYS(HCS_NODE(PLATFORM_GPIO_CONFIG, pin));
+    uint32_t realPins[] = HCS_ARRAYS(HCS_NODE(PLATFORM_GPIO_CONFIG, realPin));
+    uint32_t configs[] = HCS_ARRAYS(HCS_NODE(PLATFORM_GPIO_CONFIG, config));
+    for (size_t i = 0; i < resource->pinNum; i++) {
+        resource->pin = pins[i];
+        resource->realPin = realPins[i];
+        resource->config = configs[i];
 
+        relPin = resource->realPin / DECIMALNUM * OCTALNUM + resource->realPin % DECIMALNUM;
+        g_gpioPinReflectionMap[resource->pin] = relPin;
+        device->config = resource->config;
+        resource->pin = relPin;
+        device->port = relPin;
+
+        ret = InitGpioDevice(device);
+        if (ret != HDF_SUCCESS) {
+            HDF_LOGE("InitGpioDevice FAIL\r\n");
+            return HDF_FAILURE;
+        }
+    }
+
+    return HDF_SUCCESS;
+}
+#else
 static uint32_t GetGpioDeviceResource(
     struct GpioDevice *device, const struct DeviceResourceNode *resourceNode)
 {
@@ -235,14 +280,20 @@ static uint32_t GetGpioDeviceResource(
 
     return HDF_SUCCESS;
 }
+#endif
+
 
 static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObject *device)
 {
     int32_t ret;
 
     struct GpioDevice *gpioDevice = NULL;
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    if (device == NULL) {
+#else
     if (device == NULL || device->property == NULL) {
-        HDF_LOGE("%s: property is NULL", __func__);
+#endif
+        HDF_LOGE("%s: param is NULL", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -251,8 +302,11 @@ static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObj
         HDF_LOGE("%s: OsalMemAlloc gpioDevice error", __func__);
         return HDF_ERR_MALLOC_FAIL;
     }
-
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    ret = GetGpioDeviceResource(gpioDevice);
+#else
     ret = GetGpioDeviceResource(gpioDevice, device->property);
+#endif
     if (ret != HDF_SUCCESS) {
         (void)OsalMemFree(gpioDevice);
         return HDF_FAILURE;
