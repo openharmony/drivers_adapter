@@ -33,7 +33,7 @@ using namespace testing::ext;
 
 constexpr const char *TEST_SERVICE_NAME = "sample_driver_service";
 constexpr int PAYLOAD_NUM = 1234;
-
+constexpr int WAIT_LOAD_UNLOAD_TIME = 10;
 class HdfServiceMangerHdiCTest : public testing::Test {
 public:
     static void SetUpTestCase()
@@ -235,13 +235,13 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
 
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
     int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
@@ -289,6 +289,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
     ASSERT_EQ(ret, HDF_SUCCESS);
 
     HdfRemoteServiceRecycle(sampleService);
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
@@ -297,12 +298,13 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
 }
 
 struct ServiceStatusData {
-    ServiceStatusData() : devClass(0), servStatus(0), callbacked(false) {}
+    ServiceStatusData() : devClass(0), servStatus(0), callbacked(false), waitStatus(SERVIE_STATUS_START) {}
     ~ServiceStatusData() = default;
     std::string servInfo;
     uint16_t devClass;
     uint16_t servStatus;
     bool callbacked;
+    uint16_t waitStatus;
 };
 
 static void TestOnServiceStatusReceived(struct ServiceStatusListener *listener, struct ServiceStatus *servstat)
@@ -311,7 +313,7 @@ static void TestOnServiceStatusReceived(struct ServiceStatusListener *listener, 
     if (ssd == nullptr) {
         return;
     }
-    if (strcmp(servstat->serviceName, TEST_SERVICE_NAME) == 0) {
+    if (strcmp(servstat->serviceName, TEST_SERVICE_NAME) == 0 && (servstat->status == ssd->waitStatus)) {
         ssd->servInfo = ((servstat->info != nullptr) ? (servstat->info) : (""));
         ssd->devClass = servstat->deviceClass;
         ssd->servStatus = servstat->status;
@@ -332,11 +334,12 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest008, TestSize.Level1)
 
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
     struct ServiceStatusData ssd;
+    ssd.waitStatus = SERVIE_STATUS_START;
     struct ServiceStatusListener *listener = HdiServiceStatusListenerNewInstance();
     listener->callback = TestOnServiceStatusReceived;
     listener->priv = (void *)&ssd;
@@ -346,7 +349,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest008, TestSize.Level1)
 
     int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
@@ -363,6 +366,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest008, TestSize.Level1)
     ASSERT_EQ(ssd.servStatus, SERVIE_STATUS_START);
 
     ssd.callbacked = false;
+    ssd.waitStatus = SERVIE_STATUS_STOP;
     ret = devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
@@ -390,7 +394,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
     struct HDIDeviceManager *devmgr = HDIDeviceManagerGet();
     ASSERT_TRUE(devmgr != nullptr);
     devmgr->UnloadDevice(devmgr, TEST_SERVICE_NAME);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
 
@@ -399,7 +403,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
 
     int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
@@ -423,10 +427,11 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
     ASSERT_TRUE(ret);
 
     ssd.callbacked = false;
+    ssd.waitStatus = SERVIE_STATUS_CHANGE;
     status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_UPDATE_SERVIE, data, reply);
     ASSERT_EQ(status, HDF_SUCCESS);
 
-    constexpr int WAIT_COUNT = 10;
+    constexpr int WAIT_COUNT = 100;
     int count = WAIT_COUNT;
     while (!ssd.callbacked && count > 0) {
         OsalMSleep(1);
@@ -457,11 +462,12 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest010, TestSize.Level1)
 
     struct HDIServiceManager *servmgr = HDIServiceManagerGet();
     ASSERT_TRUE(servmgr != nullptr);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
     struct ServiceStatusData ssd;
+    ssd.waitStatus = SERVIE_STATUS_START;
     struct ServiceStatusListener *listener = HdiServiceStatusListenerNewInstance();
     listener->callback = TestOnServiceStatusReceived;
     listener->priv = (void *)&ssd;
@@ -472,7 +478,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest010, TestSize.Level1)
     int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
-    constexpr int WAIT_COUNT = 10;
+    constexpr int WAIT_COUNT = 100;
     int count = WAIT_COUNT;
     while (!ssd.callbacked && count > 0) {
         OsalMSleep(1);
