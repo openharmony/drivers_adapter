@@ -23,59 +23,40 @@
 #include "hdf_log.h"
 #include "osal_mem.h"
 #include "securec.h"
+#include "service_control.h"
 
-#define DEV_HOST_BINARY "/vendor/bin/hdf_devhost"
 #define HDF_LOG_TAG driver_installer_full
 #define MAX_CMD_LEN 256
+#define PARAM_CNT 2
 
-static bool g_sigFlag = false;
 static struct DriverInstaller *g_fullInstaller = NULL;
-
-void SigChildProc(int signo)
-{
-    int stat;
-    (void)signo;
-    wait(&stat);
-}
-
 int DriverInstallerFullStartDeviceHost(uint32_t devHostId, const char* devHostName)
 {
-    char cmd[MAX_CMD_LEN] = {0};
-    // fork process.
-    if (snprintf_s(cmd, sizeof(cmd), sizeof(cmd) - 1, " %d", devHostId) < 0) {
+    char hostIdStr[MAX_CMD_LEN] = {0};
+    int ret;
+
+    if (snprintf_s(hostIdStr, sizeof(hostIdStr), sizeof(hostIdStr) - 1, " %d", devHostId) < 0) {
         HDF_LOGE("starting device host, snprintf_s failed");
         return HDF_FAILURE;
     }
-    if (!g_sigFlag) {
-        if (signal(SIGCHLD, SigChildProc) == SIG_ERR) {
-            HDF_LOGE("starting device host, signal failed");
-            return HDF_FAILURE;
-        }
-        g_sigFlag = true;
-    }
-
-    pid_t fpid;
-    fpid = fork();
-    if (fpid < 0) {
-        HDF_LOGE("starting device host %{public}s, fork failed", devHostName);
-        return HDF_FAILURE;
-    } else if (fpid == 0) {
-        char * const args[] = {DEV_HOST_BINARY, cmd, (char * const)devHostName, NULL};
-        extern char** environ;
-        if (execve(DEV_HOST_BINARY, args, environ) == -1) {
-            HDF_LOGE("start device host %{public}s, execve failed", devHostName);
-            abort();
-        }
-    } else {
-        HDF_LOGI("fork device host %{public}s %{public}d success", devHostName, fpid);
-    }
+    const char *args[] = { hostIdStr, devHostName };
+    ret = ServiceControlWithExtra(devHostName, START, args, PARAM_CNT);
+    HDF_LOGI("%{public}s %{public}s %{public}d %{public}d", __func__, devHostName, devHostId, ret);
     return HDF_SUCCESS;
 }
 
+int DriverInstallerFullStopDeviceHost(uint32_t devHostId, const char* devHostName)
+{
+    int ret;
+    ret = ServiceControlWithExtra(devHostName, STOP, NULL, 0);
+    HDF_LOGI("%{public}s %{public}s %{public}d %{public}d", __func__, devHostName, devHostId, ret);
+    return ret;
+}
 static void DriverInstallerFullConstruct(struct DriverInstaller *inst)
 {
     struct IDriverInstaller *pvtbl = (struct IDriverInstaller *)inst;
     pvtbl->StartDeviceHost = DriverInstallerFullStartDeviceHost;
+    pvtbl->StopDeviceHost = DriverInstallerFullStopDeviceHost;
 }
 
 struct HdfObject *DriverInstallerFullCreate(void)
