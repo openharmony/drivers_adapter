@@ -52,6 +52,9 @@ static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *
     if (isHostEmpty) {
         return INVALID_PID;
     }
+    if (hostClnt->stopFlag) {
+        return 0;
+    }
 
     if (g_hostMap.nodeSize == 0) {
         MapInit(&g_hostMap);
@@ -64,6 +67,7 @@ static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *
         if (*hostDieValue > HOST_MAX_DIE_NUM) {
             HDF_LOGE("host %{public}s die 4 times, remove it", hostClnt->hostName);
             *hostDieValue = 0;
+            hostClnt->stopFlag = false;
             return INVALID_PID;
         }
         (*hostDieValue)++;
