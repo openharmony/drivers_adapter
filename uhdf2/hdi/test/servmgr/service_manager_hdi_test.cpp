@@ -43,6 +43,7 @@ constexpr const char *TEST_SERVICE_NAME = "sample_driver_service";
 constexpr int PAYLOAD_NUM = 1234;
 constexpr int SMQ_TEST_QUEUE_SIZE = 10;
 constexpr int SMQ_TEST_WAIT_TIME = 100;
+constexpr int WAIT_LOAD_UNLOAD_TIME = 10;
 
 class HdfServiceMangerHdiTest : public testing::Test {
 public:
@@ -193,13 +194,13 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest007, TestSize.Level1)
 
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
     int ret = devmgr->LoadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
@@ -242,7 +243,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest007, TestSize.Level1)
 
     ret = devmgr->UnloadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 }
@@ -274,7 +275,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest008, TestSize.Level1)
 
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
@@ -299,7 +300,8 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest008, TestSize.Level1)
 
     int ret = devmgr->LoadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
-    int count = 10;
+    constexpr int WAIT_COUNT = 100;
+    int count = WAIT_COUNT;
     while (!callbacked && count > 0) {
         OsalMSleep(1);
         count--;
@@ -313,7 +315,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest008, TestSize.Level1)
     ret = devmgr->UnloadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
-    count = 10;
+    count = WAIT_COUNT;
     while (!callbacked && count > 0) {
         OsalMSleep(1);
         count--;
@@ -338,13 +340,13 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
 
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
     int ret = devmgr->LoadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
@@ -355,7 +357,9 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
     ::OHOS::sptr<IServStatListener> listener
         = new ServStatListener(
             ServStatListener::StatusCallback([&](const ServiceStatus &status) {
-                if (status.serviceName == std::string(TEST_SERVICE_NAME)) {
+                if (status.serviceName == std::string(TEST_SERVICE_NAME) &&
+                    status.status == OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_CHANGE) {
+                    HDF_LOGI("sample service status callback");
                     servInfo = status.info;
                     devClass = status.deviceClass;
                     servStatus = status.status;
@@ -375,8 +379,8 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
     callbacked = false;
     status = sampleService->SendRequest(SAMPLE_UPDATE_SERVIE, data, reply, option);
     ASSERT_EQ(status, HDF_SUCCESS);
-
-    int count = 10;
+    constexpr int WAIT_COUNT = 100;
+    int count = WAIT_COUNT;
     while (!callbacked && count > 0) {
         OsalMSleep(1);
         count--;
@@ -384,8 +388,6 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
     ASSERT_TRUE(callbacked);
     ASSERT_EQ(devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(servInfo, info);
-    ASSERT_EQ(servStatus, OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_CHANGE);
-
     ret = devmgr->UnloadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
@@ -404,7 +406,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest010, TestSize.Level1)
 
     auto servmgr = IServiceManager::Get();
     ASSERT_TRUE(servmgr != nullptr);
-
+    OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     auto sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService == nullptr);
 
@@ -430,7 +432,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest010, TestSize.Level1)
     int ret = devmgr->LoadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
-    int count = 10;
+    int count = 100;
     while (!callbacked && count > 0) {
         OsalMSleep(1);
         count--;
@@ -604,7 +606,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest014, TestSize.Level1)
 
     int status = servmgr->RegisterServiceStatusListener(listener, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(status, HDF_SUCCESS);
-    constexpr int WAIT_COUNT = 10;
+    constexpr int WAIT_COUNT = 100;
     int count = WAIT_COUNT;
     while (!sampleServiceStarted && count > 0) {
         OsalMSleep(1);
