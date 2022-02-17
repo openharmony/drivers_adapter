@@ -46,7 +46,7 @@ int32_t UsbTestPnpNotifyDispatch(struct HdfDeviceIoClient *client,
         return HDF_FAILURE;
     }
 
-    HDF_LOGD("%s:%d dispatch success, cmdId=%d, data=%p", __func__, __LINE__, cmdId, data);
+    HDF_LOGD("%s:%d dispatch success, cmdId=%d", __func__, __LINE__, cmdId);
 
     return ret;
 }
