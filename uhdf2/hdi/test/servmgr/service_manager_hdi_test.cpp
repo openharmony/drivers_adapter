@@ -43,7 +43,7 @@ constexpr const char *TEST_SERVICE_NAME = "sample_driver_service";
 constexpr int PAYLOAD_NUM = 1234;
 constexpr int SMQ_TEST_QUEUE_SIZE = 10;
 constexpr int SMQ_TEST_WAIT_TIME = 100;
-constexpr int WAIT_LOAD_UNLOAD_TIME = 10;
+constexpr int WAIT_LOAD_UNLOAD_TIME = 300;
 
 class HdfServiceMangerHdiTest : public testing::Test {
 public:
@@ -300,7 +300,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest008, TestSize.Level1)
 
     int ret = devmgr->LoadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
-    constexpr int WAIT_COUNT = 100;
+    constexpr int WAIT_COUNT = 300;
     int count = WAIT_COUNT;
     while (!callbacked && count > 0) {
         OsalMSleep(1);
@@ -379,7 +379,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest009, TestSize.Level1)
     callbacked = false;
     status = sampleService->SendRequest(SAMPLE_UPDATE_SERVIE, data, reply, option);
     ASSERT_EQ(status, HDF_SUCCESS);
-    constexpr int WAIT_COUNT = 100;
+    constexpr int WAIT_COUNT = 300;
     int count = WAIT_COUNT;
     while (!callbacked && count > 0) {
         OsalMSleep(1);
@@ -418,7 +418,8 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest010, TestSize.Level1)
         = new ServStatListener(
             ServStatListener::StatusCallback([&](const ServiceStatus &status) {
                 HDF_LOGI("service status callback");
-                if (status.serviceName == std::string(TEST_SERVICE_NAME)) {
+                if (status.serviceName == std::string(TEST_SERVICE_NAME) &&
+                    status.status == OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_START) {
                     servInfo = status.info;
                     devClass = status.deviceClass;
                     servStatus = status.status;
@@ -432,7 +433,8 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest010, TestSize.Level1)
     int ret = devmgr->LoadDevice(TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
-    int count = 100;
+    constexpr int WAIT_COUNT = 300;
+    int count = WAIT_COUNT;
     while (!callbacked && count > 0) {
         OsalMSleep(1);
         count--;
@@ -440,7 +442,6 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest010, TestSize.Level1)
     ASSERT_TRUE(callbacked);
     ASSERT_EQ(devClass, DEVICE_CLASS_DEFAULT);
     ASSERT_EQ(servInfo, std::string(TEST_SERVICE_NAME));
-    ASSERT_EQ(servStatus, OHOS::HDI::ServiceManager::V1_0::SERVIE_STATUS_START);
 
     sampleService = servmgr->GetService(TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
