@@ -33,7 +33,7 @@ using namespace testing::ext;
 
 constexpr const char *TEST_SERVICE_NAME = "sample_driver_service";
 constexpr int PAYLOAD_NUM = 1234;
-constexpr int WAIT_LOAD_UNLOAD_TIME = 10;
+constexpr int WAIT_LOAD_UNLOAD_TIME = 300;
 class HdfServiceMangerHdiCTest : public testing::Test {
 public:
     static void SetUpTestCase()
@@ -353,7 +353,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest008, TestSize.Level1)
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
 
-    constexpr int WAIT_COUNT = 10;
+    constexpr int WAIT_COUNT = 300;
     int count = WAIT_COUNT;
     while (!ssd.callbacked && count > 0) {
         OsalMSleep(1);
@@ -478,7 +478,7 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest010, TestSize.Level1)
     int ret = devmgr->LoadDevice(devmgr, TEST_SERVICE_NAME);
     ASSERT_EQ(ret, HDF_SUCCESS);
 
-    constexpr int WAIT_COUNT = 100;
+    constexpr int WAIT_COUNT = 300;
     int count = WAIT_COUNT;
     while (!ssd.callbacked && count > 0) {
         OsalMSleep(1);
