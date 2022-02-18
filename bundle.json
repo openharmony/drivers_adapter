@@ -8,8 +8,8 @@
     "subsystem": "hdf",
     "syscap": [ "" ],
     "adapter_system_type": ["standard", "small"],
-    "rom": "1000KB",
-    "ram": "1000KB",
+    "rom": "735KB",
+    "ram": "8000KB",
     "deps": {
       "components": [
         "hiviewdfx_hilog_native",
