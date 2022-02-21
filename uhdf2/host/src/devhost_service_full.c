@@ -14,14 +14,14 @@
  */
 
 #include "devhost_service_full.h"
-#include "devmgr_service_clnt.h"
 #include "dev_attribute_serialize.h"
-#include "hdf_device_node.h"
-#include "power_state_token.h"
+#include "devmgr_service_clnt.h"
 #include "hdf_base.h"
 #include "hdf_device_info.h"
+#include "hdf_device_node.h"
 #include "hdf_log.h"
 #include "osal_message.h"
+#include "power_state_token.h"
 
 #define HDF_LOG_TAG devhost_service_full
 
@@ -57,8 +57,7 @@ static int32_t DevHostServiceFullDispatchMessage(struct HdfMessageTask *task, st
     return status;
 }
 
-static int DevHostServiceFullOpsDevice(
-    struct IDevHostService *devHostService, uintptr_t parm, int cmdCode)
+static int DevHostServiceFullOpsDevice(struct IDevHostService *devHostService, uintptr_t parm, int cmdCode)
 {
     if (devHostService == NULL) {
         HDF_LOGE("input is null");
@@ -77,8 +76,7 @@ static int DevHostServiceFullOpsDevice(
     return task->SendMessage(task, message, true);
 }
 
-static int DevHostServiceFullAddDevice(
-    struct IDevHostService *devHostService, const struct HdfDeviceInfo *attribute)
+static int DevHostServiceFullAddDevice(struct IDevHostService *devHostService, const struct HdfDeviceInfo *attribute)
 {
     return DevHostServiceFullOpsDevice(devHostService, (uintptr_t)attribute, DEVHOST_MESSAGE_ADD_DEVICE);
 }
@@ -137,8 +135,8 @@ static uint32_t SysEventToPowerState(uint32_t sysEvent)
     }
 }
 
-static int OnSysEventReceived(struct HdfSysEventNotifyNode *self, uint64_t eventClass,
-    uint32_t event, const char* content)
+static int OnSysEventReceived(
+    struct HdfSysEventNotifyNode *self, uint64_t eventClass, uint32_t event, const char *content)
 {
     (void)(content);
     if (self == NULL) {
@@ -152,7 +150,7 @@ static int OnSysEventReceived(struct HdfSysEventNotifyNode *self, uint64_t event
 
 static int DevHostServiceFullStartService(struct IDevHostService *service)
 {
-    struct DevHostService *hostService = (struct DevHostService*)service;
+    struct DevHostService *hostService = (struct DevHostService *)service;
     if (hostService == NULL) {
         HDF_LOGE("Start device service failed, hostService is null");
         return HDF_FAILURE;
@@ -176,7 +174,7 @@ static int DevHostServiceFullStartService(struct IDevHostService *service)
 
 int DevHostServiceFullPmNotify(struct IDevHostService *service, uint32_t state)
 {
-    struct DevHostService *hostService = (struct DevHostService*)service;
+    struct DevHostService *hostService = (struct DevHostService *)service;
     int result = HDF_SUCCESS;
 
     if (hostService == NULL || !IsValidPowerState(state)) {

@@ -96,8 +96,8 @@ static int OnKEventReceived(
     struct HdfSysEvent *receivedEvent = NULL;
     uint32_t receivedEventLen = 0;
 
-    if (!HdfSbufReadBuffer(data, (const void **)&receivedEvent, &receivedEventLen)
-        || receivedEventLen != sizeof(struct HdfSysEvent)) {
+    if (!HdfSbufReadBuffer(data, (const void **)&receivedEvent, &receivedEventLen) ||
+        receivedEventLen != sizeof(struct HdfSysEvent)) {
         HDF_LOGE("failed to read kevent object");
         return HDF_FAILURE;
     }
@@ -107,8 +107,7 @@ static int OnKEventReceived(
     OsalMutexLock(&notifier->mutex);
 
     struct HdfSysEventNotifyNode *notifyNode = NULL;
-    DLIST_FOR_EACH_ENTRY(notifyNode, &notifier->notifyNodeList, struct HdfSysEventNotifyNode, listNode)
-    {
+    DLIST_FOR_EACH_ENTRY(notifyNode, &notifier->notifyNodeList, struct HdfSysEventNotifyNode, listNode) {
         if (receivedEvent->eventClass & notifyNode->classFilter) {
             (void)notifyNode->callback(
                 notifyNode, receivedEvent->eventClass, receivedEvent->eventid, receivedEvent->content);
@@ -157,7 +156,7 @@ static void DeInitKeventIoServiceListenerLocked(struct HdfSysEventNotifier *noti
     notifier->keventIoService = NULL;
 }
 
-int HdfSysEventNotifyRegister(struct HdfSysEventNotifyNode *notifierNode, uint64_t classSet)
+int32_t HdfSysEventNotifyRegister(struct HdfSysEventNotifyNode *notifierNode, uint64_t classSet)
 {
     if (notifierNode == NULL) {
         return HDF_ERR_INVALID_PARAM;
@@ -172,7 +171,7 @@ int HdfSysEventNotifyRegister(struct HdfSysEventNotifyNode *notifierNode, uint64
     OsalMutexLock(&notifier->mutex);
     DListInsertTail(&notifierNode->listNode, &notifier->notifyNodeList);
     notifierNode->classFilter = classSet;
-    int ret = InitKeventIoServiceListenerLocked(notifier);
+    int32_t ret = InitKeventIoServiceListenerLocked(notifier);
     if (ret != HDF_SUCCESS) {
         DListRemove(&notifierNode->listNode);
     }
