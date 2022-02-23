@@ -117,8 +117,8 @@ int32_t OsalSeekFirmware(struct OsalFirmware *fwPara, uint32_t offset)
 
 int32_t OsalReadFirmware(struct OsalFirmware *fwPara, struct OsalFwBlock *block)
 {
-    int32_t readOffset;
-    int32_t readSize;
+    uint32_t readOffset;
+    uint32_t readSize;
     struct OsalFwDesc *fw = NULL;
 
     if (fwPara == NULL || fwPara->para == NULL || block == NULL) {
@@ -151,12 +151,12 @@ int32_t OsalReadFirmware(struct OsalFirmware *fwPara, struct OsalFwBlock *block)
         return HDF_ERR_INVALID_PARAM;
     }
 
-    readOffset = (int32_t)lseek(fw->fd, fw->offset, SEEK_SET);
+    readOffset = (uint32_t)lseek(fw->fd, fw->offset, SEEK_SET);
     if (readOffset != fw->offset) {
         HDF_LOGE("%s seek offset fail %d %d", __func__, readOffset, fw->offset);
         return HDF_FAILURE;
     }
-    readSize = read(fw->fd, block->data, block->dataSize);
+    readSize = (uint32_t)read(fw->fd, block->data, block->dataSize);
     if (readSize != block->dataSize) {
         HDF_LOGE("%s read file fail %d %d", __func__, readSize, block->dataSize);
         return HDF_FAILURE;

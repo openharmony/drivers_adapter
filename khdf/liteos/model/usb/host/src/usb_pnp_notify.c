@@ -208,7 +208,7 @@ static int32_t UsbPnpNotifyAddInitInfo(struct UsbPnpDeviceInfo *deviceInfo, unio
 
     deviceInfo->info.usbDevAddr = (uintptr_t)infoData.usbDev;
     deviceInfo->info.devNum = infoData.usbDev->address;
-    deviceInfo->info.busNum = infoData.usbDev->port_no;
+    deviceInfo->info.busNum = (int32_t)infoData.usbDev->port_no;
 
     deviceInfo->info.deviceInfo.vendorId = UGETW(infoData.usbDev->ddesc.idVendor);
     deviceInfo->info.deviceInfo.productId = UGETW(infoData.usbDev->ddesc.idProduct);
@@ -346,7 +346,7 @@ OUT:
 
 static int32_t UsbPnpNotifySendEventLoader(struct HdfSBuf *data)
 {
-    int ret;
+    int32_t ret;
 
     struct HdfIoService *loaderService = HdfIoServiceBind(USB_PNP_LOADER_SERVICE_NAME);
     if (loaderService == NULL) {
@@ -412,7 +412,7 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
     union UsbPnpDeviceInfoData pnpInfoData;
 
     if ((deviceObject == NULL) || (eventData == NULL)) {
-        HDF_LOGE("%s deviceObject or eventData is NULL", __func__);
+        HDF_LOGE("%s:%d deviceObject and eventData is NULL", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -435,9 +435,8 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
     }
 
     HDF_LOGI("%s:%d report one device information, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!",
-        __func__, __LINE__, deviceInfo->info.devNum, deviceInfo->info.busNum,
-        deviceInfo->info.numInfos, deviceInfo->info.deviceInfo.vendorId,
-        deviceInfo->info.deviceInfo.productId);
+        __func__, __LINE__, deviceInfo->info.devNum, deviceInfo->info.busNum, deviceInfo->info.numInfos,
+        deviceInfo->info.deviceInfo.vendorId, deviceInfo->info.deviceInfo.productId);
 
     OsalMutexLock(&deviceInfo->lock);
     if (deviceInfo->status == USB_PNP_DEVICE_INIT_STATUS) {
@@ -556,7 +555,7 @@ OUT:
 }
 #endif
 
-static int UsbPnpNotifyFirstReportDevice(struct HdfDeviceIoClient *client)
+static int32_t UsbPnpNotifyFirstReportDevice(struct HdfDeviceIoClient *client)
 {
     struct UsbPnpNotifyDeviceList *pnpNotifyDevicePos = NULL;
     struct UsbPnpNotifyDeviceList *pnpNotifyDeviceTemp = NULL;
@@ -580,9 +579,9 @@ static int UsbPnpNotifyFirstReportDevice(struct HdfDeviceIoClient *client)
     return HDF_SUCCESS;
 }
 
-static int UsbPnpNotifyReportThread(void* arg)
+static int32_t UsbPnpNotifyReportThread(void* arg)
 {
-    int ret;
+    int32_t ret;
     struct HdfDeviceObject *deviceObject = (struct HdfDeviceObject *)arg;
 
     while (g_usbPnpThreadRunningFlag) {
@@ -676,7 +675,7 @@ static void UsbPnpNotifyAddDevice(struct usb_device *udev)
 static void UsbPnpNotifyAttachDevice(struct usb_device *udev)
 {
     int32_t error;
-    static int listLockInit = 0;
+    static int32_t listLockInit = 0;
 
     if ((udev->ddesc.bDeviceClass == UICLASS_HUB) || UsbPnpNotifyFindDeviceList(udev, false) == true) {
         PRINTK("%s:%d findDeviceList is true!\n", __func__, __LINE__);
@@ -791,7 +790,7 @@ static void UsbPnpNotifyReadPnpInfo(struct HdfSBuf *data)
 
     flag = HdfSbufReadBuffer(data, (const void **)(&usbPnpInfo), &infoSize);
     if ((flag == false) || (usbPnpInfo == NULL)) {
-        HDF_LOGE("%s: fail to read g_usbPnpInfo, flag=%d", __func__, flag);
+        HDF_LOGE("%s:%d fail to read g_usbPnpInfo, flag=%d", __func__, __LINE__, flag);
         return;
     }
 
@@ -841,7 +840,7 @@ static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfDeviceObject *device, 
         return HDF_FAILURE;
     }
 
-    int ret;
+    int32_t ret;
     struct HdfDeviceObject *devObj = HdfDeviceObjectAlloc(device, moduleName);
     if (devObj == NULL) {
         HDF_LOGE("%s: failed to alloc device object", __func__);
@@ -888,7 +887,7 @@ static int32_t UsbPnpNotifyDriverUnregisterDevice(struct HdfSBuf *data)
     return HDF_SUCCESS;
 }
 
-static int32_t UsbPnpNotifyDispatch(struct HdfDeviceIoClient *client, int cmd,
+static int32_t UsbPnpNotifyDispatch(struct HdfDeviceIoClient *client, int32_t cmd,
     struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int32_t ret = HDF_SUCCESS;
@@ -952,6 +951,8 @@ static int32_t UsbPnpNotifyBind(struct HdfDeviceObject *device)
         .Dispatch = UsbPnpNotifyDispatch,
     };
 
+    dprintf("%s:%d enter!\n", __func__, __LINE__);
+
     if (device == NULL) {
         HDF_LOGE("%s: device is NULL!", __func__);
         return HDF_ERR_INVALID_OBJECT;
@@ -968,6 +969,8 @@ static int32_t UsbPnpNotifyInit(struct HdfDeviceObject *device)
     static bool firstInitFlag = true;
     HDF_STATUS ret;
     struct OsalThreadParam threadCfg;
+
+    dprintf("%s:%d enter!\n", __func__, __LINE__);
 
     if (device == NULL) {
         HDF_LOGE("%s: device is NULL", __func__);

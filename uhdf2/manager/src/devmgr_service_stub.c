@@ -13,7 +13,13 @@
  * limitations under the License.
  */
 
-#include "devmgr_service_stub.h"
+#include <fcntl.h>
+#include <limits.h>
+#include <securec.h>
+#include <stdlib.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
 #include "devhost_service_proxy.h"
 #include "device_token_proxy.h"
 #include "devmgr_query_device.h"
@@ -21,11 +27,13 @@
 #include "hdf_log.h"
 #include "hdf_sbuf.h"
 #include "osal_mem.h"
+#include "osal_sysevent.h"
+
+#include "devmgr_service_stub.h"
 
 #define HDF_LOG_TAG devmgr_service_stub
 
-static int32_t DevmgrServiceStubDispatchAttachDevice(
-    struct IDevmgrService *devmgrSvc, struct HdfSBuf *data)
+static int32_t DevmgrServiceStubDispatchAttachDevice(struct IDevmgrService *devmgrSvc, struct HdfSBuf *data)
 {
     uint32_t deviceId;
     if (!HdfSbufReadUint32(data, &deviceId)) {
@@ -74,8 +82,7 @@ static int32_t DevmgrServiceStubDispatchUnloadDevice(struct IDevmgrService *devm
     return devmgrSvc->UnloadDevice(devmgrSvc, serviceName);
 }
 
-int32_t DevmgrServiceStubDispatch(
-    struct HdfRemoteService* stub, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
+int32_t DevmgrServiceStubDispatch(struct HdfRemoteService *stub, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int32_t ret = HDF_FAILURE;
     struct DevmgrServiceStub *serviceStub = (struct DevmgrServiceStub *)stub;
@@ -120,16 +127,102 @@ int32_t DevmgrServiceStubDispatch(
             break;
     }
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%{public}s devmgr service stub dispach failed, cmd id is %{public}d, ret = %{public}d",
-            __func__, code, ret);
+        HDF_LOGE("%{public}s devmgr service stub dispach failed, cmd id is %{public}d, ret = %{public}d", __func__,
+            code, ret);
         HdfSbufWriteInt32(reply, ret);
     }
 
     return ret;
 }
 
+static void RemoveModule(const char *module)
+{
+    uint32_t flags = O_NONBLOCK | O_EXCL;
+    if (syscall(__NR_delete_module, module, flags) != 0) {
+        HDF_LOGE("failed to remove module %{public}s", module);
+    }
+}
+
+static int32_t InstallModule(const char *module)
+{
+    HDF_LOGI("try to install module %{public}s", module);
+
+    int fd = open(module, O_RDONLY | O_CLOEXEC);
+    if (fd < 0) {
+        HDF_LOGE("module %{public}s is invalid", module);
+        return HDF_ERR_BAD_FD;
+    }
+    int32_t ret = syscall(SYS_finit_module, fd, "", 0);
+    if (ret != 0) {
+        HDF_LOGE("failed to install module %{public}s", module);
+    }
+
+    close(fd);
+    return ret;
+}
+
+static int32_t MakeModulePath(char *buffer, const char *moduleName)
+{
+    char temp[PATH_MAX] = {0};
+    if (sprintf_s(temp, PATH_MAX, "%s/%s.ko", HDF_MODULE_DIR, moduleName) <= 0) {
+        HDF_LOGI("driver module path sprintf failed: %{public}s", moduleName);
+        return HDF_FAILURE;
+    }
+    HDF_LOGI("driver module file: %{public}s", temp);
+
+    char *path = realpath(temp, buffer);
+    if (path == NULL || strncmp(path, HDF_MODULE_DIR, strlen(HDF_MODULE_DIR)) != 0) {
+        HDF_LOGI("driver module file is invalud: %{public}s", temp);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    return HDF_SUCCESS;
+}
+
+static int32_t ModuleSysEventHandle(
+    struct HdfSysEventNotifyNode *self, uint64_t eventClass, uint32_t event, const char *content)
+{
+    if (self == NULL || (eventClass & HDF_SYSEVENT_CLASS_MODULE) == 0 || content == NULL) {
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    HDF_LOGI("handle driver module: %{public}s", content);
+    char modulePath[PATH_MAX] = {0};
+    int32_t ret = MakeModulePath(modulePath, content);
+    if (ret != HDF_SUCCESS) {
+        return ret;
+    }
+    switch (event) {
+        case KEVENT_MODULE_INSTALL:
+            ret = InstallModule(modulePath);
+            break;
+        case KEVENT_MODULE_REMOVE:
+            RemoveModule(modulePath);
+            break;
+        default:
+            ret = HDF_ERR_NOT_SUPPORT;
+            break;
+    }
+
+    return ret;
+}
+
+static int32_t DriverModuleLoadHelperInit(void)
+{
+    static struct HdfSysEventNotifyNode sysEventNotify = {
+        .callback = ModuleSysEventHandle,
+    };
+
+    int32_t ret = HdfSysEventNotifyRegister(&sysEventNotify, HDF_SYSEVENT_CLASS_MODULE);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGW("ModuleLoadHelper:failed to register module event listener");
+    }
+
+    return ret;
+}
+
 static struct HdfRemoteDispatcher g_devmgrDispatcher = {
-    .Dispatch = DevmgrServiceStubDispatch
+    .Dispatch = DevmgrServiceStubDispatch,
 };
 
 int DevmgrServiceStubStartService(struct IDevmgrService *inst)
@@ -168,6 +261,8 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
         return status;
     }
     fullService->remote = remoteService;
+
+    DriverModuleLoadHelperInit();
 
     return DevmgrServiceStartService((struct IDevmgrService *)&fullService->super);
 }
@@ -208,4 +303,3 @@ void DevmgrServiceStubRelease(struct HdfObject *object)
         OsalMemFree(instance);
     }
 }
-
