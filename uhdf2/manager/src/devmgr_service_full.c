@@ -49,10 +49,7 @@ static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *
     bool isHostEmpty = HdfSListIsEmpty(&hostClnt->devices);
 
     CleanupDiedHostResources(hostClnt);
-    if (isHostEmpty) {
-        return INVALID_PID;
-    }
-    if (hostClnt->stopFlag) {
+    if (isHostEmpty || hostClnt->stopFlag) {
         return 0;
     }
 
