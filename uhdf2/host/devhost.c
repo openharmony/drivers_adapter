@@ -50,10 +50,12 @@ bool HdfStringToInt(const char *str, int *value)
 
 static void SetProcTitle(char **argv, const char *newTitle)
 {
-    if (strlen(newTitle) > strlen(argv[0])) {
+    size_t len = strlen(argv[0]);
+    if (strlen(newTitle) > len) {
         return;
     }
-    if (strcpy_s(argv[0], strlen(argv[0]) + 1, newTitle) != EOK) {
+    (void)memset_s(argv[0], len, 0, len);
+    if (strcpy_s(argv[0], len + 1, newTitle) != EOK) {
         return;
     }
     prctl(PR_SET_NAME, newTitle);
