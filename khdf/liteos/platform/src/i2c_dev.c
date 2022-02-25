@@ -168,7 +168,7 @@ static int32_t I2cCntlrRead(DevHandle handle, uint16_t addr,
 
     msg.addr = addr;
     msg.buf = buf;
-    msg.len = len;
+    msg.len = (uint16_t)len;
     msg.flags = flags | I2C_FLAG_READ;
 
     ret = I2cTransfer(handle, &msg, 1);
@@ -213,7 +213,7 @@ static int32_t I2cCntlrWrite(DevHandle handle, uint16_t addr,
 
     msg.addr = addr;
     msg.buf = (uint8_t *)buf;
-    msg.len = len;
+    msg.len = (uint16_t)len;
     msg.flags = flags & (~I2C_FLAG_READ);
 
     ret = I2cTransfer(handle, &msg, 1);

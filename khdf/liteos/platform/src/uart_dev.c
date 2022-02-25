@@ -83,7 +83,7 @@ static ssize_t UartDevRead(struct file *filep, char *buf, size_t count)
         }
         size = UartHostRead(host, tmpBuf, count);
         if (size > 0) {
-            ret = LOS_ArchCopyToUser(buf, tmpBuf, size);
+            ret = (int32_t)LOS_ArchCopyToUser(buf, tmpBuf, size);
         }
         OsalMemFree(tmpBuf);
         return ret != LOS_OK ? ret : size;
@@ -110,7 +110,7 @@ static ssize_t UartDevWrite(struct file *filep, const char *buf, size_t count)
             HDF_LOGE("%s: OsalMemCalloc error", __func__);
             return HDF_ERR_MALLOC_FAIL;
         }
-        ret = LOS_ArchCopyFromUser(tmpBuf, buf, count);
+        ret = (int32_t)LOS_ArchCopyFromUser(tmpBuf, buf, count);
         if (ret != LOS_OK) {
             OsalMemFree(tmpBuf);
             return ret;
@@ -132,7 +132,7 @@ static int32_t UartCfgAttr(struct UartHost *host, unsigned long arg)
     if (!LOS_IsUserAddressRange((vaddr_t)arg, len)) {
         ret = memcpy_s((void *)&attr, len, (void *)arg, len);
     } else {
-        ret = LOS_ArchCopyFromUser(&attr, (void *)(uintptr_t)arg, len);
+        ret = (int32_t)LOS_ArchCopyFromUser(&attr, (void *)(uintptr_t)arg, len);
     }
     if (ret != LOS_OK) {
         return ret;
