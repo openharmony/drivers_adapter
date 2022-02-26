@@ -53,38 +53,52 @@ static void UServStatListenerHolderListListAdd(struct UServStatListenerHolder *h
     OsalMutexUnlock(&g_holoderList.mutex);
 }
 
-void UServStatListenerHolderNotifyStatus(struct ServStatListenerHolder *holder,
+int32_t UServStatListenerHolderNotifyStatus(struct ServStatListenerHolder *holder,
     struct ServiceStatus *status)
 {
     if (holder == NULL || status == NULL) {
-        return;
+        return HDF_ERR_INVALID_PARAM;
     }
     struct UServStatListenerHolder *holderInst = CONTAINER_OF(holder, struct UServStatListenerHolder, holder);
     if (holderInst->listenerRemote == NULL) {
         HDF_LOGE("failed to notify service status, invalid holder");
-        return;
+        return HDF_ERR_INVALID_PARAM;
     }
     HDF_LOGI("notify service status %{public}s", status->serviceName);
     struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     if (data == NULL) {
         HDF_LOGE("failed to notify service status, oom");
-        return;
+        return HDF_ERR_MALLOC_FAIL;
     }
 
     if (ServiceStatusMarshalling(status, data) != HDF_SUCCESS) {
         HDF_LOGE("failed to marshalling service status");
         HdfSbufRecycle(data);
-        return;
+        return HDF_ERR_INVALID_PARAM;
     }
 
     int ret = holderInst->listenerRemote->dispatcher->DispatchAsync(holderInst->listenerRemote,
         SERVIE_STATUS_LISTENER_NOTIFY, data, NULL);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("failed to notify service status, dispatch error");
+        return HDF_FAILURE;
     } else {
         HDF_LOGD("notify service status success");
+        return HDF_SUCCESS;
     }
     HdfSbufRecycle(data);
+    return HDF_SUCCESS;
+}
+
+void UServStatListenerHolderRecycle(struct ServStatListenerHolder *holder)
+{
+    if (holder == NULL) {
+        return;
+    }
+
+    ServStatListenerHolderRelease(holder);
+    HDF_LOGD("UServStatListenerHolderRecycle success");
+    return;
 }
 
 struct ServStatListenerHolder *ServStatListenerHolderGet(uint64_t index)
@@ -117,6 +131,7 @@ struct ServStatListenerHolder *ServStatListenerHolderCreate(uintptr_t listener, 
     struct HdfRemoteService *listenerRemote = (struct HdfRemoteService *)listener;
     holder->holder.listenClass = listenClass;
     holder->holder.NotifyStatus = UServStatListenerHolderNotifyStatus;
+    holder->holder.Recycle = UServStatListenerHolderRecycle;
     holder->listenerRemote = listenerRemote;
     holder->holder.index = listenerRemote->index;
     UServStatListenerHolderListListAdd(holder);
