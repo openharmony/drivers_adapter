@@ -149,6 +149,10 @@ static int32_t SpiDevGetCfg(struct SpiDev *dev, struct SpiCfg *mask, unsigned lo
     struct SpiCfg cfg = {0};
     struct SpiCntlr *cntlr = dev->cntlr;
 
+    if (arg == 0) {
+        HDF_LOGE("%s: arg is 0", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
     ret = SpiCntlrGetCfg(cntlr, dev->csNum, &cfg);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s: GetCfg error", __func__);
@@ -178,6 +182,10 @@ static int32_t SpiDevSetCfg(struct SpiDev *dev, struct SpiCfg *mask, unsigned lo
     struct SpiCfg cfg = {0};
     struct SpiCntlr *cntlr = dev->cntlr;
 
+    if (arg == 0) {
+        HDF_LOGE("%s: arg is 0", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
     ret = LOS_CopyToKernel((void *)&tmp, sizeof(uint32_t), (void *)(uintptr_t)arg, sizeof(uint32_t));
     if (ret != 0) {
         HDF_LOGE("%s: memery copy error", __func__);
@@ -207,6 +215,10 @@ static struct SpiIocMsg *SpiDevGetIocMsgFromUser(unsigned long arg)
     int32_t ret;
     struct SpiIocMsg *umsg = NULL;
 
+    if (arg == 0) {
+        HDF_LOGE("%s: arg is 0", __func__);
+        return NULL;
+    }
     umsg = (struct SpiIocMsg *)OsalMemCalloc(sizeof(struct SpiIocMsg));
     if (umsg == NULL) {
         HDF_LOGE("%s: melloc umsg error", __func__);
