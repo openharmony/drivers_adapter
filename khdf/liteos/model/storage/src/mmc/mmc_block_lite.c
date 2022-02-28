@@ -214,7 +214,7 @@ static int32_t LiteosBlockIoctl(FAR struct Vnode *vnode, int cmd, unsigned long 
             }
             break;
         case RT_DEVICE_BLOCK_ERROR_COUNT:
-            errCnt = mb->errCnt;
+            errCnt = (int)mb->errCnt;
             ret = LOS_CopyFromKernel((void *)(uintptr_t)arg, sizeof(int), &errCnt,
                       sizeof(int));
             if (ret) {
