@@ -226,7 +226,8 @@ static int32_t UsbPnpNotifyAddInitInfo(struct UsbPnpDeviceInfo *deviceInfo, unio
     deviceInfo->info.numInfos = infoData.usbDev->cdesc->bNumInterface;
     for (uint8_t i = 0; i < deviceInfo->info.numInfos; i++) {
         if (infoData.usbDev->ifaces[i].idesc == NULL) {
-            HDF_LOGE("%s:%d i=%d is NULL", __func__, __LINE__, i);
+            HDF_LOGE("%s:%d interface[%d].idesc is NULL",
+                __func__, __LINE__, i);
             ret = HDF_ERR_INVALID_PARAM;
             goto OUT;
         }
@@ -433,9 +434,9 @@ static int32_t UsbPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObje
         goto OUT;
     }
 
-    HDF_LOGI("%s:%d report one device information, %d, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!",
-        __func__, __LINE__, g_usbPnpNotifyCmdType, deviceInfo->info.devNum, deviceInfo->info.busNum,
-        deviceInfo->info.numInfos, deviceInfo->info.deviceInfo.vendorId, deviceInfo->info.deviceInfo.productId);
+    HDF_LOGI("%s:%d report one device information, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!",
+        __func__, __LINE__, deviceInfo->info.devNum, deviceInfo->info.busNum, deviceInfo->info.numInfos,
+        deviceInfo->info.deviceInfo.vendorId, deviceInfo->info.deviceInfo.productId);
 
     OsalMutexLock(&deviceInfo->lock);
     if (deviceInfo->status == USB_PNP_DEVICE_INIT_STATUS) {
@@ -721,7 +722,6 @@ static void UsbPnpNotifyDetachDevice(struct usb_device *udev)
                 deviceInfo->status = USB_PNP_DEVICE_REMOVE_STATUS;
             }
             OsalMutexUnlock(&deviceInfo->lock);
-
             OsalMutexLock(&g_usbSendEventLock);
             g_usbDevice = udev;
             g_usbPnpNotifyCmdType = USB_PNP_NOTIFY_REMOVE_DEVICE;
