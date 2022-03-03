@@ -52,3 +52,19 @@ int HdfRemoteServiceRegister(int32_t serviceId, struct HdfRemoteService *service
 {
     return HdfRemoteAdapterAddSa(serviceId, service);
 }
+
+bool HdfRemoteServiceSetInterfaceDesc(struct HdfRemoteService *service, const char *descriptor)
+{
+    return HdfRemoteAdapterSetInterfaceDesc(service, descriptor);
+}
+
+bool HdfRemoteServiceWriteInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data)
+{
+    return HdfRemoteAdapterWriteInterfaceToken(service, data);
+}
+
+bool HdfRemoteServiceCheckInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data)
+{
+    return HdfRemoteAdapterCheckInterfaceToken(service, data);
+}
+

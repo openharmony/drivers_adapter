@@ -18,8 +18,10 @@
 
 #include <ipc_object_stub.h>
 #include <parcel.h>
-#include "hdf_remote_service.h"
+#include <string>
+
 #include "hdf_remote_adapter_if.h"
+#include "hdf_remote_service.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,6 +50,9 @@ private:
 
 struct HdfRemoteServiceHolder {
     HdfRemoteServiceHolder();
+    ~HdfRemoteServiceHolder() = default;
+
+    bool SetInterfaceDescriptor(const char *desc);
     struct HdfRemoteService service_;
     OHOS::sptr<OHOS::IRemoteObject> remote_;
     OHOS::sptr<OHOS::IRemoteObject::DeathRecipient> deathRecipient_;

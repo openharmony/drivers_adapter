@@ -90,10 +90,13 @@ int32_t DevmgrServiceStubDispatch(struct HdfRemoteService *stub, int code, struc
         return HDF_ERR_INVALID_PARAM;
     }
     struct IDevmgrService *super = (struct IDevmgrService *)&serviceStub->super;
-    HDF_LOGE("%{public}s devmgr service stub dispatch cmd %{public}d", __func__, code);
+    if (!HdfRemoteServiceCheckInterfaceToken(serviceStub->remote, data)) {
+        HDF_LOGE("%{public}s: invalid interface token, code=%{public}d", __func__, code);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    uint32_t hostId = 0;
     switch (code) {
-        case DEVMGR_SERVICE_ATTACH_DEVICE_HOST: {
-            uint32_t hostId = 0;
+        case DEVMGR_SERVICE_ATTACH_DEVICE_HOST:
             if (!HdfSbufReadUint32(data, &hostId)) {
                 HDF_LOGE("invalid host id");
                 return HDF_FAILURE;
@@ -102,27 +105,21 @@ int32_t DevmgrServiceStubDispatch(struct HdfRemoteService *stub, int code, struc
             struct IDevHostService *hostIf = DevHostServiceProxyObtain(hostId, service);
             ret = super->AttachDeviceHost(super, hostId, hostIf);
             break;
-        }
-        case DEVMGR_SERVICE_ATTACH_DEVICE: {
+        case DEVMGR_SERVICE_ATTACH_DEVICE:
             ret = DevmgrServiceStubDispatchAttachDevice(super, data);
             break;
-        }
-        case DEVMGR_SERVICE_DETACH_DEVICE: {
+        case DEVMGR_SERVICE_DETACH_DEVICE:
             ret = DevmgrServiceStubDispatchDetachDevice(super, data);
             break;
-        }
-        case DEVMGR_SERVICE_LOAD_DEVICE: {
+        case DEVMGR_SERVICE_LOAD_DEVICE:
             ret = DevmgrServiceStubDispatchLoadDevice(super, data);
             break;
-        }
-        case DEVMGR_SERVICE_UNLOAD_DEVICE: {
+        case DEVMGR_SERVICE_UNLOAD_DEVICE:
             ret = DevmgrServiceStubDispatchUnloadDevice(super, data);
             break;
-        }
-        case DEVMGR_SERVICE_QUERY_DEVICE: {
+        case DEVMGR_SERVICE_QUERY_DEVICE:
             ret = DevFillQueryDeviceInfo(super, data, reply);
             break;
-        }
         default:
             break;
     }
@@ -172,7 +169,7 @@ static int32_t MakeModulePath(char *buffer, const char *moduleName)
 
     char *path = realpath(temp, buffer);
     if (path == NULL || strncmp(path, HDF_MODULE_DIR, strlen(HDF_MODULE_DIR)) != 0) {
-        HDF_LOGI("driver module file is invalud: %{public}s", temp);
+        HDF_LOGE("driver module file is invalud: %{public}s", temp);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -247,6 +244,11 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
     if (remoteService == NULL) {
         HDF_LOGI("failed to start devmgr, remoteService obtain err");
         return HDF_ERR_MALLOC_FAIL;
+    }
+    if (!HdfRemoteServiceSetInterfaceDesc(remoteService, "HDI.IDeviceManager.V1_0")) {
+        HDF_LOGE("%{public}s: failed to init interface desc", __func__);
+        HdfRemoteServiceRecycle(remoteService);
+        return HDF_FAILURE;
     }
     struct HdfDeviceObject *deviceObject = OsalMemCalloc(sizeof(struct HdfDeviceObject));
     if (deviceObject == NULL) {
