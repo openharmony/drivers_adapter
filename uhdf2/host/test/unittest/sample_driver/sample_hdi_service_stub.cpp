@@ -14,9 +14,11 @@
  */
 
 #include <hdf_device_desc.h>
+#include <hdf_device_object.h>
 #include <hdf_log.h>
 #include <message_parcel.h>
 #include <osal_mem.h>
+
 #include "hdf_sbuf_ipc.h"
 #include "sample_hdi.h"
 
@@ -24,6 +26,9 @@ using OHOS::HDI::Base::SharedMemQueueMeta;
 
 static int32_t SampleServiceStubPing(struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     char *outInfo = NULL;
     const char *info = HdfSbufReadString(data);
 
@@ -39,7 +44,9 @@ static int32_t SampleServiceStubSum(struct HdfDeviceIoClient *client, struct Hdf
     int32_t parm0;
     int32_t parm1;
     int32_t result;
-
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     if (!HdfSbufReadInt32(data, &parm0)) {
         HDF_LOGE("SampleHdi.sum: miss parm0");
         return HDF_ERR_INVALID_PARAM;
@@ -64,6 +71,9 @@ static int32_t SampleServiceStubSum(struct HdfDeviceIoClient *client, struct Hdf
 static int32_t SampleServiceStubCallback(struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int32_t code;
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     if (!HdfSbufReadInt32(data, &code)) {
         HDF_LOGE("SampleHdi.callback: miss parameter code");
         return HDF_ERR_INVALID_PARAM;
@@ -81,6 +91,9 @@ static int32_t SampleServiceStubStructTrans(
     struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     HDF_LOGI("SampleServiceStubStructTrans: in");
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     struct DataBlock *dataBlock = DataBlockBlockUnmarshalling(data);
     if (dataBlock == NULL) {
         HDF_LOGE("SampleServiceStubStructTrans: failed to read dataBlock");
@@ -102,7 +115,9 @@ static int32_t SampleServiceStubBufferTrans(
     struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     HDF_LOGI("SampleServiceStubBufferTrans: in");
-
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     constexpr int SAMPLE_TEST_BUFFER_SIZE = 10;
     const uint8_t *buffer = HdfSbufReadUnpadBuffer(data, SAMPLE_TEST_BUFFER_SIZE);
     if (buffer == NULL) {
@@ -123,6 +138,9 @@ static int32_t SampleServiceStubBufferTrans(
 static int32_t SampleServiceRegisterDevice(
     struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     (void)reply;
     const char *deviceName = HdfSbufReadString(data);
     if (deviceName == NULL) {
@@ -136,6 +154,9 @@ static int32_t SampleServiceUnregisterDevice(
     struct HdfDeviceIoClient *client, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     (void)reply;
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     const char *deviceName = HdfSbufReadString(data);
     if (deviceName == NULL) {
         return HDF_ERR_INVALID_PARAM;
@@ -146,6 +167,9 @@ static int32_t SampleServiceUnregisterDevice(
 
 static int32_t SampleServiceUpdateDevice(struct HdfDeviceIoClient *client, struct HdfSBuf *data)
 {
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     const char *servInfo = HdfSbufReadString(data);
     if (servInfo == NULL) {
         return HDF_ERR_INVALID_PARAM;
@@ -156,6 +180,9 @@ static int32_t SampleServiceUpdateDevice(struct HdfDeviceIoClient *client, struc
 
 static int32_t SampleServiceSmqTrans(struct HdfDeviceIoClient *client, struct HdfSBuf *data)
 {
+    if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
+        return HDF_ERR_INVALID_PARAM;
+    }
     OHOS::MessageParcel *parcel = nullptr;
     if (SbufToParcel(data, &parcel) != HDF_SUCCESS) {
         return HDF_FAILURE;

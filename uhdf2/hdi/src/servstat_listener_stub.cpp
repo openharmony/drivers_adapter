@@ -17,7 +17,7 @@
 #include "hdf_base.h"
 #include "hdf_log.h"
 #include "iservmgr_hdi.h"
-
+#define HDF_LOG_TAG servstat_listener
 namespace OHOS {
 namespace HDI {
 namespace ServiceManager {
@@ -39,7 +39,10 @@ int32_t ServStatListenerStub::ServStatListenerStubOnReceive(MessageParcel& data,
     MessageParcel& reply, MessageOption& option)
 {
     ServiceStatus status;
-
+    if (data.ReadInterfaceToken() != GetDescriptor()) {
+        HDF_LOGI("failed to check interface token");
+        return HDF_FAILURE;
+    }
     status.serviceName = data.ReadCString();
     if (status.serviceName.empty()) {
         HDF_LOGI("failed to read serviceName in ServiceStatus");
