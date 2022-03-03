@@ -47,7 +47,7 @@ static int32_t UartDevOpen(struct file *filep)
     }
     struct drv_data *drv = (struct drv_data *)filep->f_vnode->data;
     host = (struct UartHost *)drv->priv;
-    return UartHostInit(host);
+    return UartHostRequest(host);
 }
 static int32_t UartDevRelease(struct file *filep)
 {
@@ -59,7 +59,7 @@ static int32_t UartDevRelease(struct file *filep)
     struct drv_data *drv = (struct drv_data *)filep->f_vnode->data;
     host = (struct UartHost *)drv->priv;
 
-    return UartHostDeinit(host);
+    return UartHostRelease(host);
 }
 
 static ssize_t UartDevRead(struct file *filep, char *buf, size_t count)
