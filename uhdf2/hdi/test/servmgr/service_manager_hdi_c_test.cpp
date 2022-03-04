@@ -22,18 +22,20 @@
 #include <hdf_service_status.h>
 #include <osal_time.h>
 #include <servmgr_hdi.h>
-#include <string>
 #include <shared_mem.h>
+#include <string>
 #include <sys/mman.h>
+
 #include "sample_hdi.h"
 
 #define HDF_LOG_TAG service_manager_test
 
 using namespace testing::ext;
 
-constexpr const char *TEST_SERVICE_NAME = "sample_driver_service";
-constexpr int PAYLOAD_NUM = 1234;
-constexpr int WAIT_LOAD_UNLOAD_TIME = 300;
+static constexpr const char *TEST_SERVICE_NAME = "sample_driver_service";
+static constexpr const char *TEST_SERVICE_INTERFACE_DESC = "hdf.test.sampele_service";
+static constexpr int PAYLOAD_NUM = 1234;
+static constexpr int WAIT_LOAD_UNLOAD_TIME = 300;
 class HdfServiceMangerHdiCTest : public testing::Test {
 public:
     static void SetUpTestCase()
@@ -70,12 +72,17 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest002, TestSize.Level1)
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
 
+    bool ret = HdfRemoteServiceSetInterfaceDesc(sampleService, TEST_SERVICE_INTERFACE_DESC);
+    ASSERT_EQ(ret, true);
+
     struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
+    ret = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(ret, true);
 
-    bool ret = HdfSbufWriteString(data, "sample_service test call");
+    ret = HdfSbufWriteString(data, "sample_service test call");
     ASSERT_EQ(ret, true);
 
     int status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_SERVICE_PING, data, reply);
@@ -107,6 +114,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest003, TestSize.Level1)
     struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
+    bool ret = HdfRemoteServiceSetInterfaceDesc(sampleService, TEST_SERVICE_INTERFACE_DESC);
+    ASSERT_EQ(ret, true);
 
     struct HdfRemoteService *callback = HdfRemoteServiceObtain(nullptr, &g_callbackDispatcher);
     ASSERT_NE(callback, nullptr);
@@ -114,7 +123,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest003, TestSize.Level1)
     struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
-
+    ret = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(ret, true);
     int32_t payload = PAYLOAD_NUM;
     HdfSbufWriteInt32(data, payload);
     HdfSbufWriteRemoteService(data, callback);
@@ -135,18 +145,22 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest004, TestSize.Level1)
     struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
+    bool ret = HdfRemoteServiceSetInterfaceDesc(sampleService, TEST_SERVICE_INTERFACE_DESC);
+    ASSERT_EQ(ret, true);
 
     struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
+    ret = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(ret, true);
     HdfSbufWriteInt32(data, PAYLOAD_NUM);
     HdfSbufWriteInt32(data, PAYLOAD_NUM);
 
     int status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_SERVICE_SUM, data, reply);
     ASSERT_EQ(status, 0);
     int32_t result;
-    bool ret = HdfSbufReadInt32(reply, &result);
+    ret = HdfSbufReadInt32(reply, &result);
     ASSERT_TRUE(ret);
 
     int32_t expRes = PAYLOAD_NUM + PAYLOAD_NUM;
@@ -164,14 +178,17 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest005, TestSize.Level1)
     struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
+    bool ret = HdfRemoteServiceSetInterfaceDesc(sampleService, TEST_SERVICE_INTERFACE_DESC);
+    ASSERT_EQ(ret, true);
 
     struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
-
-    struct DataBlock dataBlock = { 1, 2, "dataBolck", 3 };
-    bool ret = DataBlockBlockMarshalling(&dataBlock, data);
+    ret = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(ret, true);
+    struct DataBlock dataBlock = {1, 2, "dataBolck", 3};
+    ret = DataBlockBlockMarshalling(&dataBlock, data);
     ASSERT_TRUE(ret);
 
     int status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_STRUCT_TRANS, data, reply);
@@ -198,6 +215,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest006, TestSize.Level1)
     struct HdfRemoteService *sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     HDIServiceManagerRelease(servmgr);
     ASSERT_TRUE(sampleService != nullptr);
+    bool ret = HdfRemoteServiceSetInterfaceDesc(sampleService, TEST_SERVICE_INTERFACE_DESC);
+    ASSERT_EQ(ret, true);
 
     struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
@@ -209,8 +228,9 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest006, TestSize.Level1)
     for (int i = 0; i < buffersize; i++) {
         dataBuffer[i] = i;
     }
-
-    bool ret = HdfSbufWriteUnpadBuffer(data, dataBuffer, sizeof(dataBuffer));
+    ret = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(ret, true);
+    ret = HdfSbufWriteUnpadBuffer(data, dataBuffer, sizeof(dataBuffer));
     ASSERT_TRUE(ret);
 
     int status = sampleService->dispatcher->Dispatch(sampleService, SAMPLE_BUFFER_TRANS, data, reply);
@@ -244,12 +264,16 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
     OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
+    ret = HdfRemoteServiceSetInterfaceDesc(sampleService, TEST_SERVICE_INTERFACE_DESC);
+    ASSERT_EQ(ret, true);
 
     struct HdfSBuf *data = HdfSbufTypedObtain(SBUF_IPC);
     struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
 
+    ret = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(ret, true);
     const char *newServName = "sample_driver_service2";
     ret = HdfSbufWriteString(data, newServName);
     ASSERT_TRUE(ret);
@@ -259,9 +283,13 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
 
     struct HdfRemoteService *sampleService2 = servmgr->GetService(servmgr, newServName);
     ASSERT_TRUE(sampleService != nullptr);
+    ret = HdfRemoteServiceSetInterfaceDesc(sampleService, TEST_SERVICE_INTERFACE_DESC);
+    ASSERT_EQ(ret, true);
 
     HdfSbufFlush(data);
     HdfSbufFlush(reply);
+    ret = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(ret, true);
     HdfSbufWriteInt32(data, PAYLOAD_NUM);
     HdfSbufWriteInt32(data, PAYLOAD_NUM);
 
@@ -276,6 +304,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest007, TestSize.Level1)
     HdfRemoteServiceRecycle(sampleService2);
 
     HdfSbufFlush(data);
+    ret = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(ret, true);
     ret = HdfSbufWriteString(data, newServName);
     ASSERT_TRUE(ret);
 
@@ -406,6 +436,8 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
     OsalMSleep(WAIT_LOAD_UNLOAD_TIME);
     sampleService = servmgr->GetService(servmgr, TEST_SERVICE_NAME);
     ASSERT_TRUE(sampleService != nullptr);
+    bool res = HdfRemoteServiceSetInterfaceDesc(sampleService, TEST_SERVICE_INTERFACE_DESC);
+    ASSERT_EQ(res, true);
 
     struct ServiceStatusData ssd;
     struct ServiceStatusListener *listener = HdiServiceStatusListenerNewInstance();
@@ -422,9 +454,10 @@ HWTEST_F(HdfServiceMangerHdiCTest, ServMgrTest009, TestSize.Level1)
     struct HdfSBuf *reply = HdfSbufTypedObtain(SBUF_IPC);
     ASSERT_TRUE(data != nullptr);
     ASSERT_TRUE(reply != nullptr);
-
-    ret = HdfSbufWriteString(data, info.data());
-    ASSERT_TRUE(ret);
+    res = HdfRemoteServiceWriteInterfaceToken(sampleService, data);
+    ASSERT_EQ(res, true);
+    res = HdfSbufWriteString(data, info.data());
+    ASSERT_TRUE(res);
 
     ssd.callbacked = false;
     ssd.waitStatus = SERVIE_STATUS_CHANGE;

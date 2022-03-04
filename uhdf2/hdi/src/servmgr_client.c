@@ -55,7 +55,8 @@ struct HdfRemoteService *HDIServMgrGetService(struct HDIServiceManager *iServMgr
             break;
         }
 
-        if (!HdfSbufWriteString(data, serviceName)) {
+        if (!HdfRemoteServiceWriteInterfaceToken(servMgrClient->remote, data) ||
+            !HdfSbufWriteString(data, serviceName)) {
             break;
         }
         int status = ServiceManagerHdiCall(servMgrClient, DEVSVC_MANAGER_GET_SERVICE, data, reply);
@@ -72,6 +73,7 @@ struct HdfRemoteService *HDIServMgrGetService(struct HDIServiceManager *iServMgr
     if (data != NULL) {
         HdfSbufRecycle(data);
     }
+
     return service;
 }
 
@@ -88,7 +90,8 @@ int32_t HDIServMgrRegisterServiceStatusListener(struct HDIServiceManager *self,
         return HDF_ERR_MALLOC_FAIL;
     }
 
-    if (!HdfSbufWriteUint16(data, deviceClass) ||
+    if (!HdfRemoteServiceWriteInterfaceToken(servMgrClient->remote, data) ||
+        !HdfSbufWriteUint16(data, deviceClass) ||
         ServiceStatusListenerMarshalling(listener, data) != HDF_SUCCESS) {
         return HDF_FAILURE;
     }
@@ -113,7 +116,8 @@ int32_t HDIServMgrUnregisterServiceStatusListener(struct HDIServiceManager *self
         return HDF_ERR_MALLOC_FAIL;
     }
 
-    if (ServiceStatusListenerMarshalling(listener, data) != HDF_SUCCESS) {
+    if (!HdfRemoteServiceWriteInterfaceToken(servMgrClient->remote, data) ||
+        ServiceStatusListenerMarshalling(listener, data) != HDF_SUCCESS) {
         return HDF_FAILURE;
     }
 
@@ -146,8 +150,13 @@ struct HDIServiceManager *HDIServiceManagerGet(void)
         HdfRemoteServiceRecycle(remote);
         return NULL;
     }
-
+    if (!HdfRemoteServiceSetInterfaceDesc(remote, "HDI.IServiceManager.V1_0")) {
+        HDF_LOGE("%{public}s: failed to init interface desc", __func__);
+        HdfRemoteServiceRecycle(remote);
+        return NULL;
+    }
     iServMgrClient->remote = remote;
+
     HDIServiceManagerConstruct(&iServMgrClient->iservmgr);
     return &iServMgrClient->iservmgr;
 }

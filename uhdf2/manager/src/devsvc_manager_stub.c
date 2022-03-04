@@ -67,6 +67,10 @@ static int32_t DevSvcManagerStubAddService(struct IDevSvcManager *super, struct 
 {
     int ret = HDF_FAILURE;
     struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
+    if (!HdfRemoteServiceCheckInterfaceToken(stub->remote, data)) {
+        HDF_LOGE("%{public}s: invalid interface token", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
     const char *name = HdfSbufReadString(data);
     if (name == NULL) {
         HDF_LOGE("%{public}s failed, name is null", __func__);
@@ -104,6 +108,10 @@ static int32_t DevSvcManagerStubUpdateService(struct IDevSvcManager *super, stru
 {
     int ret = HDF_FAILURE;
     struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
+    if (!HdfRemoteServiceCheckInterfaceToken(stub->remote, data)) {
+        HDF_LOGE("%{public}s: invalid interface token", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
     const char *name = HdfSbufReadString(data);
     if (name == NULL) {
         HDF_LOGE("%{public}s failed, name is null", __func__);
@@ -146,6 +154,11 @@ static int32_t DevSvcManagerStubUpdateService(struct IDevSvcManager *super, stru
 static int32_t DevSvcManagerStubGetService(struct IDevSvcManager *super, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int ret = HDF_FAILURE;
+    struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
+    if (!HdfRemoteServiceCheckInterfaceToken(stub->remote, data)) {
+        HDF_LOGE("%{public}s: invalid interface token", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
     const char *name = HdfSbufReadString(data);
     if (name == NULL) {
         HDF_LOGE("%{public}s failed, name is null", __func__);
@@ -165,6 +178,11 @@ static int32_t DevSvcManagerStubGetService(struct IDevSvcManager *super, struct 
 
 static int32_t DevSvcManagerStubRemoveService(struct IDevSvcManager *super, struct HdfSBuf *data)
 {
+    struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
+    if (!HdfRemoteServiceCheckInterfaceToken(stub->remote, data)) {
+        HDF_LOGE("%{public}s: invalid interface token", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
     const char *name = HdfSbufReadString(data);
     if (name == NULL) {
         HDF_LOGE("%{public}s failed, name is null", __func__);
@@ -190,12 +208,16 @@ static int32_t DevSvcManagerStubRemoveService(struct IDevSvcManager *super, stru
     super->RemoveService(super, name);
     HDF_LOGI("service %{public}s removed", name);
 
-    struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
     ReleaseServiceObject(stub, serviceObject);
     return HDF_SUCCESS;
 }
 static int32_t DevSvcManagerStubRegisterServListener(struct IDevSvcManager *super, struct HdfSBuf *data)
 {
+    struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
+    if (!HdfRemoteServiceCheckInterfaceToken(stub->remote, data)) {
+        HDF_LOGE("%{public}s: invalid interface token", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
     uint16_t listenClass = DEVICE_CLASS_DEFAULT;
     if (!HdfSbufReadUint16(data, &listenClass)) {
         return HDF_ERR_INVALID_PARAM;
@@ -223,6 +245,11 @@ static int32_t DevSvcManagerStubRegisterServListener(struct IDevSvcManager *supe
 
 static int32_t DevSvcManagerStubUnregisterServListener(struct IDevSvcManager *super, struct HdfSBuf *data)
 {
+    struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
+    if (!HdfRemoteServiceCheckInterfaceToken(stub->remote, data)) {
+        HDF_LOGE("%{public}s: invalid interface token", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
     struct HdfRemoteService *listenerRemote = HdfSbufReadRemoteService(data);
     if (listenerRemote == NULL) {
         return HDF_ERR_INVALID_PARAM;
@@ -249,6 +276,7 @@ int DevSvcManagerStubDispatch(struct HdfRemoteService *service, int code, struct
         return ret;
     }
     struct IDevSvcManager *super = (struct IDevSvcManager *)&stub->super;
+    HDF_LOGD("DevSvcManagerStubDispatch called: code=%{public}d", code);
     switch (code) {
         case DEVSVC_MANAGER_ADD_SERVICE:
             ret = DevSvcManagerStubAddService(super, data);
@@ -324,7 +352,11 @@ int DevSvcManagerStubStart(struct IDevSvcManager *svcmgr)
     inst->remote = HdfRemoteServiceObtain((struct HdfObject *)inst, &dispatcher);
     if (inst->remote == NULL) {
         HDF_LOGE("failed to obtain device service manager remote service");
-        return false;
+        return HDF_ERR_MALLOC_FAIL;
+    }
+    if (!HdfRemoteServiceSetInterfaceDesc(inst->remote, "HDI.IServiceManager.V1_0")) {
+        HDF_LOGE("%{public}s: failed to init interface desc", __func__);
+        return HDF_ERR_INVALID_OBJECT;
     }
 
     inst->recipient.OnRemoteDied = DevSvcManagerOnServiceDied;
@@ -337,6 +369,7 @@ int DevSvcManagerStubStart(struct IDevSvcManager *svcmgr)
         HDF_LOGI("publish device service manager success");
         inst->started = true;
     }
+
     return ret;
 }
 
