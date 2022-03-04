@@ -64,7 +64,8 @@ int32_t ServiceManagerProxy::RegisterServiceStatusListener(::OHOS::sptr<IServSta
     MessageParcel reply;
     MessageOption option;
 
-    if (!data.WriteUint16(deviceClass) ||
+    if (!data.WriteInterfaceToken(ServiceManagerProxy::GetDescriptor()) ||
+        !data.WriteUint16(deviceClass) ||
         !data.WriteRemoteObject(listener->AsObject())) {
         return HDF_FAILURE;
     }
@@ -82,7 +83,8 @@ int32_t ServiceManagerProxy::UnregisterServiceStatusListener(::OHOS::sptr<IServS
     MessageParcel reply;
     MessageOption option;
 
-    if (!data.WriteRemoteObject(listener->AsObject())) {
+    if (!data.WriteInterfaceToken(ServiceManagerProxy::GetDescriptor()) ||
+        !data.WriteRemoteObject(listener->AsObject())) {
         return HDF_FAILURE;
     }
 
@@ -97,7 +99,7 @@ sptr<IRemoteObject> ServiceManagerProxy::GetService(const char* serviceName)
 {
     MessageParcel data;
     MessageParcel reply;
-    if (!data.WriteCString(serviceName)) {
+    if (!data.WriteInterfaceToken(ServiceManagerProxy::GetDescriptor()) || !data.WriteCString(serviceName)) {
         return nullptr;
     }
 

@@ -50,6 +50,9 @@ int32_t DeviceManagerProxy::LoadDevice(const std::string &serviceName)
     MessageParcel reply;
     MessageOption option;
     HDF_LOGI("load device: %{public}s", serviceName.data());
+    if (!data.WriteInterfaceToken(DeviceManagerProxy::GetDescriptor())) {
+        return HDF_FAILURE;
+    }
     if (!data.WriteCString(serviceName.data())) {
         return HDF_FAILURE;
     }
@@ -67,6 +70,9 @@ int32_t DeviceManagerProxy::UnloadDevice(const std::string &serviceName)
     MessageParcel reply;
     MessageOption option;
     HDF_LOGI("unload device: %{public}s", serviceName.data());
+    if (!data.WriteInterfaceToken(DeviceManagerProxy::GetDescriptor())) {
+        return HDF_FAILURE;
+    }
     if (!data.WriteCString(serviceName.data())) {
         return HDF_FAILURE;
     }

@@ -71,6 +71,11 @@ int DeviceServiceStubPublishService(struct HdfDeviceNode *service)
     }
 
     do {
+        if (service->interfaceDesc != NULL &&
+            !HdfRemoteServiceSetInterfaceDesc(fullService->remote, service->interfaceDesc)) {
+            HDF_LOGE("failed to set device service interface desc");
+            break;
+        }
         struct DevSvcManagerClnt *serviceManager = DevSvcManagerClntGetInstance();
         if (serviceManager == NULL) {
             HDF_LOGE("device service stub failed to publish, svcmgr clnt invalid");
@@ -138,3 +143,12 @@ void DeviceServiceStubRelease(struct HdfObject *object)
     }
 }
 
+bool HdfDeviceObjectCheckInterfaceDesc(struct HdfDeviceObject *dev, struct HdfSBuf *data)
+{
+    if (dev == NULL || data == NULL) {
+        return false;
+    }
+    struct HdfDeviceNode *devNode = CONTAINER_OF(dev, struct HdfDeviceNode, deviceObject);
+    struct DeviceServiceStub *instance = (struct DeviceServiceStub *)devNode;
+    return HdfRemoteServiceCheckInterfaceToken(instance->remote, data);
+}
