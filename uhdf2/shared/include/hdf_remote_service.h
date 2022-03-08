@@ -52,6 +52,13 @@ int HdfRemoteServiceRegister(int32_t serviceId, struct HdfRemoteService *service
 
 struct HdfRemoteService *HdfRemoteServiceGet(int32_t serviceId);
 
+bool HdfRemoteServiceSetInterfaceDesc(struct HdfRemoteService *service, const char *descriptor);
+
+bool HdfRemoteServiceWriteInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data);
+
+bool HdfRemoteServiceCheckInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data);
+
+
 #ifdef __cplusplus
 }
 #endif  /* __cplusplus */
