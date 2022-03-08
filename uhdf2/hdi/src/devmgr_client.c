@@ -94,23 +94,26 @@ static int32_t DevmgrQueryDeviceInfo(struct HDIDeviceManager *iDevMgr, struct De
         HdfSbufRecycle(reply);
         return HDF_ERR_MALLOC_FAIL;
     }
+    do {
+        if (!HdfRemoteServiceWriteInterfaceToken(iDevMgr->remote, data)) {
+            ret = HDF_FAILURE;
+            break;
+        }
+        list->deviceCnt = 0;
+        DListHeadInit(&list->list);
 
-    list->deviceCnt = 0;
-    DListHeadInit(&list->list);
+        HdfSbufWriteInt32(data, type);
+        ret = DeviceManagerHdiCall(iDevMgr, DEVMGR_SERVICE_QUERY_DEVICE, data, reply);
+        if (ret != HDF_SUCCESS) {
+            HDF_LOGE("DevmgrProxyQueryDevice failed");
+            break;
+        }
 
-    HdfSbufWriteInt32(data, type);
-    ret = DeviceManagerHdiCall(iDevMgr, DEVMGR_SERVICE_QUERY_DEVICE, data, reply);
-    if (ret != HDF_SUCCESS) {
-        HDF_LOGE("DevmgrProxyQueryDevice failed");
-        goto FINISHED;
-    }
+        ret = HdfObtainDeviceInfo(list, reply);
+    } while (0);
 
-    ret = HdfObtainDeviceInfo(list, reply);
-
-FINISHED:
     HdfSbufRecycle(reply);
     HdfSbufRecycle(data);
-
     return ret;
 }
 
@@ -165,7 +168,10 @@ int32_t DevmgrLoadDevice(struct HDIDeviceManager *iDevMgr, const char *serviceNa
             status = HDF_ERR_MALLOC_FAIL;
             break;
         }
-
+        if (!HdfRemoteServiceWriteInterfaceToken(iDevMgr->remote, data)) {
+            status = HDF_FAILURE;
+            break;
+        }
         if (!HdfSbufWriteString(data, serviceName)) {
             HDF_LOGE("%{public}s: writing service name failed!", __func__);
             break;
@@ -194,7 +200,10 @@ int32_t DevmgrUnloadDevice(struct HDIDeviceManager *iDevMgr, const char *service
             status = HDF_ERR_MALLOC_FAIL;
             break;
         }
-
+        if (!HdfRemoteServiceWriteInterfaceToken(iDevMgr->remote, data)) {
+            status = HDF_FAILURE;
+            break;
+        }
         if (!HdfSbufWriteString(data, serviceName)) {
             HDF_LOGE("%{public}s: writing service name failed!", __func__);
             break;
@@ -237,7 +246,11 @@ struct HDIDeviceManager *HDIDeviceManagerGet(void)
         HdfRemoteServiceRecycle(remote);
         return NULL;
     }
-
+    if (!HdfRemoteServiceSetInterfaceDesc(remote, "HDI.IDeviceManager.V1_0")) {
+        HDF_LOGE("%{public}s: failed to init interface desc", __func__);
+        HdfRemoteServiceRecycle(remote);
+        return NULL;
+    }
     iDevMgr->remote = remote;
     HDIDeviceManagerConstruct(iDevMgr);
     return iDevMgr;
