@@ -38,6 +38,13 @@ void HdfRemoteAdapterAddDeathRecipient(struct HdfRemoteService *service, struct 
 
 void HdfRemoteAdapterRemoveDeathRecipient(struct HdfRemoteService *service, struct HdfDeathRecipient *recipient);
 
+bool HdfRemoteAdapterSetInterfaceDesc(struct HdfRemoteService *service, const char *descriptor);
+
+bool HdfRemoteAdapterWriteInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data);
+
+bool HdfRemoteAdapterCheckInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data);
+
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

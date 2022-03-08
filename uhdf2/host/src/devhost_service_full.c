@@ -158,6 +158,7 @@ static int DevHostServiceFullStartService(struct IDevHostService *service)
 
     int ret = DevmgrServiceClntAttachDeviceHost(hostService->hostId, service);
     if (ret != HDF_SUCCESS) {
+        HDF_LOGE("failed to start host service, attach host error %{public}d", ret);
         return ret;
     }
 

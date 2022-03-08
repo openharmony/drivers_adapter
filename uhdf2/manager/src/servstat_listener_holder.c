@@ -71,6 +71,11 @@ int32_t UServStatListenerHolderNotifyStatus(struct ServStatListenerHolder *holde
         return HDF_ERR_MALLOC_FAIL;
     }
 
+    if (!HdfRemoteServiceWriteInterfaceToken(holderInst->listenerRemote, data)) {
+        HDF_LOGE("failed to write interface token");
+        HdfSbufRecycle(data);
+        return HDF_FAILURE;
+    }
     if (ServiceStatusMarshalling(status, data) != HDF_SUCCESS) {
         HDF_LOGE("failed to marshalling service status");
         HdfSbufRecycle(data);
@@ -129,6 +134,11 @@ struct ServStatListenerHolder *ServStatListenerHolderCreate(uintptr_t listener, 
         return NULL;
     }
     struct HdfRemoteService *listenerRemote = (struct HdfRemoteService *)listener;
+    if (!HdfRemoteServiceSetInterfaceDesc(listenerRemote, "HDI.IServiceStatusListener.V1_0")) {
+        HDF_LOGE("failed to set interface desc to listener");
+        OsalMemFree(holder);
+        return NULL;
+    }
     holder->holder.listenClass = listenClass;
     holder->holder.NotifyStatus = UServStatListenerHolderNotifyStatus;
     holder->holder.Recycle = UServStatListenerHolderRecycle;

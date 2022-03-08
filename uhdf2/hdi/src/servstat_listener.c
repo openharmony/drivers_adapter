@@ -18,7 +18,7 @@
 #include <hdf_remote_service.h>
 #include <hdf_service_status.h>
 #include <osal_mem.h>
-
+#define SERVSTAT_LISTENER_INTERFACE_DESCRIPTOR "HDI.IServiceStatusListener.V1_0"
 struct ServstatListenerStub {
     struct ServiceStatusListener listener;
     struct HdfRemoteService *remote;
@@ -34,7 +34,10 @@ int ServstatListenerStubRemoteDispatch(
     if (cmdid != SERVIE_STATUS_LISTENER_NOTIFY) {
         return HDF_ERR_NOT_SUPPORT;
     }
-
+    if (!HdfRemoteServiceCheckInterfaceToken(stub->remote, data)) {
+        HDF_LOGE("failed to check interface");
+        return HDF_ERR_INVALID_PARAM;
+    }
     if (ServiceStatusUnMarshalling(&status, data) != HDF_SUCCESS) {
         return HDF_ERR_INVALID_PARAM;
     }
@@ -72,6 +75,12 @@ struct ServiceStatusListener *HdiServiceStatusListenerNewInstance(void)
 
     stub->remote = HdfRemoteServiceObtain((struct HdfObject *)stub, &remoteDispatch);
     if (stub->remote == NULL) {
+        OsalMemFree(stub);
+        return NULL;
+    }
+    if (!HdfRemoteServiceSetInterfaceDesc(stub->remote, SERVSTAT_LISTENER_INTERFACE_DESCRIPTOR)) {
+        HdfRemoteServiceRecycle(stub->remote);
+        stub->remote = NULL;
         OsalMemFree(stub);
         return NULL;
     }

@@ -13,14 +13,17 @@
  * limitations under the License.
  */
 
-#include "hdf_remote_adapter.h"
 #include <ipc_skeleton.h>
 #include <iservice_registry.h>
 #include <string_ex.h>
 #include <unistd.h>
+
 #include "hdf_log.h"
 #include "hdf_object_manager.h"
 #include "hdf_sbuf_ipc.h"
+#include "hdf_remote_adapter.h"
+
+#define HDF_LOG_TAG hdf_remote_adapter
 
 static constexpr int32_t THREAD_POOL_BASE_THREAD_COUNT = 1;
 static int32_t g_remoteThreadMax = THREAD_POOL_BASE_THREAD_COUNT;
@@ -126,6 +129,21 @@ HdfRemoteServiceHolder::HdfRemoteServiceHolder() : remote_(nullptr), deathRecipi
     service_.object_.objectId = HDF_OBJECT_ID_REMOTE_SERVICE;
     service_.dispatcher = nullptr;
     service_.target = nullptr;
+}
+
+bool HdfRemoteServiceHolder::SetInterfaceDescriptor(const char *desc)
+{
+    if (remote_ == nullptr || desc == nullptr) {
+        return false;
+    }
+    std::u16string newDesc = OHOS::Str8ToStr16(std::string(desc));
+    if (newDesc.empty()) {
+        HDF_LOGE("failed to set interface des, error on cover str8 to str16, %{public}s", desc);
+        return false;
+    }
+    (const_cast<std::u16string *>(&remote_->descriptor_))->assign(newDesc);
+
+    return true;
 }
 
 void HdfRemoteAdapterAddDeathRecipient(
@@ -279,4 +297,65 @@ struct HdfRemoteService *HdfRemoteAdapterGetSa(int32_t saId)
         HDF_LOGE("failed to get sa %{public}d", saId);
     }
     return nullptr;
+}
+
+bool HdfRemoteAdapterSetInterfaceDesc(struct HdfRemoteService *service, const char *desc)
+{
+    if (service == nullptr || desc == nullptr) {
+        return false;
+    }
+    struct HdfRemoteServiceHolder *holder = reinterpret_cast<struct HdfRemoteServiceHolder *>(service);
+    return holder->SetInterfaceDescriptor(desc);
+}
+
+bool HdfRemoteAdapterWriteInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data)
+{
+    if (service == nullptr || data == nullptr) {
+        return false;
+    }
+    struct HdfRemoteServiceHolder *holder = reinterpret_cast<struct HdfRemoteServiceHolder *>(service);
+    OHOS::MessageParcel *parcel = nullptr;
+
+    if (SbufToParcel(data, &parcel) != HDF_SUCCESS) {
+        HDF_LOGE("failed to write interface token, SbufToParcel error");
+        return false;
+    }
+
+    if (holder->remote_ == nullptr) {
+        HDF_LOGE("failed to write interface token, holder->remote is nullptr");
+        return false;
+    }
+    if (holder->remote_->GetObjectDescriptor().empty()) {
+        HDF_LOGE("failed to write interface token, empty token");
+        return false;
+    }
+    return parcel->WriteInterfaceToken(holder->remote_->GetObjectDescriptor());
+}
+
+bool HdfRemoteAdapterCheckInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data)
+{
+    if (service == nullptr || data == nullptr) {
+        return false;
+    }
+    struct HdfRemoteServiceHolder *holder = reinterpret_cast<struct HdfRemoteServiceHolder *>(service);
+    if (holder == nullptr || holder->remote_ == nullptr) {
+        return false;
+    }
+    OHOS::MessageParcel *parcel = nullptr;
+
+    if (SbufToParcel(data, &parcel) != HDF_SUCCESS) {
+        return false;
+    }
+    auto desc = parcel->ReadInterfaceToken();
+    if (desc.empty()) {
+        HDF_LOGE("failed to check interface, empty token");
+        return false;
+    }
+    if (holder->remote_->GetObjectDescriptor() != desc) {
+        std::string descStr8 = OHOS::Str16ToStr8(desc);
+        HDF_LOGE("calling unknown interface: %{public}s", descStr8.c_str());
+        return false;
+    }
+
+    return true;
 }

@@ -40,6 +40,11 @@ static int HdfSampleDriverBind(struct HdfDeviceObject *deviceObject)
         .Dispatch = SampleServiceDispatch,
         .Release = nullptr,
     };
+    int ret = HdfDeviceObjectSetInterfaceDesc(deviceObject, "hdf.test.sampele_service");
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("failed to set interface desc");
+        return ret;
+    }
     deviceObject->service = &testService;
     return HDF_SUCCESS;
 }
