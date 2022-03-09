@@ -56,7 +56,7 @@ typedef struct {
 
 static void ReportEvent(const LwipMonitorReportInfo *reportInfo)
 {
-    struct HdfSBuf *data = data = HdfSbufObtainDefaultSize();
+    struct HdfSBuf *data = HdfSbufObtainDefaultSize();
 
     if (data == NULL) {
         dprintf("get sbuf fail\n");
