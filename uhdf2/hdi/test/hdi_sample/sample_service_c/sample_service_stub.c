@@ -307,31 +307,31 @@ static int32_t SerStubListTypeTest(struct HdfDeviceIoClient *client, struct HdfS
         if (!HdfSbufReadInt8(data, (input + i))) {
             HDF_LOGE("%{public}s: read data size failed!", __func__);
             ec = HDF_ERR_INVALID_PARAM;
-            goto finished;
+            goto FINISHED;
         }
     }
 
     ec = HdiSampleImplInstance()->ArrayTypeTest(client->device, input, inSize, &output, &outSize);
     if (ec != HDF_SUCCESS) {
         HDF_LOGE("%{public}s: call failed!", __func__);
-        goto finished;
+        goto FINISHED;
     }
 
     if (!HdfSbufWriteUint32(reply, outSize)) {
         HDF_LOGE("%{public}s: write output size failed!", __func__);
         ec = HDF_ERR_INVALID_PARAM;
-        goto finished;
+        goto FINISHED;
     }
 
-    for (uint8_t i = 0; i < outSize; i++) {
+    for (uint32_t i = 0; i < outSize; i++) {
         if (!HdfSbufWriteInt8(reply, output[i])) {
             HDF_LOGE("%{public}s: write output failed!", __func__);
             ec = HDF_ERR_INVALID_PARAM;
-            goto finished;
+            goto FINISHED;
         }
     }
 
-finished:
+FINISHED:
     if (input != NULL) {
         (void)OsalMemFree(input);
     }
@@ -360,31 +360,31 @@ static int32_t SerStubArrayTypeTest(struct HdfDeviceIoClient *client, struct Hdf
         if (!HdfSbufReadInt8(data, (input + i))) {
             HDF_LOGE("%{public}s: read data size failed!", __func__);
             ec = HDF_ERR_INVALID_PARAM;
-            goto finished;
+            goto FINISHED;
         }
     }
 
     ec = HdiSampleImplInstance()->ArrayTypeTest(client->device, input, inSize, &output, &outSize);
     if (ec != HDF_SUCCESS) {
         HDF_LOGE("%{public}s: call failed!", __func__);
-        goto finished;
+        goto FINISHED;
     }
 
     if (!HdfSbufWriteUint32(reply, outSize)) {
         HDF_LOGE("%{public}s: write output size failed!", __func__);
         ec = HDF_ERR_INVALID_PARAM;
-        goto finished;
+        goto FINISHED;
     }
 
-    for (uint8_t i = 0; i < outSize; i++) {
+    for (uint32_t i = 0; i < outSize; i++) {
         if (!HdfSbufWriteInt8(reply, output[i])) {
             HDF_LOGE("%{public}s: write output failed!", __func__);
             ec = HDF_ERR_INVALID_PARAM;
-            goto finished;
+            goto FINISHED;
         }
     }
 
-finished:
+FINISHED:
     if (input != NULL) {
         (void)OsalMemFree(input);
     }
@@ -404,20 +404,20 @@ static int32_t SerStubStructTypeTest(struct HdfDeviceIoClient *client, struct Hd
     if (!HdfSbufReadBuffer(data, (const void **)&input, &dataSize)) {
         HDF_LOGE("%{public}s: read struct data failed!", __func__);
         ec = HDF_ERR_INVALID_PARAM;
-        goto finished;
+        goto FINISHED;
     }
 
     ec = HdiSampleImplInstance()->StructTypeTest(client->device, input, &output);
     if (ec != HDF_SUCCESS) {
         HDF_LOGE("%{public}s: call StructTypeTest failed! error code is %{public}d", __func__, ec);
-        goto finished;
+        goto FINISHED;
     }
 
     if (!HdfSbufWriteBuffer(reply, (const void *)&output, sizeof(output))) {
         HDF_LOGE("%{public}s: struct result write failed", __func__);
-        goto finished;
+        goto FINISHED;
     }
-finished:
+FINISHED:
     return ec;
 }
 
