@@ -124,6 +124,7 @@ SharedMemQueue<T>::~SharedMemQueue()
         UnMapMemZone(readOffset_, SharedMemQueueMeta<T>::MemZoneType::MEMZONE_RPTR);
     } else {
         delete readOffset_;
+        readOffset_ = nullptr;
     }
 
     if (writeOffset_ != nullptr) {
