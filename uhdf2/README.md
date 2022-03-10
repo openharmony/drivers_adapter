@@ -29,7 +29,7 @@ This repository stores the code and compilation scripts for the user-mode Hardwa
 
 [drivers\_framework](https://gitee.com/openharmony/drivers_framework/blob/master/README.md)
 
-drivers\_adapter
+[drivers\_adapter](https://gitee.com/openharmony/drivers_adapter/blob/master/README.md)
 
 [drivers\_adapter\_khdf\_linux](https://gitee.com/openharmony/drivers_adapter_khdf_linux/blob/master/README.md)
 
