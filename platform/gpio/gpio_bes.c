@@ -277,7 +277,6 @@ static uint32_t GetGpioDeviceResource(
             return HDF_FAILURE;
         }
     }
-
     return HDF_SUCCESS;
 }
 #endif

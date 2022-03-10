@@ -54,9 +54,33 @@ struct I2cMethod g_i2cHostMethod = {
     .transfer = i2cHostTransfer,
 };
 
+static void I2cDeviceIomuxInit(uint32_t i2cId, struct I2cResource *resource)
+{
+    if (i2cId > HAL_I2C_ID_NUM || resource == NULL) {
+        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    struct HAL_IOMUX_PIN_FUNCTION_MAP pinMuxI2c[] = {
+        {0, 0, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_PULLUP_ENABLE},
+        {0, 0, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_PULLUP_ENABLE},
+    };
+
+    if (i2cId == 0) {
+        pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M0_SCL;
+        pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M0_SDA;
+    } else {
+        pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M1_SCL;
+        pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M1_SDA;
+    }
+    pinMuxI2c[0].pin = resource->sclPin;
+    pinMuxI2c[1].pin = resource->sdaPin;
+    hal_iomux_init(pinMuxI2c, ARRAY_SIZE(pinMuxI2c));
+}
+
 int32_t InitI2cDevice(struct I2cDevice *device)
 {
-    int32_t ret = -1;
+    int32_t ret;
     uint32_t i2cPort;
     struct I2cResource *resource = NULL;
     struct HAL_I2C_CONFIG_T *i2cConfig = NULL;
@@ -77,24 +101,11 @@ int32_t InitI2cDevice(struct I2cDevice *device)
         return HDF_ERR_INVALID_PARAM;
     }
 
-    struct HAL_IOMUX_PIN_FUNCTION_MAP pinMuxI2c[] = {
-        {0, 0, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_PULLUP_ENABLE},
-        {0, 0, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_PULLUP_ENABLE},
-    };
-
     device->port = resource->port;
     i2cPort = device->port;
     if (i2cPort > HAL_I2C_ID_NUM) {
         HDF_LOGE("i2c port %u not support\r\n", i2cPort);
         return HDF_ERR_NOT_SUPPORT;
-    }
-
-    if (i2cPort == 0) {
-        pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M0_SCL;
-        pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M0_SDA;
-    } else {
-        pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M1_SCL;
-        pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M1_SDA;
     }
 
     if (OsalMutexInit(&device->mutex) != HDF_SUCCESS) {
@@ -107,9 +118,7 @@ int32_t InitI2cDevice(struct I2cDevice *device)
         return HDF_ERR_TIMEOUT;
     }
 
-    pinMuxI2c[0].pin = resource->sclPin;
-    pinMuxI2c[1].pin = resource->sdaPin;
-    hal_iomux_init(pinMuxI2c, ARRAY_SIZE(pinMuxI2c));
+    I2cDeviceIomuxInit(i2cPort, resource);
 
     ret = hal_i2c_open(i2cPort, i2cConfig);
     if (ret == HDF_SUCCESS) {
@@ -121,7 +130,7 @@ int32_t InitI2cDevice(struct I2cDevice *device)
 
 static int32_t HostRestI2cDevice(struct I2cDevice *device)
 {
-    int32_t ret = -1;
+    int32_t ret;
     struct I2cResource *resource = NULL;
     struct HAL_I2C_CONFIG_T *i2cConfig = NULL;
     uint32_t i2cPort;
@@ -175,7 +184,7 @@ static int32_t HostRestI2cDevice(struct I2cDevice *device)
 static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
                                      const char *deviceMatchAttr)
 {
-    uint32_t tempPin = 0;
+    uint32_t tempPin;
     struct I2cResource *resource = NULL;
     if (device == NULL) {
         HDF_LOGE("device or resourceNode is NULL\r\n");
@@ -194,7 +203,7 @@ static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
 static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
                                      const struct DeviceResourceNode *resourceNode)
 {
-    uint32_t tempPin = 0;
+    uint32_t tempPin;
     struct I2cResource *resource = NULL;
     struct DeviceResourceIface *dri = NULL;
     if (device == NULL || resourceNode == NULL) {
