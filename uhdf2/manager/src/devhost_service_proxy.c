@@ -32,12 +32,12 @@ static int32_t DevHostServiceProxyOpsDevice(
     struct DevHostServiceProxy *hostClnt = (struct DevHostServiceProxy *)inst;
     if (hostClnt->remote == NULL || data == NULL) {
         HDF_LOGE("Adding device failed, hostClnt->remote or data or reply is null");
-        goto finished;
+        goto FINISHED;
     }
 
     DeviceAttributeSerialize(attribute, data);
     status = hostClnt->remote->dispatcher->Dispatch(hostClnt->remote, DEVHOST_SERVICE_ADD_DEVICE, data, NULL);
-finished:
+FINISHED:
     if (data != NULL) {
         HdfSbufRecycle(data);
     }
@@ -58,13 +58,13 @@ static int32_t DevHostServiceProxyDelDevice(
     struct DevHostServiceProxy *hostClnt = (struct DevHostServiceProxy *)inst;
     if (hostClnt->remote == NULL || data == NULL) {
         HDF_LOGE("Del device failed, hostClnt->remote or data is null");
-        goto finished;
+        goto FINISHED;
     }
 
     HdfSbufWriteUint32(data, devid);
     status = hostClnt->remote->dispatcher->Dispatch(hostClnt->remote, DEVHOST_SERVICE_DEL_DEVICE, data, NULL);
 
-finished:
+FINISHED:
     if (data != NULL) {
         HdfSbufRecycle(data);
     }

@@ -66,6 +66,7 @@ struct HdfDeviceInfo *DeviceAttributeDeserialize(struct HdfSBuf *sbuf)
     if (!HdfSbufReadUint32(sbuf, &attribute->deviceId) ||
         !HdfSbufReadUint16(sbuf, &attribute->policy)) {
         HDF_LOGE("invalid deviceId or policy");
+        DeviceSerializedAttributeRelease(attribute);
         return NULL;
     }
 
