@@ -17,7 +17,9 @@
 
 #include "hal_pwm.h"
 #include "hal_gpio.h"
+#ifdef CHIP_BEST2003
 #include "hal_iomux.h"
+#endif
 #include "pwm_core.h"
 
 #ifdef __cplusplus

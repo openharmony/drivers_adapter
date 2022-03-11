@@ -75,13 +75,9 @@ typedef int32_t (*oem_gpio_irq_handler_t)(uint16_t gpio, void *data);
 #define OCTALNUM 8
 
 static struct GpioCntlr g_gpioCntlr;
-struct OemGpioIrqHandler {
-    uint8_t port;
-    GpioIrqFunc func;
-    void *arg;
-};
 
 enum HAL_GPIO_PIN_T g_gpioPinReflectionMap[HAL_GPIO_PIN_LED_NUM] = {0};
+
 static struct HAL_GPIO_IRQ_CFG_T g_gpioIrqCfg[HAL_GPIO_PIN_LED_NUM] = {0};
 
 static struct HAL_GPIO_IRQ_CFG_T HalGpioGetIrqConfig(enum HAL_GPIO_PIN_T pin)
@@ -281,7 +277,6 @@ static uint32_t GetGpioDeviceResource(
 }
 #endif
 
-
 static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObject *device)
 {
     int32_t ret;
@@ -312,7 +307,7 @@ static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObj
     }
 
     gpioCntlr->count = gpioDevice->resource.pinNum;
-
+    gpioCntlr->priv = (void *)gpioDevice;
     return HDF_SUCCESS;
 }
 
@@ -368,6 +363,7 @@ static void GpioDriverRelease(struct HdfDeviceObject *device)
         return HDF_DEV_ERR_NO_DEVICE_SERVICE;
     }
 
+    gpioCntlr->ops = NULL;
     (void)OsalMemFree(gpioCntlr->priv);
     gpioCntlr->count = 0;
 }
