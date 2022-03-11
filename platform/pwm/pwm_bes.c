@@ -90,6 +90,8 @@ static int InitPwmDevice(struct PwmDev *host)
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
 static uint32_t GetPwmDeviceResource(struct PwmDevice *device)
 {
+    (void)device;
+    return HDF_SUCCESS;
 }
 #else
 static uint32_t GetPwmDeviceResource(

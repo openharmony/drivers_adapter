@@ -113,12 +113,12 @@ static void SpiIomuxInit(struct SpiDevice *spiDevice)
     resource = &spiDevice->resource;
     if (resource == NULL) {
         HDF_LOGE("resource is null\r\n");
-        return HDF_ERR_INVALID_OBJECT;
+        return;
     }
     spiDevCfg = &spiDevice->spiDevCfg;
     if (spiDevCfg == NULL) {
         HDF_LOGE("resource is null\r\n");
-        return HDF_ERR_INVALID_OBJECT;
+        return;
     }
     spiDevCfg->rate = resource->speed;
 
@@ -166,7 +166,7 @@ static void SpiIomuxInit(struct SpiDevice *spiDevice)
 #endif
 int32_t HalSpiSend(struct SpiDevice *spiDevice, const uint8_t *data, uint16_t size, uint32_t timeOut)
 {
-    int32_t ret = 0;
+    int32_t ret;
     uint32_t spiId;
     uint32_t len = size;
     struct SpiResource *resource = NULL;
@@ -223,11 +223,11 @@ OUT:
  *
  * @return  0 : on success, EIO : if the SPI device could not be initialised
  */
-int32_t HalSpiRecv(struct SpiDevice *spiDevice, uint8_t *data, uint16_t size, uint32_t timeOut)
+static int32_t HalSpiRecv(struct SpiDevice *spiDevice, uint8_t *data, uint16_t size, uint32_t timeOut)
 {
-    int32_t ret = 0;
+    int32_t ret;
     uint32_t len = size;
-    uint32_t remainder = 0;
+    uint32_t remainder;
     int32_t status = HDF_FAILURE;
     uint8_t *cmd = NULL;
     uint32_t spiId;
@@ -257,7 +257,7 @@ int32_t HalSpiRecv(struct SpiDevice *spiDevice, uint8_t *data, uint16_t size, ui
         OsalMemFree(cmd);
         return HDF_ERR_TIMEOUT;
     }
-    remainder = len <= SPI_DMA_MAX ? len : SPI_DMA_MAX;
+    remainder = ((len <= SPI_DMA_MAX) ? len : SPI_DMA_MAX);
 
     if (resource->transmode == SPI_TRANSFER_DMA) {
         ret = spiCtx[spiId].SpiDmaRecv(cmd, data, remainder, spiCtx[spiId].SpiDmaIrq);
@@ -285,8 +285,8 @@ OUT:
 #ifdef HalSpiSendRecv
 #undef HalSpiSendRecv
 #endif
-int32_t HalSpiSendRecv(struct SpiDevice *spiDevice, uint8_t *txData, uint16_t txSize, uint8_t *rxData,
-                        uint16_t rxSize, uint32_t timeOut)
+static int32_t HalSpiSendRecv(struct SpiDevice *spiDevice, uint8_t *txData, uint16_t txSize, uint8_t *rxData,
+                        uint16_t rxSize)
 {
     int32_t ret;
     int32_t status;
@@ -306,7 +306,7 @@ int32_t HalSpiSendRecv(struct SpiDevice *spiDevice, uint8_t *txData, uint16_t tx
 
     if (resource->transmode == SPI_TRANSFER_DMA) {
         ret = spiCtx[spiId].SpiDmaRecv(txData, rxData, rxSize, spiCtx[spiId].SpiDmaIrq);
-        if (OsalSemWait(&spiCtx[spiId].sem, timeOut) <= 0) {
+        if (OsalSemWait(&spiCtx[spiId].sem, TIMEOUT) <= 0) {
             HDF_LOGE("%s:SPI Read timeOut!\r\n", __func__);
             goto OUT;
         }
@@ -395,7 +395,7 @@ static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
 
 /* get spi config from hcs file */
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice)
+static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const char *deviceMatchAttr)
 {
 }
 #else
@@ -508,7 +508,7 @@ int32_t AttachSpiDevice(struct SpiCntlr *spiCntlr, struct HdfDeviceObject *devic
         return HDF_ERR_MALLOC_FAIL;
     }
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-    ret = GetSpiDeviceResource(spiDevice);
+    ret = GetSpiDeviceResource(spiDevice, device->deviceMatchAttr);
 #else
     ret = GetSpiDeviceResource(spiDevice, device->property);
 #endif
@@ -744,7 +744,7 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
             HalSpiRecv(spiDevice, msg->rbuf, msg->len, TIMEOUT);
         }
         if ((msg->wbuf != NULL) && (msg->rbuf != NULL)) {
-            HalSpiSendRecv(spiDevice, msg->wbuf, msg->len, msg->rbuf, msg->len, TIMEOUT);
+            HalSpiSendRecv(spiDevice, msg->wbuf, msg->len, msg->rbuf, msg->len);
         }
 
         /* pull pull up cs at the end */
