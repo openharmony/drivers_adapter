@@ -18,7 +18,9 @@
 #include "hal_spi.h"
 #include "hal_gpio.h"
 #include "hal_iomux.h"
+#ifdef CHIP_BEST2003
 #include "hal_iomux_best2003.h"
+#endif
 #include "osal_mutex.h"
 #include "osal_sem.h"
 

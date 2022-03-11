@@ -18,7 +18,6 @@
 #include "hdf_device_desc.h"
 #include "hal_trace.h"
 #include "hal_timer.h"
-#include "hal_iomux.h"
 #include "pwm_core.h"
 #include "hdf_log.h"
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
@@ -28,7 +27,13 @@
 #include "device_resource_if.h"
 #endif
 
+#if defined (CHIP_BEST1600)
+#define PWM_MAX_FUNCTION 4
+#elif defined (CHIP_BEST2003)
+#include "hal_iomux.h"
 #define PWM_MAX_FUNCTION 8
+#endif
+
 #define UNTIL_NAN0SECONDS 1000000000
 #define PERCENT 100
 #define DEC_TEN 10
@@ -39,10 +44,12 @@ static uint32_t g_pwmFunction[PWM_MAX_FUNCTION] = {
     HAL_IOMUX_FUNC_PWM1,
     HAL_IOMUX_FUNC_PWM2,
     HAL_IOMUX_FUNC_PWM3,
+#if defined (CHIP_BEST2003)
     HAL_IOMUX_FUNC_PWM4,
     HAL_IOMUX_FUNC_PWM5,
     HAL_IOMUX_FUNC_PWM6,
     HAL_IOMUX_FUNC_PWM7,
+#endif
 };
 
 static int32_t PwmDevSetConfig(struct PwmDev *pwm, struct PwmConfig *config);
