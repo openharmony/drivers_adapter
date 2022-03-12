@@ -154,7 +154,11 @@ if (defined(ohos_lite)) {
 }
 
 ohos_prebuilt_etc("hdf_devhost.rc") {
-  source = "hdf_devhost.cfg"
+  if (use_musl) {
+    source = "hdf_devhostmusl.cfg"
+  } else {
+    source = "hdf_devhost.cfg"
+  }
   relative_install_dir = "init"
   install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"
