@@ -21,18 +21,29 @@
 #include "hal_cache.h"
 #include "hdf_log.h"
 
-#define HDF_UART_TMO 1000
+
+#define HDF_UART_TMO OSAL_WAIT_FOREVER
 #define HDF_LOG_TAG uartDev
 
 #define UART_FIFO_MAX_BUFFER 2048
 #define UART_DMA_RING_BUFFER_SIZE 256 // mast be 2^n
-
+#ifdef CHIP_BEST1600
+#include "hal_location.h"
+#define MAX_UART_NUMBER 2
+#define MAX_UART_ID HAL_UART_ID_1
+static SRAM_BSS_LOC unsigned char g_halUartBuf[UART_DMA_RING_BUFFER_SIZE];
+static SRAM_BSS_LOC unsigned char g_halUart1Buf[UART_DMA_RING_BUFFER_SIZE];
+static unsigned char *g_uartKfifoBuffer[MAX_UART_NUMBER] = { NULL, NULL };
+#elif defined (CHIP_BEST2003)
+#define MAX_UART_NUMBER 3
+#define MAX_UART_ID HAL_UART_ID_2
 static __SRAMBSS unsigned char g_halUartBuf[UART_DMA_RING_BUFFER_SIZE];
 static __SRAMBSS unsigned char g_halUart1Buf[UART_DMA_RING_BUFFER_SIZE];
 static __SRAMBSS unsigned char g_halUart2Buf[UART_DMA_RING_BUFFER_SIZE];
+static unsigned char *g_uartKfifoBuffer[MAX_UART_NUMBER] = {NULL, NULL, NULL};
+#endif
 
-static struct UART_CTX_OBJ g_uartCtx[4] = {0};
-static unsigned char *g_uartKfifoBuffer[4] = {NULL, NULL, NULL, NULL};
+static struct UART_CTX_OBJ g_uartCtx[MAX_UART_NUMBER] = {0};
 struct HAL_UART_CFG_T g_lowUartCfg = {
     // used for tgdb cli console
     .parity = HAL_UART_PARITY_NONE,
@@ -49,19 +60,29 @@ struct HAL_UART_CFG_T g_lowUartCfg = {
 
 static void HalSetUartIomux(enum HAL_UART_ID_T uartId)
 {
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d not support!\r\n", __func__, uartId);
+        return;
+    }
     if (uartId == HAL_UART_ID_0) {
         hal_iomux_set_uart0();
-    } else if (uartId == HAL_UART_ID_1) {
-        hal_iomux_set_uart1();
-    } else if (uartId == HAL_UART_ID_2) {
-        hal_iomux_set_uart2();
-    } else {
-        hal_iomux_set_uart3();
     }
+    if (uartId == HAL_UART_ID_1) {
+        hal_iomux_set_uart1();
+    }
+#ifdef CHIP_BEST2003
+    if (uartId == HAL_UART_ID_2) {
+        hal_iomux_set_uart2();
+    }
+#endif
 }
 
-static void HalUartRxStart(uint32_t uartId)
+static void HalUartStartDmaRx(uint32_t uartId)
 {
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d not support!\r\n", __func__, uartId);
+        return;
+    }
     struct HAL_DMA_DESC_T dmaDescRx;
     uint32_t descCnt;
     union HAL_UART_IRQ_T mask;
@@ -76,18 +97,24 @@ static void HalUartRxStart(uint32_t uartId)
     hal_uart_dma_recv_mask(uartId, g_uartCtx[uartId].buffer, UART_DMA_RING_BUFFER_SIZE, &dmaDescRx, &descCnt, &mask);
 }
 
-static void UartRxHandler(enum HAL_UART_ID_T id, union HAL_UART_IRQ_T status)
+static void UartRxHandler(enum HAL_UART_ID_T uartId, union HAL_UART_IRQ_T status)
 {
-    int32_t ret;
-
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d not support!\r\n", __func__, uartId);
+        return;
+    }
     if (status.TX) {
-        ret = OsalSemPost(&g_uartCtx[id].txSem);
-        ASSERT(ret == HDF_SUCCESS, "%s: Failed to release write_sem: %d", __func__, ret);
+        if (OsalSemPost(&g_uartCtx[uartId].txSem != HDF_SUCCESS)) {
+            HDF_LOGE("%s OsalSemPost txSem failed!\r\n", __func__);
+            return;
+        }
     }
 
     if (status.RX || status.RT) {
-        ret = OsalSemPost(&g_uartCtx[id].rxSem);
-        ASSERT(ret == HDF_SUCCESS, "%s: Failed to release read_sem: %d", __func__, ret);
+        if (OsalSemPost(&g_uartCtx[uartId].rxSem != HDF_SUCCESS)) {
+            HDF_LOGE("%s OsalSemPost rxSem failed!\r\n", __func__);
+            return;
+        }
     }
 }
 
@@ -102,7 +129,7 @@ static void UartDmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IRQ
 
     memset_s(g_uartCtx[HAL_UART_ID_0].buffer, UART_DMA_RING_BUFFER_SIZE, 0, UART_DMA_RING_BUFFER_SIZE);
     OsalSemPost(&g_uartCtx[HAL_UART_ID_0].rxSem);
-    HalUartRxStart(HAL_UART_ID_0);
+    HalUartStartDmaRx(HAL_UART_ID_0);
 }
 
 static void UartDmaTxHandler(uint32_t xferSize, int dmaError)
@@ -120,7 +147,7 @@ static void Uart1DmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IR
     }
     memset_s(g_uartCtx[HAL_UART_ID_1].buffer, UART_DMA_RING_BUFFER_SIZE, 0, UART_DMA_RING_BUFFER_SIZE);
     OsalSemPost(&g_uartCtx[HAL_UART_ID_1].rxSem);
-    HalUartRxStart(HAL_UART_ID_1);
+    HalUartStartDmaRx(HAL_UART_ID_1);
 }
 
 static void Uart1DmaTxHandler(uint32_t xferSize, int dmaError)
@@ -128,6 +155,7 @@ static void Uart1DmaTxHandler(uint32_t xferSize, int dmaError)
     OsalSemPost(&g_uartCtx[HAL_UART_ID_1].txSem);
 }
 
+#ifdef CHIP_BEST2003
 /* uart2 */
 static void Uart2DmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IRQ_T status)
 {
@@ -140,16 +168,21 @@ static void Uart2DmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IR
 
     memset_s(g_uartCtx[HAL_UART_ID_2].buffer, UART_DMA_RING_BUFFER_SIZE, 0, UART_DMA_RING_BUFFER_SIZE);
     OsalSemPost(&g_uartCtx[HAL_UART_ID_2].rxSem);
-    HalUartRxStart(HAL_UART_ID_2);
+    HalUartStartDmaRx(HAL_UART_ID_2);
 }
 
 static void Uart2DmaTxHandler(uint32_t xferSize, int dmaError)
 {
     OsalSemPost(&g_uartCtx[HAL_UART_ID_2].txSem);
 }
+#endif
 
 static void HalUartStartRx(uint32_t uartId)
 {
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d Invalid input \r\n", __FILE__, __LINE__);
+        return;
+    }
     union HAL_UART_IRQ_T mask;
     mask.reg = 0;
     mask.RT = 1;
@@ -164,17 +197,19 @@ static int32_t HalUartSend(uint32_t uartId, const void *data, uint32_t size, uin
     int32_t ret;
     struct HAL_DMA_DESC_T dmaSescTx;
     uint32_t descCnt;
-
     if (data == NULL || size == 0) {
         HDF_LOGE("%s %d Invalid input \r\n", __FILE__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
 
-    if (uartId > HAL_UART_ID_2) {
+    if (uartId > MAX_UART_ID) {
         HDF_LOGE("%s %d Invalid input \r\n", __FILE__, __LINE__);
         return HDF_ERR_NOT_SUPPORT;
     }
     descCnt = 1;
+#ifdef CHIP_BEST1600
+    hal_cache_sync_all(HAL_CACHE_ID_D_CACHE);
+#endif
     hal_uart_dma_send(uartId, data, size, &dmaSescTx, &descCnt);
     OsalSemWait(&g_uartCtx[uartId].txSem, timeOut);
 
@@ -195,7 +230,7 @@ static int32_t HalUartRecv(uint8_t uartId, void *data, uint32_t expectSize,
         return HDF_ERR_INVALID_PARAM;
     }
 
-    if (uartId > HAL_UART_ID_2) {
+    if (uartId > MAX_UART_ID) {
         HDF_LOGE("%s %d Invalid input \r\n", __FILE__, __LINE__);
         return HDF_ERR_NOT_SUPPORT;
     }
@@ -223,19 +258,31 @@ static int32_t HalUartRecv(uint8_t uartId, void *data, uint32_t expectSize,
     if (recvSize != NULL) {
         *recvSize = recvedLen;
     }
-
     return HDF_SUCCESS;
 }
 
-static void HalUartHandlerInit(struct UartDevice *device)
+static int32_t InitUartCtxCfg(struct UartDevice *device)
 {
     uint32_t uartId;
+    struct HAL_UART_CFG_T *uartCfg = NULL;
     if (device == NULL) {
         HDF_LOGE("%s: INVALID PARAM", __func__);
-        return;
+        return HDF_ERR_INVALID_OBJECT;
+    }
+    uartCfg = &device->config;
+    if (uartCfg == NULL) {
+        HDF_LOGE("%s: INVALID OBJECT", __func__);
+        return HDF_ERR_INVALID_OBJECT;
     }
     uartId = device->uartId;
-    HDF_LOGI("%s %ld\r\n", __func__, uartId);
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d NOT SUPPORT \r\n", __FILE__, __LINE__);
+        return HDF_ERR_NOT_SUPPORT;
+    }
+    memset_s(&g_uartCtx[uartId], sizeof(struct UART_CTX_OBJ), 0, sizeof(struct UART_CTX_OBJ));
+    g_uartCtx[uartId].txDMA = uartCfg->dma_tx;
+    g_uartCtx[uartId].rxDMA = uartCfg->dma_rx;
+
     if (uartId == HAL_UART_ID_0) {
         g_uartCtx[uartId].UartDmaRxHandler = UartDmaRxHandler;
         g_uartCtx[uartId].UartDmaTxHandler = UartDmaTxHandler;
@@ -247,13 +294,36 @@ static void HalUartHandlerInit(struct UartDevice *device)
         g_uartCtx[uartId].UartDmaTxHandler = Uart1DmaTxHandler;
         g_uartCtx[uartId].buffer = g_halUart1Buf;
     }
-
+#ifdef CHIP_BEST2003
     if (uartId == HAL_UART_ID_2) {
         g_uartCtx[uartId].UartDmaRxHandler = Uart2DmaRxHandler;
         g_uartCtx[uartId].UartDmaTxHandler = Uart2DmaTxHandler;
         g_uartCtx[uartId].buffer = g_halUart2Buf;
     }
+#endif
+    return HDF_SUCCESS;
+}
 
+static void HalUartHandlerInit(struct UartDevice *device)
+{
+    uint32_t uartId;
+    int32_t ret;
+    struct HAL_UART_CFG_T *uartCfg = NULL;
+    if (device == NULL) {
+        HDF_LOGE("%s: INVALID PARAM!\r\n", __func__);
+        return;
+    }
+
+    uartId = device->uartId;
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d NOT SUPPORT!\r\n", __FILE__, __LINE__);
+        return;
+    }
+    ret = InitUartCtxCfg(device);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s %d InitUartCtxCfg failed\r\n", __FILE__, __LINE__);
+        return;
+    }
     if (!g_uartKfifoBuffer[uartId]) {
         g_uartKfifoBuffer[uartId] = (char *)OsalMemAlloc(UART_FIFO_MAX_BUFFER);
         if (!g_uartKfifoBuffer[uartId]) {
@@ -263,13 +333,19 @@ static void HalUartHandlerInit(struct UartDevice *device)
         kfifo_init(&g_uartCtx[uartId].fifo, g_uartKfifoBuffer[uartId], UART_FIFO_MAX_BUFFER);
     }
 
-    OsalSemInit(&g_uartCtx[uartId].rxSem, 0);
-    OsalSemInit(&g_uartCtx[uartId].txSem, 0);
+    if (OsalSemInit(&g_uartCtx[uartId].rxSem, 0) != HDF_SUCCESS) {
+        HDF_LOGE("UART rxsem init failed!");
+        return;
+    }
+    if (OsalSemInit(&g_uartCtx[uartId].txSem, 0) != HDF_SUCCESS) {
+        HDF_LOGE("UART txsem init failed!");
+        return;
+    }
 
-    if (g_uartCtx[uartId].rxDMA) {
-        HDF_LOGE("uart %ld start dma rx\r\n", uartId);
+    if (g_uartCtx[uartId].rxDMA == true) {
+        HDF_LOGI("uart %ld start dma rx\r\n", uartId);
         hal_uart_irq_set_dma_handler(uartId, g_uartCtx[uartId].UartDmaRxHandler, g_uartCtx[uartId].UartDmaTxHandler);
-        HalUartRxStart(uartId);
+        HalUartStartDmaRx(uartId);
     } else {
         HalUartStartRx(uartId);
     }
@@ -284,13 +360,16 @@ static void UartStart(struct UartDevice *device)
         return;
     }
     uartId = device->uartId;
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d NOT SUPPORT \r\n", __FILE__, __LINE__);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uartCfg = &device->config;
     if (uartCfg == NULL) {
         HDF_LOGE("%s: INVALID OBJECT", __func__);
         return;
     }
     hal_uart_open(uartId, uartCfg);
-    HDF_LOGI("%s %ld\r\n", __FUNCTION__, uartId);
     HalUartHandlerInit(device);
 }
 
@@ -361,20 +440,15 @@ static int InitUartDevice(struct UartHost *host)
         HDF_LOGE("%s: INVALID OBJECT", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
-    uartDevice->uartId = resource->num;
-    uartCfg->parity = resource->parity;
-    uartCfg->stop = resource->stopBit;
-    uartCfg->data = resource->wLen;
+    uint32_t uartId = resource->num;
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d NOT SUPPORT \r\n", __FILE__, __LINE__);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uartCfg->flow = HAL_UART_FLOW_CONTROL_NONE;
-    uartCfg->tx_level = HAL_UART_FIFO_LEVEL_1_2;
+    uartCfg->tx_level = HAL_UART_FIFO_LEVEL_1_8;
     uartCfg->rx_level = HAL_UART_FIFO_LEVEL_1_2;
-    uartCfg->baud = resource->baudRate;
     uartCfg->dma_rx_stop_on_err = false;
-    uartCfg->dma_rx = resource->rxDMA;
-    uartCfg->dma_tx = resource->txDMA;
-
-    g_uartCtx[uartDevice->uartId].txDMA = resource->txDMA;
-    g_uartCtx[uartDevice->uartId].rxDMA = resource->rxDMA;
 
     if (!uartDevice->initFlag) {
         HDF_LOGE("uart %ld device init\r\n", uartDevice->uartId);
@@ -437,6 +511,7 @@ static uint32_t GetUartDeviceResource(
     resource->rxDMA = dri->GetBool(resourceNode, "rxDMA");
 
     // copy config
+    device->initFlag = false;
     device->uartId = resource->num;
     device->config.baud = resource->baudRate;
     device->config.parity = resource->parity;
@@ -596,7 +671,7 @@ static int32_t UartHostDevDeinit(struct UartHost *host)
 static int32_t UartHostDevWrite(struct UartHost *host, uint8_t *data, uint32_t size)
 {
     struct UartDevice *device = NULL;
-    uint32_t portId;
+    uint32_t uartId;
 
     if (host == NULL || data == NULL || size == 0 || host->priv == NULL) {
         HDF_LOGE("%s: invalid parameter", __func__);
@@ -609,15 +684,19 @@ static int32_t UartHostDevWrite(struct UartHost *host, uint8_t *data, uint32_t s
         return HDF_ERR_INVALID_OBJECT;
     }
 
-    portId = device->uartId;
-    if (g_uartCtx[portId].txDMA) {
-        HalUartSend(portId, data, size, HDF_UART_TMO);
+    uartId = device->uartId;
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d NOT SUPPORT \r\n", __FILE__, __LINE__);
+        return HDF_ERR_NOT_SUPPORT;
+    }
+    if (g_uartCtx[uartId].txDMA) {
+        HalUartSend(uartId, data, size, HDF_UART_TMO);
     } else {
         for (uint32_t idx = 0; idx < size; idx++) {
-            if (g_uartCtx[portId].isBlock) {
-                hal_uart_blocked_putc(portId, data[idx]);
+            if (g_uartCtx[uartId].isBlock) {
+                hal_uart_blocked_putc(uartId, data[idx]);
             } else {
-                hal_uart_putc(portId, data[idx]);
+                hal_uart_putc(uartId, data[idx]);
             }
         }
     }
@@ -654,7 +733,9 @@ static int32_t UartHostDevRead(struct UartHost *host, uint8_t *data, uint32_t si
         if (g_uartCtx[uartId].isBlock) {
             data[0] = hal_uart_blocked_getc(uartId);
         } else {
-            data[0] = hal_uart_getc(uartId);
+            if (hal_uart_readable(uartId) > 0) {
+                data[0] = hal_uart_getc(uartId);
+            }
         }
         ret = 1;
     }
@@ -679,7 +760,10 @@ static int32_t UartHostDevSetBaud(struct UartHost *host, uint32_t baudRate)
         return HDF_ERR_INVALID_OBJECT;
     }
     uartId = uartDevice->uartId;
-
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d NOT SUPPORT \r\n", __FILE__, __LINE__);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uartCfg = &uartDevice->config;
     if (uartCfg == NULL) {
         HDF_LOGE("%s: device config is NULL", __func__);
@@ -687,7 +771,7 @@ static int32_t UartHostDevSetBaud(struct UartHost *host, uint32_t baudRate)
     }
     uartCfg->baud = baudRate;
 
-    hal_uart_reopen(uartId, uartCfg);
+    hal_uart_open(uartId, uartCfg);
 
     return HDF_SUCCESS;
 }
@@ -708,6 +792,10 @@ static int32_t UartHostDevGetBaud(struct UartHost *host, uint32_t *baudRate)
         return HDF_ERR_INVALID_OBJECT;
     }
     uartId = uartDevice->uartId;
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d NOT SUPPORT \r\n", __FILE__, __LINE__);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uartCfg = &uartDevice->config;
     if (uartCfg == NULL) {
         HDF_LOGE("%s: device is NULL", __func__);
@@ -721,12 +809,21 @@ static int32_t UartHostDevGetBaud(struct UartHost *host, uint32_t *baudRate)
     return HDF_SUCCESS;
 }
 
-static int32_t SetUartDevConfig(struct UartAttribute *attribute, struct HAL_UART_CFG_T *uartCfg)
+static int32_t SetUartDevConfig(struct UartAttribute *attribute, struct UartDevice *uartDevice)
 {
-    if (attribute == NULL || uartCfg == NULL) {
+    struct HAL_UART_CFG_T *uartCfg = NULL;
+    uint32_t uartId;
+    if (attribute == NULL || uartDevice == NULL) {
         HDF_LOGE("%s: invalid parameter", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
+    uartId = uartDevice->uartId;
+    uartCfg = &uartDevice->config;
+    if (uartCfg == NULL) {
+        HDF_LOGE("%s: config is NULL", __func__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
     switch (attribute->dataBits) {
         case UART_ATTR_DATABIT_8:
             uartCfg->data = HAL_UART_DATA_BITS_8;
@@ -766,7 +863,7 @@ static int32_t SetUartDevConfig(struct UartAttribute *attribute, struct HAL_UART
     } else {
         uartCfg->flow = HAL_UART_FLOW_CONTROL_NONE;
     }
-
+    hal_uart_open(uartId, uartCfg);
     return HDF_SUCCESS;
 }
 
@@ -774,8 +871,6 @@ static int32_t UartHostDevSetAttribute(struct UartHost *host, struct UartAttribu
 {
     HDF_LOGI("%s: Enter", __func__);
     struct UartDevice *uartDevice = NULL;
-    struct HAL_UART_CFG_T *uartCfg = NULL;
-    uint32_t uartId;
     int ret;
     if (host == NULL || attribute == NULL || host->priv == NULL) {
         HDF_LOGE("%s: invalid parameter", __func__);
@@ -787,18 +882,12 @@ static int32_t UartHostDevSetAttribute(struct UartHost *host, struct UartAttribu
         HDF_LOGE("%s: device is NULL", __func__);
         return HDF_ERR_INVALID_OBJECT;
     }
-    uartId = uartDevice->uartId;
-    uartCfg = &uartDevice->config;
-    if (uartCfg == NULL) {
-        HDF_LOGE("%s: config is NULL", __func__);
-        return HDF_ERR_INVALID_OBJECT;
-    }
-    ret = SetUartDevConfig(attribute, uartCfg);
+
+    ret = SetUartDevConfig(attribute, uartDevice);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s: SetUartDevConfig error", __func__);
         return HDF_FAILURE;
     }
-    hal_uart_reopen(uartId, uartCfg);
     return HDF_SUCCESS;
 }
 
@@ -894,7 +983,10 @@ static int32_t UartHostDevSetTransMode(struct UartHost *host, enum UartTransMode
         return HDF_ERR_INVALID_OBJECT;
     }
     uartId = uartDevice->uartId;
-
+    if (uartId > MAX_UART_ID) {
+        HDF_LOGE("%s %d NOT SUPPORT \r\n", __FILE__, __LINE__);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     switch (mode) {
         case UART_MODE_RD_BLOCK:
             g_uartCtx[uartId].isBlock = true;
