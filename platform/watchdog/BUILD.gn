@@ -17,5 +17,9 @@ hdf_driver(module_name) {
     sources += [ "watchdog_bes.c" ]
   }
 
+  if (defined(LOSCFG_SOC_COMPANY_STMICROELECTRONICS)) {
+    sources += [ "watchdog_stm32f4xx.c" ]
+  }
+
   include_dirs = [ "." ]
 }
