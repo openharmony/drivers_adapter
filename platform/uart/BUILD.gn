@@ -19,6 +19,9 @@ hdf_driver(module_name) {
   if (defined(LOSCFG_SOC_COMPANY_GOODIX)) {
     sources += [ "uart_gr5xx.c" ]
   }
+  if (defined(LOSCFG_SOC_COMPANY_ASRMICRO)) {
+    sources += [ "uart_asr.c" ]
+  }
 
   include_dirs = [ "." ]
 }
