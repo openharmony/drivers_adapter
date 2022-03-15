@@ -104,28 +104,26 @@ static struct UsbPnpDeviceInfo *UsbPnpNotifyCreateInfo(void)
     if (ptr == NULL) {
         HDF_LOGE("%s:%d OsalMemAlloc faile ", __func__, __LINE__);
         return NULL;
-    } else {
-        infoTemp = (struct UsbPnpDeviceInfo *)ptr;
-
-        if (idNum++ >= INT32_MAX) {
-            idNum = 0;
-        }
-        infoTemp->id = idNum;
-        OsalMutexInit(&infoTemp->lock);
-        infoTemp->status = USB_PNP_DEVICE_INIT_STATUS;
-        DListHeadInit(&infoTemp->list);
-        ret = memset_s(infoTemp->interfaceRemoveStatus, USB_PNP_INFO_MAX_INTERFACES,
-            0, sizeof(infoTemp->interfaceRemoveStatus));
-        if (ret != HDF_SUCCESS) {
-            HDF_LOGE("%{public}s:%{public}d memset_s failed", __func__, __LINE__);
-            OsalMemFree(ptr);
-            return NULL;
-        }
-
-        DListInsertTail(&infoTemp->list, &g_usbPnpInfoListHead);
-
-        return infoTemp;
     }
+    infoTemp = (struct UsbPnpDeviceInfo *)ptr;
+
+    if (idNum++ >= INT32_MAX) {
+        idNum = 0;
+    }
+    infoTemp->id = idNum;
+    OsalMutexInit(&infoTemp->lock);
+    infoTemp->status = USB_PNP_DEVICE_INIT_STATUS;
+    DListHeadInit(&infoTemp->list);
+    ret = memset_s(infoTemp->interfaceRemoveStatus, USB_PNP_INFO_MAX_INTERFACES,
+        0, sizeof(infoTemp->interfaceRemoveStatus));
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%{public}s:%{public}d memset_s failed", __func__, __LINE__);
+        OsalMemFree(ptr);
+        return NULL;
+    }
+
+    DListInsertTail(&infoTemp->list, &g_usbPnpInfoListHead);
+    return infoTemp;
 }
 
 static struct UsbPnpDeviceInfo *UsbPnpNotifyFindInfo(struct UsbInfoQueryPara queryPara)
@@ -995,8 +993,6 @@ static int32_t UsbPnpNotifyInit(struct HdfDeviceObject *device)
 
     OsalMutexInit(&g_usbSendEventLock);
 
-    g_usbPnpThreadRunningFlag = true;
-
     /* Creat thread to handle send usb interface information. */
     ret = memset_s(&threadCfg, sizeof(threadCfg), 0, sizeof(threadCfg));
     if (ret != HDF_SUCCESS) {
@@ -1004,6 +1000,7 @@ static int32_t UsbPnpNotifyInit(struct HdfDeviceObject *device)
         return ret;
     }
     
+    g_usbPnpThreadRunningFlag = true;
     threadCfg.name = "LiteOS usb pnp notify handle kthread";
     threadCfg.priority = OSAL_THREAD_PRI_HIGH;
     threadCfg.stackSize = USB_PNP_NOTIFY_REPORT_STACK_SIZE;
