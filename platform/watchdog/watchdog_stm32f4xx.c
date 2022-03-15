@@ -13,10 +13,17 @@
 #include "hdf_log.h"
 #include "watchdog_core.h"
 #include "watchdog_if.h"
-#include "watchdog_stm32f4xx.h"
+
+#define WATCHDOG_MIN_TIMEOUT    1
+#define WATCHDOG_MAX_TIMEOUT    4096
+#define WATCHDOG_UPDATE_TIME    (((6UL * 256UL * 1000UL) / LSI_VALUE) + ((LSI_STARTUP_TIME / 1000UL) + 1UL))
+
+typedef struct {
+    int watchdogId;
+    int timeout;    // Maximum interval between watchdog feeding, unit: ms
+} WatchdogDeviceInfo;
 
 static IWDG_TypeDef *hdf_iwdg = NULL;
-
 static int g_watchdogStart = 0;
 static int g_watchdogTimeout = 0;
 
