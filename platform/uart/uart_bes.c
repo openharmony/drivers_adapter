@@ -223,7 +223,7 @@ static int32_t HalUartRecv(uint8_t uartId, void *data, uint32_t expectSize,
     uint32_t nowTime;
     uint32_t fifoPopLen;
     uint32_t recvedLen = 0;
-    uint32_t expectLen = expectSize;
+    int32_t expectLen = (int32_t)expectSize;
 
     if (data == NULL || expectLen == 0 || recvSize == NULL) {
         HDF_LOGE("%s %d Invalid input \r\n", __FILE__, __LINE__);
@@ -459,10 +459,44 @@ static int InitUartDevice(struct UartHost *host)
     return HDF_SUCCESS;
 }
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#define UART_FIND_CONFIG(node, name, resource) \
+    do { \
+        if (strcmp(HCS_PROP(node, match_attr), name) == 0) { \
+            resource->num = HCS_PROP(node, num); \
+            resource->baudRate = HCS_PROP(node, baudRate); \
+            resource->parity = HCS_PROP(node, parity); \
+            resource->stopBit = HCS_PROP(node, stopBit); \
+            resource->wLen = HCS_PROP(node, data); \
+            resource->rxDMA = HCS_PROP(node, rxDMA); \
+            resource->txDMA = HCS_PROP(node, txDMA); \
+            break; \
+        } \
+    } while (0)
+
+#define PLATFORM_UART_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), uart_config)
 static uint32_t GetUartDeviceResource(struct UartDevice *device, const char *deviceMatchAttr)
 {
-    (void)device;
-    (void)deviceMatchAttr;
+    struct UartResource *resource = NULL;
+    if (device == NULL || deviceMatchAttr == NULL) {
+        HDF_LOGE("device or resourceNode is NULL\r\n");
+        return HDF_ERR_INVALID_PARAM;
+    }
+    resource = &device->resource;
+    if (resource == NULL) {
+        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    HCS_FOREACH_CHILD_VARGS(PLATFORM_UART_CONFIG, UART_FIND_CONFIG, deviceMatchAttr, resource);
+    // copy config
+    device->initFlag = false;
+    device->uartId = resource->num;
+    device->config.baud = resource->baudRate;
+    device->config.parity = resource->parity;
+    device->config.stop = resource->stopBit;
+    device->config.data = resource->wLen;
+    device->config.dma_rx = (resource->rxDMA == true) ? true : false;
+    device->config.dma_tx = (resource->txDMA == true) ? true : false;
     return HDF_SUCCESS;
 }
 #else

@@ -21,7 +21,8 @@ hdf_driver(module_name) {
   }
 
   include_dirs = [ "." ]
-  if (defined(LOSCFG_SHIELD_V200ZR_EVB_T1)) {
+  if (defined(LOSCFG_SHIELD_V200ZR_EVB_T1) &&
+      defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
     deps = [ "//device/board/fnlink/shields" ]
   }
 }

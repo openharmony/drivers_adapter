@@ -89,9 +89,31 @@ static int InitPwmDevice(struct PwmDev *host)
 }
 
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-static uint32_t GetPwmDeviceResource(struct PwmDevice *device)
+#define PWM_FIND_CONFIG(node, name, resource) \
+    do { \
+        if (strcmp(HCS_PROP(node, match_attr), name) == 0) { \
+            tempPin = HCS_PROP(node, pwmPin); \
+            resource->pwmPin = ((tempPin / DEC_TEN) * PIN_GROUP_NUM) + (tempPin % DEC_TEN); \
+            resource->pwmId = HCS_PROP(node, pwmId); \
+            break; \
+        } \
+    } while (0)
+#define PLATFORM_PWM_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), pwm_config)
+static uint32_t GetPwmDeviceResource(struct PwmDevice *device, const char *deviceMatchAttr)
 {
-    (void)device;
+    uint32_t tempPin;
+    struct PwmResource *resource = NULL;
+    if (device == NULL) {
+        HDF_LOGE("%s: device is NULL", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    resource = &device->resource;
+    if (resource == NULL) {
+        HDF_LOGE("%s: resource is NULL", __func__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    HCS_FOREACH_CHILD_VARGS(PLATFORM_PWM_CONFIG, PWM_FIND_CONFIG, deviceMatchAttr, resource);
     return HDF_SUCCESS;
 }
 #else
@@ -151,7 +173,7 @@ static int32_t AttachPwmDevice(struct PwmDev *host, struct HdfDeviceObject *devi
         return HDF_ERR_MALLOC_FAIL;
     }
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-    ret = GetPwmDeviceResource(pwmDevice);
+    ret = GetPwmDeviceResource(pwmDevice, device->deviceMatchAttr);
 #else
     ret = GetPwmDeviceResource(pwmDevice, device->property);
 #endif
