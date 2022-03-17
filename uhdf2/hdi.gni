@@ -180,7 +180,9 @@ template("hdi") {
         external_deps = [ "hilog:libhilog" ]
       }
 
-      if (invoker.language == "cpp") {
+      if (invoker.language == "c") {
+        deps += [ "$hdf_uhdf_path/host:libhdf_host" ]
+      } else if (invoker.language == "cpp") {
         external_deps += [ "ipc:ipc_single" ]
       }
 
