@@ -1,28 +1,44 @@
 /*
- * Copyright (c) 2022 Winner Microelectronics Co., Ltd. All rights reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2022 Jiangsu Hoperun Software Co., Ltd.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This file is dual licensed: you can use it either under the terms of
+ * the GPL, or the BSD license, at your option.
+ * See the LICENSE file in the root of this repository for complete details.
  */
-#include "spi_wm.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include "hdf_log.h"
 #include "spi_core.h"
+#include "spi_if.h"
 #include "device_resource_if.h"
 #include "wm_gpio_afsel.h"
+#include "osal_mutex.h"
+#include "osal_sem.h"
+#include "wm_hostspi.h"
 
 #define SPI_DMA_MAX 4095
 #define MAX_SPI_NUMBER 1
 #define TIMEOUT 1000
+
+struct SpiResource {
+    uint32_t num;
+    uint32_t speed;
+    enum SpiTransferMode transmode;
+    uint32_t mode; // TLS_SPI_MODE_x
+    uint32_t dataSize;
+    uint32_t spiCsSoft;
+    uint32_t spiClkPin;
+    uint32_t spiMosiPin;
+    uint32_t spiMisoPin;
+    uint32_t spiCsPin;
+};
+
+struct SpiDevice {
+    uint32_t spiId;
+    struct SpiResource resource;
+    struct OsalMutex mutex;
+};
 
 static void SpiIomuxInit(struct SpiDevice *spiDevice)
 {

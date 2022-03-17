@@ -1,28 +1,39 @@
 /*
- * Copyright (c) 2022 Winner Microelectronics Co., Ltd. All rights reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2022 Jiangsu Hoperun Software Co., Ltd.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This file is dual licensed: you can use it either under the terms of
+ * the GPL, or the BSD license, at your option.
+ * See the LICENSE file in the root of this repository for complete details.
  */
-#include "i2c_wm.h"
+
 #include <stdlib.h>
 #include <securec.h>
 #include "i2c_core.h"
 #include "i2c_if.h"
 #include "wm_i2c.h"
 #include "wm_gpio_afsel.h"
+#include "device_resource_if.h"
+#include "osal_mutex.h"
 
 #define DEC_NUM 10
 #define GROUP_PIN_NUM 8
 #define I2C_INVALID_ADDR 0xFFFF
+#define HAL_I2C_ID_NUM 1
+
+struct I2cResource {
+    uint32_t port;
+    uint32_t sclPin;
+    uint32_t sdaPin;
+    uint32_t speed;
+};
+
+struct I2cDevice {
+    uint16_t devAddr;      /**< slave device addr */
+    uint32_t addressWidth; /**< Addressing mode: 7 bit or 10 bit */
+    struct OsalMutex mutex;
+    uint32_t port;
+    struct I2cResource resource;
+};
 
 /* HdfDriverEntry method definitions */
 static int32_t i2cDriverBind(struct HdfDeviceObject *device);
