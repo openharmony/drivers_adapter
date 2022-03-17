@@ -1,27 +1,29 @@
 /*
- * Copyright (C) 2022 HiHope Open Source Organization .
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2022 Jiangsu Hoperun Software Co., Ltd.
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This file is dual licensed: you can use it either under the terms of
+ * the GPL, or the BSD license, at your option.
+ * See the LICENSE file in the root of this repository for complete details.
  */
-#include "watchdog_wm.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "device_resource_if.h"
 #include "hdf_device_desc.h"
 #include "hdf_log.h"
 #include "watchdog_if.h"
+#include "watchdog_core.h"
 #include "wm_regs.h"
 #include "wm_cpu.h"
 
+struct WatchdogResource {
+    int32_t watchdogId;
+};
+
+struct WatchdogDevice {
+    struct WatchdogResource resource;
+};
+    
 static int g_watchdogStart;
 static int g_watchdogTimeout;
 
@@ -41,7 +43,6 @@ struct WatchdogMethod g_WatchdogCntlrMethod = {
     .getPriv = NULL, // WatchdogDevGetPriv
     .releasePriv = NULL, // WatchdogDevReleasePriv
 };
-
 
 static int32_t WatchdogDevStart(struct WatchdogCntlr *watchdogCntlr)
 {

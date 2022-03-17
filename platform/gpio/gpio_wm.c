@@ -1,20 +1,13 @@
 /*
- * Copyright (C) 2022 HiHope Open Source Organization .
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2022 Jiangsu Hoperun Software Co., Ltd.
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This file is dual licensed: you can use it either under the terms of
+ * the GPL, or the BSD license, at your option.
+ * See the LICENSE file in the root of this repository for complete details.
  */
 
-#include "gpio_wm.h"
 #include <stdlib.h>
+#include "gpio_core.h"
 #include "gpio_if.h"
 #include "device_resource_if.h"
 #include "osal_irq.h"
@@ -22,8 +15,47 @@
 #include "wm_io.h"
 #include "wm_gpio.h"
 
+#define DECIMALNUM 10
+#define OCTALNUM 8
+
 #define HDF_LOG_TAG gpioDriver
 #define WM_IO_MAX_GPIO_PIN_NUM 48
+
+/*
+ * Pin configuration
+ */
+enum GPIO_CONFIG {
+    ANALOG_MODE,               /* Used as a function pin, input and output analog */
+    IRQ_MODE,                  /* Used to trigger interrupt */
+    INPUT_PULL_UP,             /* Input with an internal pull-up resistor - use with devices
+                                  that actively drive the signal low - e.g. button connected to ground */
+    INPUT_PULL_DOWN,           /* Input with an internal pull-down resistor - use with devices
+                                  that actively drive the signal high - e.g. button connected to a power rail */
+    INPUT_HIGH_IMPEDANCE,      /* Input - must always be driven, either actively or by an external pullup resistor */
+    OUTPUT_PUSH_PULL,          /* Output actively driven high and actively driven low -
+                                  must not be connected to other active outputs - e.g. LED output */
+    OUTPUT_OPEN_DRAIN_NO_PULL, /* Output actively driven low but is high-impedance when set high -
+                                  can be connected to other open-drain/open-collector outputs.
+                                  Needs an external pull-up resistor */
+    OUTPUT_OPEN_DRAIN_PULL_UP, /* Output actively driven low and is pulled high
+                                  with an internal resistor when set high -
+                                  can be connected to other open-drain/open-collector outputs. */
+};
+
+struct GpioResource {
+    uint32_t groupNum;
+    uint32_t realPin;
+    uint32_t config;
+    uint32_t pinNum;
+};
+
+struct GpioDevice {
+    uint8_t port; /* gpio port */
+    struct GpioResource resource;
+    enum GPIO_CONFIG config; /* gpio config */
+};
+
+typedef void (* tls_gpio_pin_orq_handler)(enum tls_io_name pin);
 
 static struct GpioCntlr gpioCntlr;
 struct wmGpioIrqHandler {
@@ -43,7 +75,7 @@ GpioIrqFunc GpioIrqHdl()
         ret = tls_get_gpio_irq_status(g_wmGpioIrqHandler[i].port);
         if ((enum tls_io_name)g_gpioPinReflectionMap[i] && (ret != 0)) {
             GpioCntlrIrqCallback(&gpioCntlr, i);
-            return;
+            return HDF_SUCCESS;
         }
     }
 }
@@ -57,6 +89,29 @@ int32_t GpioDispatch(struct HdfDeviceIoClient *client, int cmdId, struct HdfSBuf
     }
     return HDF_SUCCESS;
 }
+
+/* GpioMethod method definitions */
+static int32_t GpioDevWrite(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t val);
+static int32_t GpioDevRead(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t *val);
+static int32_t GpioDevSetDir(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t dir);
+static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mode);
+static int32_t GpioDevUnSetIrq(struct GpioCntlr *cntlr, uint16_t gpio);
+static int32_t GpioDevEnableIrq(struct GpioCntlr *cntlr, uint16_t gpio);
+static int32_t GpioDevDisableIrq(struct GpioCntlr *cntlr, uint16_t gpio);
+/* GpioMethod definitions */
+struct GpioMethod g_GpioCntlrMethod = {
+    .request = NULL,
+    .release = NULL,
+    .write = GpioDevWrite,
+    .read = GpioDevRead,
+    .setDir = GpioDevSetDir,
+    .getDir = NULL,
+    .toIrq = NULL,
+    .setIrq = GpioDevSetIrq,
+    .unsetIrq = GpioDevUnSetIrq,
+    .enableIrq = GpioDevEnableIrq,
+    .disableIrq = GpioDevDisableIrq,
+};
 
 /* dev api */
 static int32_t GpioDevWrite(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t val)
@@ -177,21 +232,6 @@ static int32_t GpioDevDisableIrq(struct GpioCntlr *cntlr, uint16_t gpio)
     tls_gpio_irq_disable((enum tls_io_name)wmGpio);
     return HDF_SUCCESS;
 }
-
-/* GpioMethod definitions */
-struct GpioMethod g_GpioCntlrMethod = {
-    .request = NULL,
-    .release = NULL,
-    .write = GpioDevWrite,
-    .read = GpioDevRead,
-    .setDir = GpioDevSetDir,
-    .getDir = NULL,
-    .toIrq = NULL,
-    .setIrq = GpioDevSetIrq,
-    .unsetIrq = GpioDevUnSetIrq,
-    .enableIrq = GpioDevEnableIrq,
-    .disableIrq = GpioDevDisableIrq,
-};
 
 static uint32_t GetGpioDeviceResource(struct GpioDevice *device,
     const struct DeviceResourceNode *resourceNode)
