@@ -59,6 +59,7 @@ Note:If the text contains special characters, please escape them according to th
                 <policyitem type="license" name="GPL" path=".*" desc="linux kernel adapter codes"/>
                 <policyitem type="copyright" name="Bestechnic (Shanghai) Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Bestechnic"/>
                 <policyitem type="copyright" name="GOODIX." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Goodix"/>
+                <policyitem type="copyright" name="ASR Microelectronics (Shanghai) Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by asr"/>
                 <policyitem type="copyright" name="Talkweb Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc="Developed by Talkweb"/>
             </policy>
         </policylist>
