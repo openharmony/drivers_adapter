@@ -22,6 +22,9 @@ hdf_driver(module_name) {
   if (defined(LOSCFG_SOC_COMPANY_ASRMICRO)) {
     sources += [ "uart_asr.c" ]
   }
+  if (defined(LOSCFG_SOC_COMPANY_WINNERMICRO)) {
+    sources += [ "uart_wm.c" ]
+  }
 
   include_dirs = [ "." ]
   if (defined(LOSCFG_SHIELD_V200ZR_EVB_T1) &&
