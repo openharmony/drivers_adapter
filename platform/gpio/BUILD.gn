@@ -19,12 +19,16 @@ hdf_driver(module_name) {
   if (defined(LOSCFG_SOC_COMPANY_GOODIX)) {
     sources += [ "gpio_gr5xx.c" ]
   }
+  if (defined(LOSCFG_SOC_COMPANY_ASRMICRO)) {
+    sources += [ "gpio_asr.c" ]
+  }
   if (defined(LOSCFG_SOC_COMPANY_WINNERMICRO)) {
     sources += [ "gpio_wm.c" ]
   }
 
   include_dirs = [ "." ]
-  if (defined(LOSCFG_SHIELD_V200ZR_EVB_T1)) {
+  if (defined(LOSCFG_SHIELD_V200ZR_EVB_T1) &&
+      defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
     deps = [ "//device/board/fnlink/shields" ]
   }
 }
