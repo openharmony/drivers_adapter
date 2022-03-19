@@ -16,6 +16,9 @@ hdf_driver(module_name) {
   if (defined(LOSCFG_SOC_COMPANY_BESTECHNIC)) {
     sources += [ "pwm_bes.c" ]
   }
+  if (defined(LOSCFG_SOC_COMPANY_WINNERMICRO)) {
+    sources += [ "pwm_wm.c" ]
+  }
 
   include_dirs = [ "." ]
   if (defined(LOSCFG_SHIELD_V200ZR_EVB_T1) &&
