@@ -277,7 +277,7 @@ OUT:
 static int32_t HalSpiRecv(struct SpiDevice *spiDevice, uint8_t *data, uint16_t size, uint32_t timeOut)
 {
     int32_t ret;
-    uint32_t len = size;
+    int32_t len = (int32_t)size;
     uint32_t remainder;
     int32_t status = HDF_FAILURE;
     uint8_t *cmd = NULL;
@@ -415,10 +415,44 @@ static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
 
 /* get spi config from hcs file */
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#define SPI_FIND_CONFIG(node, name, resource) \
+    do { \
+        if (strcmp(HCS_PROP(node, match_attr), name) == 0) { \
+            resource->num = HCS_PROP(node, busNum); \
+            resource->speed = HCS_PROP(node, speed); \
+            resource->transmode = HCS_PROP(node, transmode); \
+            resource->spiCsSoft = HCS_PROP(node, spiCsSoft); \
+            resource->mode = HCS_PROP(node, mode); \
+            resource->dataSize = HCS_PROP(node, dataSize); \
+            resource->csNum = HCS_PROP(node, csNum); \
+            tempPin = HCS_PROP(node, spiClkPin); \
+            resource->spiClkPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
+            tempPin = HCS_PROP(node, spiMosiPin); \
+            resource->spiMosiPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
+            tempPin = HCS_PROP(node, spiMisoPin); \
+            resource->spiMisoPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
+            tempPin = HCS_PROP(node, spiCsPin); \
+            resource->spiCsPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
+            break; \
+        } \
+    } while (0)
+
+#define PLATFORM_SPI_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), spi_config)
 static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const char *deviceMatchAttr)
 {
-    (void)spiDevice;
-    (void)deviceMatchAttr;
+    uint32_t tempPin;
+    struct SpiResource *resource = NULL;
+    if (spiDevice == NULL) {
+        HDF_LOGE("device or resourceNode is NULL\r\n");
+        return HDF_ERR_INVALID_PARAM;
+    }
+    resource = &spiDevice->resource;
+    if (resource == NULL) {
+        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    HCS_FOREACH_CHILD_VARGS(PLATFORM_SPI_CONFIG, SPI_FIND_CONFIG, deviceMatchAttr, resource);
     return HDF_SUCCESS;
 }
 #else
