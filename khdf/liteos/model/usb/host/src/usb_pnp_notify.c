@@ -565,6 +565,7 @@ static int32_t UsbPnpNotifyFirstReportDevice(struct HdfDeviceIoClient *client)
 {
     struct UsbPnpNotifyDeviceList *pnpNotifyDevicePos = NULL;
     struct UsbPnpNotifyDeviceList *pnpNotifyDeviceTemp = NULL;
+    int32_t ret;
 
     dprintf("%s:%d Enter!\n", __func__, __LINE__);
 
@@ -576,7 +577,10 @@ static int32_t UsbPnpNotifyFirstReportDevice(struct HdfDeviceIoClient *client)
     OsalMutexLock(&g_usbPnpNotifyDevicelistLock);
     DLIST_FOR_EACH_ENTRY_SAFE(pnpNotifyDevicePos, pnpNotifyDeviceTemp, &g_usbPnpDeviceListHead,
         struct UsbPnpNotifyDeviceList, deviceList) {
-        UsbPnpNotifyHdfSendEvent(client->device, pnpNotifyDevicePos->device);
+        ret = UsbPnpNotifyHdfSendEvent(client->device, pnpNotifyDevicePos->device);
+        if (ret != HDF_SUCCESS) {
+            HDF_LOGE("%{public}s:%{public}d UsbPnpNotifyHdfSendEvent failed, ret=%{public}d", __func__, __LINE__, ret);
+        }
     }
     OsalMutexUnlock(&g_usbPnpNotifyDevicelistLock);
 
