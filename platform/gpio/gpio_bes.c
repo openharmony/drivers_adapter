@@ -74,18 +74,6 @@ enum HAL_GPIO_PIN_T g_gpioPinReflectionMap[HAL_GPIO_PIN_LED_NUM] = {0};
 
 static struct HAL_GPIO_IRQ_CFG_T g_gpioIrqCfg[HAL_GPIO_PIN_LED_NUM] = {0};
 
-static struct HAL_GPIO_IRQ_CFG_T HalGpioGetIrqConfig(enum HAL_GPIO_PIN_T pin)
-{
-    struct HAL_GPIO_IRQ_CFG_T irqCfg;
-
-    irqCfg.irq_enable = g_gpioIrqCfg[pin].irq_enable;
-    irqCfg.irq_debounce = g_gpioIrqCfg[pin].irq_debounce;
-    irqCfg.irq_type = g_gpioIrqCfg[pin].irq_type;
-    irqCfg.irq_polarity = g_gpioIrqCfg[pin].irq_polarity;
-
-    return irqCfg;
-}
-
 static void OemGpioIrqHdl(enum HAL_GPIO_PIN_T pin)
 {
     if (pin >= HAL_GPIO_PIN_LED_NUM) {
@@ -296,7 +284,7 @@ static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObj
     ret = GetGpioDeviceResource(gpioDevice, device->property);
 #endif
     if (ret != HDF_SUCCESS) {
-        (void)OsalMemFree(gpioDevice);
+        OsalMemFree(gpioDevice);
         return HDF_FAILURE;
     }
 
@@ -358,7 +346,7 @@ static void GpioDriverRelease(struct HdfDeviceObject *device)
     }
 
     gpioCntlr->ops = NULL;
-    (void)OsalMemFree(gpioCntlr->priv);
+    OsalMemFree(gpioCntlr->priv);
     gpioCntlr->count = 0;
 }
 
