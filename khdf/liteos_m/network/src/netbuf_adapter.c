@@ -28,6 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "netbuf_adapter.h"
 #include "hdf_netbuf.h"
 #include "los_memory.h"
 #include "lwip/prot/ethernet.h"
