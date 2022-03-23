@@ -333,10 +333,10 @@ static int32_t SerStubListTypeTest(struct HdfDeviceIoClient *client, struct HdfS
 
 FINISHED:
     if (input != NULL) {
-        (void)OsalMemFree(input);
+        OsalMemFree(input);
     }
     if (output != NULL) {
-        (void)OsalMemFree(output);
+        OsalMemFree(output);
     }
     return ec;
 }
@@ -386,10 +386,10 @@ static int32_t SerStubArrayTypeTest(struct HdfDeviceIoClient *client, struct Hdf
 
 FINISHED:
     if (input != NULL) {
-        (void)OsalMemFree(input);
+        OsalMemFree(input);
     }
     if (output != NULL) {
-        (void)OsalMemFree(output);
+        OsalMemFree(output);
     }
     return ec;
 }
