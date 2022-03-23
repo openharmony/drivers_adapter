@@ -29,7 +29,7 @@ extern "C" {
 
 class HdfRemoteServiceStub : public OHOS::IPCObjectStub {
 public:
-    HdfRemoteServiceStub(struct HdfRemoteService *service);
+    explicit HdfRemoteServiceStub(struct HdfRemoteService *service);
     int OnRemoteRequest(uint32_t code,
         OHOS::MessageParcel &data, OHOS::MessageParcel &reply, OHOS::MessageOption &option) override;
     ~HdfRemoteServiceStub();
