@@ -167,7 +167,7 @@ int32_t OsalThreadSuspend(struct OsalThread *thread)
     bool flag = false;
 
     flag = OsalCheckPara(thread);
-    if (flag == false) {
+    if (!flag) {
         HDF_LOGE("%s invalid parameter %d", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
@@ -186,7 +186,7 @@ int32_t OsalThreadDestroy(struct OsalThread *thread)
     bool flag = false;
 
     flag = OsalCheckPara(thread);
-    if (flag == false) {
+    if (!flag) {
         HDF_LOGE("%s invalid parameter %d", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
@@ -203,7 +203,7 @@ int32_t OsalThreadResume(struct OsalThread *thread)
     bool flag = false;
 
     flag = OsalCheckPara(thread);
-    if (flag == false) {
+    if (!flag) {
         HDF_LOGE("%s invalid parameter %d", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
