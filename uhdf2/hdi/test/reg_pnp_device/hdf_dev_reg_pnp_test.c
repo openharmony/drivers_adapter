@@ -202,7 +202,7 @@ static void HdfRegPnpDriverTest_005()
     struct HdfRemoteService *remote = HdfRemoteServiceGet("pnp_driver_service_1");
     UT_TEST_CHECK_RET(remote == NULL);
     if (ret == HDF_SUCCESS) {
-        HdfUnRegPnpDevice("libpnp_driver1.so", "pnp_driver_service1");
+        (void)HdfUnRegPnpDevice("libpnp_driver1.so", "pnp_driver_service1");
     }
 }
 
@@ -230,7 +230,7 @@ static void HdfRegPnpDriverTest_006()
         uint64_t timeAfter = OsalGetSysTimeMs();
         totalTime += timeAfter - timeBefor;
     }
-    printf("total time is %ld \n", totalTime);
+    printf("total time is %lu \n", totalTime);
     UT_TEST_CHECK_RET((totalTime / 1000) < 20);
 }
 

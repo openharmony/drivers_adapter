@@ -170,7 +170,7 @@ bool HdfAddWork(HdfWorkQueue *queue, HdfWork *work)
     return queue_work(queue->realWorkQueue, &((struct WorkWrapper *)work->realWork)->work.work);
 }
 
-bool HdfAddDelayedWork(HdfWorkQueue *queue, HdfWork *work, unsigned long ms)
+bool HdfAddDelayedWork(HdfWorkQueue *queue, HdfWork *work, uint32_t ms)
 {
     if (queue == NULL || queue->realWorkQueue == NULL || work == NULL || work->realWork == NULL) {
         HDF_LOGE("%s invalid para", __func__);
