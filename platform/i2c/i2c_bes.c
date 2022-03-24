@@ -132,40 +132,6 @@ int32_t InitI2cDevice(struct I2cDevice *device)
     return ret;
 }
 
-static int32_t HostRestI2cDevice(struct I2cDevice *device)
-{
-    int32_t ret;
-    struct I2cResource *resource = NULL;
-    struct HAL_I2C_CONFIG_T *i2cConfig = NULL;
-    uint32_t i2cPort;
-    if (device == NULL) {
-        HDF_LOGE("%s %d device is null\r\n", __func__, __LINE__);
-        return HDF_ERR_INVALID_PARAM;
-    }
-    resource = &device->resource;
-    if (resource == NULL) {
-        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
-        return HDF_ERR_INVALID_OBJECT;
-    }
-    i2cConfig = &device->i2cCfg;
-    if (i2cConfig == NULL) {
-        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
-        return HDF_ERR_INVALID_OBJECT;
-    }
-    device->port = resource->port;
-    i2cPort = device->port;
-    if (i2cPort > HAL_I2C_ID_NUM) {
-        HDF_LOGE("i2c port %u not support\r\n", i2cPort);
-        return HDF_ERR_NOT_SUPPORT;
-    }
-
-    hal_i2c_close(i2cPort);
-    ret = hal_i2c_open(i2cPort, i2cConfig);
-    if (ret == HDF_SUCCESS) {
-        HDF_LOGD("open %u i2c succ.\r\n", i2cPort);
-    }
-    return ret;
-}
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
 #define I2C_FIND_CONFIG(node, name, resource) \
     do { \
