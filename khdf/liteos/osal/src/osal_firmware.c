@@ -127,7 +127,7 @@ int32_t OsalReadFirmware(struct OsalFirmware *fwPara, struct OsalFwBlock *block)
     }
 
     fw = (struct OsalFwDesc *)fwPara->para;
-    if (fw->openFlag == false) {
+    if (!fw->openFlag) {
         HDF_LOGE("%s file do not open",  __func__);
         return HDF_ERR_INVALID_PARAM;
     }
