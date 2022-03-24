@@ -77,7 +77,7 @@ void PrintTestResult()
 
 static void CalcAverageTime(int index, bool type, const OsalTimespec *diff, const char *func, int line)
 {
-    if (type == true) {
+    if (type) {
         HDF_LOGD("[HDF_TEST] %{public}s line:%{public}d test 1 time use time:%{public}lu s %{public}lu us",
             func, line, diff->sec, diff->usec);
         printf("[HDF_TEST] %s line:%d test 1 time use time:%lu s %lu us\r\n", func, line, diff->sec, diff->usec);

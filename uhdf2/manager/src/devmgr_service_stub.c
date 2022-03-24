@@ -264,7 +264,7 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
     }
     fullService->remote = remoteService;
 
-    DriverModuleLoadHelperInit();
+    (void)DriverModuleLoadHelperInit();
 
     return DevmgrServiceStartService((struct IDevmgrService *)&fullService->super);
 }
