@@ -45,14 +45,10 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
       "//drivers/framework/support/platform/test/unittest/common/hdf_regulator_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_rtc_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_spi_test.cpp",
-      "//drivers/framework/support/platform/test/unittest/common/hdf_uart_test.cpp",
-      "//drivers/framework/support/platform/test/unittest/common/hdf_watchdog_test.cpp",
       "//drivers/framework/test/unittest/platform/common/gpio_test.c",
       "//drivers/framework/test/unittest/platform/common/pwm_test.c",
       "//drivers/framework/test/unittest/platform/common/rtc_test.c",
       "//drivers/framework/test/unittest/platform/common/spi_test.c",
-      "//drivers/framework/test/unittest/platform/common/uart_test.c",
-      "//drivers/framework/test/unittest/platform/common/watchdog_test.c",
     ]
     if (ohos_kernel_type == "liteos_a") {
       sources += [
@@ -64,9 +60,13 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
         "//drivers/framework/support/platform/test/unittest/common/hdf_pcie_test.cpp",
         "//drivers/framework/support/platform/test/unittest/common/hdf_pin_test.cpp",
         "//drivers/framework/support/platform/test/unittest/common/hdf_timer_test.cpp",
+        "//drivers/framework/support/platform/test/unittest/common/hdf_uart_test.cpp",
+        "//drivers/framework/support/platform/test/unittest/common/hdf_watchdog_test.cpp",
         "//drivers/framework/test/unittest/platform/common/adc_test.c",
         "//drivers/framework/test/unittest/platform/common/dac_test.c",
         "//drivers/framework/test/unittest/platform/common/timer_test.c",
+        "//drivers/framework/test/unittest/platform/common/uart_test.c",
+        "//drivers/framework/test/unittest/platform/common/watchdog_test.c",
       ]
     }
     if (storage_type == "emmc") {
