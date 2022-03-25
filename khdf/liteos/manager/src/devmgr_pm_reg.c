@@ -38,7 +38,7 @@
 UINT32 DevmgrPmSuspend(UINT32 mode)
 {
     if (mode != LOS_SYS_LIGHT_SLEEP) {
-        HDF_LOGI("%s: hdf Suspend %d", __func__, mode);
+        HDF_LOGI("%s: hdf Suspend %u", __func__, mode);
     }
 
     HDF_LOGI("%s hdf suspend start", __func__);

@@ -49,7 +49,7 @@ int32_t OsalRegisterIrq(uint32_t irqId, uint32_t config, OsalIRQHandle handle, c
     irqParam.pName = name;
     ret = LOS_HwiCreate(irqId, 0, (HWI_MODE_T)config, (HWI_PROC_FUNC)handle, &irqParam);
     if (ret != LOS_OK) {
-        HDF_LOGE("%s %d register fail 0x%x", __func__, irqId, ret);
+        HDF_LOGE("%s %u register fail 0x%x", __func__, irqId, ret);
         return HDF_FAILURE;
     }
     HalIrqUnmask(irqId);
@@ -63,7 +63,7 @@ int32_t OsalUnregisterIrq(uint32_t irqId, void *dev)
     HwiIrqParam irqParam;
 
     if (irqId >= OS_HWI_MAX_NUM) {
-        HDF_LOGE("invalid irq number %d\n", irqId);
+        HDF_LOGE("invalid irq number %u\n", irqId);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -71,7 +71,7 @@ int32_t OsalUnregisterIrq(uint32_t irqId, void *dev)
     irqParam.pDevId = dev;
     ret = LOS_HwiDelete(irqId, &irqParam);
     if (ret != LOS_OK) {
-        HDF_LOGE("irq %d unregister fail %d\n", irqId, ret);
+        HDF_LOGE("irq %u unregister fail %u\n", irqId, ret);
         return HDF_FAILURE;
     }
 
@@ -81,7 +81,7 @@ int32_t OsalUnregisterIrq(uint32_t irqId, void *dev)
 int32_t OsalEnableIrq(uint32_t irqId)
 {
     if (irqId >= OS_HWI_MAX_NUM) {
-        HDF_LOGE("invalid irq number %d\n", irqId);
+        HDF_LOGE("invalid irq number %u\n", irqId);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -93,7 +93,7 @@ int32_t OsalEnableIrq(uint32_t irqId)
 int32_t OsalDisableIrq(uint32_t irqId)
 {
     if (irqId >= OS_HWI_MAX_NUM) {
-        HDF_LOGE("invalid irq number %d\n", irqId);
+        HDF_LOGE("invalid irq number %u\n", irqId);
         return HDF_ERR_INVALID_PARAM;
     }
 

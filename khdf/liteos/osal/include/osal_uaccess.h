@@ -38,12 +38,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static inline size_t CopyToUser (void* to, const void* from, size_t len)
+static inline size_t CopyToUser(void* to, const void* from, size_t len)
 {
     return LOS_ArchCopyToUser(to, from, len);
 }
 
-static inline size_t CopyFromUser (void* to, const void* from, size_t len)
+static inline size_t CopyFromUser(void* to, const void* from, size_t len)
 {
     return LOS_ArchCopyFromUser(to, from, len);
 }
