@@ -169,7 +169,7 @@ static int32_t MakeModulePath(char *buffer, const char *moduleName)
 
     char *path = realpath(temp, buffer);
     if (path == NULL || strncmp(path, HDF_MODULE_DIR, strlen(HDF_MODULE_DIR)) != 0) {
-        HDF_LOGE("driver module file is invalud: %{public}s", temp);
+        HDF_LOGE("driver module file is invalid: %{public}s", temp);
         return HDF_ERR_INVALID_PARAM;
     }
 
