@@ -29,7 +29,7 @@ static int32_t SampleServiceStubPing(struct HdfDeviceIoClient *client, struct Hd
     if (!HdfDeviceObjectCheckInterfaceDesc(client->device, data)) {
         return HDF_ERR_INVALID_PARAM;
     }
-    char *outInfo = NULL;
+    char *outInfo = nullptr;
     const char *info = HdfSbufReadString(data);
 
     int32_t ret = SampleHdiImplInstance()->ping(client->device, info, &outInfo);
@@ -80,7 +80,7 @@ static int32_t SampleServiceStubCallback(struct HdfDeviceIoClient *client, struc
     }
 
     struct HdfRemoteService *callback = HdfSbufReadRemoteService(data);
-    if (callback == NULL) {
+    if (callback == nullptr) {
         HDF_LOGE("SampleHdi.callback: miss parameter callback");
         return HDF_ERR_INVALID_PARAM;
     }
@@ -95,7 +95,7 @@ static int32_t SampleServiceStubStructTrans(
         return HDF_ERR_INVALID_PARAM;
     }
     struct DataBlock *dataBlock = DataBlockBlockUnmarshalling(data);
-    if (dataBlock == NULL) {
+    if (dataBlock == nullptr) {
         HDF_LOGE("SampleServiceStubStructTrans: failed to read dataBlock");
         return HDF_ERR_INVALID_PARAM;
     }
@@ -120,7 +120,7 @@ static int32_t SampleServiceStubBufferTrans(
     }
     constexpr int SAMPLE_TEST_BUFFER_SIZE = 10;
     const uint8_t *buffer = HdfSbufReadUnpadBuffer(data, SAMPLE_TEST_BUFFER_SIZE);
-    if (buffer == NULL) {
+    if (buffer == nullptr) {
         HDF_LOGI("SampleServiceStubBufferTrans: read buffer failed");
         return HDF_ERR_INVALID_PARAM;
     }
@@ -143,7 +143,7 @@ static int32_t SampleServiceRegisterDevice(
     }
     (void)reply;
     const char *deviceName = HdfSbufReadString(data);
-    if (deviceName == NULL) {
+    if (deviceName == nullptr) {
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -158,7 +158,7 @@ static int32_t SampleServiceUnregisterDevice(
         return HDF_ERR_INVALID_PARAM;
     }
     const char *deviceName = HdfSbufReadString(data);
-    if (deviceName == NULL) {
+    if (deviceName == nullptr) {
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -171,7 +171,7 @@ static int32_t SampleServiceUpdateDevice(struct HdfDeviceIoClient *client, struc
         return HDF_ERR_INVALID_PARAM;
     }
     const char *servInfo = HdfSbufReadString(data);
-    if (servInfo == NULL) {
+    if (servInfo == nullptr) {
         return HDF_ERR_INVALID_PARAM;
     }
 

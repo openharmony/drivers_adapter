@@ -56,7 +56,7 @@ int32_t OsalFileOpen(OsalFile *file, const char *path, int flags, uint32_t right
 
     fd = open(pathName, flags, rights);
     if (fd < 0) {
-        HDF_LOGE("%s open file fail %d %d %d", __func__, flags, rights, errno);
+        HDF_LOGE("%s open file fail %d %u %d", __func__, flags, rights, errno);
         return HDF_FAILURE;
     }
 
@@ -104,7 +104,7 @@ ssize_t OsalFileRead(OsalFile *file, void *buf, uint32_t length)
 
     ret = read((int32_t)(uintptr_t)file->realFile, buf, length);
     if (ret < 0) {
-        HDF_LOGE("%s read file fail %d %d", __func__, length, errno);
+        HDF_LOGE("%s read file fail %u %d", __func__, length, errno);
         return HDF_FAILURE;
     }
 

@@ -35,13 +35,13 @@ int DriverInstallerFullStartDeviceHost(uint32_t devHostId, const char* devHostNa
     char hostIdStr[MAX_CMD_LEN] = {0};
     int ret;
 
-    if (snprintf_s(hostIdStr, sizeof(hostIdStr), sizeof(hostIdStr) - 1, " %d", devHostId) < 0) {
+    if (snprintf_s(hostIdStr, sizeof(hostIdStr), sizeof(hostIdStr) - 1, " %u", devHostId) < 0) {
         HDF_LOGE("starting device host, snprintf_s failed");
         return HDF_FAILURE;
     }
     const char *args[] = { hostIdStr, devHostName };
     ret = ServiceControlWithExtra(devHostName, START, args, PARAM_CNT);
-    HDF_LOGI("%{public}s %{public}s %{public}d %{public}d", __func__, devHostName, devHostId, ret);
+    HDF_LOGI("%{public}s %{public}s %{public}u %{public}d", __func__, devHostName, devHostId, ret);
     return HDF_SUCCESS;
 }
 
