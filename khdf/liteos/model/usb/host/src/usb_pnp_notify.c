@@ -211,7 +211,7 @@ static int32_t UsbPnpNotifyAddInitInfo(struct UsbPnpDeviceInfo *deviceInfo, unio
 {
     int32_t ret = HDF_SUCCESS;
 
-    deviceInfo->info.usbDevAddr = (uintptr_t)infoData.usbDev;
+    deviceInfo->info.usbDevAddr = (uint64_t)infoData.usbDev;
     deviceInfo->info.devNum = infoData.usbDev->address;
     deviceInfo->info.busNum = (int32_t)infoData.usbDev->port_no;
 
@@ -392,7 +392,7 @@ static int32_t UsbPnpNotifyGetDeviceInfo(void *eventData, union UsbPnpDeviceInfo
     } else if ((g_usbPnpNotifyCmdType == USB_PNP_NOTIFY_ADD_DEVICE)
         || (g_usbPnpNotifyCmdType == USB_PNP_NOTIFY_REMOVE_DEVICE)) {
         infoQueryPara.type = USB_INFO_DEVICE_ADDRESS_TYPE;
-        infoQueryPara.usbDevAddr = (uintptr_t)pnpInfoData->usbDev;
+        infoQueryPara.usbDevAddr = (uint64_t)pnpInfoData->usbDev;
         *deviceInfo = UsbPnpNotifyFindInfo(infoQueryPara);
     } else {
         *deviceInfo = UsbPnpNotifyCreateInfo();
@@ -541,8 +541,8 @@ static int32_t TestPnpNotifyHdfSendEvent(const struct HdfDeviceObject *deviceObj
         goto OUT;
     }
 
-    HDF_LOGI("%s: report one device information, %d usbDev=0x%x, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!", \
-        __func__, g_usbPnpNotifyCmdType, (uint32_t)infoTable.usbDevAddr, infoTable.devNum, infoTable.busNum, \
+    HDF_LOGI("%s: report one device information, %d usbDev=%llu, devNum=%d, busNum=%d, infoTable=%d-0x%x-0x%x!", \
+        __func__, g_usbPnpNotifyCmdType, infoTable.usbDevAddr, infoTable.devNum, infoTable.busNum, \
         infoTable.numInfos, infoTable.deviceInfo.vendorId, infoTable.deviceInfo.productId);
 
     ret = UsbPnpNotifySendEventLoader(data);
@@ -715,7 +715,7 @@ static void UsbPnpNotifyDetachDevice(struct usb_device *udev)
 
     if (UsbPnpNotifyFindDeviceList(udev, true) == true) {
         infoQueryPara.type = USB_INFO_DEVICE_ADDRESS_TYPE;
-        infoQueryPara.usbDevAddr = (uintptr_t)udev;
+        infoQueryPara.usbDevAddr = (uint64_t)udev;
         deviceInfo = UsbPnpNotifyFindInfo(infoQueryPara);
         if (deviceInfo == NULL) {
             PRINTK("%s:%d USB_DEVICE_REMOVE find info failed", __func__, __LINE__);
