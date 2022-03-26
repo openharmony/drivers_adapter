@@ -52,12 +52,12 @@ int DevFillQueryDeviceInfo(struct IDevmgrService *inst, struct HdfSBuf *data, st
             if ((deviceInfo->policy == SERVICE_POLICY_CAPACITY || deviceInfo->policy == SERVICE_POLICY_PUBLIC) &&
                 deviceInfo->status == status) {
                 flag = HdfSbufWriteString(reply, deviceInfo->svcName);
-                if (flag == false) {
+                if (!flag) {
                     HDF_LOGE("%{public}s writing string failed %{public}s", __func__, deviceInfo->svcName);
                     return HDF_FAILURE;
                 }
                 flag = HdfSbufWriteInt32(reply, deviceInfo->deviceType);
-                if (flag == false) {
+                if (!flag) {
                     HDF_LOGE("%{public}s writing int32 failed %{public}d", __func__, deviceInfo->deviceType);
                     return HDF_FAILURE;
                 }

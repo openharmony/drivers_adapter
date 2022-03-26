@@ -35,7 +35,7 @@ config DRIVERS_HDF
       Answer Y to enable LiteOS support HDF.
 if DRIVERS_HDF
 config DRIVERS_HDF_CONFIG_MACRO
-    bool "Enable HDF platform driver"
+    bool "Enable HDF config macro parser"
     default n
     depends on DRIVERS_HDF
     help

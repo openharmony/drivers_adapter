@@ -1,17 +1,11 @@
 /*
- * Copyright (c) 2021 Bestechnic (Shanghai) Co., Ltd. All rights reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2021-2022 Bestechnic (Shanghai) Co., Ltd. All rights reserved.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This file is dual licensed: you can use it either under the terms of
+ * the GPL, or the BSD license, at your option.
+ * See the LICENSE file in the root of this repository for complete details.
  */
+
 #include <stdlib.h>
 #include "gpio_core.h"
 #include "hal_gpio.h"
@@ -75,26 +69,10 @@ typedef int32_t (*oem_gpio_irq_handler_t)(uint16_t gpio, void *data);
 #define OCTALNUM 8
 
 static struct GpioCntlr g_gpioCntlr;
-struct OemGpioIrqHandler {
-    uint8_t port;
-    GpioIrqFunc func;
-    void *arg;
-};
 
 enum HAL_GPIO_PIN_T g_gpioPinReflectionMap[HAL_GPIO_PIN_LED_NUM] = {0};
+
 static struct HAL_GPIO_IRQ_CFG_T g_gpioIrqCfg[HAL_GPIO_PIN_LED_NUM] = {0};
-
-static struct HAL_GPIO_IRQ_CFG_T HalGpioGetIrqConfig(enum HAL_GPIO_PIN_T pin)
-{
-    struct HAL_GPIO_IRQ_CFG_T irqCfg;
-
-    irqCfg.irq_enable = g_gpioIrqCfg[pin].irq_enable;
-    irqCfg.irq_debounce = g_gpioIrqCfg[pin].irq_debounce;
-    irqCfg.irq_type = g_gpioIrqCfg[pin].irq_type;
-    irqCfg.irq_polarity = g_gpioIrqCfg[pin].irq_polarity;
-
-    return irqCfg;
-}
 
 static void OemGpioIrqHdl(enum HAL_GPIO_PIN_T pin)
 {
@@ -281,7 +259,6 @@ static uint32_t GetGpioDeviceResource(
 }
 #endif
 
-
 static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObject *device)
 {
     int32_t ret;
@@ -307,12 +284,12 @@ static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObj
     ret = GetGpioDeviceResource(gpioDevice, device->property);
 #endif
     if (ret != HDF_SUCCESS) {
-        (void)OsalMemFree(gpioDevice);
+        OsalMemFree(gpioDevice);
         return HDF_FAILURE;
     }
 
     gpioCntlr->count = gpioDevice->resource.pinNum;
-
+    gpioCntlr->priv = (void *)gpioDevice;
     return HDF_SUCCESS;
 }
 
@@ -368,7 +345,8 @@ static void GpioDriverRelease(struct HdfDeviceObject *device)
         return HDF_DEV_ERR_NO_DEVICE_SERVICE;
     }
 
-    (void)OsalMemFree(gpioCntlr->priv);
+    gpioCntlr->ops = NULL;
+    OsalMemFree(gpioCntlr->priv);
     gpioCntlr->count = 0;
 }
 
