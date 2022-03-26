@@ -196,7 +196,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest006, TestSize.Level1)
 }
 
 /*
- * Test device manager Load/UnLoad deivce and driver dynamic register device
+ * Test device manager Load/UnLoad device and driver dynamic register device
  */
 HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest007, TestSize.Level1)
 {

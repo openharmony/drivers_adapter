@@ -115,7 +115,7 @@ static int OnKEventReceived(
     }
 
     if (receivedEvent->syncToken != 0) {
-        FinishEvent(service, receivedEvent);
+        (void)FinishEvent(service, receivedEvent);
     }
 
     OsalMutexUnlock(&notifier->mutex);

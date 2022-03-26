@@ -1,24 +1,17 @@
 /*
- * Copyright (c) 2021 Bestechnic (Shanghai) Co., Ltd. All rights reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2021-2022 Bestechnic (Shanghai) Co., Ltd. All rights reserved.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This file is dual licensed: you can use it either under the terms of
+ * the GPL, or the BSD license, at your option.
+ * See the LICENSE file in the root of this repository for complete details.
  */
+
 #include "pwm_bes.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "hdf_device_desc.h"
 #include "hal_trace.h"
 #include "hal_timer.h"
-#include "hal_iomux.h"
 #include "pwm_core.h"
 #include "hdf_log.h"
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
@@ -28,7 +21,13 @@
 #include "device_resource_if.h"
 #endif
 
+#if defined (CHIP_BEST1600)
+#define PWM_MAX_FUNCTION 4
+#elif defined (CHIP_BEST2003)
+#include "hal_iomux.h"
 #define PWM_MAX_FUNCTION 8
+#endif
+
 #define UNTIL_NAN0SECONDS 1000000000
 #define PERCENT 100
 #define DEC_TEN 10
@@ -39,10 +38,12 @@ static uint32_t g_pwmFunction[PWM_MAX_FUNCTION] = {
     HAL_IOMUX_FUNC_PWM1,
     HAL_IOMUX_FUNC_PWM2,
     HAL_IOMUX_FUNC_PWM3,
+#if defined (CHIP_BEST2003)
     HAL_IOMUX_FUNC_PWM4,
     HAL_IOMUX_FUNC_PWM5,
     HAL_IOMUX_FUNC_PWM6,
     HAL_IOMUX_FUNC_PWM7,
+#endif
 };
 
 static int32_t PwmDevSetConfig(struct PwmDev *pwm, struct PwmConfig *config);
@@ -88,9 +89,31 @@ static int InitPwmDevice(struct PwmDev *host)
 }
 
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-static uint32_t GetPwmDeviceResource(struct PwmDevice *device)
+#define PWM_FIND_CONFIG(node, name, resource) \
+    do { \
+        if (strcmp(HCS_PROP(node, match_attr), name) == 0) { \
+            tempPin = HCS_PROP(node, pwmPin); \
+            resource->pwmPin = ((tempPin / DEC_TEN) * PIN_GROUP_NUM) + (tempPin % DEC_TEN); \
+            resource->pwmId = HCS_PROP(node, pwmId); \
+            break; \
+        } \
+    } while (0)
+#define PLATFORM_PWM_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), pwm_config)
+static uint32_t GetPwmDeviceResource(struct PwmDevice *device, const char *deviceMatchAttr)
 {
-    (void)device;
+    uint32_t tempPin;
+    struct PwmResource *resource = NULL;
+    if (device == NULL) {
+        HDF_LOGE("%s: device is NULL", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    resource = &device->resource;
+    if (resource == NULL) {
+        HDF_LOGE("%s: resource is NULL", __func__);
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    HCS_FOREACH_CHILD_VARGS(PLATFORM_PWM_CONFIG, PWM_FIND_CONFIG, deviceMatchAttr, resource);
     return HDF_SUCCESS;
 }
 #else
@@ -150,7 +173,7 @@ static int32_t AttachPwmDevice(struct PwmDev *host, struct HdfDeviceObject *devi
         return HDF_ERR_MALLOC_FAIL;
     }
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-    ret = GetPwmDeviceResource(pwmDevice);
+    ret = GetPwmDeviceResource(pwmDevice, device->deviceMatchAttr);
 #else
     ret = GetPwmDeviceResource(pwmDevice, device->property);
 #endif
