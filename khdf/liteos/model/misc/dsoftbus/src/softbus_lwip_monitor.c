@@ -77,9 +77,8 @@ static void NetifStatusCallback(struct netif *netif, netif_nsc_reason_t reason,
     LwipMonitorReportInfo reportInfo;
     bool needReport = true;
 
-    (void)args;
-    if (netif == NULL) {
-        dprintf("NetifStatusCallback: input netif is NULL\n");
+    if (netif == NULL || args == NULL) {
+        dprintf("NetifStatusCallback: input args is NULL\n");
         return;
     }
     dprintf("NetifStatusCallback(%s): nsc event: 0x%x\n", netif->full_name, (uint32_t)reason);
