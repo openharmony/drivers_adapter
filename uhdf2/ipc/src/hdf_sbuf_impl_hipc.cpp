@@ -457,20 +457,20 @@ extern "C" struct HdfSBufImpl *SbufObtainIpc(size_t capacity)
 
 class SbufAllocator : public Allocator {
 public:
-    virtual void *Realloc(void *data, size_t newSize) override
+    void *Realloc(void *data, size_t newSize) override
     {
         (void)data;
         (void)newSize;
         return nullptr;
     }
 
-    virtual void *Alloc(size_t size) override
+    void *Alloc(size_t size) override
     {
         (void)size;
         return nullptr;
     }
 
-    virtual void Dealloc(void *data) override
+    void Dealloc(void *data) override
     {
         (void)data;
     }
