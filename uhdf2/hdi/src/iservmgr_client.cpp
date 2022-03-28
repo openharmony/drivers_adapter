@@ -33,10 +33,10 @@ public:
     explicit ServiceManagerProxy(const sptr<IRemoteObject>& impl) : IRemoteProxy<IServiceManager>(impl) {}
     ~ServiceManagerProxy() {}
 
-    virtual sptr<IRemoteObject> GetService(const char* serviceName) override;
-    virtual int32_t RegisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener,
+    sptr<IRemoteObject> GetService(const char* serviceName) override;
+    int32_t RegisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener,
         uint16_t deviceClass) override;
-    virtual int32_t UnregisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener) override;
+    int32_t UnregisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener) override;
 private:
     static inline BrokerDelegator<ServiceManagerProxy> delegator_;
 };
