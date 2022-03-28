@@ -71,6 +71,7 @@ static int32_t LiteNetDevInit(struct NetDeviceImpl *netDeviceImpl)
     HDF_LOGI("%s Success!", __func__);
     return HDF_SUCCESS;
 }
+
 static int32_t LiteNetDevDeInit(struct NetDeviceImpl *netDeviceImpl)
 {
     if (netDeviceImpl == NULL) {
