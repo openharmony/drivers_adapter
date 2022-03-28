@@ -86,7 +86,7 @@ ohos_executable("hdf_devmgr") {
   part_name = "device_driver_framework"
 }
 
-ohos_prebuilt_etc("hdf_devmgr.rc") {
+ohos_prebuilt_etc("hdf_devmgr.cfg") {
   if (use_musl) {
     source = "hdf_devmgrmusl.cfg"
   } else {
