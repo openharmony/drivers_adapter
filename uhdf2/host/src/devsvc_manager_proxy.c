@@ -14,6 +14,8 @@
  */
 
 #include "devsvc_manager_proxy.h"
+#include "devhost_service.h"
+#include "devhost_service_full.h"
 #include "device_service_stub.h"
 #include "devsvc_manager_stub.h"
 #include "hdf_base.h"
@@ -212,6 +214,23 @@ void DevSvcManagerProxyRemoveService(struct IDevSvcManager *inst, const char *sv
     }
 }
 
+static void DevSvcManagerProxyOnRemoteDied(struct HdfDeathRecipient *recipient, struct HdfRemoteService *service)
+{
+    struct IDevHostService *instance = DevHostServiceNewInstance(0, NULL);
+
+    if (recipient == NULL || service == NULL || instance == NULL) {
+        HDF_LOGE("%{public}s parameter is null", __func__);
+        return;
+    }
+
+    struct DevHostServiceFull *fullService = (struct DevHostServiceFull *)instance;
+    struct HdfMessageLooper *looper = &fullService->looper;
+    HDF_LOGD("%{public}s: DevSvcManager dead, host %{public}d stop", __func__, fullService->super.hostId);
+    if ((looper != NULL) && (looper->Stop != NULL)) {
+        looper->Stop(looper);
+    }
+}
+
 void DevSvcManagerProxyConstruct(struct DevSvcManagerProxy *inst, struct HdfRemoteService *remote)
 {
     inst->pvtbl.AddService = DevSvcManagerProxyAddService;
@@ -219,6 +238,8 @@ void DevSvcManagerProxyConstruct(struct DevSvcManagerProxy *inst, struct HdfRemo
     inst->pvtbl.GetService = DevSvcManagerProxyGetService;
     inst->pvtbl.RemoveService = DevSvcManagerProxyRemoveService;
     inst->remote = remote;
+    inst->recipient.OnRemoteDied = DevSvcManagerProxyOnRemoteDied;
+    HdfRemoteServiceAddDeathRecipient(remote, &inst->recipient);
 }
 
 static struct IDevSvcManager *DevSvcManagerProxyObtain(struct HdfRemoteService *remote)

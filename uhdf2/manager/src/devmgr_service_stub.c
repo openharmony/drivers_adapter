@@ -225,6 +225,7 @@ static struct HdfRemoteDispatcher g_devmgrDispatcher = {
 int DevmgrServiceStubStartService(struct IDevmgrService *inst)
 {
     struct DevmgrServiceStub *fullService = (struct DevmgrServiceStub *)inst;
+    int status;
     if (fullService == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
@@ -233,11 +234,6 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
     if (serviceManager == NULL) {
         HDF_LOGI("Start service failed, fullService is null");
         return HDF_ERR_INVALID_OBJECT;
-    }
-
-    int status = DevSvcManagerStartService();
-    if (status != HDF_SUCCESS) {
-        return status;
     }
 
     struct HdfRemoteService *remoteService = HdfRemoteServiceObtain((struct HdfObject *)inst, &g_devmgrDispatcher);
@@ -265,8 +261,13 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
     fullService->remote = remoteService;
 
     (void)DriverModuleLoadHelperInit();
-
-    return DevmgrServiceStartService((struct IDevmgrService *)&fullService->super);
+    status = DevmgrServiceStartService((struct IDevmgrService *)&fullService->super);
+    if (status != HDF_SUCCESS) {
+        HdfRemoteServiceRecycle(remoteService);
+        OsalMemFree(deviceObject);
+        return status;
+    }
+    return DevSvcManagerStartService();
 }
 
 static void DevmgrServiceStubConstruct(struct DevmgrServiceStub *inst)

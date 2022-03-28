@@ -103,8 +103,11 @@ static void DevHostServiceStubConstruct(struct DevHostServiceStub *inst)
 
 struct HdfObject *DevHostServiceStubCreate(void)
 {
-    struct DevHostServiceStub *instance =
-        (struct DevHostServiceStub *)OsalMemCalloc(sizeof(struct DevHostServiceStub));
+    static struct DevHostServiceStub *instance = NULL;
+    if (instance != NULL) {
+        return (struct HdfObject *)&instance->super;
+    }
+    instance = (struct DevHostServiceStub *)OsalMemCalloc(sizeof(struct DevHostServiceStub));
     if (instance != NULL) {
         DevHostServiceStubConstruct(instance);
         return (struct HdfObject *)&instance->super;
