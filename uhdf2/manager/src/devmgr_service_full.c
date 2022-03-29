@@ -56,6 +56,10 @@ static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *
     if (g_hostMap.nodeSize == 0) {
         MapInit(&g_hostMap);
     }
+    // host is started at init phase by init module, and it respawn by init module
+    if (!HdfSListIsEmpty(&hostClnt->unloadDevInfos)) {
+        return 0;
+    }
     int *hostDieValue = (int *)MapGet(&g_hostMap, hostClnt->hostName);
     if (hostDieValue == NULL) {
         int hostDieNum = HOST_INIT_DIE_NUM;
@@ -73,7 +77,7 @@ static int32_t DevmgrServiceFullHandleDeviceHostDied(struct DevHostServiceClnt *
     struct IDriverInstaller *installer = DriverInstallerGetInstance();
     if (installer != NULL && installer->StartDeviceHost != NULL) {
         HDF_LOGI("%{public}s:%{public}d", __func__, __LINE__);
-        hostClnt->hostPid = installer->StartDeviceHost(hostClnt->hostId, hostClnt->hostName);
+        hostClnt->hostPid = installer->StartDeviceHost(hostClnt->hostId, hostClnt->hostName, true);
         return hostClnt->hostPid;
     }
     return INVALID_PID;

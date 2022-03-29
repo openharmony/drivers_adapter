@@ -30,18 +30,13 @@
 #define PARAM_CNT 2
 
 static struct DriverInstaller *g_fullInstaller = NULL;
-int DriverInstallerFullStartDeviceHost(uint32_t devHostId, const char* devHostName)
+int DriverInstallerFullStartDeviceHost(uint32_t devHostId, const char* devHostName, bool dynamic)
 {
-    char hostIdStr[MAX_CMD_LEN] = {0};
-    int ret;
-
-    if (snprintf_s(hostIdStr, sizeof(hostIdStr), sizeof(hostIdStr) - 1, " %u", devHostId) < 0) {
-        HDF_LOGE("starting device host, snprintf_s failed");
-        return HDF_FAILURE;
+    if (dynamic) {
+        int ret = ServiceControlWithExtra(devHostName, START, NULL, 0);
+        HDF_LOGD("%{public}s %{public}s %{public}d %{public}d", __func__, devHostName, devHostId, ret);
     }
-    const char *args[] = { hostIdStr, devHostName };
-    ret = ServiceControlWithExtra(devHostName, START, args, PARAM_CNT);
-    HDF_LOGI("%{public}s %{public}s %{public}u %{public}d", __func__, devHostName, devHostId, ret);
+
     return HDF_SUCCESS;
 }
 

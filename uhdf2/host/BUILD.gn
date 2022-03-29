@@ -13,7 +13,6 @@
 
 import("//build/ohos.gni")
 import("//drivers/adapter/uhdf2/uhdf.gni")
-
 config("libhdf_host_pub_config") {
   visibility = [ ":*" ]
 
@@ -151,16 +150,4 @@ if (defined(ohos_lite)) {
     subsystem_name = "hdf"
     part_name = "device_driver_framework"
   }
-}
-
-ohos_prebuilt_etc("hdf_devhost.rc") {
-  if (use_musl) {
-    source = "hdf_devhostmusl.cfg"
-  } else {
-    source = "hdf_devhost.cfg"
-  }
-  relative_install_dir = "init"
-  install_images = [ chipset_base_dir ]
-  subsystem_name = "hdf"
-  part_name = "device_driver_framework"
 }
