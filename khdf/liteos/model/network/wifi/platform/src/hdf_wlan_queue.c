@@ -61,7 +61,7 @@ void DestroyQueue(HdfWlanQueue *queue)
     HdfWlanQueueImpl *queueImpl = (HdfWlanQueueImpl *)queue;
     uint32_t status = LOS_QueueDelete(queueImpl->queueID);
     if (status != LOS_OK) {
-        HDF_LOGE("Destroy message queue failed!err=%d", status);
+        HDF_LOGE("Destroy message queue failed!err=%u", status);
     }
     OsalMemFree(queue);
 }
@@ -93,7 +93,7 @@ int32_t PushQueue(HdfWlanQueue *queue, void *context)
 
     uint32_t ret = LOS_QueueWriteCopy(queueImpl->queueID, &context, sizeof(void *), LOS_WAIT_FOREVER);
     if (ret != LOS_OK) {
-        HDF_LOGE("%s:Write queue failed!ret=%d", __func__, ret);
+        HDF_LOGE("%s:Write queue failed!ret=%u", __func__, ret);
         return HDF_FAILURE;
     }
     return HDF_SUCCESS;
