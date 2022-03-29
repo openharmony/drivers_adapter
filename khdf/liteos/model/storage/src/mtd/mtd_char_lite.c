@@ -283,7 +283,7 @@ static int MtdCharIoctlGetInfo(const mtd_partition *part, const struct MtdDevice
 
     (void)cmd;
 
-    MtdCharGetMtdInfo(mtdDevice, &mtdInfo); 
+    MtdCharGetMtdInfo(mtdDevice, &mtdInfo);
     startAddr = part->start_block * mtdDevice->eraseSize;
     endAddr = (part->end_block + 1) * mtdDevice->eraseSize;
     ret = LOS_CopyFromKernel((void *)(uintptr_t)arg, sizeof(mtdInfo), (void *)&mtdInfo, sizeof(mtdInfo));
@@ -361,16 +361,20 @@ static int MtdCharIoctl(FAR struct file *filep, int cmd, unsigned long arg)
     switch (cmd) {
         case MTD_IOC_GETINFO: {
             ret = MtdCharIoctlGetInfo(partition, mtdDevice, cmd, arg);
+            break;
         }
         case MTD_IOC_ERASE:
         case MTD_IOC_ERASE64: {
             ret = MtdCharIoctlErase(partition, mtdDevice, cmd, arg);
+            break;
         }
         case MTD_IOC_GETBADBLOCK: {
             ret = MtdCharIoctlGetBadBlock(partition, mtdDevice, cmd, arg);
+            break;
         }
         case MTD_IOC_SETBADBLOCK: {
             ret = MtdCharIoctlSetBadBlock(partition, mtdDevice, cmd, arg);
+            break;
         }
         case MTD_IOC_SETFILEMODE:
             mfi->mode = 0;
