@@ -264,7 +264,8 @@ static int MtdDeviceLegacyNandRead(MtdInfoLegacy *mtd, off_t addr, size_t len, s
 {
     int ret;
 
-    if (mtd == NULL) {
+    if (mtd == NULL || mtd->priv == NULL || retlen == NULL || buf == NULL) {
+        HDF_LOGE("%s: function parameter is null", __func__);
         return -EINVAL;
     }
 
@@ -277,7 +278,8 @@ static int MtdDeviceLegacyNandWrite(MtdInfoLegacy *mtd, off_t addr, size_t len, 
 {
     int ret;
 
-    if (mtd == NULL) {
+    if (mtd == NULL || retlen == NULL) {
+        HDF_LOGE("%s: function parameter is null", __func__);
         return -EINVAL;
     }
 
@@ -290,7 +292,8 @@ static int MtdDeviceLegacyNandReadOob(MtdInfoLegacy *mtd, off_t addr, size_t len
 {
     int ret;
 
-    if (mtd == NULL) {
+    if (mtd == NULL || retlen == NULL) {
+        HDF_LOGE("%s: function parameter is null", __func__);
         return -EINVAL;
     }
 
@@ -303,7 +306,8 @@ static int MtdDeviceLegacyNandWriteOob(MtdInfoLegacy *mtd, off_t addr, size_t le
 {
     int ret;
 
-    if (mtd == NULL) {
+    if (mtd == NULL || retlen == NULL) {
+        HDF_LOGE("%s: function parameter is null", __func__);
         return -EINVAL;
     }
 
