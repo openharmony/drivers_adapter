@@ -348,8 +348,15 @@ static int I2cFsOpen(struct file *filep)
 {
     DevHandle handle = NULL;
     struct I2cClient *client = NULL;
-    struct drv_data *drvData = (struct drv_data *)filep->f_vnode->data;
-    int16_t id = (int16_t)(uintptr_t)drvData->priv;
+    struct drv_data *drvData = NULL;
+    int16_t id;
+
+    if (filep == NULL || filep->f_vnode == NULL || filep->f_vnode->data == NULL) {
+        HDF_LOGE("%s: function parameter is null", __func__);
+        return -EINVAL;
+    }
+    drvData = (struct drv_data *)filep->f_vnode->data;
+    id = (int16_t)(uintptr_t)drvData->priv;
 
     handle = I2cOpen(id);
     if (handle == NULL) {

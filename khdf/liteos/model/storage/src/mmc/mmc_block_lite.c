@@ -91,8 +91,15 @@ static int LiteosBlockClose(FAR struct Vnode *vnode)
 static ssize_t LiteosBlockRead(FAR struct Vnode *vnode, FAR unsigned char *buf,
     unsigned long long secStart, unsigned int nSecs)
 {
-    size_t max = (size_t)(-1);
-    struct MmcBlock *mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
+    size_t max;
+    struct MmcBlock *mb = NULL;
+
+    if (vnode == NULL || vnode->data == NULL) {
+        HDF_LOGE("%s: vnode is NULL or data of vnode is NULL", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    max = (size_t)(-1);
+    mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
 
     if (secStart >= max || nSecs >= max) {
         return HDF_ERR_INVALID_PARAM;
@@ -108,8 +115,15 @@ static ssize_t LiteosBlockRead(FAR struct Vnode *vnode, FAR unsigned char *buf,
 static ssize_t LiteosBlockWrite(FAR struct Vnode *vnode, FAR const unsigned char *buf,
     unsigned long long secStart, unsigned int nSecs)
 {
-    size_t max = (size_t)(-1);
-    struct MmcBlock *mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
+    size_t max;
+    struct MmcBlock *mb = NULL;
+
+    if (vnode == NULL || vnode->data == NULL) {
+        HDF_LOGE("%s: vnode is NULL or data of vnode is NULL", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    max = (size_t)(-1);
+    mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
 
     if (secStart >= max || nSecs >= max) {
         return HDF_ERR_INVALID_PARAM;
@@ -124,8 +138,13 @@ static ssize_t LiteosBlockWrite(FAR struct Vnode *vnode, FAR const unsigned char
 
 static int LiteosBlockGeometry(FAR struct Vnode *vnode, FAR struct geometry *geometry)
 {
-    struct MmcBlock *mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
+    struct MmcBlock *mb = NULL;
 
+    if (vnode == NULL || vnode->data == NULL) {
+        HDF_LOGE("%s: vnode is NULL or data of vnode is NULL", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
     if (mb == NULL) {
         return HDF_ERR_INVALID_OBJECT;
     }
@@ -145,6 +164,11 @@ static int32_t LiteosBlockSaveGeometry(FAR struct Vnode *vnode, unsigned long ar
     int32_t ret;
     struct geometry gm;
     struct RtDeviceBlkGeometry rtGeo = {0};
+
+    if (vnode == NULL || vnode->data == NULL) {
+        HDF_LOGE("%s: vnode is NULL or data of vnode is NULL", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
 
     ret = LiteosBlockGeometry(vnode, &gm);
     if (ret != HDF_SUCCESS) {
@@ -189,6 +213,11 @@ static int32_t LiteosBlockIoctl(FAR struct Vnode *vnode, int cmd, unsigned long 
     unsigned int au;
     uint32_t auSize;
     struct MmcBlock *mb = NULL;
+
+    if (vnode == NULL || vnode->data == NULL) {
+        HDF_LOGE("%s: vnode is NULL or data of vnode is NULL", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
 
     mb = (struct MmcBlock *)((struct drv_data*)vnode->data)->priv;
 
