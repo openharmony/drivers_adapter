@@ -36,3 +36,29 @@ ohos_prebuilt_etc("hdf_default.hcb") {
   subsystem_name = "hdf"
   part_name = "device_driver_framework"
 }
+
+hc_gen_start_cfg("gen_start_cfg") {
+  hcs_source = "/hdf.hcs"
+
+  if (product_company == "openharmony") {
+    hcs_config_path = "default"
+  } else {
+    hcs_config_path = "//vendor/$product_company/$product_name/hdf_config/uhdf/"
+  }
+  sources = [ rebase_path(hcs_config_path + hcs_source) ]
+  if (use_musl) {
+    outputs = [ "$target_gen_dir/hdf_devhostmusl.cfg" ]
+  } else {
+    outputs = [ "$target_gen_dir/hdf_devhost.cfg" ]
+  }
+}
+
+ohos_prebuilt_etc("hdf_devhost.cfg") {
+  deps = [ ":gen_start_cfg" ]
+  outputs = get_target_outputs(":gen_start_cfg")
+  source = outputs[0]
+  relative_install_dir = "init"
+  install_images = [ chipset_base_dir ]
+  subsystem_name = "hdf"
+  part_name = "device_driver_framework"
+}

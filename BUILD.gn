@@ -30,17 +30,17 @@ if (defined(ohos_lite)) {
   group("uhdf_entry") {
     deps = [
       "//drivers/adapter/uhdf2/hcs:hdf_default.hcb",
+      "//drivers/adapter/uhdf2/hcs:hdf_devhost.cfg",
       "//drivers/adapter/uhdf2/hdi:libhdi",
       "//drivers/adapter/uhdf2/host:hdf_devhost",
-      "//drivers/adapter/uhdf2/host:hdf_devhost.rc",
       "//drivers/adapter/uhdf2/host:libhdf_host",
       "//drivers/adapter/uhdf2/host/test/unittest/sample_driver:libsample_driver",
       "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
       "//drivers/adapter/uhdf2/manager:hdf_devmgr",
-      "//drivers/adapter/uhdf2/manager:hdf_devmgr.rc",
+      "//drivers/adapter/uhdf2/manager:hdf_devmgr.cfg",
       "//drivers/adapter/uhdf2/platform:libhdf_platform",
       "//drivers/adapter/uhdf2/utils:libhdf_utils",
-      "//drivers/peripheral/base:hdf_peripheral.rc",
+      "//drivers/peripheral/base:hdf_peripheral.cfg",
     ]
   }
   group("uhdf_test_entry") {

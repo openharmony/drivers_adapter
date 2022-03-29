@@ -291,6 +291,14 @@ struct HdfRemoteService *HdfRemoteAdapterGetSa(int32_t saId)
         return nullptr;
     }
     OHOS::sptr<OHOS::IRemoteObject> remote = saManager->GetSystemAbility(saId);
+    constexpr int32_t waitTimes = 50;
+    constexpr int32_t sleepInterval = 20000;
+    int32_t timeout = waitTimes;
+    while (remote == nullptr && (timeout-- > 0)) {
+        HDF_LOGD("waiting for saId %{public}d", saId);
+        usleep(sleepInterval);
+        remote = saManager->GetSystemAbility(saId);
+    }
     if (remote != nullptr) {
         return HdfRemoteAdapterBind(remote);
     } else {
