@@ -172,6 +172,8 @@ endif
 COMPANY_OF_SOC := $(patsubst "%",%,$(LOSCFG_DEVICE_COMPANY))
 ifeq ($(COMPANY_OF_SOC), hisilicon)
 -include $(LITEOSTOPDIR)/../../device/soc/$(COMPANY_OF_SOC)/common/platform/lite.mk
+else ifeq ($(COMPANY_OF_SOC), st)
+-include $(LITEOSTOPDIR)/../../device/soc/$(COMPANY_OF_SOC)/common/platform/lite.mk
 else
 -include $(LITEOSTOPDIR)/../../device/$(COMPANY_OF_SOC)/drivers/lite.mk
 endif
