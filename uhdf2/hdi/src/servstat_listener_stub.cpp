@@ -43,18 +43,22 @@ int32_t ServStatListenerStub::ServStatListenerStubOnReceive(MessageParcel& data,
         HDF_LOGI("failed to check interface token");
         return HDF_FAILURE;
     }
-    status.serviceName = data.ReadCString();
+
+    const char* name = data.ReadCString();
+    status.serviceName = (name == nullptr) ? "" : name;
     if (status.serviceName.empty()) {
         HDF_LOGI("failed to read serviceName in ServiceStatus");
         return HDF_FAILURE;
     }
+
     if (!data.ReadUint16(status.deviceClass) ||
         !data.ReadUint16(status.status)) {
         HDF_LOGI("failed to read deviceClass or status in ServiceStatus");
         return HDF_FAILURE;
     }
 
-    status.info = data.ReadCString();
+    const char* info = data.ReadCString();
+    status.info = (info == nullptr) ? "" : info;
 
     OnReceive(status);
     return HDF_SUCCESS;
