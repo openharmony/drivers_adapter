@@ -102,7 +102,14 @@ static int GpioIoctl(struct file *filep, int cmd, unsigned long arg)
     uint16_t bitNum;
     uint16_t gpio;
     struct GpioBitInfo info = {0};
-    struct drv_data *drvData = (struct drv_data *)filep->f_vnode->data;
+    struct drv_data *drvData = NULL;
+
+    if (filep == NULL || filep->f_vnode == NULL || filep->f_vnode->data == NULL) {
+        HDF_LOGE("%s: function parameter is null", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    drvData = (struct drv_data *)filep->f_vnode->data;
     bitNum = (uint16_t)(uintptr_t)drvData->priv;
 
     ret = LOS_CopyToKernel(&info, sizeof(struct GpioBitInfo),
