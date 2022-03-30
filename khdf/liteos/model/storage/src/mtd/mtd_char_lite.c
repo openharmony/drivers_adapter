@@ -54,8 +54,18 @@ struct MtdFileInfo {
  */
 static int MtdCharOpen(FAR struct file *filep)
 {
-    struct drv_data *drv = (struct drv_data *)filep->f_vnode->data;
+    struct drv_data *drv = NULL;
+
+    if (filep == NULL || filep->f_vnode == NULL || filep->f_vnode->data == NULL) {
+        HDF_LOGE("%s: filep is NULL or f_vnode of filep is NULL or data of f_vnode is NULL", __func__);
+        return -EINVAL;
+    }
+    drv = (struct drv_data *)filep->f_vnode->data;
     mtd_partition *partition = (mtd_partition *)drv->priv;
+    if (partition == NULL) {
+        HDF_LOGE("%s: partition is NULL", __func__);
+        return -EINVAL;
+    }
     struct MtdFileInfo *mfi = NULL;
 
     if (partition->user_num != 0) { // be opened
@@ -117,6 +127,11 @@ static ssize_t MtdCharRead(FAR struct file *filep, FAR char *buffer, size_t bufl
     size_t partSize = (partition->end_block + 1 - partition->start_block) * blockSize;
     size_t partOobSize = (partSize >> mtdDevice->writeSizeShift) * mtdDevice->oobSize;
 
+    if (buffer == NULL) {
+        HDF_LOGE("%s: buffer is NULL", __func__);
+        return -EINVAL;
+    }
+
     (void)LOS_MuxLock(&partition->lock, LOS_WAIT_FOREVER);
     if (ppos < 0 || ppos > partSize) {
         PRINTK("%s: current file offset:0x%x invalid\n", __func__, ppos);
@@ -172,6 +187,10 @@ static ssize_t MtdCharWrite(FAR struct file *filep, FAR const char *buffer, size
     size_t partSize = (partition->end_block + 1 - partition->start_block) * blockSize;
     size_t partOobSize = (partSize >> mtdDevice->writeSizeShift) * mtdDevice->oobSize;
 
+    if (buffer == NULL) {
+        HDF_LOGE("%s: buffer is NULL", __func__);
+        return -EINVAL;
+    }
 
     (void)LOS_MuxLock(&partition->lock, LOS_WAIT_FOREVER);
     if (ppos < 0 || ppos > partSize) {
@@ -282,7 +301,6 @@ static int MtdCharIoctlGetInfo(const mtd_partition *part, const struct MtdDevice
     size_t endAddr;
 
     (void)cmd;
-
     MtdCharGetMtdInfo(mtdDevice, &mtdInfo);
     startAddr = part->start_block * mtdDevice->eraseSize;
     endAddr = (part->end_block + 1) * mtdDevice->eraseSize;
@@ -355,6 +373,11 @@ static int MtdCharIoctl(FAR struct file *filep, int cmd, unsigned long arg)
     struct MtdFileInfo *mfi = (struct MtdFileInfo *)filep->f_priv;
     struct MtdDev *mtdDev = (struct MtdDev *)(partition->mtd_info);
     struct MtdDevice *mtdDevice = (struct MtdDevice *)mtdDev->priv;
+
+    if (mtdDevice == NULL || arg == 0) {
+        HDF_LOGE("%s: mtdDevice is NULL or arg is 0", __func__);
+        return -EINVAL;
+    }
 
     (void)LOS_MuxLock(&partition->lock, LOS_WAIT_FOREVER);
 
@@ -441,6 +464,10 @@ int HdfMtdDevErase(struct MtdDev *mtdDev, UINT64 start, UINT64 len, UINT64 *fail
 
     if (mtdDev == NULL) {
         return HDF_ERR_INVALID_OBJECT;
+    }
+    if (failAddr == NULL) {
+        HDF_LOGE("%s: failAddr is NULL", __func__);
+        return -EINVAL;
     }
     ret = MtdDeviceErase((struct MtdDevice *)mtdDev->priv, start, len, &failPos);
     if (ret != HDF_SUCCESS) {
