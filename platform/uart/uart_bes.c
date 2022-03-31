@@ -469,25 +469,29 @@ static int InitUartDevice(struct UartHost *host)
             resource->wLen = HCS_PROP(node, data); \
             resource->rxDMA = HCS_PROP(node, rxDMA); \
             resource->txDMA = HCS_PROP(node, txDMA); \
+            result = HDF_SUCCESS; \
             break; \
         } \
     } while (0)
 
+#define PLATFORM_CONFIG HCS_NODE(HCS_ROOT, platform)
 #define PLATFORM_UART_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), uart_config)
 static uint32_t GetUartDeviceResource(struct UartDevice *device, const char *deviceMatchAttr)
 {
     struct UartResource *resource = NULL;
+    int32_t result = HDF_FAILURE;
     if (device == NULL || deviceMatchAttr == NULL) {
-        HDF_LOGE("device or resourceNode is NULL\r\n");
+        HDF_LOGE("device or deviceMatchAttr is NULL\r\n");
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &device->resource;
-    if (resource == NULL) {
-        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
-        return HDF_ERR_INVALID_OBJECT;
-    }
-
+#if HCS_NODE_HAS_PROP(PLATFORM_CONFIG, uart_config)
     HCS_FOREACH_CHILD_VARGS(PLATFORM_UART_CONFIG, UART_FIND_CONFIG, deviceMatchAttr, resource);
+#endif
+    if (result != HDF_SUCCESS) {
+        HDF_LOGE("resourceNode %s is NULL\r\n", deviceMatchAttr);
+        return result;
+    }
     // copy config
     device->initFlag = false;
     device->uartId = resource->num;
