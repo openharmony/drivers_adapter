@@ -292,7 +292,7 @@ int32_t MmcBlockOsInit(struct MmcDevice *mmcDevice)
     }
 
     diskId = los_alloc_diskid_byname(mb->name);
-    if (!mb->removeable) {
+    if (!mb->removable) {
         info = &g_emmcInfo;
         info->sector_count = mb->capacity;
     }

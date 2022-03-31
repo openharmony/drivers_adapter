@@ -419,6 +419,9 @@ static int MtdCharIoctl(FAR struct file *filep, int cmd, unsigned long arg)
 
 static ssize_t MtdCharMap(FAR struct file* filep, FAR LosVmMapRegion *region)
 {
+    (void)filep;
+    (void)region;
+
     PRINTK("%s %d, mmap is not support\n", __FUNCTION__, __LINE__);
     return 0;
 }
