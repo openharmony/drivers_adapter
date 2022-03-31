@@ -163,7 +163,7 @@ static int32_t SpiDevGetCfg(struct SpiDev *dev, struct SpiCfg *mask, unsigned lo
         HDF_LOGI("%s: get mode 0x%x", __func__, tmp);
     } else if (mask->bitsPerWord == 1) {
         tmp = cfg.bitsPerWord;
-        HDF_LOGI("%s: get word %d", __func__, tmp);
+        HDF_LOGI("%s: get word %u", __func__, tmp);
     } else if (mask->maxSpeedHz == 1) {
         tmp = cfg.maxSpeedHz;
         HDF_LOGI("%s: get maxspeed %d", __func__, tmp);
@@ -201,7 +201,7 @@ static int32_t SpiDevSetCfg(struct SpiDev *dev, struct SpiCfg *mask, unsigned lo
         HDF_LOGI("%s: set mode 0x%x", __func__, tmp);
         cfg.mode = tmp;
     } else if (mask->bitsPerWord == 1) {
-        HDF_LOGI("%s: set word %d", __func__, tmp);
+        HDF_LOGI("%s: set word %u", __func__, tmp);
         cfg.bitsPerWord = tmp;
     } else if (mask->maxSpeedHz == 1) {
         HDF_LOGI("%s: set maxspeed %d", __func__, tmp);
@@ -420,7 +420,7 @@ static void SpiAddRemoveDev(struct SpiDev *dev, bool add)
         return;
     }
     if (add) {
-        HDF_LOGI("creat /dev/spidev%u.%u", dev->cntlr->busNum, dev->csNum);
+        HDF_LOGI("create /dev/spidev%u.%u", dev->cntlr->busNum, dev->csNum);
         if (register_driver(devName, &g_spiDevFops, HDF_SPI_FS_MODE, dev)) {
             HDF_LOGE("%s: gen /dev/spidev%u.%u", __func__, dev->cntlr->busNum, dev->csNum);
         }
