@@ -433,27 +433,30 @@ static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
             resource->spiMisoPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
             tempPin = HCS_PROP(node, spiCsPin); \
             resource->spiCsPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
+            result = HDF_SUCCESS; \
             break; \
         } \
     } while (0)
 
+#define PLATFORM_CONFIG HCS_NODE(HCS_ROOT, platform)
 #define PLATFORM_SPI_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), spi_config)
 static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const char *deviceMatchAttr)
 {
     uint32_t tempPin;
+    int32_t result = HDF_FAILURE;
     struct SpiResource *resource = NULL;
-    if (spiDevice == NULL) {
-        HDF_LOGE("device or resourceNode is NULL\r\n");
+    if (spiDevice == NULL || deviceMatchAttr == NULL) {
+        HDF_LOGE("device or deviceMatchAttr is NULL\r\n");
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &spiDevice->resource;
-    if (resource == NULL) {
-        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
-        return HDF_ERR_INVALID_OBJECT;
-    }
-
+#if HCS_NODE_HAS_PROP(PLATFORM_CONFIG, spi_config)
     HCS_FOREACH_CHILD_VARGS(PLATFORM_SPI_CONFIG, SPI_FIND_CONFIG, deviceMatchAttr, resource);
-    return HDF_SUCCESS;
+#endif
+    if (result != HDF_SUCCESS) {
+        HDF_LOGE("resourceNode %s is NULL\r\n", deviceMatchAttr);
+    }
+    return result;
 }
 #else
 static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const struct DeviceResourceNode *resourceNode)

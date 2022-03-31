@@ -95,26 +95,29 @@ static int InitPwmDevice(struct PwmDev *host)
             tempPin = HCS_PROP(node, pwmPin); \
             resource->pwmPin = ((tempPin / DEC_TEN) * PIN_GROUP_NUM) + (tempPin % DEC_TEN); \
             resource->pwmId = HCS_PROP(node, pwmId); \
+            result = HDF_SUCCESS; \
             break; \
         } \
     } while (0)
+#define PLATFORM_CONFIG HCS_NODE(HCS_ROOT, platform)
 #define PLATFORM_PWM_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), pwm_config)
 static uint32_t GetPwmDeviceResource(struct PwmDevice *device, const char *deviceMatchAttr)
 {
     uint32_t tempPin;
+    int32_t result = HDF_FAILURE;
     struct PwmResource *resource = NULL;
-    if (device == NULL) {
-        HDF_LOGE("%s: device is NULL", __func__);
+    if (device == NULL || deviceMatchAttr == NULL) {
+        HDF_LOGE("%s: device or deviceMatchAttr is NULL", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &device->resource;
-    if (resource == NULL) {
-        HDF_LOGE("%s: resource is NULL", __func__);
-        return HDF_ERR_INVALID_OBJECT;
-    }
-
+#if HCS_NODE_HAS_PROP(PLATFORM_CONFIG, pwm_config)
     HCS_FOREACH_CHILD_VARGS(PLATFORM_PWM_CONFIG, PWM_FIND_CONFIG, deviceMatchAttr, resource);
-    return HDF_SUCCESS;
+#endif
+    if (result != HDF_SUCCESS) {
+        HDF_LOGE("resourceNode %s is NULL\r\n", deviceMatchAttr);
+    }
+    return result;
 }
 #else
 static uint32_t GetPwmDeviceResource(
