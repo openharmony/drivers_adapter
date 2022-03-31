@@ -62,7 +62,7 @@ static int GpioExecCmd(uint16_t gpio, struct GpioBitInfo *info, int cmd)
                 HDF_LOGE("%s: set dir fail:%d", __func__, ret);
                 return -1;
             }
-            PLAT_LOGV("%s: gpio:%u set dir:%u done!", __func__, gpio, info->direction);
+            PLAT_LOGV("%s: gpio:%hu set dir:%u done!", __func__, gpio, info->direction);
             break;
         case GPIO_GET_DIR:
             ret = GpioGetDir(gpio, &tmp);
@@ -71,7 +71,7 @@ static int GpioExecCmd(uint16_t gpio, struct GpioBitInfo *info, int cmd)
                 return -1;
             }
             info->direction = (unsigned char)tmp;
-            PLAT_LOGV("%s: gpio:%u get dir:%u done!", __func__, gpio, info->direction);
+            PLAT_LOGV("%s: gpio:%hu get dir:%u done!", __func__, gpio, info->direction);
             break;
         case GPIO_READ_BIT:
             ret = GpioRead(gpio, &tmp);
@@ -80,7 +80,7 @@ static int GpioExecCmd(uint16_t gpio, struct GpioBitInfo *info, int cmd)
                 return -1;
             }
             info->value = (unsigned char)tmp;
-            PLAT_LOGV("%s: gpio:%u read:%u done!", __func__, gpio, info->value);
+            PLAT_LOGV("%s: gpio:%hu read:%u done!", __func__, gpio, info->value);
             break;
         case GPIO_WRITE_BIT:
             ret = GpioWrite(gpio, info->value);
@@ -88,7 +88,7 @@ static int GpioExecCmd(uint16_t gpio, struct GpioBitInfo *info, int cmd)
                 HDF_LOGE("%s: write gpio fail:%d", __func__, ret);
                 return -1;
             }
-            PLAT_LOGV("%s: gpio:%u write:%u done!", __func__, gpio, info->value);
+            PLAT_LOGV("%s: gpio:%hu write:%u done!", __func__, gpio, info->value);
             break;
         default:
             ret = -1;
@@ -118,7 +118,7 @@ static int GpioIoctl(struct file *filep, int cmd, unsigned long arg)
         return -1;
     }
     gpio = info.groupnumber * bitNum + info.bitnumber;
-    PLAT_LOGV("%s: gn:%u, bn:%u, gpio:%u", __func__, info.groupnumber, info.bitnumber, gpio);
+    PLAT_LOGV("%s: gn:%u, bn:%u, gpio:%hu", __func__, info.groupnumber, info.bitnumber, gpio);
 
     ret = GpioExecCmd(gpio, &info, cmd);
     if (ret != 0) {
