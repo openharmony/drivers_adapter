@@ -438,7 +438,6 @@ static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
         } \
     } while (0)
 
-#define PLATFORM_CONFIG HCS_NODE(HCS_ROOT, platform)
 #define PLATFORM_SPI_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), spi_config)
 static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const char *deviceMatchAttr)
 {
@@ -450,7 +449,7 @@ static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const char *dev
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &spiDevice->resource;
-#if HCS_NODE_HAS_PROP(PLATFORM_CONFIG, spi_config)
+#if HCS_NODE_EXISTS(PLATFORM_SPI_CONFIG)
     HCS_FOREACH_CHILD_VARGS(PLATFORM_SPI_CONFIG, SPI_FIND_CONFIG, deviceMatchAttr, resource);
 #endif
     if (result != HDF_SUCCESS) {

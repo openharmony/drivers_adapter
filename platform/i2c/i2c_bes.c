@@ -150,7 +150,6 @@ int32_t InitI2cDevice(struct I2cDevice *device)
             break; \
         } \
     } while (0)
-#define PLATFORM_CONFIG HCS_NODE(HCS_ROOT, platform)
 #define PLATFORM_I2C_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), i2c_config)
 static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
                                      const char *deviceMatchAttr)
@@ -163,7 +162,7 @@ static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &device->resource;
-#if HCS_NODE_HAS_PROP(PLATFORM_CONFIG, i2c_config)
+#if HCS_NODE_EXISTS(PLATFORM_I2C_CONFIG)
     HCS_FOREACH_CHILD_VARGS(PLATFORM_I2C_CONFIG, I2C_FIND_CONFIG, deviceMatchAttr, resource);
 #endif
     if (result != HDF_SUCCESS) {
