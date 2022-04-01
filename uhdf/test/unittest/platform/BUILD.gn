@@ -36,6 +36,7 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
       defines += [ "HDF_LITEOS_TEST" ]
     }
     sources = [
+      "//drivers/framework/support/platform/test/unittest/common/hdf_adc_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_gpio_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_platform_device_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_platform_event_test.cpp",
@@ -45,6 +46,7 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
       "//drivers/framework/support/platform/test/unittest/common/hdf_regulator_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_rtc_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_spi_test.cpp",
+      "//drivers/framework/test/unittest/platform/common/adc_test.c",
       "//drivers/framework/test/unittest/platform/common/gpio_test.c",
       "//drivers/framework/test/unittest/platform/common/pwm_test.c",
       "//drivers/framework/test/unittest/platform/common/rtc_test.c",
@@ -52,7 +54,6 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
     ]
     if (ohos_kernel_type == "liteos_a") {
       sources += [
-        "//drivers/framework/support/platform/test/unittest/common/hdf_adc_test.cpp",
         "//drivers/framework/support/platform/test/unittest/common/hdf_dac_test.cpp",
         "//drivers/framework/support/platform/test/unittest/common/hdf_i2s_test.cpp",
         "//drivers/framework/support/platform/test/unittest/common/hdf_i3c_test.cpp",
@@ -62,7 +63,6 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
         "//drivers/framework/support/platform/test/unittest/common/hdf_timer_test.cpp",
         "//drivers/framework/support/platform/test/unittest/common/hdf_uart_test.cpp",
         "//drivers/framework/support/platform/test/unittest/common/hdf_watchdog_test.cpp",
-        "//drivers/framework/test/unittest/platform/common/adc_test.c",
         "//drivers/framework/test/unittest/platform/common/dac_test.c",
         "//drivers/framework/test/unittest/platform/common/timer_test.c",
         "//drivers/framework/test/unittest/platform/common/uart_test.c",
