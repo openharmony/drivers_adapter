@@ -99,7 +99,6 @@ static int InitPwmDevice(struct PwmDev *host)
             break; \
         } \
     } while (0)
-#define PLATFORM_CONFIG HCS_NODE(HCS_ROOT, platform)
 #define PLATFORM_PWM_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), pwm_config)
 static uint32_t GetPwmDeviceResource(struct PwmDevice *device, const char *deviceMatchAttr)
 {
@@ -111,7 +110,7 @@ static uint32_t GetPwmDeviceResource(struct PwmDevice *device, const char *devic
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &device->resource;
-#if HCS_NODE_HAS_PROP(PLATFORM_CONFIG, pwm_config)
+#if HCS_NODE_EXISTS(PLATFORM_PWM_CONFIG)
     HCS_FOREACH_CHILD_VARGS(PLATFORM_PWM_CONFIG, PWM_FIND_CONFIG, deviceMatchAttr, resource);
 #endif
     if (result != HDF_SUCCESS) {
