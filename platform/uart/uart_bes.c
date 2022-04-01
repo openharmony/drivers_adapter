@@ -474,7 +474,6 @@ static int InitUartDevice(struct UartHost *host)
         } \
     } while (0)
 
-#define PLATFORM_CONFIG HCS_NODE(HCS_ROOT, platform)
 #define PLATFORM_UART_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), uart_config)
 static uint32_t GetUartDeviceResource(struct UartDevice *device, const char *deviceMatchAttr)
 {
@@ -485,7 +484,7 @@ static uint32_t GetUartDeviceResource(struct UartDevice *device, const char *dev
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &device->resource;
-#if HCS_NODE_HAS_PROP(PLATFORM_CONFIG, uart_config)
+#if HCS_NODE_EXISTS(PLATFORM_UART_CONFIG)
     HCS_FOREACH_CHILD_VARGS(PLATFORM_UART_CONFIG, UART_FIND_CONFIG, deviceMatchAttr, resource);
 #endif
     if (result != HDF_SUCCESS) {
