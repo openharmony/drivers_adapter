@@ -37,12 +37,12 @@ static void Spi1DmaIrq(int error);
 static struct SPI_CTX_OBJ_T spiCtx[MAX_SPI_NUMBER] = {
     {
         .spiPinCS0 = 0,
-#if defined (CHIP_BEST1600)
+#if defined (LOSCFG_SOC_SERIES_BES2700)
         .spiFunDI0 = HAL_IOMUX_FUNC_SYS_SPI_DI0,
         .spiFunCLK = HAL_IOMUX_FUNC_SYS_SPI_CLK,
         .spiFunCS0 = HAL_IOMUX_FUNC_SYS_SPI_CS0,
         .spiFunDIO = HAL_IOMUX_FUNC_SYS_SPI_DIO,
-#elif defined (CHIP_BEST2003)
+#elif defined (LOSCFG_SOC_SERIES_BES2600)
         .spiFunDI0 = HAL_IOMUX_FUNC_SPI_DI0,
         .spiFunCLK = HAL_IOMUX_FUNC_SPI_CLK,
         .spiFunCS0 = HAL_IOMUX_FUNC_SPI_CS0,
@@ -60,12 +60,12 @@ static struct SPI_CTX_OBJ_T spiCtx[MAX_SPI_NUMBER] = {
     },
     {
         .spiPinCS0 = 0,
-#if defined (CHIP_BEST1600)
+#if defined (LOSCFG_SOC_SERIES_BES2700)
         .spiFunDI0 = HAL_IOMUX_FUNC_SYS_SPILCD_DI0,
         .spiFunCLK = HAL_IOMUX_FUNC_SYS_SPILCD_CLK,
         .spiFunCS0 = HAL_IOMUX_FUNC_SYS_SPILCD_CS0,
         .spiFunDIO = HAL_IOMUX_FUNC_SYS_SPILCD_DIO,
-#elif defined (CHIP_BEST2003)
+#elif defined (LOSCFG_SOC_SERIES_BES2600)
         .spiFunDI0 = HAL_IOMUX_FUNC_SPILCD_DI0,
         .spiFunCLK = HAL_IOMUX_FUNC_SPILCD_CLK,
         .spiFunCS0 = HAL_IOMUX_FUNC_SPILCD_CS0,
@@ -237,7 +237,7 @@ int32_t HalSpiSend(struct SpiDevice *spiDevice, const uint8_t *data, uint16_t si
         HDF_LOGE("%s spi_mutex wait error = 0x%X!\r\n", __func__, status);
         return HDF_ERR_TIMEOUT;
     }
-#ifdef CHIP_BEST1600
+#ifdef LOSCFG_SOC_SERIES_BES2700
     hal_cache_sync_all(HAL_CACHE_ID_D_CACHE);
 #endif
     if (resource->transmode == SPI_TRANSFER_DMA) {
@@ -301,7 +301,7 @@ static int32_t HalSpiRecv(struct SpiDevice *spiDevice, uint8_t *data, uint16_t s
         HDF_LOGE("%s spi_mutex wait error = 0x%X!\r\n", __func__, status);
         return HDF_ERR_TIMEOUT;
     }
-#ifdef CHIP_BEST1600
+#ifdef LOSCFG_SOC_SERIES_BES2700
     hal_cache_sync_all(HAL_CACHE_ID_D_CACHE);
 #endif
     do {
@@ -350,7 +350,7 @@ static int32_t HalSpiSendRecv(struct SpiDevice *spiDevice, uint8_t *txData, uint
         HDF_LOGE("%s OsalMutexLock error = 0x%X!\r\n", __func__, status);
         return HDF_ERR_TIMEOUT;
     }
-#ifdef CHIP_BEST1600
+#ifdef LOSCFG_SOC_SERIES_BES2700
     hal_cache_sync_all(HAL_CACHE_ID_D_CACHE);
 #endif
     if (resource->transmode == SPI_TRANSFER_DMA) {
@@ -785,6 +785,7 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
     struct SpiDevice *spiDevice = NULL;
     struct HAL_SPI_CFG_T *spiDevCfg = NULL;
     struct SpiMsg *msg = NULL;
+    int32_t ret;
     if (spiCntlr == NULL || spiCntlr->priv == NULL) {
         HDF_LOGE("%s: spiCntlr is NULL\r\n", __func__);
         return HDF_ERR_INVALID_PARAM;
@@ -799,18 +800,21 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
         }
 
         if ((msg->wbuf != NULL) && (msg->rbuf == NULL)) {
-            HalSpiSend(spiDevice, msg->wbuf, msg->len, TIMEOUT);
+            ret = HalSpiSend(spiDevice, msg->wbuf, msg->len, TIMEOUT);
         }
         if ((msg->rbuf != NULL) && (msg->wbuf == NULL)) {
-            HalSpiRecv(spiDevice, msg->rbuf, msg->len, TIMEOUT);
+            ret = HalSpiRecv(spiDevice, msg->rbuf, msg->len, TIMEOUT);
         }
         if ((msg->wbuf != NULL) && (msg->rbuf != NULL)) {
-            HalSpiSendRecv(spiDevice, msg->wbuf, msg->len, msg->rbuf, msg->len);
+            ret = HalSpiSendRecv(spiDevice, msg->wbuf, msg->len, msg->rbuf, msg->len);
         }
 
         /* pull pull up cs at the end */
         if (msg->csChange) {
             hal_gpio_pin_set_dir(spiCtx[spiId].spiPinCS0, HAL_GPIO_DIR_OUT, 1);
+        }
+        if (ret < 0) {
+            HDF_LOGE("%s send error!\r\n", __func__);
         }
         DelayUs(msg->delayUs);
     }
