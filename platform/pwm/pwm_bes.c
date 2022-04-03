@@ -21,9 +21,9 @@
 #include "device_resource_if.h"
 #endif
 
-#if defined (CHIP_BEST1600)
+#if defined (LOSCFG_SOC_SERIES_BES2700)
 #define PWM_MAX_FUNCTION 4
-#elif defined (CHIP_BEST2003)
+#elif defined (LOSCFG_SOC_SERIES_BES2600)
 #include "hal_iomux.h"
 #define PWM_MAX_FUNCTION 8
 #endif
@@ -38,7 +38,7 @@ static uint32_t g_pwmFunction[PWM_MAX_FUNCTION] = {
     HAL_IOMUX_FUNC_PWM1,
     HAL_IOMUX_FUNC_PWM2,
     HAL_IOMUX_FUNC_PWM3,
-#if defined (CHIP_BEST2003)
+#if defined (LOSCFG_SOC_SERIES_BES2600)
     HAL_IOMUX_FUNC_PWM4,
     HAL_IOMUX_FUNC_PWM5,
     HAL_IOMUX_FUNC_PWM6,
@@ -61,7 +61,7 @@ static int InitPwmDevice(struct PwmDev *host)
     struct PwmDevice *pwmDevice = NULL;
     struct PwmResource *resource = NULL;
     if (host == NULL || host->priv == NULL) {
-        HDF_LOGE("%s: invaild parameter\r\n", __func__);
+        HDF_LOGE("%s: invalid parameter\r\n", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
     pwmDevice = (struct PwmDevice *)host->priv;

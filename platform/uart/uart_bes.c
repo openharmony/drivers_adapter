@@ -27,14 +27,14 @@
 
 #define UART_FIFO_MAX_BUFFER 2048
 #define UART_DMA_RING_BUFFER_SIZE 256 // mast be 2^n
-#ifdef CHIP_BEST1600
+#ifdef LOSCFG_SOC_SERIES_BES2700
 #include "hal_location.h"
 #define MAX_UART_NUMBER 2
 #define MAX_UART_ID HAL_UART_ID_1
 static SRAM_BSS_LOC unsigned char g_halUartBuf[UART_DMA_RING_BUFFER_SIZE];
 static SRAM_BSS_LOC unsigned char g_halUart1Buf[UART_DMA_RING_BUFFER_SIZE];
 static unsigned char *g_uartKfifoBuffer[MAX_UART_NUMBER] = { NULL, NULL };
-#elif defined (CHIP_BEST2003)
+#elif defined (LOSCFG_SOC_SERIES_BES2600)
 #define MAX_UART_NUMBER 3
 #define MAX_UART_ID HAL_UART_ID_2
 static __SRAMBSS unsigned char g_halUartBuf[UART_DMA_RING_BUFFER_SIZE];
@@ -70,7 +70,7 @@ static void HalSetUartIomux(enum HAL_UART_ID_T uartId)
     if (uartId == HAL_UART_ID_1) {
         hal_iomux_set_uart1();
     }
-#ifdef CHIP_BEST2003
+#ifdef LOSCFG_SOC_SERIES_BES2600
     if (uartId == HAL_UART_ID_2) {
         hal_iomux_set_uart2();
     }
@@ -104,14 +104,14 @@ static void UartRxHandler(enum HAL_UART_ID_T uartId, union HAL_UART_IRQ_T status
         return;
     }
     if (status.TX) {
-        if (OsalSemPost(&g_uartCtx[uartId].txSem != HDF_SUCCESS)) {
+        if (OsalSemPost(&g_uartCtx[uartId].txSem) != HDF_SUCCESS) {
             HDF_LOGE("%s OsalSemPost txSem failed!\r\n", __func__);
             return;
         }
     }
 
     if (status.RX || status.RT) {
-        if (OsalSemPost(&g_uartCtx[uartId].rxSem != HDF_SUCCESS)) {
+        if (OsalSemPost(&g_uartCtx[uartId].rxSem) != HDF_SUCCESS) {
             HDF_LOGE("%s OsalSemPost rxSem failed!\r\n", __func__);
             return;
         }
@@ -127,7 +127,7 @@ static void UartDmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IRQ
         return;
     }
 
-    memset_s(g_uartCtx[HAL_UART_ID_0].buffer, UART_DMA_RING_BUFFER_SIZE, 0, UART_DMA_RING_BUFFER_SIZE);
+    (void)memset_s(g_uartCtx[HAL_UART_ID_0].buffer, UART_DMA_RING_BUFFER_SIZE, 0, UART_DMA_RING_BUFFER_SIZE);
     OsalSemPost(&g_uartCtx[HAL_UART_ID_0].rxSem);
     HalUartStartDmaRx(HAL_UART_ID_0);
 }
@@ -155,7 +155,7 @@ static void Uart1DmaTxHandler(uint32_t xferSize, int dmaError)
     OsalSemPost(&g_uartCtx[HAL_UART_ID_1].txSem);
 }
 
-#ifdef CHIP_BEST2003
+#ifdef LOSCFG_SOC_SERIES_BES2600
 /* uart2 */
 static void Uart2DmaRxHandler(uint32_t xferSize, int dmaError, union HAL_UART_IRQ_T status)
 {
@@ -207,7 +207,7 @@ static int32_t HalUartSend(uint32_t uartId, const void *data, uint32_t size, uin
         return HDF_ERR_NOT_SUPPORT;
     }
     descCnt = 1;
-#ifdef CHIP_BEST1600
+#ifdef LOSCFG_SOC_SERIES_BES2700
     hal_cache_sync_all(HAL_CACHE_ID_D_CACHE);
 #endif
     hal_uart_dma_send(uartId, data, size, &dmaSescTx, &descCnt);
@@ -294,7 +294,7 @@ static int32_t InitUartCtxCfg(struct UartDevice *device)
         g_uartCtx[uartId].UartDmaTxHandler = Uart1DmaTxHandler;
         g_uartCtx[uartId].buffer = g_halUart1Buf;
     }
-#ifdef CHIP_BEST2003
+#ifdef LOSCFG_SOC_SERIES_BES2600
     if (uartId == HAL_UART_ID_2) {
         g_uartCtx[uartId].UartDmaRxHandler = Uart2DmaRxHandler;
         g_uartCtx[uartId].UartDmaTxHandler = Uart2DmaTxHandler;
@@ -679,8 +679,8 @@ static int32_t UartHostDevInit(struct UartHost *host)
         HDF_LOGE("%s: invalid parameter", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-    InitUartDevice(host);
-    return HDF_SUCCESS;
+
+    return InitUartDevice(host);
 }
 
 static int32_t UartHostDevDeinit(struct UartHost *host)

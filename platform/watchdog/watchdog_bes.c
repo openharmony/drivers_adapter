@@ -47,7 +47,7 @@ static int InitWatchdogDevice(struct WatchdogDevice *watchdogDevice)
     struct WatchdogResource *resource = NULL;
     int32_t watchdogId;
     if (watchdogDevice == NULL) {
-        HDF_LOGE("%s: invaild parameter\r\n", __func__);
+        HDF_LOGE("%s: invalid parameter\r\n", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
 
@@ -182,7 +182,7 @@ static int32_t WatchdogDriverInit(struct HdfDeviceObject *device)
     }
 
     watchdogCntlr->ops = &g_WatchdogCntlrMethod;
-  
+
     HDF_LOGE("WatchdogDriverInit success!\r\n");
     return ret;
 }
