@@ -225,7 +225,6 @@ static struct HdfRemoteDispatcher g_devmgrDispatcher = {
 int DevmgrServiceStubStartService(struct IDevmgrService *inst)
 {
     struct DevmgrServiceStub *fullService = (struct DevmgrServiceStub *)inst;
-    int status;
     if (fullService == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
@@ -252,7 +251,8 @@ int DevmgrServiceStubStartService(struct IDevmgrService *inst)
         return HDF_ERR_MALLOC_FAIL;
     }
     deviceObject->service = (struct IDeviceIoService *)remoteService;
-    status = DevSvcManagerAddService(serviceManager, DEVICE_MANAGER_SERVICE, DEVICE_CLASS_DEFAULT, deviceObject, NULL);
+    int status =
+        DevSvcManagerAddService(serviceManager, DEVICE_MANAGER_SERVICE, DEVICE_CLASS_DEFAULT, deviceObject, NULL);
     if (status != HDF_SUCCESS) {
         HdfRemoteServiceRecycle(remoteService);
         OsalMemFree(deviceObject);

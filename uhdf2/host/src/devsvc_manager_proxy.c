@@ -203,7 +203,7 @@ void DevSvcManagerProxyRemoveService(struct IDevSvcManager *inst, const char *sv
             break;
         }
         int status = dispatcher->Dispatch(remoteService, DEVSVC_MANAGER_REMOVE_SERVICE, data, reply);
-        HDF_LOGD("Device service manager proxy remove service status is %{public}d", status);
+        HDF_LOGW("Device service manager proxy remove service status is %{public}d", status);
     } while (0);
 
     if (reply != NULL) {
@@ -225,7 +225,7 @@ static void DevSvcManagerProxyOnRemoteDied(struct HdfDeathRecipient *recipient, 
 
     struct DevHostServiceFull *fullService = (struct DevHostServiceFull *)instance;
     struct HdfMessageLooper *looper = &fullService->looper;
-    HDF_LOGD("%{public}s: DevSvcManager dead, host %{public}d stop", __func__, fullService->super.hostId);
+    HDF_LOGW("%{public}s: DevSvcManager dead, host %{public}d stop", __func__, fullService->super.hostId);
     if ((looper != NULL) && (looper->Stop != NULL)) {
         looper->Stop(looper);
     }
