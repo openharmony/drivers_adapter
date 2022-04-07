@@ -98,5 +98,6 @@ set_defaults("hdf_driver") {
   configs = [ "$HDFTOPDIR:hdf_config" ]
   visibility = [ "$HDFTOPDIR:*" ]
   visibility += [ "//device/soc/bestechnic/bes2600/liteos_m/*" ]
+  visibility += [ "//device/board/talkweb/niobe407/liteos_m/*" ]
   visibility += [ "//drivers/adapter/*" ]
 }
