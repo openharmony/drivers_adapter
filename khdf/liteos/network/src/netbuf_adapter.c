@@ -307,7 +307,7 @@ NetBuf *NetBufAlloc(uint32_t size)
     }
 
     (void)memset_s(nb, sizeof(NetBuf), 0, sizeof(NetBuf));
-    (void)memset_s(data, sizeof(uint8_t), 0, sizeof(uint8_t));
+    (void)memset_s(data, size, 0, size);
 
     nb->mem = data;
     nb->len = size;
