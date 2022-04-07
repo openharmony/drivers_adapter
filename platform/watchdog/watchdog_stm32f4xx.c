@@ -8,7 +8,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#include "hcs_macro.h"
+#include "hdf_config_macro.h"
+#else
 #include "device_resource_if.h"
+#endif
 #include "hdf_device_desc.h"
 #include "hdf_log.h"
 #include "watchdog_core.h"
@@ -54,6 +59,35 @@ static int InitWatchdogDeviceInfo(WatchdogDeviceInfo *watchdogdeviceinfo)
     return HDF_SUCCESS;
 }
 
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+#define WATCHDOG_FIND_CONFIG(node, name, device) \
+    do { \
+        if (strcmp(HCS_PROP(node, match_attr), name) == 0) { \
+            device->watchdogId = HCS_PROP(node, id); \
+            device->timeout = HCS_PROP(node, timeout); \
+            result = HDF_SUCCESS; \
+        } \
+    } while (0)
+#define PLATFORM_CONFIG HCS_NODE(HCS_ROOT, platform)
+#define PLATFORM_WATCHDOG_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), watchdog_config)
+static uint32_t GetWatchdogDeviceInfoResource(WatchdogDeviceInfo *device, const char *deviceMatchAttr)
+{
+    int32_t result = HDF_FAILURE;
+    if (device == NULL || deviceMatchAttr == NULL) {
+        HDF_LOGE("device or deviceMatchAttr is NULL\r\n");
+        return HDF_ERR_INVALID_PARAM;
+    }
+#if HCS_NODE_HAS_PROP(PLATFORM_CONFIG, watchdog_config)
+    HCS_FOREACH_CHILD_VARGS(PLATFORM_WATCHDOG_CONFIG, WATCHDOG_FIND_CONFIG, deviceMatchAttr, device);
+#endif
+    if (result != HDF_SUCCESS) {
+        HDF_LOGE("resourceNode %s is NULL\r\n", deviceMatchAttr);
+        return result;
+    }
+
+    return HDF_SUCCESS;
+}
+#else
 static uint32_t GetWatchdogDeviceInfoResource(WatchdogDeviceInfo *device, const struct DeviceResourceNode *resourceNode)
 {
     struct DeviceResourceIface *dri = NULL;
@@ -76,19 +110,24 @@ static uint32_t GetWatchdogDeviceInfoResource(WatchdogDeviceInfo *device, const 
         HDF_LOGE("read watchdogId fail\r\n");
         return HDF_FAILURE;
     }
-   
+
     HDF_LOGI("watchdogId = %d\n", device->watchdogId);
     HDF_LOGI("timeout = %dms\n", device->timeout);
-    
+
     return HDF_SUCCESS;
 }
+#endif
 
 static int32_t AttachWatchdogDeviceInfo(struct WatchdogCntlr *watchdogCntlr, struct HdfDeviceObject *device)
 {
     int32_t ret;
     WatchdogDeviceInfo *watchdogdeviceinfo = NULL;
 
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    if (device == NULL || device->deviceMatchAttr == NULL) {
+#else
     if (device == NULL || device->property == NULL) {
+#endif
         HDF_LOGE("%s: param is NULL\r\n", __func__);
         return HDF_FAILURE;
     }
@@ -99,7 +138,11 @@ static int32_t AttachWatchdogDeviceInfo(struct WatchdogCntlr *watchdogCntlr, str
         return HDF_ERR_MALLOC_FAIL;
     }
 
+#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
+    ret = GetWatchdogDeviceInfoResource(watchdogdeviceinfo, device->deviceMatchAttr);
+#else
     ret = GetWatchdogDeviceInfoResource(watchdogdeviceinfo, device->property);
+#endif
     if (ret != HDF_SUCCESS) {
         (void)OsalMemFree(watchdogdeviceinfo);
         return HDF_FAILURE;
@@ -177,7 +220,7 @@ static int32_t WatchdogDriverInit(struct HdfDeviceObject *device)
     }
 
     watchdogCntlr->ops = &g_WatchdogCntlrMethod;
-  
+
     HDF_LOGI("WatchdogDriverInit success!\r\n");
     return ret;
 }
