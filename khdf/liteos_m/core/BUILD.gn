@@ -83,4 +83,8 @@ hdf_driver("hdf_core") {
       defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
     deps = [ "//device/board/fnlink/shields" ]
   }
+  if (defined(LOSCFG_NIOBE407_USE_HDF) &&
+      defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
+    deps = [ "//device/board/talkweb/niobe407/liteos_m/hdf_config" ]
+  }
 }
