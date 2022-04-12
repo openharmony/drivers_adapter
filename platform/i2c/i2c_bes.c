@@ -60,7 +60,7 @@ static void I2cDeviceIomuxInit(uint32_t i2cId, struct I2cResource *resource)
         {0, 0, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_PULLUP_ENABLE},
     };
 
-#ifdef CHIP_BEST2003
+#ifdef LOSCFG_SOC_SERIES_BES2600
     if (i2cId == 0) {
         pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M0_SCL;
         pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M0_SDA;
@@ -68,7 +68,7 @@ static void I2cDeviceIomuxInit(uint32_t i2cId, struct I2cResource *resource)
         pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M1_SCL;
         pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M1_SDA;
     }
-#elif defined (CHIP_BEST1600)
+#elif defined (LOSCFG_SOC_SERIES_BES2700)
     if (i2cId == 0) {
         pinMuxI2c[0].function = HAL_IOMUX_FUNC_SYS_I2C_M0_SCL;
         pinMuxI2c[1].function = HAL_IOMUX_FUNC_SYS_I2C_M0_SDA;
