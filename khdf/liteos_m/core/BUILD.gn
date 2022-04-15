@@ -83,8 +83,14 @@ hdf_driver("hdf_core") {
       defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
     deps = [ "//device/board/fnlink/shields" ]
   }
-  if (defined(LOSCFG_NIOBE407_USE_HDF) &&
-      defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
-    deps = [ "//device/board/talkweb/niobe407/liteos_m/hdf_config" ]
+  if (defined(LOSCFG_DRIVERS_HDF_CONFIG_MACRO)) {
+    HDF_HCS_BUILD_PATH = rebase_path(
+            "//device/board/$device_company/$device_name/liteos_m/hdf_config")
+    cmd = "if [ -f ${HDF_HCS_BUILD_PATH}/BUILD.gn ]; then echo true; else echo false; fi"
+    HAVE_HCS_BUILD_PATH =
+        exec_script("//build/lite/run_shell_cmd.py", [ cmd ], "value")
+    if (HAVE_HCS_BUILD_PATH) {
+      deps = [ "${HDF_HCS_BUILD_PATH}" ]
+    }
   }
 }

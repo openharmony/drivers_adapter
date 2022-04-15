@@ -133,7 +133,7 @@ int32_t InitI2cDevice(struct I2cDevice *device)
 }
 
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-#define I2C_FIND_CONFIG(node, name, resource) \
+#define I2C_FIND_CONFIG(node, name, resource, result, tempPin) \
     do { \
         if (strcmp(HCS_PROP(node, match_attr), name) == 0) { \
             resource->port = HCS_PROP(node, port); \
@@ -158,15 +158,15 @@ static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
     int32_t result = HDF_FAILURE;
     struct I2cResource *resource = NULL;
     if (device == NULL || deviceMatchAttr == NULL) {
-        HDF_LOGE("device or deviceMatchAttr is NULL\r\n");
+        HDF_LOGE("device or deviceMatchAttr is NULL");
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &device->resource;
 #if HCS_NODE_EXISTS(PLATFORM_I2C_CONFIG)
-    HCS_FOREACH_CHILD_VARGS(PLATFORM_I2C_CONFIG, I2C_FIND_CONFIG, deviceMatchAttr, resource);
+    HCS_FOREACH_CHILD_VARGS(PLATFORM_I2C_CONFIG, I2C_FIND_CONFIG, deviceMatchAttr, resource, result, tempPin);
 #endif
     if (result != HDF_SUCCESS) {
-        HDF_LOGE("resourceNode %s is NULL\r\n", deviceMatchAttr);
+        HDF_LOGE("resourceNode %s is NULL", deviceMatchAttr);
     }
     return result;
 }
