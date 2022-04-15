@@ -102,15 +102,15 @@ static int OnKEventReceived(
         return HDF_FAILURE;
     }
 
-    receivedEvent->content = HdfSbufReadString(data);
-
+    const char *eventContent = HdfSbufReadString(data);
+    eventContent = eventContent == NULL ? "" : eventContent;
     OsalMutexLock(&notifier->mutex);
 
     struct HdfSysEventNotifyNode *notifyNode = NULL;
     DLIST_FOR_EACH_ENTRY(notifyNode, &notifier->notifyNodeList, struct HdfSysEventNotifyNode, listNode) {
         if (receivedEvent->eventClass & notifyNode->classFilter) {
             (void)notifyNode->callback(
-                notifyNode, receivedEvent->eventClass, receivedEvent->eventid, receivedEvent->content);
+                notifyNode, receivedEvent->eventClass, receivedEvent->eventid, eventContent);
         }
     }
 
