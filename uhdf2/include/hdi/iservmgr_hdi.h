@@ -15,19 +15,21 @@
 #ifndef HDI_ISERVICE_MANAGER_INF_H
 #define HDI_ISERVICE_MANAGER_INF_H
 
-#include <refbase.h>
+#include <hdi_base.h>
 #include <iremote_broker.h>
+#include <refbase.h>
+
 #include "iservstat_listener_hdi.h"
 
 namespace OHOS {
 namespace HDI {
 namespace ServiceManager {
 namespace V1_0 {
-class IServiceManager : public IRemoteBroker {
+class IServiceManager : public HdiBase {
 public:
-    DECLARE_INTERFACE_DESCRIPTOR(u"HDI.IServiceManager.V1_0");
+    DECLARE_HDI_DESCRIPTOR(u"HDI.IServiceManager.V1_0");
     static ::OHOS::sptr<IServiceManager> Get();
-    virtual ::OHOS::sptr<IRemoteObject> GetService(const char* serviceName) = 0;
+    virtual ::OHOS::sptr<IRemoteObject> GetService(const char *serviceName) = 0;
     virtual int32_t RegisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener, uint16_t deviceClass) = 0;
     virtual int32_t UnregisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener) = 0;
 };

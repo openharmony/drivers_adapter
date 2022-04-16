@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,27 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef HDI_DEVICE_MANAGER_HDI_INF_H
-#define HDI_DEVICE_MANAGER_HDI_INF_H
 
-#include <hdi_base.h>
+#ifndef HDI_SAMPLE_SERVICE_CPP_INF_H
+#define HDI_SAMPLE_SERVICE_CPP_INF_H
+
+#include "isample.h"
 
 namespace OHOS {
 namespace HDI {
-namespace DeviceManager {
+namespace Sample {
 namespace V1_0 {
-class IDeviceManager : public HdiBase {
+class SampleService : public ISample {
 public:
-    DECLARE_HDI_DESCRIPTOR(u"HDI.IDeviceManager.V1_0");
-    IDeviceManager() = default;
-    virtual ~IDeviceManager() = default;
-    static ::OHOS::sptr<IDeviceManager> Get();
-    virtual int32_t LoadDevice(const std::string &serviceName) = 0;
-    virtual int32_t UnloadDevice(const std::string &serviceName) = 0;
+    SampleService() {}
+    ~SampleService() override {}
+
+    int32_t GetInterface(sptr<IFoo> &output) override;
 };
 } // namespace V1_0
-} // namespace DeviceManager
+} // namespace Sample
 } // namespace HDI
 } // namespace OHOS
 
-#endif /* HDI_DEVICE_MANAGER_HDI_INF_H */
+#endif // HDI_SAMPLE_SERVICE_CPP_INF_H

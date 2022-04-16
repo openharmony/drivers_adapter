@@ -290,10 +290,10 @@ int DevSvcManagerStubDispatch(struct HdfRemoteService *service, int code, struct
         case DEVSVC_MANAGER_REMOVE_SERVICE:
             ret = DevSvcManagerStubRemoveService(super, data);
             break;
-        case DEVSVC_MANAGER_REGISER_SVCLISTENER:
+        case DEVSVC_MANAGER_REGISTER_SVCLISTENER:
             ret = DevSvcManagerStubRegisterServListener(super, data);
             break;
-        case DEVSVC_MANAGER_UNREGISER_SVCLISTENER:
+        case DEVSVC_MANAGER_UNREGISTER_SVCLISTENER:
             ret = DevSvcManagerStubUnregisterServListener(super, data);
             break;
         default:

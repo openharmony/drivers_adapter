@@ -13,9 +13,12 @@
  * limitations under the License.
  */
 
-#include <iservice_registry.h>
 #include <hdf_base.h>
 #include <hdf_log.h>
+#include <iproxy_broker.h>
+#include <iservice_registry.h>
+#include <object_collector.h>
+
 #include "idevmgr_hdi.h"
 #include "iservmgr_hdi.h"
 
@@ -25,7 +28,7 @@ namespace OHOS {
 namespace HDI {
 namespace DeviceManager {
 namespace V1_0 {
-enum DevngrCmdId : uint32_t {
+enum DevmgrCmdId : uint32_t {
     DEVMGR_SERVICE_ATTACH_DEVICE_HOST = 1,
     DEVMGR_SERVICE_ATTACH_DEVICE,
     DEVMGR_SERVICE_DETACH_DEVICE,
@@ -34,12 +37,13 @@ enum DevngrCmdId : uint32_t {
     DEVMGR_SERVICE_QUERY_DEVICE,
 };
 
-class DeviceManagerProxy : public IRemoteProxy<IDeviceManager> {
+class DeviceManagerProxy : public IProxyBroker<IDeviceManager> {
 public:
-    explicit DeviceManagerProxy(const sptr<IRemoteObject>& impl) : IRemoteProxy<IDeviceManager>(impl) {}
+    explicit DeviceManagerProxy(const sptr<IRemoteObject> &impl) : IProxyBroker<IDeviceManager>(impl) {}
     ~DeviceManagerProxy() {}
-    virtual int32_t LoadDevice(const std::string &serviceName);
-    virtual int32_t UnloadDevice(const std::string &serviceName);
+    int32_t LoadDevice(const std::string &serviceName) override;
+    int32_t UnloadDevice(const std::string &serviceName) override;
+
 private:
     static inline BrokerDelegator<DeviceManagerProxy> delegator_;
 };
@@ -50,7 +54,7 @@ int32_t DeviceManagerProxy::LoadDevice(const std::string &serviceName)
     MessageParcel reply;
     MessageOption option;
     HDF_LOGI("load device: %{public}s", serviceName.data());
-    if (!data.WriteInterfaceToken(DeviceManagerProxy::GetDescriptor())) {
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
         return HDF_FAILURE;
     }
     if (!data.WriteCString(serviceName.data())) {
@@ -93,7 +97,7 @@ sptr<IDeviceManager> IDeviceManager::Get()
     }
     sptr<IRemoteObject> remote = servmgr->GetService("hdf_device_manager");
     if (remote != nullptr) {
-        return iface_cast<IDeviceManager>(remote);
+        return hdi_facecast<IDeviceManager>(remote);
     }
 
     HDF_LOGE("hdf device manager not exist");
