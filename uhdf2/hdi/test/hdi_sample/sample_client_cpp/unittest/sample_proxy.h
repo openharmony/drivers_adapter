@@ -12,27 +12,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef HDI_DEVICE_MANAGER_HDI_INF_H
-#define HDI_DEVICE_MANAGER_HDI_INF_H
+#ifndef HDI_SAMPLE_CLIENT_PROXY_CPP_INF_H
+#define HDI_SAMPLE_CLIENT_PROXY_CPP_INF_H
 
-#include <hdi_base.h>
+#include <iproxy_broker.h>
+
+#include "isample.h"
 
 namespace OHOS {
 namespace HDI {
-namespace DeviceManager {
+namespace Sample {
 namespace V1_0 {
-class IDeviceManager : public HdiBase {
+class SampleProxy : public IProxyBroker<ISample> {
 public:
-    DECLARE_HDI_DESCRIPTOR(u"HDI.IDeviceManager.V1_0");
-    IDeviceManager() = default;
-    virtual ~IDeviceManager() = default;
-    static ::OHOS::sptr<IDeviceManager> Get();
-    virtual int32_t LoadDevice(const std::string &serviceName) = 0;
-    virtual int32_t UnloadDevice(const std::string &serviceName) = 0;
+    explicit SampleProxy(const sptr<IRemoteObject> &impl) : IProxyBroker<ISample>(impl) {}
+    virtual ~SampleProxy() = default;
+
+    int32_t GetInterface(sptr<IFoo> &output) override;
+
+private:
+    static inline BrokerDelegator<SampleProxy> delegator_;
 };
 } // namespace V1_0
-} // namespace DeviceManager
+} // namespace Sample
 } // namespace HDI
 } // namespace OHOS
 
-#endif /* HDI_DEVICE_MANAGER_HDI_INF_H */
+#endif // HDI_SAMPLE_CLIENT_PROXY_CPP_INF_H

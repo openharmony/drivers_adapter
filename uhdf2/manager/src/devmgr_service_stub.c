@@ -151,7 +151,7 @@ static int32_t InstallModule(const char *module)
     }
     int32_t ret = syscall(SYS_finit_module, fd, "", 0);
     if (ret != 0) {
-        HDF_LOGE("failed to install module %{public}s", module);
+        HDF_LOGE("failed to install module %{public}s, %{public}d", module, ret);
     }
 
     close(fd);
