@@ -13,10 +13,13 @@
  * limitations under the License.
  */
 
-#include <iservice_registry.h>
-#include <iremote_stub.h>
 #include <hdf_base.h>
 #include <hdf_log.h>
+#include <iproxy_broker.h>
+#include <iremote_stub.h>
+#include <iservice_registry.h>
+#include <object_collector.h>
+
 #include "iservmgr_hdi.h"
 
 namespace OHOS {
@@ -25,18 +28,18 @@ namespace ServiceManager {
 namespace V1_0 {
 constexpr int DEVICE_SERVICE_MANAGER_SA_ID = 5100;
 constexpr int DEVSVC_MANAGER_GET_SERVICE = 3;
-constexpr int DEVSVC_MANAGER_REGISER_SVCLISTENER = 4;
-constexpr int DEVSVC_MANAGER_UNREGISER_SVCLISTENER = 5;
+constexpr int DEVSVC_MANAGER_REGISTER_SVCLISTENER = 4;
+constexpr int DEVSVC_MANAGER_UNREGISTER_SVCLISTENER = 5;
 
-class ServiceManagerProxy : public IRemoteProxy<IServiceManager> {
+class ServiceManagerProxy : public IProxyBroker<IServiceManager> {
 public:
-    explicit ServiceManagerProxy(const sptr<IRemoteObject>& impl) : IRemoteProxy<IServiceManager>(impl) {}
+    explicit ServiceManagerProxy(const sptr<IRemoteObject> &impl) : IProxyBroker<IServiceManager>(impl) {}
     ~ServiceManagerProxy() {}
 
-    sptr<IRemoteObject> GetService(const char* serviceName) override;
-    int32_t RegisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener,
-        uint16_t deviceClass) override;
-    int32_t UnregisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener) override;
+    sptr<IRemoteObject> GetService(const char *serviceName) override;
+    int32_t RegisterServiceStatusListener(sptr<IServStatListener> listener, uint16_t deviceClass) override;
+    int32_t UnregisterServiceStatusListener(sptr<IServStatListener> listener) override;
+
 private:
     static inline BrokerDelegator<ServiceManagerProxy> delegator_;
 };
@@ -50,27 +53,26 @@ sptr<IServiceManager> IServiceManager::Get()
     }
     sptr<IRemoteObject> remote = saManager->GetSystemAbility(DEVICE_SERVICE_MANAGER_SA_ID);
     if (remote != nullptr) {
-        return iface_cast<IServiceManager>(remote);
+        return new ServiceManagerProxy(remote);
     }
 
     HDF_LOGE("failed to get sa hdf service manager");
     return nullptr;
 }
 
-int32_t ServiceManagerProxy::RegisterServiceStatusListener(::OHOS::sptr<IServStatListener> listener,
-    uint16_t deviceClass)
+int32_t ServiceManagerProxy::RegisterServiceStatusListener(
+    ::OHOS::sptr<IServStatListener> listener, uint16_t deviceClass)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    if (!data.WriteInterfaceToken(ServiceManagerProxy::GetDescriptor()) ||
-        !data.WriteUint16(deviceClass) ||
+    if (!data.WriteInterfaceToken(GetDescriptor()) || !data.WriteUint16(deviceClass) ||
         !data.WriteRemoteObject(listener->AsObject())) {
         return HDF_FAILURE;
     }
 
-    int status = Remote()->SendRequest(DEVSVC_MANAGER_REGISER_SVCLISTENER, data, reply, option);
+    int status = Remote()->SendRequest(DEVSVC_MANAGER_REGISTER_SVCLISTENER, data, reply, option);
     if (status) {
         HDF_LOGE("failed to register servstat listener, %{public}d", status);
     }
@@ -83,23 +85,22 @@ int32_t ServiceManagerProxy::UnregisterServiceStatusListener(::OHOS::sptr<IServS
     MessageParcel reply;
     MessageOption option;
 
-    if (!data.WriteInterfaceToken(ServiceManagerProxy::GetDescriptor()) ||
-        !data.WriteRemoteObject(listener->AsObject())) {
+    if (!data.WriteInterfaceToken(GetDescriptor()) || !data.WriteRemoteObject(listener->AsObject())) {
         return HDF_FAILURE;
     }
 
-    int status = Remote()->SendRequest(DEVSVC_MANAGER_UNREGISER_SVCLISTENER, data, reply, option);
+    int status = Remote()->SendRequest(DEVSVC_MANAGER_UNREGISTER_SVCLISTENER, data, reply, option);
     if (status) {
         HDF_LOGE("failed to unregister servstat listener, %{public}d", status);
     }
     return status;
 }
 
-sptr<IRemoteObject> ServiceManagerProxy::GetService(const char* serviceName)
+sptr<IRemoteObject> ServiceManagerProxy::GetService(const char *serviceName)
 {
     MessageParcel data;
     MessageParcel reply;
-    if (!data.WriteInterfaceToken(ServiceManagerProxy::GetDescriptor()) || !data.WriteCString(serviceName)) {
+    if (!data.WriteInterfaceToken(GetDescriptor()) || !data.WriteCString(serviceName)) {
         return nullptr;
     }
 

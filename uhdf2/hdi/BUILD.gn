@@ -57,10 +57,11 @@ if (defined(ohos_lite)) {
     sources = [
       "$hdf_framework_path/core/shared/src/service_status.c",
       "src/devmgr_client.c",
-      "src/hdf_load_hdi.c",
       "src/hdi_smq_syncer.cpp",
+      "src/hdi_support.cpp",
       "src/idevmgr_client.cpp",
       "src/iservmgr_client.cpp",
+      "src/object_collector.cpp",
       "src/servmgr_client.c",
       "src/servstat_listener.c",
       "src/servstat_listener_stub.cpp",

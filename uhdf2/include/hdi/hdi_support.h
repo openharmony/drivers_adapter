@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef HDF_LOAD_HDI_H
-#define HDF_LOAD_HDI_H
+#ifndef HDF_HDI_SUPPORT_H
+#define HDF_HDI_SUPPORT_H
 
 #include "hdf_base.h"
 
@@ -22,26 +22,11 @@
 extern "C" {
 #endif /* __cplusplus */
 
-struct HdiBase {
-    uint32_t moduleVersion;
-    const char *moduleName;
-    int (*OpenHdi)();
-    int (*CloseHdi)();
-};
-
-struct HdiObject {
-    uintptr_t dlHandler;
-    struct HdiBase *hdiBase;
-};
-
-struct HdiObject *LoadHdi(const char *name, uint32_t version);
-void CloseHdi(struct HdiObject *hdi);
-
-#define HDF_HDI_INIT(module) struct HdiBase *hdfHdiDesc = (struct HdiBase *)&(module)
+void *LoadHdiImpl(const char *fullIfName);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* HDF_LOAD_HDI_H */
+#endif /* HDF_HDI_SUPPORT_H */
 
