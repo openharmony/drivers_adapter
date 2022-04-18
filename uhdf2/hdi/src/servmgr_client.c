@@ -96,7 +96,7 @@ int32_t HDIServMgrRegisterServiceStatusListener(struct HDIServiceManager *self,
         return HDF_FAILURE;
     }
 
-    int32_t ret = ServiceManagerHdiCall(servMgrClient, DEVSVC_MANAGER_REGISER_SVCLISTENER, data, NULL);
+    int32_t ret = ServiceManagerHdiCall(servMgrClient, DEVSVC_MANAGER_REGISTER_SVCLISTENER, data, NULL);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("failed to register hdi service listener");
     }
@@ -121,7 +121,7 @@ int32_t HDIServMgrUnregisterServiceStatusListener(struct HDIServiceManager *self
         return HDF_FAILURE;
     }
 
-    int32_t ret = ServiceManagerHdiCall(servMgrClient, DEVSVC_MANAGER_UNREGISER_SVCLISTENER, data, NULL);
+    int32_t ret = ServiceManagerHdiCall(servMgrClient, DEVSVC_MANAGER_UNREGISTER_SVCLISTENER, data, NULL);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("failed to unregister hdi service listener");
     }
