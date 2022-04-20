@@ -809,7 +809,7 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
         }
 
         /* pull pull up cs at the end */
-        if (msg->csChange) {
+        if (msg->keepCs == 0) {
             hal_gpio_pin_set_dir(spiCtx[spiId].spiPinCS0, HAL_GPIO_DIR_OUT, 1);
         }
         if (ret < 0) {

@@ -500,7 +500,7 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
         }
 
         /* pull pull up cs at the end */
-        if (msg->csChange && spiDevice->resource.spiCsSoft) {
+        if (msg->keepCs == 0 && spiDevice->resource.spiCsSoft) {
             tls_gpio_write(WM_IO_PB_00 + spiDevice->resource.spiCsPin, 1);
         }
     }
