@@ -747,7 +747,7 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
             HalSpiSendRecv(spiDevice, msg->wbuf, msg->len, msg->rbuf, msg->len);
         }
 
-        if (msg->csChange || singleCsChange) {
+        if (msg->keepCs == 0|| singleCsChange) {
             LL_GPIO_SetOutputPin(LL_GET_GPIOX(spiDevice->resource.csGroup), LL_GET_HAL_PIN(spiDevice->resource.csPin));
         }
         if (msg->delayUs > 0) {
@@ -757,7 +757,7 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
     }
     return HDF_SUCCESS;
 CS_DOWN:
-    if (msg->csChange || singleCsChange) {
+    if (msg->keepCs == 0 || singleCsChange) {
         LL_GPIO_SetOutputPin(LL_GET_GPIOX(spiDevice->resource.csGroup), LL_GET_HAL_PIN(spiDevice->resource.csPin));
     }
     return HDF_SUCCESS;

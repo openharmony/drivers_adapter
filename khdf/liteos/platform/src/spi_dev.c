@@ -285,7 +285,7 @@ static int32_t SpiDevRealTransfer(struct SpiDev *dev, struct SpiMsg *msg, struct
         kmsg[i].wbuf = wbuf + pos;
         kmsg[i].rbuf = rbuf + pos;
         kmsg[i].len = msg[i].len;
-        kmsg[i].csChange = msg[i].csChange;
+        kmsg[i].keepCs = msg[i].keepCs;
         kmsg[i].delayUs = msg[i].delayUs;
         kmsg[i].speed = msg[i].speed;
         pos += msg[i].len;
