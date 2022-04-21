@@ -16,6 +16,7 @@
 #ifndef HDF_REMOTE_ADAPATER_IF_H
 #define HDF_REMOTE_ADAPATER_IF_H
 
+#include <unistd.h>
 #include "hdf_remote_service.h"
 
 #ifdef __cplusplus
@@ -44,6 +45,9 @@ bool HdfRemoteAdapterWriteInterfaceToken(struct HdfRemoteService *service, struc
 
 bool HdfRemoteAdapterCheckInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data);
 
+pid_t HdfRemoteGetCallingPid(void);
+
+pid_t HdfRemoteGetCallingUid(void);
 
 #ifdef __cplusplus
 }
