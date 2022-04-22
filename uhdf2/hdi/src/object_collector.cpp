@@ -13,26 +13,21 @@
  * limitations under the License.
  */
 
+#include "object_collector.h"
 #include <iremote_object.h>
 
 #include "hdf_base.h"
 #include "hdf_log.h"
 
-#include "object_collector.h"
-
 using namespace OHOS::HDI;
 
-std::map<const std::u16string, const ObjectCollector::Constructor> ObjectCollector::constructorMapper_;
-std::map<HdiBase *, OHOS::IRemoteObject *> ObjectCollector::interfaceObjectCollector_;
-std::mutex ObjectCollector::mutex_;
-
-const ObjectCollector &ObjectCollector::GetInstance()
+ObjectCollector &ObjectCollector::GetInstance()
 {
     static ObjectCollector mapper;
     return mapper;
 }
 
-bool ObjectCollector::ConstructorRegister(const std::u16string &interfaceName, const Constructor &constructor) const
+bool ObjectCollector::ConstructorRegister(const std::u16string &interfaceName, const Constructor &constructor)
 {
     if (interfaceName.empty()) {
         return false;
@@ -42,14 +37,14 @@ bool ObjectCollector::ConstructorRegister(const std::u16string &interfaceName, c
     return true;
 }
 
-void ObjectCollector::ConstructorUnRegister(const std::u16string &interfaceName) const
+void ObjectCollector::ConstructorUnRegister(const std::u16string &interfaceName)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     constructorMapper_.erase(interfaceName);
 }
 
 OHOS::sptr<OHOS::IRemoteObject> ObjectCollector::NewObjectLocked(
-    const OHOS::sptr<HdiBase> &interface, const std::u16string &interfaceName) const
+    const OHOS::sptr<HdiBase> &interface, const std::u16string &interfaceName)
 {
     if (interface == nullptr) {
         return nullptr;
@@ -63,14 +58,14 @@ OHOS::sptr<OHOS::IRemoteObject> ObjectCollector::NewObjectLocked(
 }
 
 OHOS::sptr<OHOS::IRemoteObject> ObjectCollector::NewObject(
-    const OHOS::sptr<HdiBase> &interface, const std::u16string &interfaceName) const
+    const OHOS::sptr<HdiBase> &interface, const std::u16string &interfaceName)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     return NewObjectLocked(interface, interfaceName);
 }
 
 OHOS::sptr<OHOS::IRemoteObject> ObjectCollector::GetOrNewObject(
-    const OHOS::sptr<HdiBase> &interface, const std::u16string &interfaceName) const
+    const OHOS::sptr<HdiBase> &interface, const std::u16string &interfaceName)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -84,7 +79,7 @@ OHOS::sptr<OHOS::IRemoteObject> ObjectCollector::GetOrNewObject(
     return object;
 }
 
-bool ObjectCollector::RemoveObject(const OHOS::sptr<HdiBase> &interface) const
+bool ObjectCollector::RemoveObject(const OHOS::sptr<HdiBase> &interface)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     auto it = interfaceObjectCollector_.find(interface.GetRefPtr());

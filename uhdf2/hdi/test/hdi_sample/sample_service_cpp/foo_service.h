@@ -28,7 +28,7 @@ namespace Sample {
 namespace V1_0 {
 class FooService : public IFoo {
 public:
-    int32_t PingTest(const bool input, bool &output) override;
+    int32_t PingTest(bool input, bool &output) override;
 };
 } // namespace V1_0
 } // namespace Sample

@@ -57,7 +57,7 @@ int32_t FooStub::StubPingTest(OHOS::MessageParcel &data, OHOS::MessageParcel &re
         return HDF_ERR_INVALID_PARAM;
     }
     bool input = data.ReadBool();
-    bool output;
+    bool output = false;
 
     if (impl_ == nullptr) {
         HDF_LOGE("invalid service impl");

@@ -30,12 +30,13 @@ namespace Sample {
 namespace V1_0 {
 class SampleServiceStub : public OHOS::IPCObjectStub {
 public:
-    explicit SampleServiceStub(const sptr<ISample> serviceImpl);
+    explicit SampleServiceStub(const sptr<ISample> &serviceImpl);
     virtual ~SampleServiceStub();
 
     int32_t SampleStubGetInterface(MessageParcel &data, MessageParcel &reply, MessageOption &option) const;
 
-    int32_t OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+    int32_t OnRemoteRequest(
+uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 
 private:
     static inline ObjectDelegator<SampleServiceStub, ISample> objDelegator_;
