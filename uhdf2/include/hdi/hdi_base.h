@@ -16,8 +16,8 @@
 #ifndef HDI_BASE_INTERFACE_H
 #define HDI_BASE_INTERFACE_H
 
-#include <refbase.h>
 #include <string>
+#include <refbase.h>
 
 namespace OHOS {
 namespace HDI {

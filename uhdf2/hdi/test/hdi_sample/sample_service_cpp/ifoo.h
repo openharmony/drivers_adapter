@@ -32,7 +32,7 @@ public:
     IFoo() = default;
     virtual ~IFoo() = default;
 
-    virtual int32_t PingTest(const bool input, bool &output) = 0;
+    virtual int32_t PingTest(bool input, bool &output) = 0;
 
     static sptr<IFoo> Get(bool isStub);
 };
