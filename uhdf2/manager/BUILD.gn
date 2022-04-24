@@ -64,15 +64,12 @@ ohos_executable("hdf_devmgr") {
     "$hdf_uhdf_path/utils:libhdf_utils",
   ]
 
-  if (is_standard_system) {
-    external_deps = [
-      "hiviewdfx_hilog_native:libhilog",
-      "init:libbegetutil",
-      "utils_base:utils",
-    ]
-  } else {
-    external_deps = [ "hilog:libhilog" ]
-  }
+  external_deps = [
+    "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
+    "selinux:libservice_checker",
+    "utils_base:utils",
+  ]
 
   cflags = [
     "-Wall",

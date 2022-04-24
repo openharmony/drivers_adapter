@@ -58,7 +58,6 @@ bool HdfRemoteServiceWriteInterfaceToken(struct HdfRemoteService *service, struc
 
 bool HdfRemoteServiceCheckInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data);
 
-
 #ifdef __cplusplus
 }
 #endif  /* __cplusplus */
