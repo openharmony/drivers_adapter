@@ -48,7 +48,6 @@ hdf_driver(module_name) {
     include_dirs += [
       "include",
       "//kernel/liteos_a/net/lwip-2.1/porting/include",
-      "//third_party/lwip/src/include/lwip",
     ]
     cflags += [ "-DENABLE_LWIP_MONITOR" ]
   }
