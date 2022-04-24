@@ -14,17 +14,43 @@
  */
 
 #include "devsvc_manager_stub.h"
+
+#include <hdf_service_checker.h>
+
 #include "device_token_proxy.h"
 #include "devmgr_service_stub.h"
 #include "devsvc_listener_holder.h"
 #include "devsvc_manager_proxy.h"
 #include "hdf_cstring.h"
 #include "hdf_log.h"
+#include "hdf_remote_adapter_if.h"
 #include "hdf_sbuf.h"
 #include "hdf_slist.h"
 #include "osal_mem.h"
 
 #define HDF_LOG_TAG devsvc_manager_stub
+
+static int32_t AddServicePermCheck(const char *servName)
+{
+    pid_t callingPid = HdfRemoteGetCallingPid();
+    if (HdfAddServiceCheck(callingPid, servName) != 0) {
+        HDF_LOGE("[selinux] %{public}d haven't \"add service\" permission to %{public}s", callingPid, servName);
+        return HDF_ERR_NOPERM;
+    }
+
+    return HDF_SUCCESS;
+}
+
+static int32_t GetServicePermCheck(const char *servName)
+{
+    pid_t callingPid = HdfRemoteGetCallingPid();
+    if (HdfGetServiceCheck(callingPid, servName) != 0) {
+        HDF_LOGE("[selinux] %{public}d haven't \"get service\" permission to %{public}s", callingPid, servName);
+        return HDF_ERR_NOPERM;
+    }
+
+    return HDF_SUCCESS;
+}
 
 static struct HdfDeviceObject *ObtainServiceObject(
     struct DevSvcManagerStub *stub, const char *name, struct HdfRemoteService *service)
@@ -76,6 +102,11 @@ static int32_t DevSvcManagerStubAddService(struct IDevSvcManager *super, struct 
         HDF_LOGE("%{public}s failed, name is null", __func__);
         return ret;
     }
+    ret = AddServicePermCheck(name);
+    if (ret != HDF_SUCCESS) {
+        return ret;
+    }
+
     uint16_t devClass = DEVICE_CLASS_DEFAULT;
     if (!HdfSbufReadUint16(data, &devClass)) {
         HDF_LOGE("%{public}s failed, devClass invalid", __func__);
@@ -117,6 +148,11 @@ static int32_t DevSvcManagerStubUpdateService(struct IDevSvcManager *super, stru
         HDF_LOGE("%{public}s failed, name is null", __func__);
         return ret;
     }
+    ret = AddServicePermCheck(name);
+    if (ret != HDF_SUCCESS) {
+        return ret;
+    }
+
     uint16_t devClass = DEVICE_CLASS_DEFAULT;
     if (!HdfSbufReadUint16(data, &devClass)) {
         HDF_LOGE("%{public}s failed, devClass invalid", __func__);
@@ -164,6 +200,10 @@ static int32_t DevSvcManagerStubGetService(struct IDevSvcManager *super, struct 
         HDF_LOGE("%{public}s failed, name is null", __func__);
         return ret;
     }
+    ret = GetServicePermCheck(name);
+    if (ret != HDF_SUCCESS) {
+        return ret;
+    }
     struct HdfRemoteService *remoteService = (struct HdfRemoteService *)super->GetService(super, name);
     if (remoteService != NULL) {
         ret = HDF_SUCCESS;
@@ -187,6 +227,10 @@ static int32_t DevSvcManagerStubRemoveService(struct IDevSvcManager *super, stru
     if (name == NULL) {
         HDF_LOGE("%{public}s failed, name is null", __func__);
         return HDF_FAILURE;
+    }
+    int32_t ret = AddServicePermCheck(name);
+    if (ret != HDF_SUCCESS) {
+        return ret;
     }
     struct HdfDeviceObject *serviceObject = super->GetObject(super, name);
     if (serviceObject == NULL) {
