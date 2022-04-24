@@ -15,7 +15,9 @@
 
 #include "devsvc_manager_stub.h"
 
+#ifdef WITH_SELINUX
 #include <hdf_service_checker.h>
+#endif
 
 #include "device_token_proxy.h"
 #include "devmgr_service_stub.h"
@@ -32,22 +34,25 @@
 
 static int32_t AddServicePermCheck(const char *servName)
 {
+#ifdef WITH_SELINUX
     pid_t callingPid = HdfRemoteGetCallingPid();
     if (HdfAddServiceCheck(callingPid, servName) != 0) {
         HDF_LOGE("[selinux] %{public}d haven't \"add service\" permission to %{public}s", callingPid, servName);
         return HDF_ERR_NOPERM;
     }
-
+#endif
     return HDF_SUCCESS;
 }
 
 static int32_t GetServicePermCheck(const char *servName)
 {
+#ifdef WITH_SELINUX
     pid_t callingPid = HdfRemoteGetCallingPid();
     if (HdfGetServiceCheck(callingPid, servName) != 0) {
         HDF_LOGE("[selinux] %{public}d haven't \"get service\" permission to %{public}s", callingPid, servName);
         return HDF_ERR_NOPERM;
     }
+#endif
 
     return HDF_SUCCESS;
 }
