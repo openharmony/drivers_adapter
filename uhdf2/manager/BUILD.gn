@@ -67,7 +67,6 @@ ohos_executable("hdf_devmgr") {
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
-    "selinux:libservice_checker",
     "utils_base:utils",
   ]
 
@@ -76,6 +75,11 @@ ohos_executable("hdf_devmgr") {
     "-Wextra",
     "-Werror",
   ]
+
+  if (build_selinux) {
+    external_deps += [ "selinux:libservice_checker" ]
+    cflags += [ "-DWITH_SELINUX" ]
+  }
 
   install_enable = true
   install_images = [ chipset_base_dir ]
