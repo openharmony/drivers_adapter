@@ -43,18 +43,11 @@ ohos_shared_library("libsample_client_cpp") {
     "//drivers/adapter/uhdf2/utils:libhdf_utils",
   ]
 
-  if (is_standard_system) {
-    external_deps = [
-      "hiviewdfx_hilog_native:libhilog",
-      "ipc:ipc_single",
-      "utils_base:utils",
-    ]
-  } else {
-    external_deps = [
-      "hilog:libhilog",
-      "ipc:ipc_single",
-    ]
-  }
+  external_deps = [
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_single",
+    "utils_base:utils",
+  ]
 
   install_images = [ chipset_base_dir ]
   subsystem_name = "hdf"

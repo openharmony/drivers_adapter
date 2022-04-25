@@ -65,6 +65,7 @@ group("unittest") {
   deps = [
     ":HdiServiceManagerTest",
     ":HdiServiceManagerTestCC",
+    "hdi_sample/sample_client_cpp:HdiSampleTestCC",
     "hdi_sample/sample_client_cpp/unittest:sample_client_cpp",
     "hdi_sample/sample_service_cpp:sample_service_cpp",
   ]
