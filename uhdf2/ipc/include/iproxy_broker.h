@@ -28,8 +28,6 @@ public:
     explicit IProxyBroker(const sptr<IRemoteObject> &object);
     virtual ~IProxyBroker() = default;
     virtual sptr<INTERFACE> AsInterface();
-
-protected:
     sptr<IRemoteObject> AsObject() override;
 };
 
@@ -58,6 +56,13 @@ inline sptr<INTERFACE> hdi_facecast(const sptr<IRemoteObject> &object)
     sptr<IRemoteBroker> broker = registration.NewInstance(descriptor, object);
     INTERFACE *proxyBroker = static_cast<IProxyBroker<INTERFACE> *>(broker.GetRefPtr());
     return static_cast<INTERFACE *>(proxyBroker);
+}
+
+template <typename INTERFACE>
+inline sptr<IRemoteObject> hdi_objcast(const sptr<INTERFACE> &iface)
+{
+    IProxyBroker<INTERFACE> *brokerObject = static_cast<IProxyBroker<INTERFACE> *>(iface.GetRefPtr());
+    return brokerObject->AsObject();
 }
 } // namespace HDI
 } // namespace OHOS
