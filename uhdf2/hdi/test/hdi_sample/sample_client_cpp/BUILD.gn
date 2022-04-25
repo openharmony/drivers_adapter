@@ -1,0 +1,37 @@
+# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/test.gni")
+import("//drivers/adapter/uhdf2/uhdf.gni")
+
+module_output_path = "hdf/hdi"
+
+ohos_unittest("HdiSampleTestCC") {
+  module_out_path = module_output_path
+  sources = [ "sample_client_cpp_test.cpp" ]
+
+  deps = [
+    "$hdf_uhdf_path/hdi:libhdi",
+    "$hdf_uhdf_path/utils:libhdf_utils",
+    "unittest:libsample_client_cpp",
+    "//third_party/googletest:gmock_main",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_single",
+    "samgr_standard:samgr_proxy",
+    "utils_base:utils",
+  ]
+}

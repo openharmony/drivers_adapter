@@ -14,6 +14,9 @@
  */
 #include <gtest/gtest.h>
 #include <hdf_log.h>
+#include <idevmgr_hdi.h>
+#include <iproxy_broker.h>
+#include <iremote_object.h>
 #include <map>
 #include <osal_mem.h>
 #include <thread>
@@ -24,12 +27,16 @@
 
 using namespace testing::ext;
 using namespace OHOS::HDI::Sample::V1_0;
+using OHOS::IRemoteObject;
+using OHOS::sptr;
+using OHOS::wptr;
+using OHOS::HDI::DeviceManager::V1_0::IDeviceManager;
 
 #define HDF_LOG_TAG sample_client_cpp_test
 
 constexpr const char *TEST_SERVICE_NAME = "sample_driver_service";
 
-class SampleObjCPPTest : public testing::Test {
+class SampleHdiCppTest : public testing::Test {
 public:
     static void SetUpTestCase()
     {
@@ -50,7 +57,7 @@ public:
 };
 
 // IPC mode get interface object
-HWTEST_F(SampleObjCPPTest, ServMgrTest100, TestSize.Level1)
+HWTEST_F(SampleHdiCppTest, HdiCppTest001, TestSize.Level1)
 {
     OHOS::sptr<ISample> sampleService = ISample::Get(TEST_SERVICE_NAME, false);
     ASSERT_TRUE(sampleService != nullptr);
@@ -65,7 +72,7 @@ HWTEST_F(SampleObjCPPTest, ServMgrTest100, TestSize.Level1)
 }
 
 // passthrough mode get interface object
-HWTEST_F(SampleObjCPPTest, ServMgrTest101, TestSize.Level1)
+HWTEST_F(SampleHdiCppTest, HdiCppTest002, TestSize.Level1)
 {
     OHOS::sptr<ISample> sampleService = ISample::Get(TEST_SERVICE_NAME, true);
     ASSERT_TRUE(sampleService != nullptr);
@@ -77,4 +84,24 @@ HWTEST_F(SampleObjCPPTest, ServMgrTest101, TestSize.Level1)
     ret = fooInterface->PingTest(true, value);
     ASSERT_EQ(ret, 0);
     ASSERT_EQ(value, true);
+}
+
+class SampleDeathRecipient : public IRemoteObject::DeathRecipient {
+public:
+    void OnRemoteDied(const wptr<IRemoteObject> &object) override
+    {
+        HDF_LOGI("sample service dead");
+    }
+};
+
+// IPC mode add DeathRecipient
+HWTEST_F(SampleHdiCppTest, HdiCppTest003, TestSize.Level1)
+{
+    sptr<ISample> sampleService = ISample::Get(TEST_SERVICE_NAME, false);
+    ASSERT_TRUE(sampleService != nullptr);
+
+    const sptr<IRemoteObject::DeathRecipient> recipient = new SampleDeathRecipient();
+    sptr<IRemoteObject> remote = OHOS::HDI::hdi_objcast<ISample>(sampleService);
+    bool ret = remote->AddDeathRecipient(recipient);
+    ASSERT_EQ(ret, true);
 }
