@@ -13,36 +13,36 @@
  * limitations under the License.
  */
 
-#ifndef HDI_OBJECT_MAPPER_H
-#define HDI_OBJECT_MAPPER_H
+#ifndef HDI_OBJECT_COLLECTOR_H
+#define HDI_OBJECT_COLLECTOR_H
 
+#include <string>
 #include <hdi_base.h>
 #include <iremote_object.h>
 #include <map>
 #include <mutex>
 #include <refbase.h>
-#include <string>
 
 namespace OHOS {
 namespace HDI {
 class ObjectCollector {
 public:
     using Constructor = std::function<sptr<IRemoteObject>(const sptr<HdiBase> &interface)>;
-    ObjectCollector() = default;
 
-    static const ObjectCollector &GetInstance();
+    static ObjectCollector &GetInstance();
 
-    bool ConstructorRegister(const std::u16string &interfaceName, const Constructor &constructor) const;
-    void ConstructorUnRegister(const std::u16string &interfaceName) const;
-    sptr<IRemoteObject> NewObject(const sptr<HdiBase> &interface, const std::u16string &interfaceName) const;
-    sptr<IRemoteObject> GetOrNewObject(const sptr<HdiBase> &interface, const std::u16string &interfaceName) const;
-    bool RemoveObject(const sptr<HdiBase> &interface) const;
+    bool ConstructorRegister(const std::u16string &interfaceName, const Constructor &constructor);
+    void ConstructorUnRegister(const std::u16string &interfaceName);
+    sptr<IRemoteObject> NewObject(const sptr<HdiBase> &interface, const std::u16string &interfaceName);
+    sptr<IRemoteObject> GetOrNewObject(const sptr<HdiBase> &interface, const std::u16string &interfaceName);
+    bool RemoveObject(const sptr<HdiBase> &interface);
 
 private:
-    sptr<IRemoteObject> NewObjectLocked(const sptr<HdiBase> &interface, const std::u16string &interfaceName) const;
-    static std::map<const std::u16string, const Constructor> constructorMapper_;
-    static std::map<HdiBase *, IRemoteObject *> interfaceObjectCollector_;
-    static std::mutex mutex_;
+    ObjectCollector() = default;
+    sptr<IRemoteObject> NewObjectLocked(const sptr<HdiBase> &interface, const std::u16string &interfaceName);
+    std::map<const std::u16string, const Constructor> constructorMapper_;
+    std::map<HdiBase *, IRemoteObject *> interfaceObjectCollector_;
+    std::mutex mutex_;
 };
 
 template <typename OBJECT, typename INTERFACE>

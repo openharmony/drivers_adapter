@@ -24,11 +24,11 @@ namespace OHOS {
 namespace HDI {
 namespace Sample {
 namespace V1_0 {
-int32_t FooService::PingTest(const bool input, bool &output)
+int32_t FooService::PingTest(bool input, bool &output)
 {
     HDF_LOGI("FooService::PingTest, in=%{public}d", input);
     output = input;
-    return 0;
+    return HDF_SUCCESS;
 }
 } // namespace V1_0
 } // namespace Sample

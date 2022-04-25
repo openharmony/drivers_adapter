@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include "hdi_support.h"
 #include <dlfcn.h>
 #include <securec.h>
 #include <string>
@@ -22,7 +23,6 @@
 
 #include "hdf_base.h"
 #include "hdf_log.h"
-#include "hdi_support.h"
 
 #define HDF_LOG_TAG load_hdi
 
@@ -32,12 +32,15 @@
 #define HDI_SO_PATH HDF_LIBRARY_DIR
 #endif
 
+namespace {
 constexpr int VERSION_SIZE = 2;
 constexpr size_t INTERFACE_SIZE = 5;
 constexpr size_t INTERFACE_VERSION_INDEX = 3;
 constexpr size_t INTERFACE_NAME_INDEX = 2;
+} // namespace
 
-int ParseInterface(std::string fullName, std::string &interface, uint32_t &versionMajor, uint32_t &versionMinor)
+static int ParseInterface(
+    const std::string &fullName, std::string &interface, uint32_t &versionMajor, uint32_t &versionMinor)
 {
     std::vector<std::string> spInfo;
     OHOS::SplitStr(fullName, ".", spInfo, false, true);
