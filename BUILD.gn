@@ -40,6 +40,7 @@ if (defined(ohos_lite)) {
       "//drivers/adapter/uhdf2/manager:hdf_devmgr.cfg",
       "//drivers/adapter/uhdf2/platform:libhdf_platform",
       "//drivers/adapter/uhdf2/utils:libhdf_utils",
+      "//drivers/framework/tools/hdf_dbg:hdf_dbg",
       "//drivers/peripheral/base:hdf_peripheral.cfg",
     ]
   }

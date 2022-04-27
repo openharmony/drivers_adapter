@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -82,6 +82,16 @@ static int32_t DevmgrServiceStubDispatchUnloadDevice(struct IDevmgrService *devm
     return devmgrSvc->UnloadDevice(devmgrSvc, serviceName);
 }
 
+static int32_t DevmgrServiceStubDispatchListAllDevice(struct IDevmgrService *devmgrSvc, struct HdfSBuf *reply)
+{
+    if (devmgrSvc == NULL || reply == NULL) {
+        HDF_LOGE("%{public}s:service name is null", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    HDF_LOGD("%{public}s:get all device info", __func__);
+    return devmgrSvc->ListAllDevice(devmgrSvc, reply);
+}
+
 int32_t DevmgrServiceStubDispatch(struct HdfRemoteService *stub, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
     int32_t ret = HDF_FAILURE;
@@ -119,6 +129,9 @@ int32_t DevmgrServiceStubDispatch(struct HdfRemoteService *stub, int code, struc
             break;
         case DEVMGR_SERVICE_QUERY_DEVICE:
             ret = DevFillQueryDeviceInfo(super, data, reply);
+            break;
+        case DEVMGR_SERVICE_LIST_ALL_DEVICE:
+            ret = DevmgrServiceStubDispatchListAllDevice(super, reply);
             break;
         default:
             break;

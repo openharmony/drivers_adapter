@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,6 +32,7 @@ enum {
     DEVSVC_MANAGER_GET_SERVICE,
     DEVSVC_MANAGER_REGISTER_SVCLISTENER,
     DEVSVC_MANAGER_UNREGISTER_SVCLISTENER,
+    DEVSVC_MANAGER_LIST_ALL_SERVICE,
     DEVSVC_MANAGER_LIST_SERVICE,
     DEVSVC_MANAGER_REMOVE_SERVICE,
 };
