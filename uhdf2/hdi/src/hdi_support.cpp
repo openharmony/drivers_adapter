@@ -15,6 +15,7 @@
 
 #include "hdi_support.h"
 #include <dlfcn.h>
+#include <regex>
 #include <securec.h>
 #include <string>
 #include <string_ex.h>
@@ -33,37 +34,76 @@
 #endif
 
 namespace {
-constexpr int VERSION_SIZE = 2;
-constexpr size_t INTERFACE_SIZE = 5;
-constexpr size_t INTERFACE_VERSION_INDEX = 3;
-constexpr size_t INTERFACE_NAME_INDEX = 2;
+constexpr size_t INTERFACE_MATCH_RESIZE = 4;
+constexpr size_t INTERFACE_VERSION_MAJOR_INDEX = 1;
+constexpr size_t INTERFACE_VERSION_MINOR_INDEX = 2;
+constexpr size_t INTERFACE_NAME_INDEX = 3;
+static const std::regex reInfDesc("[a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z_][a-zA-Z0-9_]*)*\\."
+                                  "[V|v]([0-9]+)_([0-9]+)\\."
+                                  "([a-zA-Z_][a-zA-Z0-9_]*)");
 } // namespace
 
-static int ParseInterface(
-    const std::string &fullName, std::string &interface, uint32_t &versionMajor, uint32_t &versionMinor)
+static int32_t ParseInterface(const std::string &fullName, std::string &interface, uint32_t &versionMajor,
+    uint32_t &versionMinor)
 {
-    std::vector<std::string> spInfo;
-    OHOS::SplitStr(fullName, ".", spInfo, false, true);
-    if (spInfo.size() != INTERFACE_SIZE) {
-        HDF_LOGE("invlid interface format");
+    std::smatch result;
+    if (!std::regex_match(fullName, result, reInfDesc)) {
+        HDF_LOGE("invalid format of interface descriptor '%{public}s'", fullName.c_str());
         return HDF_FAILURE;
     }
 
-    interface = spInfo[INTERFACE_NAME_INDEX];
-    int ret = sscanf_s(spInfo[INTERFACE_VERSION_INDEX].data(), "V%u_%u", &versionMajor, &versionMinor);
-    if (ret != VERSION_SIZE) {
-        HDF_LOGE("failed to get interface version\n");
+    if (result.size() < INTERFACE_MATCH_RESIZE) {
+        HDF_LOGE("failed to parse interface descriptor '%{public}s'", fullName.c_str());
+        return HDF_FAILURE;
+    }
+
+    versionMajor = std::stoul(result[INTERFACE_VERSION_MAJOR_INDEX]);
+    versionMinor = std::stoul(result[INTERFACE_VERSION_MINOR_INDEX]);
+    std::string interfaceName = result[INTERFACE_NAME_INDEX];
+
+    interface = interfaceName[0] == 'I' ? interfaceName.substr(1) : interfaceName;
+    if (interface.empty()) {
+        HDF_LOGE("failed to get invalid interface name");
         return HDF_FAILURE;
     }
 
     return HDF_SUCCESS;
 }
 
+static std::string TransFileName(const std::string& interfaceName)
+{
+    if (interfaceName.empty()) {
+        return interfaceName;
+    }
+
+    std::string result;
+    for (size_t i = 0; i < interfaceName.size(); i++) {
+        char c = interfaceName[i];
+        if (std::isupper(c) != 0) {
+            if (i > 1) {
+                result += '_';
+            }
+            result += std::tolower(c);
+        } else {
+            result += c;
+        }
+    }
+    return result;
+}
+
+/*
+ * interface descriptor name: ohos.hdi.sample.v1_0.IFoo
+ * interface: Foo
+ * versionMajor: 1
+ * versionMinor: 0
+ * library name: libfoo_service_1.0.z.so
+ * method name: FooImplGetInstance
+ */
 void *LoadHdiImpl(const char *fullIfName)
 {
     char path[PATH_MAX + 1] = {0};
     char resolvedPath[PATH_MAX + 1] = {0};
-    // interface name like "OHOS.HDI.Sample.V1_0.IFoo", the last two are version and interface name
+    // interface descriptor name like "ohos.hdi.sample.v1_0.IFoo", the last two are version and interface base name
     if (fullIfName == nullptr) {
         HDF_LOGE("fullIfName is nullptr");
         return nullptr;
@@ -78,9 +118,10 @@ void *LoadHdiImpl(const char *fullIfName)
         HDF_LOGE("failed to parse hdi interface info");
         return nullptr;
     }
-    // hdi implement name like libsample_service_1.0.z.so
+
+    // hdi implement name like libfoo_service_1.0.z.so
     if (snprintf_s(path, sizeof(path), sizeof(path) - 1, "%s/lib%s_service_%u.%u.z.so", HDI_SO_PATH,
-            OHOS::LowerStr(interfaceName).data(), versionMajor, versionMinor) < 0) {
+            TransFileName(interfaceName).data(), versionMajor, versionMinor) < 0) {
         HDF_LOGE("%{public}s snprintf_s failed", __func__);
         return nullptr;
     }
