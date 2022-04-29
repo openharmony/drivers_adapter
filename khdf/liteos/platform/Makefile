@@ -163,4 +163,14 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_TIMER), y)
     $(HDF_FRAMEWORKS)/support/platform/src/timer/timer_core.c
 endif
 
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_CAN), y)
+    LOCAL_SRCS += $(HDF_FRAMEWORKS)/support/platform/src/can/can_client.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/can/can_core.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/can/can_if.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/can/can_mail.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/can/can_manager.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/can/can_msg.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/can/can_service.c
+endif
+
 include $(HDF_DRIVER)
