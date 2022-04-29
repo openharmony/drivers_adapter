@@ -195,6 +195,18 @@ hdf_driver(module_name) {
     ]
   }
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_CAN)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/can/can_client.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/can/can_core.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/can/can_if.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/can/can_mail.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/can/can_manager.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/can/can_msg.c",
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/can/can_service.c",
+    ]
+  }
+
   public_configs = [ ":public" ]
 }
 

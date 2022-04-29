@@ -193,6 +193,13 @@ config DRIVERS_HDF_PLATFORM_TIMER
     help
       Answer Y to enable HDF platform timer driver.
 
+config DRIVERS_HDF_PLATFORM_CAN
+    bool "Enable HDF platform can bus driver"
+    default n
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform can bus driver.
+
 config DRIVERS_HIEDMAC
     bool "Enable HIEDMAC"
     default n
