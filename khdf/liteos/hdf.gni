@@ -31,6 +31,7 @@ import("//kernel/liteos_a/liteos.gni")
 
 HDF_FRAMEWORKS_PATH = "//drivers/framework"
 HDF_PERIPHERAL_PATH = "//drivers/peripheral"
+HDF_ADAPTERS_PATH = "//drivers/adapter"
 
 template("hdf_driver") {
   if (defined(invoker.module_switch)) {
