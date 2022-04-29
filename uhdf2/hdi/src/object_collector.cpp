@@ -18,6 +18,7 @@
 
 #include "hdf_base.h"
 #include "hdf_log.h"
+#include "osal_time.h"
 
 using namespace OHOS::HDI;
 
@@ -67,15 +68,23 @@ OHOS::sptr<OHOS::IRemoteObject> ObjectCollector::NewObject(
 OHOS::sptr<OHOS::IRemoteObject> ObjectCollector::GetOrNewObject(
     const OHOS::sptr<HdiBase> &interface, const std::u16string &interfaceName)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
+    mutex_.lock();
+RETRY:
     auto it = interfaceObjectCollector_.find(interface.GetRefPtr());
     if (it != interfaceObjectCollector_.end()) {
+        if (it->second->GetSptrRefCount() == 0) {
+            // may object is releasing, yield to sync
+            mutex_.unlock();
+            OsalMSleep(1);
+            mutex_.lock();
+            goto RETRY;
+        }
+        mutex_.unlock();
         return it->second;
     }
     sptr<IRemoteObject> object = NewObjectLocked(interface, interfaceName);
     interfaceObjectCollector_[interface.GetRefPtr()] = object.GetRefPtr();
-
+    mutex_.unlock();
     return object;
 }
 
