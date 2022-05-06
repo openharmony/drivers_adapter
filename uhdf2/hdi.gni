@@ -50,9 +50,7 @@ template("hdi") {
 
   config("hdi_public_config") {
     include_dirs = [
-      "$hdf_uhdf_path/include/hdi",
       "$hdf_uhdf_path/include/host",
-      "$hdf_uhdf_path/ipc/include",
       "${files_info.root_package_dir}",
       "${files_info.version_dir}",
     ]
@@ -121,9 +119,10 @@ template("hdi") {
 
       public_configs = [ ":hdi_public_config" ]
 
-      deps = [
+      deps = [ "$hdi_gen" ]
+
+      public_deps = [
         "$hdf_uhdf_path/hdi:libhdi",
-        "$hdi_gen",
         "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
         "//drivers/adapter/uhdf2/utils:libhdf_utils",
       ]
@@ -164,9 +163,10 @@ template("hdi") {
 
       public_configs = [ ":hdi_public_config" ]
 
-      deps = [
+      deps = [ "$hdi_gen" ]
+
+      public_deps = [
         "$hdf_uhdf_path/hdi:libhdi",
-        "$hdi_gen",
         "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
         "//drivers/adapter/uhdf2/utils:libhdf_utils",
       ]
