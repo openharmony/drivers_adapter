@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+# Copyright (c) 2020-2022 Huawei Device Co., Ltd. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -40,6 +40,13 @@ hdf_driver(module_name) {
     "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_queue.c",
     "src/plat_common.c",
   ]
+
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_TRACE)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_trace_transfer.c",
+      "src/platform_trace.c",
+    ]
+  }
 
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2C)) {
     sources += [

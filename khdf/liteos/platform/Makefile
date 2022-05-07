@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+# Copyright (c) 2020-2022 Huawei Device Co., Ltd. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -42,6 +42,11 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM), y)
     $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_manager.c \
     $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_queue.c \
     $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_common.c
+endif
+
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_TRACE), y)
+    LOCAL_SRCS += ./src/platform_trace.c \
+    $(HDF_FRAMEWORKS)/support/platform/src/fwk/platform_trace_transfer.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_I2C), y)
