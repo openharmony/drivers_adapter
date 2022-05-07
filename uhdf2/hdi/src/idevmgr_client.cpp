@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,6 +35,7 @@ enum DevmgrCmdId : uint32_t {
     DEVMGR_SERVICE_LOAD_DEVICE,
     DEVMGR_SERVICE_UNLOAD_DEVICE,
     DEVMGR_SERVICE_QUERY_DEVICE,
+    DEVMGR_SERVICE_LIST_ALL_DEVICE,
 };
 
 class DeviceManagerProxy : public IProxyBroker<IDeviceManager> {
@@ -43,6 +44,7 @@ public:
     ~DeviceManagerProxy() {}
     int32_t LoadDevice(const std::string &serviceName) override;
     int32_t UnloadDevice(const std::string &serviceName) override;
+    int32_t ListAllDevice(std::vector<HdiDevHostInfo> &deviceInfos) override;
 
 private:
     static inline BrokerDelegator<DeviceManagerProxy> delegator_;
@@ -84,6 +86,47 @@ int32_t DeviceManagerProxy::UnloadDevice(const std::string &serviceName)
     int status = Remote()->SendRequest(DEVMGR_SERVICE_UNLOAD_DEVICE, data, reply, option);
     if (status) {
         HDF_LOGE("unload device failed, %{public}d", status);
+    }
+    return status;
+}
+
+static void HdfDevMgrDbgFillDeviceInfo(std::vector<HdiDevHostInfo> &deviceInfos, MessageParcel &reply)
+{
+    while (true) {
+        uint32_t devId;
+        uint32_t devCnt;
+        struct HdiDevHostInfo info;
+        const char *hostName = reply.ReadCString();
+        if (hostName == nullptr) {
+            break;
+        }
+        info.hostName = hostName;
+        info.hostId = reply.ReadUint32();
+        devCnt = reply.ReadUint32();
+        for (uint32_t i = 0; i < devCnt; i++) {
+            devId = reply.ReadUint32();
+            info.devId.push_back(devId);
+        }
+        deviceInfos.push_back(info);
+    }
+    return;
+}
+
+int32_t DeviceManagerProxy::ListAllDevice(std::vector<HdiDevHostInfo> &deviceInfos)
+{
+    MessageParcel data;
+    MessageParcel reply;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        return HDF_FAILURE;
+    }
+
+    MessageOption option;
+    int status = Remote()->SendRequest(DEVMGR_SERVICE_LIST_ALL_DEVICE, data, reply, option);
+    if (status != HDF_SUCCESS) {
+        HDF_LOGE("list all device info failed, %{public}d", status);
+    } else {
+        HdfDevMgrDbgFillDeviceInfo(deviceInfos, reply);
     }
     return status;
 }
