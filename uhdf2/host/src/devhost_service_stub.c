@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,12 +30,52 @@ static void DevHostSetCurrentSecurec(const char *hostName)
     (void) hostName;
 }
 
+static int DispatchAddDevice(struct IDevHostService *serviceIf, struct HdfSBuf *data, struct HdfSBuf *reply)
+{
+    (void)reply;
+    if ((serviceIf == NULL) || (serviceIf->AddDevice == NULL)) {
+        HDF_LOGE("serviceIf or serviceIf->AddDevice is NULL");
+        return HDF_FAILURE;
+    }
+    struct HdfDeviceInfo *attribute = DeviceAttributeDeserialize(data);
+    if (attribute == NULL) {
+        HDF_LOGE("Dispatch failed, attribute is null");
+        return HDF_FAILURE;
+    }
+    HDF_LOGI("add device 0x%{public}x", attribute->deviceId);
+    int ret = serviceIf->AddDevice(serviceIf, attribute);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("Dispatch failed, add service failed and ret is %{public}d", ret);
+    }
+    DeviceSerializedAttributeRelease(attribute);
+    return ret;
+}
+
+static int DispatchDelDevice(struct IDevHostService *serviceIf, struct HdfSBuf *data, struct HdfSBuf *reply)
+{
+    uint32_t deviceId = 0;
+    (void)reply;
+    if ((serviceIf == NULL) || (serviceIf->DelDevice == NULL)) {
+        HDF_LOGE("serviceIf or serviceIf->DelDevice is NULL");
+        return HDF_FAILURE;
+    }
+    if (!HdfSbufReadUint32(data, &deviceId)) {
+        HDF_LOGE("failed to del device, invalid device id");
+        return HDF_FAILURE;
+    }
+
+    HDF_LOGI("del device 0x%{public}x", deviceId);
+    int ret = serviceIf->DelDevice(serviceIf, deviceId);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("del service failed, ret is %{public}d", ret);
+    }
+    return ret;
+}
+
 static int DevHostServiceStubDispatch(
     struct HdfRemoteService *stub, int code, struct HdfSBuf *data, struct HdfSBuf *reply)
 {
-    (void)reply;
     int ret = HDF_FAILURE;
-    uint32_t deviceId = 0;
     if (stub == NULL || data == NULL) {
         return ret;
     }
@@ -45,38 +85,11 @@ static int DevHostServiceStubDispatch(
     OsalMutexLock(&serviceStub->hostSvcMutex);
     switch (code) {
         case DEVHOST_SERVICE_ADD_DEVICE: {
-            if ((serviceIf == NULL) || (serviceIf->AddDevice == NULL)) {
-                HDF_LOGE("serviceIf or serviceIf->AddDevice is NULL");
-                break;
-            }
-            struct HdfDeviceInfo *attribute = DeviceAttributeDeserialize(data);
-            if (attribute == NULL) {
-                HDF_LOGE("Dispatch failed, attribute is null");
-                break;
-            }
-            HDF_LOGI("add device 0x%{public}x", attribute->deviceId);
-            ret = serviceIf->AddDevice(serviceIf, attribute);
-            if (ret != HDF_SUCCESS) {
-                HDF_LOGE("Dispatch failed, add service failed and ret is %{public}d", ret);
-            }
-            DeviceSerializedAttributeRelease(attribute);
+            ret = DispatchAddDevice(serviceIf, data, reply);
             break;
         }
         case DEVHOST_SERVICE_DEL_DEVICE: {
-            if ((serviceIf == NULL) || (serviceIf->DelDevice == NULL)) {
-                HDF_LOGE("serviceIf or serviceIf->DelDevice is NULL");
-                break;
-            }
-            if (!HdfSbufReadUint32(data, &deviceId)) {
-                HDF_LOGE("failed to del device, invalid device id");
-                break;
-            }
-
-            HDF_LOGI("del device 0x%{public}x", deviceId);
-            ret = serviceIf->DelDevice(serviceIf, deviceId);
-            if (ret != HDF_SUCCESS) {
-                HDF_LOGE("del service failed, ret is %{public}d", ret);
-            }
+            ret = DispatchDelDevice(serviceIf, data, reply);
             break;
         }
         default: {

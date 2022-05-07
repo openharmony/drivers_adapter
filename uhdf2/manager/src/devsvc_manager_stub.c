@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -50,6 +50,19 @@ static int32_t GetServicePermCheck(const char *servName)
     pid_t callingPid = HdfRemoteGetCallingPid();
     if (HdfGetServiceCheck(callingPid, servName) != 0) {
         HDF_LOGE("[selinux] %{public}d haven't \"get service\" permission to %{public}s", callingPid, servName);
+        return HDF_ERR_NOPERM;
+    }
+#endif
+
+    return HDF_SUCCESS;
+}
+
+static int32_t ListServicePermCheck()
+{
+#ifdef WITH_SELINUX
+    pid_t callingPid = HdfRemoteGetCallingPid();
+    if (HdfListServiceCheck(callingPid) != 0) {
+        HDF_LOGE("[selinux] %{public}d haven't \"list service\" permission", callingPid);
         return HDF_ERR_NOPERM;
     }
 #endif
@@ -221,6 +234,23 @@ static int32_t DevSvcManagerStubGetService(struct IDevSvcManager *super, struct 
     return ret;
 }
 
+static int32_t DevSvcManagerStubListAllService(
+    struct IDevSvcManager *super, struct HdfSBuf *data, struct HdfSBuf *reply)
+{
+    struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
+    if (!HdfRemoteServiceCheckInterfaceToken(stub->remote, data)) {
+        HDF_LOGE("%{public}s: invalid interface token", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    int ret = ListServicePermCheck();
+    if (ret != HDF_SUCCESS) {
+        return ret;
+    }
+    super->ListAllService(super, reply);
+
+    return HDF_SUCCESS;
+}
+
 static int32_t DevSvcManagerStubRemoveService(struct IDevSvcManager *super, struct HdfSBuf *data)
 {
     struct DevSvcManagerStub *stub = (struct DevSvcManagerStub *)super;
@@ -344,6 +374,9 @@ int DevSvcManagerStubDispatch(struct HdfRemoteService *service, int code, struct
             break;
         case DEVSVC_MANAGER_UNREGISTER_SVCLISTENER:
             ret = DevSvcManagerStubUnregisterServListener(super, data);
+            break;
+        case DEVSVC_MANAGER_LIST_ALL_SERVICE:
+            ret = DevSvcManagerStubListAllService(super, data, reply);
             break;
         default:
             HDF_LOGE("Unknown code : %{public}d", code);
