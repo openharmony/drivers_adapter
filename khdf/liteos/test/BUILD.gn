@@ -86,7 +86,7 @@ hdf_driver(module_name) {
       "$HDF_TEST_FRAMWORK_ROOT/platform/common/platform_event_test.c",
       "$HDF_TEST_FRAMWORK_ROOT/platform/common/platform_manager_test.c",
       "$HDF_TEST_FRAMWORK_ROOT/platform/common/platform_queue_test.c",
-      "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_platform_core_entry_test.c",
+      "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_platform_entry_test.c",
     ]
 
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_TRACE)) {
@@ -246,6 +246,14 @@ hdf_driver(module_name) {
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/timer_driver_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/timer_test.c",
         "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_timer_entry_test.c",
+      ]
+    }
+
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_CAN)) {
+      sources += [
+        "$HDF_ADAPTERS_PATH/platform/can/can_virtual.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/common/can_test.c",
+        "$HDF_TEST_FRAMWORK_ROOT/platform/config/can_test_config.c",
       ]
     }
   }
