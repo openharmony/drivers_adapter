@@ -42,6 +42,13 @@ hdf_driver(module_name) {
     "src/plat_common.c",
   ]
 
+  if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_TRACE)) {
+    sources += [
+      "$HDF_FRAMEWORKS_PATH/support/platform/src/fwk/platform_trace_transfer.c",
+      "src/platform_trace.c",
+    ]
+  }
+
   if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_I2C)) {
     sources += [
       "$HDF_FRAMEWORKS_PATH/support/platform/src/i2c/i2c_core.c",
