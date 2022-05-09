@@ -69,6 +69,9 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_dumper_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_device_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_manager_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_platform_core_entry_test.c
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_TRACE), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_trace_test.c
+endif
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/gpio_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/gpio_driver_test.c

@@ -43,6 +43,7 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
       "//drivers/framework/support/platform/test/unittest/common/hdf_platform_event_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_platform_manager_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_platform_queue_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_platform_trace_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_pwm_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_regulator_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_rtc_test.cpp",

@@ -89,6 +89,11 @@ hdf_driver(module_name) {
       "$HDF_TEST_FRAMWORK_ROOT/platform/entry/hdf_platform_core_entry_test.c",
     ]
 
+    if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_TRACE)) {
+      sources +=
+          [ "$HDF_TEST_FRAMWORK_ROOT/platform/common/platform_trace_test.c" ]
+    }
+
     if (defined(LOSCFG_DRIVERS_HDF_PLATFORM_GPIO)) {
       sources += [
         "$HDF_TEST_FRAMWORK_ROOT/platform/common/gpio_driver_test.c",
