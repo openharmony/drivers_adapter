@@ -31,6 +31,7 @@ include ./test_lite.mk
 
 MODULE_NAME := hdf_test
 HDF_TEST_FRAMWORK_ROOT = $(LITEOSTOPDIR)/../../drivers/framework/test/unittest
+HDF_ADAPTERS_ROOT = $(LITEOSTOPDIR)/../../drivers/adapter
 
 LOCAL_SRCS := $(HDF_TEST_FRAMWORK_ROOT)/common/hdf_main_test.c \
               $(HDF_TEST_FRAMWORK_ROOT)/manager/sample_driver_test.c \
@@ -68,7 +69,7 @@ LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_queue_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_dumper_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_device_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_manager_test.c
-LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_platform_core_entry_test.c
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_platform_entry_test.c
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_TRACE), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/platform_trace_test.c
 endif
@@ -162,6 +163,10 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_TIMER), y)
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/timer_driver_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/timer_test.c
 LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/entry/hdf_timer_entry_test.c
+endif
+ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_CAN), y)
+LOCAL_SRCS += $(HDF_TEST_FRAMWORK_ROOT)/platform/common/can_test.c
+LOCAL_SRCS += $(HDF_ADAPTERS_ROOT)/platform/can/can_virtual.c
 endif
 
 endif
