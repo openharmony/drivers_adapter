@@ -37,6 +37,7 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
     }
     sources = [
       "//drivers/framework/support/platform/test/unittest/common/hdf_adc_test.cpp",
+      "//drivers/framework/support/platform/test/unittest/common/hdf_can_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_gpio_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_platform_device_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_platform_dumper_test.cpp",
