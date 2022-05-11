@@ -14,6 +14,7 @@
 group("hdf_test_uhdf") {
   testonly = true
   deps = [
+    "fuzztest:hdf_platform_test",
     "unittest/config:hdf_adapter_uhdf_test_config",
     "unittest/manager:hdf_adapter_uhdf_test_ioservice",
     "unittest/manager:hdf_adapter_uhdf_test_manager",
