@@ -28,21 +28,6 @@ namespace OHOS {
 namespace HDI {
 namespace Sample {
 namespace V1_0 {
-sptr<IFoo> IFoo::Get(bool isStub)
-{
-    if (!isStub) {
-        return nullptr;
-    }
-    std::string desc = Str16ToStr8(IFoo::GetDescriptor());
-    void *impl = LoadHdiImpl(desc.data());
-    if (impl == nullptr) {
-        HDF_LOGE("failed to load hdi impl %{public}s", desc.data());
-        return nullptr;
-    }
-
-    return reinterpret_cast<IFoo *>(impl);
-}
-
 FooStub::FooStub(const sptr<IFoo> serviceImpl) : IPCObjectStub(IFoo::GetDescriptor()), impl_(serviceImpl) {}
 
 FooStub::~FooStub()
