@@ -36,6 +36,7 @@ ohos_shared_library("libhdf_platform") {
     "$HDF_FRAMEWORKS/support/platform/src/adc/adc_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/gpio/gpio_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/i2c/i2c_if_u.c",
+    "$HDF_FRAMEWORKS/support/platform/src/pwm/pwm_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/rtc/rtc_base.c",
     "$HDF_FRAMEWORKS/support/platform/src/rtc/rtc_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/spi/spi_if_u.c",
