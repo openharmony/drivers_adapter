@@ -46,7 +46,7 @@ sptr<ISample> ISample::Get(const std::string &serviceName, bool isStub)
     }
 
     std::string desc = Str16ToStr8(ISample::GetDescriptor());
-    void *impl = LoadHdiImpl(desc.data());
+    void *impl = LoadHdiImpl(desc.data(), serviceName.c_str());
     if (impl == nullptr) {
         HDF_LOGE("failed to load hdi impl %{public}s", desc.data());
         return nullptr;

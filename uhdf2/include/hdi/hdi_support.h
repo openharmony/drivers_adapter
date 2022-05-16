@@ -22,7 +22,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-void *LoadHdiImpl(const char *fullIfName);
+void *LoadHdiImpl(const char *desc, const char *serviceName);
 
 #ifdef __cplusplus
 }

@@ -33,8 +33,6 @@ public:
     virtual ~IFoo() = default;
 
     virtual int32_t PingTest(bool input, bool &output) = 0;
-
-    static sptr<IFoo> Get(bool isStub);
 };
 } // namespace V1_0
 } // namespace Sample

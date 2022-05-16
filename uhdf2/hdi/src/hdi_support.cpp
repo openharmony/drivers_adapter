@@ -18,9 +18,7 @@
 #include <regex>
 #include <securec.h>
 #include <string>
-#include <string_ex.h>
 #include <unistd.h>
-#include <vector>
 
 #include "hdf_base.h"
 #include "hdf_log.h"
@@ -43,17 +41,15 @@ static const std::regex reInfDesc("[a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z_][a-zA-Z0
                                   "([a-zA-Z_][a-zA-Z0-9_]*)");
 } // namespace
 
-static int32_t ParseInterface(const std::string &fullName, std::string &interface, uint32_t &versionMajor,
+static int32_t ParseInterface(const std::string &desc, std::string &interface, uint32_t &versionMajor,
     uint32_t &versionMinor)
 {
     std::smatch result;
-    if (!std::regex_match(fullName, result, reInfDesc)) {
-        HDF_LOGE("invalid format of interface descriptor '%{public}s'", fullName.c_str());
+    if (!std::regex_match(desc, result, reInfDesc)) {
         return HDF_FAILURE;
     }
 
     if (result.size() < INTERFACE_MATCH_RESIZE) {
-        HDF_LOGE("failed to parse interface descriptor '%{public}s'", fullName.c_str());
         return HDF_FAILURE;
     }
 
@@ -63,7 +59,6 @@ static int32_t ParseInterface(const std::string &fullName, std::string &interfac
 
     interface = interfaceName[0] == 'I' ? interfaceName.substr(1) : interfaceName;
     if (interface.empty()) {
-        HDF_LOGE("failed to get invalid interface name");
         return HDF_FAILURE;
     }
 
@@ -91,37 +86,39 @@ static std::string TransFileName(const std::string& interfaceName)
     return result;
 }
 
-/*
+/* service name: xxx_service
  * interface descriptor name: ohos.hdi.sample.v1_0.IFoo
  * interface: Foo
  * versionMajor: 1
  * versionMinor: 0
- * library name: libfoo_service_1.0.z.so
+ * library name: libfoo_xxx_service_1.0.z.so
  * method name: FooImplGetInstance
  */
-void *LoadHdiImpl(const char *fullIfName)
+void *LoadHdiImpl(const char *desc, const char *serviceName)
 {
     char path[PATH_MAX + 1] = {0};
     char resolvedPath[PATH_MAX + 1] = {0};
     // interface descriptor name like "ohos.hdi.sample.v1_0.IFoo", the last two are version and interface base name
-    if (fullIfName == nullptr) {
-        HDF_LOGE("fullIfName is nullptr");
+    if (desc == nullptr || serviceName == nullptr) {
+        HDF_LOGE("%{public}s interface descriptor or service name is nullptr", __func__);
         return nullptr;
     }
 
-    HDF_LOGD("load interface impl: %{public}s", fullIfName);
-    std::string fullName = fullIfName;
+    if (strlen(desc) == 0 || strlen(serviceName) == 0) {
+        HDF_LOGE("%{public}s invalid interface descriptor or service name", __func__);
+        return nullptr;
+    }
+
     std::string interfaceName;
     uint32_t versionMajor = 0;
     uint32_t versionMinor = 0;
-    if (ParseInterface(fullIfName, interfaceName, versionMajor, versionMinor) != HDF_SUCCESS) {
-        HDF_LOGE("failed to parse hdi interface info");
+    if (ParseInterface(desc, interfaceName, versionMajor, versionMinor) != HDF_SUCCESS) {
+        HDF_LOGE("failed to parse hdi interface info from '%{public}s'", desc);
         return nullptr;
     }
 
-    // hdi implement name like libfoo_service_1.0.z.so
-    if (snprintf_s(path, sizeof(path), sizeof(path) - 1, "%s/lib%s_service_%u.%u.z.so", HDI_SO_PATH,
-            TransFileName(interfaceName).data(), versionMajor, versionMinor) < 0) {
+    if (snprintf_s(path, sizeof(path), sizeof(path) - 1, "%s/lib%s_%s_%u.%u.z.so", HDI_SO_PATH,
+            TransFileName(interfaceName).c_str(), serviceName, versionMajor, versionMinor) < 0) {
         HDF_LOGE("%{public}s snprintf_s failed", __func__);
         return nullptr;
     }
@@ -129,6 +126,8 @@ void *LoadHdiImpl(const char *fullIfName)
         HDF_LOGE("%{public}s invalid hdi impl so name %{public}s", __func__, path);
         return nullptr;
     }
+
+    HDF_LOGD("load interface impl lib: %{public}s", resolvedPath);
     void *handler = dlopen(resolvedPath, RTLD_LAZY);
     if (handler == nullptr) {
         HDF_LOGE("%{public}s dlopen failed %{public}s", __func__, dlerror());
