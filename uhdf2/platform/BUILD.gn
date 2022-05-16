@@ -42,6 +42,7 @@ ohos_shared_library("libhdf_platform") {
     "$HDF_FRAMEWORKS/support/platform/src/spi/spi_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/timer/timer_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/uart/uart_if_u.c",
+    "$HDF_FRAMEWORKS/support/platform/src/watchdog/watchdog_if_u.c",
   ]
 
   include_dirs = [
