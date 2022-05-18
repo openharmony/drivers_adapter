@@ -99,7 +99,7 @@ SharedMemQueue<T>::SharedMemQueue(uint32_t elementCount, SmqType type) : aligned
     }
 
     meta_ = std::make_shared<SharedMemQueueMeta<T>>(elementCount, type);
-    HDF_LOGI("create SharedMemQueue, count=%{public}u, size=%{public}u", elementCount, meta_->GetSize());
+    HDF_LOGI("create SharedMemQueue, count=%{public}u, size=%{public}zu", elementCount, meta_->GetSize());
     int ashmemFd = AshmemCreate("hdi_smq", Align(meta_->GetSize(), PAGE_SIZE));
     if (ashmemFd < 0) {
         HDF_LOGE("failed to create ashmem");
