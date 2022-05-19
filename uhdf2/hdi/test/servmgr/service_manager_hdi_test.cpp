@@ -561,7 +561,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest012, TestSize.Level1)
         t[0].data64 = i + 1;
         t[1].data32 = i + 1;
         t[1].data64 = i + 1;
-        HDF_LOGI("%{public}s:write smq message %{public}zu", __func__, i);
+        HDF_LOGI("%{public}s:write smq message %{public}d", __func__, i);
         auto status = smq->Write(&t[0], ELEMENT_SIZE, OHOS::MillisecToNanosec(SMQ_TEST_WAIT_TIME));
         ASSERT_EQ(status, 0);
     }
@@ -603,7 +603,7 @@ HWTEST_F(HdfServiceMangerHdiTest, ServMgrTest013, TestSize.Level1)
         t[0].data64 = i + 1;
         t[1].data32 = i + 1;
         t[1].data64 = i + 1;
-        HDF_LOGI("%{public}s:write smq message %{public}zu", __func__, i);
+        HDF_LOGI("%{public}s:write smq message %{public}d", __func__, i);
         status = smq->WriteNonBlocking(&t[0], ELEMENT_SIZE);
         ASSERT_EQ(status, 0);
     }
