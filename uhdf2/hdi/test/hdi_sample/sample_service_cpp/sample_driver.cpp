@@ -65,6 +65,7 @@ static int HdfSampleDriverBind(struct HdfDeviceObject *deviceObject)
     auto sampleImpl = ISample::Get(true);
     if (sampleImpl == nullptr) {
         HDF_LOGE("HdfSampleDriverBind: failed to get ISample implement");
+        delete hdfSampleService;
         return HDF_FAILURE;
     }
 
@@ -72,6 +73,7 @@ static int HdfSampleDriverBind(struct HdfDeviceObject *deviceObject)
         OHOS::HDI::ObjectCollector::GetInstance().GetOrNewObject(sampleImpl, ISample::GetDescriptor());
     if (hdfSampleService->sampleStub == nullptr) {
         HDF_LOGE("HdfSampleDriverBind: failed to get ISample stub object");
+        delete hdfSampleService;
         return HDF_FAILURE;
     }
 
