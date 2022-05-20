@@ -31,12 +31,11 @@ import("//drivers/adapter/khdf/liteos/hdf.gni")
 module_switch = defined(LOSCFG_DRIVERS_HDF_AUDIO)
 module_name = "hdf_audio_driver"
 hdf_driver(module_name) {
-  PERIPHERAL_ADUIO_ROOT = []
   FRAMEWORKS_ADUIO_ROOT = "$HDF_FRAMEWORKS_PATH/model/audio"
-  PERIPHERAL_ADUIO_ROOT = "$HDF_PERIPHERAL_PATH/audio"
+  PERIPHERAL_ADUIO_ROOT =
+      "//device/board/hisilicon/hispark_taurus/audio_drivers"
 
   sources = [
-    "$FRAMEWORKS_ADUIO_ROOT/common/src/audio_accessory_base.c",
     "$FRAMEWORKS_ADUIO_ROOT/common/src/audio_codec_base.c",
     "$FRAMEWORKS_ADUIO_ROOT/common/src/audio_dai_base.c",
     "$FRAMEWORKS_ADUIO_ROOT/common/src/audio_dma_base.c",
@@ -69,32 +68,31 @@ hdf_driver(module_name) {
 
   if (defined(LOSCFG_DRIVERS_HDF_AUDIO_CODEC_HI3516)) {
     sources += [
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/codec/src/hi3516_codec_adapter.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/codec/src/hi3516_codec_impl.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/codec/src/hi3516_codec_ops.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/dsp/src/dsp_adapter.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/dsp/src/dsp_ops.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/src/hi3516_aiao_impl.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/src/hi3516_dai_adapter.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/src/hi3516_dai_ops.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/src/hi3516_dma_adapter.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/src/hi3516_dma_ops.c",
+      "$PERIPHERAL_ADUIO_ROOT/codec/hi3516/src/hi3516_codec_adapter.c",
+      "$PERIPHERAL_ADUIO_ROOT/codec/hi3516/src/hi3516_codec_impl.c",
+      "$PERIPHERAL_ADUIO_ROOT/codec/hi3516/src/hi3516_codec_ops.c",
+      "$PERIPHERAL_ADUIO_ROOT/dsp/src/dsp_adapter.c",
+      "$PERIPHERAL_ADUIO_ROOT/dsp/src/dsp_ops.c",
+      "$PERIPHERAL_ADUIO_ROOT/soc/src/hi3516_aiao_impl.c",
+      "$PERIPHERAL_ADUIO_ROOT/soc/src/hi3516_dai_adapter.c",
+      "$PERIPHERAL_ADUIO_ROOT/soc/src/hi3516_dai_ops.c",
+      "$PERIPHERAL_ADUIO_ROOT/soc/src/hi3516_dma_adapter.c",
+      "$PERIPHERAL_ADUIO_ROOT/soc/src/hi3516_dma_ops.c",
     ]
 
     include_dirs += [
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/codec/include",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/soc/include",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/hi3516dv300/dsp/include",
+      "$PERIPHERAL_ADUIO_ROOT/codec/hi3516/include",
+      "$PERIPHERAL_ADUIO_ROOT/soc/include",
+      "$PERIPHERAL_ADUIO_ROOT/dsp/include",
     ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_AUDIO_CODEC_TF9879)) {
     sources += [
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/tfa9879/accessory/src/tfa9879_accessory_adapter.c",
-      "$PERIPHERAL_ADUIO_ROOT/chipsets/tfa9879/accessory/src/tfa9879_accessory_impl.c",
+      "$PERIPHERAL_ADUIO_ROOT/codec/tfa9879/src/tfa9879_codec_adapter.c",
+      "$PERIPHERAL_ADUIO_ROOT/codec/tfa9879/src/tfa9879_codec_ops.c",
     ]
-    include_dirs +=
-        [ "$PERIPHERAL_ADUIO_ROOT/chipsets/tfa9879/accessory/include" ]
+    include_dirs += [ "$PERIPHERAL_ADUIO_ROOT/codec/tfa9879/include" ]
   }
 
   cflags = [
