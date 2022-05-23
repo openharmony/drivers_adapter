@@ -345,6 +345,7 @@ static void HdfVirtualCanRelease(struct HdfDeviceObject *device)
         return;
     }
 
+    CanServiceRelease(device);
     (void)CanCntlrDel(&virtualCan->cntlr);
     VirtualCanDeinit(virtualCan);
     OsalMemFree(virtualCan);
