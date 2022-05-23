@@ -848,7 +848,7 @@ static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfDeviceObject *device, 
 
     ret = HdfDeviceObjectRegister(devObj);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%s: failed to regitst device %s", __func__, moduleName);
+        HDF_LOGE("%s: failed to register device %s", __func__, moduleName);
         HdfDeviceObjectRelease(devObj);
         return ret;
     }
@@ -856,7 +856,7 @@ static int32_t UsbPnpNotifyDriverRegisterDevice(struct HdfDeviceObject *device, 
     ret = HdfDeviceObjectPublishService(devObj, serviceName, SERVICE_POLICY_CAPACITY,
         OSAL_S_IREAD | OSAL_S_IWRITE | OSAL_S_IRGRP | OSAL_S_IWGRP | OSAL_S_IROTH);
     if (ret != HDF_SUCCESS) {
-        HDF_LOGE("%s: failed to regitst device %s", __func__, serviceName);
+        HDF_LOGE("%s: failed to register device %s", __func__, serviceName);
         HdfDeviceObjectRelease(devObj);
     }
 
