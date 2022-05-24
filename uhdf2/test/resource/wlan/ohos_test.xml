@@ -14,7 +14,17 @@
      limitations under the License.
 -->
 <configuration ver="2.0">
-    <target name="hdf_unittest_wifi">
+ <target name="hdf_common_wifi">
+        <preparer>
+            <option name="push" value="hdf/hdf/libhdf_test_common.z.so -> /system/lib" src="out"/>
+        </preparer>
+    </target>
+	<target name="hdf_hal_wifi">
+        <preparer>
+            <option name="push" value="hdf/hdf/libhdf_test_common.z.so -> /system/lib" src="out"/>
+        </preparer>
+    </target>
+	<target name="hdf_client_wifi">
         <preparer>
             <option name="push" value="hdf/hdf/libhdf_test_common.z.so -> /system/lib" src="out"/>
         </preparer>
