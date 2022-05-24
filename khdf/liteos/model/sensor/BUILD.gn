@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+# Copyright (c) 2020-2022 Huawei Device Co., Ltd. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -32,6 +32,7 @@ module_switch = defined(LOSCFG_DRIVERS_HDF_SENSOR)
 module_name = "hdf_sensor_driver"
 hdf_driver(module_name) {
   FRAMEWORKS_SENSOR_ROOT = "$HDF_FRAMEWORKS_PATH/model/sensor/driver"
+  PERIPHERAL_SENSOR_ROOT = "$HDF_PERIPHERAL_PATH/sensor"
   sources = [
     "$FRAMEWORKS_SENSOR_ROOT/common/src/sensor_config_controller.c",
     "$FRAMEWORKS_SENSOR_ROOT/common/src/sensor_config_parser.c",
@@ -43,14 +44,14 @@ hdf_driver(module_name) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/accel/sensor_accel_driver.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_ACCEL_BMI160)) {
-    sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/accel/accel_bmi160.c" ]
+    sources += [ "$PERIPHERAL_SENSOR_ROOT/chipset/accel/accel_bmi160.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_ALS)) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/als/sensor_als_driver.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_ALS_BH1745)) {
-    sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/als/als_bh1745.c" ]
+    sources += [ "$PERIPHERAL_SENSOR_ROOT/chipset/als/als_bh1745.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER)) {
@@ -58,20 +59,20 @@ hdf_driver(module_name) {
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER_BMP180)) {
     sources +=
-        [ "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer/barometer_bmp180.c" ]
+        [ "$PERIPHERAL_SENSOR_ROOT/chipset/barometer/barometer_bmp180.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_PROXIMITY)) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/proximity/sensor_proximity_driver.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_PROXIMITY_APDS9960)) {
     sources +=
-        [ "$FRAMEWORKS_SENSOR_ROOT/chipset/proximity/proximity_apds9960.c" ]
+        [ "$PERIPHERAL_SENSOR_ROOT/chipset/proximity/proximity_apds9960.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_GYRO)) {
     sources += [
-      "$FRAMEWORKS_SENSOR_ROOT/chipset/gyro/gyro_bmi160.c",
       "$FRAMEWORKS_SENSOR_ROOT/gyro/sensor_gyro_driver.c",
+      "$PERIPHERAL_SENSOR_ROOT/chipset/gyro/gyro_bmi160.c",
     ]
   }
 
@@ -79,14 +80,14 @@ hdf_driver(module_name) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/hall/sensor_hall_driver.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_HALL_AK8789)) {
-    sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/hall/hall_ak8789.c" ]
+    sources += [ "$PERIPHERAL_SENSOR_ROOT/chipset/hall/hall_ak8789.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_MAGNETIC)) {
     sources += [ "$FRAMEWORKS_SENSOR_ROOT/magnetic/sensor_magnetic_driver.c" ]
   }
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_MAGNETIC_LSM303)) {
-    sources += [ "$FRAMEWORKS_SENSOR_ROOT/chipset/magnetic/magnetic_lsm303.c" ]
+    sources += [ "$PERIPHERAL_SENSOR_ROOT/chipset/magnetic/magnetic_lsm303.c" ]
   }
 
   if (defined(LOSCFG_DRIVERS_HDF_SENSOR_GRAVITY)) {
@@ -97,18 +98,18 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_SENSOR_ROOT/include",
     "$FRAMEWORKS_SENSOR_ROOT/common/include",
     "$FRAMEWORKS_SENSOR_ROOT/accel",
-    "$FRAMEWORKS_SENSOR_ROOT/chipset/accel",
+    "$PERIPHERAL_SENSOR_ROOT/chipset/accel",
     "$FRAMEWORKS_SENSOR_ROOT/als",
-    "$FRAMEWORKS_SENSOR_ROOT/chipset/als",
+    "$PERIPHERAL_SENSOR_ROOT/chipset/als",
     "$FRAMEWORKS_SENSOR_ROOT/barometer",
-    "$FRAMEWORKS_SENSOR_ROOT/chipset/barometer",
+    "$PERIPHERAL_SENSOR_ROOT/chipset/barometer",
     "$FRAMEWORKS_SENSOR_ROOT/gyro",
-    "$FRAMEWORKS_SENSOR_ROOT/chipset/gyro",
+    "$PERIPHERAL_SENSOR_ROOT/chipset/gyro",
     "$FRAMEWORKS_SENSOR_ROOT/hall",
-    "$FRAMEWORKS_SENSOR_ROOT/chipset/hall",
+    "$PERIPHERAL_SENSOR_ROOT/chipset/hall",
     "$FRAMEWORKS_SENSOR_ROOT/magnetic",
-    "$FRAMEWORKS_SENSOR_ROOT/chipset/magnetic",
+    "$PERIPHERAL_SENSOR_ROOT/chipset/magnetic",
     "$FRAMEWORKS_SENSOR_ROOT/proximity",
-    "$FRAMEWORKS_SENSOR_ROOT/chipset/proximity",
+    "$PERIPHERAL_SENSOR_ROOT/chipset/proximity",
   ]
 }

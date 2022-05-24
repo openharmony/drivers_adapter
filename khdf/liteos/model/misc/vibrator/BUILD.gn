@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+# Copyright (c) 2020-2022 Huawei Device Co., Ltd. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -32,6 +32,7 @@ module_switch = defined(LOSCFG_DRIVERS_HDF_VIBRATOR)
 module_name = "hdf_vibrator_driver"
 hdf_driver(module_name) {
   FRAMEWORKS_VIBRATOR_ROOT = "$HDF_FRAMEWORKS_PATH/model/misc/vibrator/driver"
+  PERIPHERAL_VIBRATOR_ROOT = "$HDF_PERIPHERAL_PATH/misc/vibrator"
 
   sources = [
     "$FRAMEWORKS_VIBRATOR_ROOT/src/vibrator_driver.c",
@@ -39,11 +40,11 @@ hdf_driver(module_name) {
   ]
 
   if (defined(LOSCFG_DRIVERS_HDF_VIBRATOR_LINEAR)) {
-    sources += [ "$FRAMEWORKS_VIBRATOR_ROOT/chipset/vibrator_linear_driver.c" ]
+    sources += [ "$PERIPHERAL_VIBRATOR_ROOT/chipset/vibrator_linear_driver.c" ]
   }
 
   include_dirs = [
     "$FRAMEWORKS_VIBRATOR_ROOT/include",
-    "$FRAMEWORKS_VIBRATOR_ROOT/chipset",
+    "$PERIPHERAL_VIBRATOR_ROOT/chipset",
   ]
 }

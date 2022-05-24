@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd. All rights reserved.
+# Copyright (c) 2022 Huawei Device Co., Ltd. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -31,15 +31,16 @@ include $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/lite.mk
 MODULE_NAME := hdf_vibrator_driver
 
 FRAMEWORKS_VIBRATOR_ROOT = $(LITEOSTOPDIR)/../../drivers/framework/model/misc/vibrator/driver
+PERIPHERAL_VIBRATOR_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/misc/vibrator
 
 LOCAL_INCLUDE := $(FRAMEWORKS_VIBRATOR_ROOT)/include \
-                 $(FRAMEWORKS_VIBRATOR_ROOT)/chipset
+                 $(PERIPHERAL_VIBRATOR_ROOT)/chipset
 
 LOCAL_SRCS += $(FRAMEWORKS_VIBRATOR_ROOT)/src/vibrator_driver.c \
               $(FRAMEWORKS_VIBRATOR_ROOT)/src/vibrator_haptic.c
 
 ifeq ($(LOSCFG_DRIVERS_HDF_VIBRATOR_LINEAR), y)
-LOCAL_SRCS += $(FRAMEWORKS_VIBRATOR_ROOT)/chipset/vibrator_linear_driver.c
+LOCAL_SRCS += $(PERIPHERAL_VIBRATOR_ROOT)/chipset/vibrator_linear_driver.c
 endif
 
 include $(HDF_DRIVER)
