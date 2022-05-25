@@ -22,7 +22,9 @@ template("hdi") {
   assert(defined(invoker.subsystem_name), "subsystem_name are must")
   assert(defined(invoker.part_name), "part_name are must")
 
-  root_package_mapping = "ohos.hdi:drivers/interface"
+  root_path = rebase_path("//drivers/interface")
+  root_package_mapping = "ohos.hdi:${root_path}"
+
   get_info_args = [
     "-i",
     invoker.language,
@@ -127,6 +129,10 @@ template("hdi") {
         "//drivers/adapter/uhdf2/utils:libhdf_utils",
       ]
 
+      if (defined(invoker.sequenceable)) {
+        public_deps += invoker.sequenceable
+      }
+
       if (is_standard_system) {
         external_deps = [
           "hiviewdfx_hilog_native:libhilog",
@@ -170,6 +176,10 @@ template("hdi") {
         "//drivers/adapter/uhdf2/ipc:libhdf_ipc_adapter",
         "//drivers/adapter/uhdf2/utils:libhdf_utils",
       ]
+
+      if (defined(invoker.sequenceable)) {
+        public_deps += invoker.sequenceable
+      }
 
       if (is_standard_system) {
         external_deps = [
