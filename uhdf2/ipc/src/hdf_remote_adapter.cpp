@@ -141,6 +141,8 @@ bool HdfRemoteServiceHolder::SetInterfaceDescriptor(const char *desc)
         HDF_LOGE("failed to set interface des, error on cover str8 to str16, %{public}s", desc);
         return false;
     }
+    static std::mutex descMutex;
+    std::lock_guard<std::mutex> lock(descMutex);
     (const_cast<std::u16string *>(&remote_->descriptor_))->assign(newDesc);
 
     return true;
