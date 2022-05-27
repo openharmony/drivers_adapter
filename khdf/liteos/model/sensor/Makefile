@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+# Copyright (c) 2020-2022 Huawei Device Co., Ltd. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -31,21 +31,22 @@ include $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/lite.mk
 MODULE_NAME := hdf_sensor_driver
 
 FRAMEWORKS_SENSOR_ROOT = $(LITEOSTOPDIR)/../../drivers/framework/model/sensor/driver
+PERIPHERAL_SENSOR_ROOT = $(LITEOSTOPDIR)/../../drivers/peripheral/sensor
 
 LOCAL_INCLUDE := $(FRAMEWORKS_SENSOR_ROOT)/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/common/include \
                  $(FRAMEWORKS_SENSOR_ROOT)/accel \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel \
+                 $(PERIPHERAL_SENSOR_ROOT)/chipset/accel \
                  $(FRAMEWORKS_SENSOR_ROOT)/als \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/als \
+                 $(PERIPHERAL_SENSOR_ROOT)/chipset/als \
                  $(FRAMEWORKS_SENSOR_ROOT)/barometer \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer \
+                 $(PERIPHERAL_SENSOR_ROOT)/chipset/barometer \
                  $(FRAMEWORKS_SENSOR_ROOT)/hall \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/hall \
+                 $(PERIPHERAL_SENSOR_ROOT)/chipset/hall \
                  $(FRAMEWORKS_SENSOR_ROOT)/magnetic \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/magnetic \
+                 $(PERIPHERAL_SENSOR_ROOT)/chipset/magnetic \
                  $(FRAMEWORKS_SENSOR_ROOT)/proximity \
-                 $(FRAMEWORKS_SENSOR_ROOT)/chipset/proximity
+                 $(PERIPHERAL_SENSOR_ROOT)/chipset/proximity
 
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
               $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_parser.c \
@@ -54,32 +55,32 @@ LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/common/src/sensor_config_controller.c \
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_ACCEL), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/accel/sensor_accel_driver.c \
-              $(FRAMEWORKS_SENSOR_ROOT)/chipset/accel/accel_bmi160.c
+              $(PERIPHERAL_SENSOR_ROOT)/chipset/accel/accel_bmi160.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_ALS), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/als/sensor_als_driver.c \
-              $(FRAMEWORKS_SENSOR_ROOT)/chipset/als/als_bh1745.c
+              $(PERIPHERAL_SENSOR_ROOT)/chipset/als/als_bh1745.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_BAROMETER), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/barometer/sensor_barometer_driver.c \
-              $(FRAMEWORKS_SENSOR_ROOT)/chipset/barometer/barometer_bmp180.c
+              $(PERIPHERAL_SENSOR_ROOT)/chipset/barometer/barometer_bmp180.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_HALL), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/hall/sensor_hall_driver.c \
-              $(FRAMEWORKS_SENSOR_ROOT)/chipset/hall/hall_ak8789.c
+              $(PERIPHERAL_SENSOR_ROOT)/chipset/hall/hall_ak8789.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_MAGNETIC), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/magnetic/sensor_magnetic_driver.c \
-              $(FRAMEWORKS_SENSOR_ROOT)/chipset/magnetic/magnetic_lsm303.c
+              $(PERIPHERAL_SENSOR_ROOT)/chipset/magnetic/magnetic_lsm303.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_PROXIMITY), y)
 LOCAL_SRCS += $(FRAMEWORKS_SENSOR_ROOT)/proximity/sensor_proximity_driver.c \
-              $(FRAMEWORKS_SENSOR_ROOT)/chipset/proximity/proximity_apds9960.c
+              $(PERIPHERAL_SENSOR_ROOT)/chipset/proximity/proximity_apds9960.c
 endif
 
 ifeq ($(LOSCFG_DRIVERS_HDF_SENSOR_GRAVITY), y)
