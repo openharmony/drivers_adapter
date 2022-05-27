@@ -65,6 +65,7 @@ if (defined(ohos_lite)) {
       "src/servmgr_client.c",
       "src/servstat_listener.c",
       "src/servstat_listener_stub.cpp",
+      "src/stub_collector.cpp",
     ]
 
     deps = [
