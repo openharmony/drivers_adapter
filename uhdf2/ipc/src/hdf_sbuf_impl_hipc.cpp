@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -330,7 +330,7 @@ static const char16_t *SbufMParcelImplReadString16(struct HdfSBufImpl *sbuf)
 static int32_t SbufMParcelImplWriteRemoteService(struct HdfSBufImpl *sbuf, const struct HdfRemoteService *service)
 {
     if (sbuf == nullptr || service == nullptr) {
-        return false;
+        return HDF_ERR_INVALID_PARAM;
     }
     MessageParcel *parcel = MParcelCast(sbuf);
     const struct HdfRemoteServiceHolder *holder = reinterpret_cast<const struct HdfRemoteServiceHolder *>(service);

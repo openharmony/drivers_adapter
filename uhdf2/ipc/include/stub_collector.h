@@ -13,20 +13,26 @@
  * limitations under the License.
  */
 
-#ifndef HDF_HDI_SUPPORT_H
-#define HDF_HDI_SUPPORT_H
+#ifndef HDI_STUB_COLLECTOR_H
+#define HDI_STUB_COLLECTOR_H
 
-#include "hdf_base.h"
+#include <hdf_remote_service.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-void *LoadHdiImpl(const char *desc, const char *serviceName);
-void UnloadHdiImpl(const char *desc, const char *serviceName, void *impl);
+struct StubConstructor {
+    struct HdfRemoteService **(*constructor)(void *);
+    void (*destructor)(struct HdfRemoteService **);
+};
+void StubConstructorRegister(const char *ifDesc, struct StubConstructor *constructor);
+void StubConstructorUnregister(const char *ifDesc, struct StubConstructor *constructor);
+struct HdfRemoteService **StubCollectorGetOrNewObject(const char *ifDesc, void *servPtr);
+void StubCollectorRemoveObject(const char *ifDesc, void *servPtr);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* HDF_HDI_SUPPORT_H */
-
+#endif // HDI_STUB_COLLECTOR_H
