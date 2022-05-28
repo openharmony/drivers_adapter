@@ -56,6 +56,7 @@ struct HdfRemoteServiceHolder {
     struct HdfRemoteService service_;
     OHOS::sptr<OHOS::IRemoteObject> remote_;
     OHOS::sptr<OHOS::IRemoteObject::DeathRecipient> deathRecipient_;
+    std::u16string descriptor_;
 };
 
 struct HdfRemoteService *HdfRemoteAdapterBind(OHOS::sptr<OHOS::IRemoteObject> binder);

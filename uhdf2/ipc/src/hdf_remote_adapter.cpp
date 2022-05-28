@@ -133,7 +133,7 @@ HdfRemoteServiceHolder::HdfRemoteServiceHolder() : remote_(nullptr), deathRecipi
 
 bool HdfRemoteServiceHolder::SetInterfaceDescriptor(const char *desc)
 {
-    if (remote_ == nullptr || desc == nullptr) {
+    if (desc == nullptr) {
         return false;
     }
     std::u16string newDesc = OHOS::Str8ToStr16(std::string(desc));
@@ -141,10 +141,8 @@ bool HdfRemoteServiceHolder::SetInterfaceDescriptor(const char *desc)
         HDF_LOGE("failed to set interface des, error on cover str8 to str16, %{public}s", desc);
         return false;
     }
-    static std::mutex descMutex;
-    std::lock_guard<std::mutex> lock(descMutex);
-    (const_cast<std::u16string *>(&remote_->descriptor_))->assign(newDesc);
 
+    descriptor_.assign(newDesc);
     return true;
 }
 
@@ -335,11 +333,11 @@ bool HdfRemoteAdapterWriteInterfaceToken(struct HdfRemoteService *service, struc
         HDF_LOGE("failed to write interface token, holder->remote is nullptr");
         return false;
     }
-    if (holder->remote_->GetObjectDescriptor().empty()) {
+    if (holder->descriptor_.empty()) {
         HDF_LOGE("failed to write interface token, empty token");
         return false;
     }
-    return parcel->WriteInterfaceToken(holder->remote_->GetObjectDescriptor());
+    return parcel->WriteInterfaceToken(holder->descriptor_);
 }
 
 bool HdfRemoteAdapterCheckInterfaceToken(struct HdfRemoteService *service, struct HdfSBuf *data)
@@ -361,9 +359,8 @@ bool HdfRemoteAdapterCheckInterfaceToken(struct HdfRemoteService *service, struc
         HDF_LOGE("failed to check interface, empty token");
         return false;
     }
-    if (holder->remote_->GetObjectDescriptor() != desc) {
-        std::string descStr8 = OHOS::Str16ToStr8(desc);
-        HDF_LOGE("calling unknown interface: %{public}s", descStr8.c_str());
+    if (holder->descriptor_ != desc) {
+        HDF_LOGE("calling unknown interface: %{public}s", OHOS::Str16ToStr8(desc).c_str());
         return false;
     }
 
