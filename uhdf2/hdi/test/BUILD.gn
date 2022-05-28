@@ -14,7 +14,7 @@
 import("//build/test.gni")
 import("//drivers/adapter/uhdf2/uhdf.gni")
 
-module_output_path = "hdf/hdi"
+module_output_path = "hdf/srvmgr"
 
 ###########################palTest###########################
 
