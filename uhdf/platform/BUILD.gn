@@ -52,6 +52,7 @@ ohos_shared_library("hdf_platform") {
     "$HDF_FRAMEWORKS/model/storage/src/mmc/mmc_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/adc/adc_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/dac/dac_if_u.c",
+    "$HDF_FRAMEWORKS/support/platform/src/fwk/platform_listener_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/gpio/gpio_if_u.c",
     "$HDF_FRAMEWORKS/support/platform/src/hdmi/hdmi_if.c",
     "$HDF_FRAMEWORKS/support/platform/src/i2c/i2c_if_u.c",
