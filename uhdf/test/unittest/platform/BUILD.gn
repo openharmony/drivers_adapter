@@ -35,6 +35,9 @@ if (board_name == "hi3516dv300" || board_name == "hispark_taurus") {
     if (ohos_kernel_type == "liteos_a") {
       defines += [ "HDF_LITEOS_TEST" ]
     }
+    if (ohos_kernel_type == "linux") {
+      defines += [ "_LINUX_USER_" ]
+    }
     sources = [
       "//drivers/framework/support/platform/test/unittest/common/hdf_adc_test.cpp",
       "//drivers/framework/support/platform/test/unittest/common/hdf_can_test.cpp",
