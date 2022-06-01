@@ -69,6 +69,7 @@ hdf_driver(module_name) {
     "$FRAMEWORKS_WIFI_ROOT/core/components/eapol",
     "$FRAMEWORKS_WIFI_ROOT/core/components/p2p",
     "$FRAMEWORKS_WIFI_ROOT/../common/netdevice",
+    "$FRAMEWORKS_WIFI_ROOT/core",
     "$FRAMEWORKS_WIFI_ROOT/core/module",
     "$HDF_FRAMEWORKS_PATH/include/wifi",
     "$FRAMEWORKS_WIFI_ROOT/bus",

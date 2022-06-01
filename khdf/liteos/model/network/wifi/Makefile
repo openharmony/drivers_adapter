@@ -58,6 +58,7 @@ WIFI_CFLAGS += -I $(INC_PATH) \
 		-I $(NETDEV_PATH) \
 		-I $(MODULE_PATH) \
 		-I $(INC_WIFI_PATH) \
+		-I $(HDM_WIFI_ROOT)/core \
 		-I $(IBUS_PATH)
 
 
