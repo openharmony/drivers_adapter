@@ -22,14 +22,20 @@ template("hdi") {
   assert(defined(invoker.subsystem_name), "subsystem_name are must")
   assert(defined(invoker.part_name), "part_name are must")
 
+  root_package = "ohos.hdi"
   root_path = rebase_path("//drivers/interface")
-  root_package_mapping = "ohos.hdi:${root_path}"
+  if (defined(invoker.root)) {
+    package_path_map = string_split(invoker.root, ":")
+    root_package = package_path_map[0]
+    root_path = rebase_path(package_path_map[1])
+  }
+  root_package_path = "${root_package}:${root_path}"
 
   get_info_args = [
     "-i",
     invoker.language,
     rebase_path(target_gen_dir),
-    root_package_mapping,
+    root_package_path,
   ]
   get_info_args += rebase_path(invoker.sources)
   files_info = exec_script("$hdf_fwk_path/tools/hdi-gen/build_hdi_files.py",
@@ -100,7 +106,7 @@ template("hdi") {
     }
     args += [
       "-r",
-      root_package_mapping,
+      root_package_path,
     ]
   }
 
