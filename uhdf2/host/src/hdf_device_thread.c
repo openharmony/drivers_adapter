@@ -49,7 +49,7 @@ int32_t DeviceThreadMessageHandler(struct HdfMessageTask *task, struct HdfMessag
 
 int DeviceThreadAttach(struct DeviceThread *inst, struct IHdfDevice *device, struct HdfDeviceNode *service)
 {
-    if (inst != NULL || device == NULL || service == NULL) {
+    if (inst == NULL || device == NULL || service == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
 

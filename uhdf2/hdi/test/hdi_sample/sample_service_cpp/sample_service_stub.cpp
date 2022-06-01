@@ -48,7 +48,8 @@ sptr<ISample> ISample::Get(const std::string &serviceName, bool isStub)
 
 sptr<ISample> ISample::Get(bool isStub)
 {
-    return ISample::Get("sample_service", isStub);
+    std::string defaultName = "sample_service";
+    return ISample::Get(defaultName, isStub);
 }
 
 SampleServiceStub::SampleServiceStub(const sptr<ISample> &serviceImpl) :
