@@ -74,7 +74,7 @@ HWTEST_F(SampleHdiCppTest, HdiCppTest001, TestSize.Level1)
 // passthrough mode get interface object
 HWTEST_F(SampleHdiCppTest, HdiCppTest002, TestSize.Level1)
 {
-    OHOS::sptr<ISample> sampleService = ISample::Get(TEST_SERVICE_NAME, true);
+    OHOS::sptr<ISample> sampleService = ISample::Get(true);
     ASSERT_TRUE(sampleService != nullptr);
     OHOS::sptr<IFoo> fooInterface = nullptr;
     int ret = sampleService->GetInterface(fooInterface);
