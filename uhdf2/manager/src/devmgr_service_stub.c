@@ -84,7 +84,7 @@ static int32_t DevmgrServiceStubDispatchUnloadDevice(struct IDevmgrService *devm
 
 static int32_t DevmgrServiceStubDispatchListAllDevice(struct IDevmgrService *devmgrSvc, struct HdfSBuf *reply)
 {
-    if (devmgrSvc == NULL || reply == NULL) {
+    if (reply == NULL) {
         HDF_LOGE("%{public}s:service name is null", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
