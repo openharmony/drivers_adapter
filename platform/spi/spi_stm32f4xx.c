@@ -256,7 +256,6 @@ int32_t HalSpiSend(SpiDevice *spiDevice, const uint8_t *data, uint16_t size)
 int32_t HalSpiRecv(SpiDevice *spiDevice, uint8_t *data, uint16_t size)
 {
     uint32_t len = size;
-    uint32_t remainder = 0;
     uint8_t *cmd = NULL;
     uint32_t spiId;
     SpiResource *resource = NULL;
@@ -297,8 +296,6 @@ int32_t HalSpiSendRecv(SpiDevice *spiDevice, uint8_t *txData,
     uint16_t txSize, uint8_t *rxData, uint16_t rxSize)
 {
     uint32_t spiId;
-    uint8_t* data = rxData;
-    int16_t dropSize = 0;
     SpiResource *resource = NULL;
     if (spiDevice == NULL || txData == NULL || txSize == 0 || rxData == NULL || rxSize == 0) {
         HDF_LOGE("spi input para err\r\n");
@@ -634,11 +631,9 @@ static void SpiDriverRelease(struct HdfDeviceObject *device)
 static int32_t SpiDevOpen(struct SpiCntlr *spiCntlr)
 {
     HDF_LOGI("Enter %s\r\n", __func__);
-    uint32_t spiPort;
     SpiDevice *spiDevice = NULL;
 
     spiDevice = (SpiDevice*)spiCntlr->priv;
-    spiPort = spiDevice->spiId;
     SPI_TypeDef* spix = g_spiGroupMaps[spiDevice->resource.spix];
     LL_SPI_Enable(spix);
 
@@ -647,11 +642,9 @@ static int32_t SpiDevOpen(struct SpiCntlr *spiCntlr)
 
 static int32_t SpiDevClose(struct SpiCntlr *spiCntlr)
 {
-    uint32_t spiPort;
     SpiDevice *spiDevice = NULL;
 
     spiDevice = (SpiDevice*)spiCntlr->priv;
-    spiPort = spiDevice->spiId;
     SPI_TypeDef* spix = g_spiGroupMaps[spiDevice->resource.spix];
     LL_SPI_Disable(spix);
 
@@ -709,7 +702,6 @@ static int32_t SpiDevSetCfg(struct SpiCntlr *spiCntlr, struct SpiCfg *spiCfg)
 
 static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, uint32_t count)
 {
-    uint32_t spiId;
     SpiDevice *spiDevice = NULL;
     uint32_t ticks = 0;
     uint8_t singleCsChange = 0;
@@ -720,7 +712,6 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
     }
 
     spiDevice = (SpiDevice *)spiCntlr->priv;
-    spiId = spiDevice->spiId;
     for (size_t i = 0; i < count; i++) {
         msg = &spiMsg[i];
         LL_GPIO_ResetOutputPin(LL_GET_GPIOX(spiDevice->resource.csGroup), LL_GET_HAL_PIN(spiDevice->resource.csPin));
