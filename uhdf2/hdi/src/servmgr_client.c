@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -93,6 +93,7 @@ int32_t HDIServMgrRegisterServiceStatusListener(struct HDIServiceManager *self,
     if (!HdfRemoteServiceWriteInterfaceToken(servMgrClient->remote, data) ||
         !HdfSbufWriteUint16(data, deviceClass) ||
         ServiceStatusListenerMarshalling(listener, data) != HDF_SUCCESS) {
+        HdfSbufRecycle(data);
         return HDF_FAILURE;
     }
 
@@ -118,6 +119,7 @@ int32_t HDIServMgrUnregisterServiceStatusListener(struct HDIServiceManager *self
 
     if (!HdfRemoteServiceWriteInterfaceToken(servMgrClient->remote, data) ||
         ServiceStatusListenerMarshalling(listener, data) != HDF_SUCCESS) {
+        HdfSbufRecycle(data);
         return HDF_FAILURE;
     }
 
@@ -153,6 +155,7 @@ struct HDIServiceManager *HDIServiceManagerGet(void)
     if (!HdfRemoteServiceSetInterfaceDesc(remote, "HDI.IServiceManager.V1_0")) {
         HDF_LOGE("%{public}s: failed to init interface desc", __func__);
         HdfRemoteServiceRecycle(remote);
+        OsalMemFree(iServMgrClient);
         return NULL;
     }
     iServMgrClient->remote = remote;
