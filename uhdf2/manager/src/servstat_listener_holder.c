@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -86,13 +86,13 @@ int32_t UServStatListenerHolderNotifyStatus(struct ServStatListenerHolder *holde
         SERVIE_STATUS_LISTENER_NOTIFY, data, NULL);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("failed to notify service status, dispatch error");
+        HdfSbufRecycle(data);
         return HDF_FAILURE;
     } else {
         HDF_LOGD("notify service status success");
+        HdfSbufRecycle(data);
         return HDF_SUCCESS;
     }
-    HdfSbufRecycle(data);
-    return HDF_SUCCESS;
 }
 
 void UServStatListenerHolderRecycle(struct ServStatListenerHolder *holder)
