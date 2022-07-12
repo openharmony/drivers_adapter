@@ -104,6 +104,11 @@ static int GpioIoctl(struct file *filep, int cmd, unsigned long arg)
     struct GpioBitInfo info = {0};
     struct drv_data *drvData = NULL;
 
+    if (arg == 0) {
+        HDF_LOGE("%s arg is 0", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
     if (filep == NULL || filep->f_vnode == NULL || filep->f_vnode->data == NULL) {
         HDF_LOGE("%s: function parameter is null", __func__);
         return HDF_ERR_INVALID_PARAM;

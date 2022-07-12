@@ -37,6 +37,7 @@
 
 #define HDF_LOG_TAG hdf_uart_dev
 #define HDF_UART_FS_MODE 0660
+#define ARG_MAX_RANG 0xFFFFFFFF
 
 static int32_t UartDevOpen(struct file *filep)
 {
@@ -145,6 +146,12 @@ static int32_t UartDevIoctl(struct file *filep, int32_t cmd, unsigned long arg)
 {
     int32_t ret = HDF_FAILURE;
     struct UartHost *host = NULL;
+
+    if (arg == 0) {
+        HDF_LOGE("%s arg is 0", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
     if (filep == NULL || filep->f_vnode == NULL) {
         return HDF_ERR_INVALID_PARAM;
     }
@@ -153,6 +160,11 @@ static int32_t UartDevIoctl(struct file *filep, int32_t cmd, unsigned long arg)
 
     switch (cmd) {
         case UART_CFG_BAUDRATE:
+            if (arg > ARG_MAX_RANG) {
+                HDF_LOGE("%s arg out of range", __func__);
+                ret = HDF_ERR_INVALID_PARAM;
+                break;
+            }
             ret = UartHostSetBaud(host, arg);
             break;
         case UART_CFG_RD_BLOCK:
