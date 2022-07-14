@@ -105,6 +105,11 @@ static int GpioIoctl(struct file *filep, int cmd, unsigned long arg)
     struct drv_data* drvData = (struct drv_data* )filep->f_vnode->data;
     bitNum = (uint16_t)(uintptr_t)drvData->priv;
 
+    if (arg == 0) {
+        HDF_LOGE("%s arg is 0", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
     ret = LOS_CopyToKernel(&info, sizeof(struct GpioBitInfo),
         (const VOID *)(uintptr_t)arg, sizeof(struct GpioBitInfo));
     if (ret != 0) {
