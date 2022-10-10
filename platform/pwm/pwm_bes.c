@@ -12,7 +12,6 @@
 #include "hdf_device_desc.h"
 #include "hal_trace.h"
 #include "hal_timer.h"
-#include "hal_iomux.h"
 #include "pwm_core.h"
 #include "hdf_log.h"
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
@@ -22,7 +21,13 @@
 #include "device_resource_if.h"
 #endif
 
+#if defined (LOSCFG_SOC_SERIES_BES2700)
+#define PWM_MAX_FUNCTION 4
+#elif defined (LOSCFG_SOC_SERIES_BES2600)
+#include "hal_iomux.h"
 #define PWM_MAX_FUNCTION 8
+#endif
+
 #define UNTIL_NAN0SECONDS 1000000000
 #define PERCENT 100
 #define DEC_TEN 10
@@ -33,10 +38,12 @@ static uint32_t g_pwmFunction[PWM_MAX_FUNCTION] = {
     HAL_IOMUX_FUNC_PWM1,
     HAL_IOMUX_FUNC_PWM2,
     HAL_IOMUX_FUNC_PWM3,
+#if defined (LOSCFG_SOC_SERIES_BES2600)
     HAL_IOMUX_FUNC_PWM4,
     HAL_IOMUX_FUNC_PWM5,
     HAL_IOMUX_FUNC_PWM6,
     HAL_IOMUX_FUNC_PWM7,
+#endif
 };
 
 static int32_t PwmDevSetConfig(struct PwmDev *pwm, struct PwmConfig *config);
@@ -54,7 +61,7 @@ static int InitPwmDevice(struct PwmDev *host)
     struct PwmDevice *pwmDevice = NULL;
     struct PwmResource *resource = NULL;
     if (host == NULL || host->priv == NULL) {
-        HDF_LOGE("%s: invaild parameter\r\n", __func__);
+        HDF_LOGE("%s: invalid parameter\r\n", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
     pwmDevice = (struct PwmDevice *)host->priv;
@@ -81,13 +88,7 @@ static int InitPwmDevice(struct PwmDev *host)
     return HDF_SUCCESS;
 }
 
-#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-static uint32_t GetPwmDeviceResource(struct PwmDevice *device)
-{
-}
-#else
-static uint32_t GetPwmDeviceResource(
-    struct PwmDevice *device, const struct DeviceResourceNode *resourceNode)
+static uint32_t GetPwmDeviceResource(struct PwmDevice *device, const struct DeviceResourceNode *resourceNode)
 {
     uint32_t tempPin = 0;
     struct DeviceResourceIface *dri = NULL;
@@ -122,7 +123,7 @@ static uint32_t GetPwmDeviceResource(
 
     return HDF_SUCCESS;
 }
-#endif
+
 static int32_t AttachPwmDevice(struct PwmDev *host, struct HdfDeviceObject *device)
 {
     int32_t ret;
@@ -142,7 +143,7 @@ static int32_t AttachPwmDevice(struct PwmDev *host, struct HdfDeviceObject *devi
         return HDF_ERR_MALLOC_FAIL;
     }
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-    ret = GetPwmDeviceResource(pwmDevice);
+    ret = GetPwmDeviceResource(pwmDevice, device->deviceMatchAttr);
 #else
     ret = GetPwmDeviceResource(pwmDevice, device->property);
 #endif

@@ -11,7 +11,9 @@
 
 #include "hal_i2c.h"
 #include "hal_iomux.h"
+#ifdef CHIP_BEST2003
 #include "hal_iomux_best2003.h"
+#endif
 #include "device_resource_if.h"
 #include "osal_mutex.h"
 #ifdef __cplusplus

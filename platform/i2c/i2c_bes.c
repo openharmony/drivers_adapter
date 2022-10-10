@@ -48,25 +48,9 @@ struct I2cMethod g_i2cHostMethod = {
     .transfer = i2cHostTransfer,
 };
 
-int32_t InitI2cDevice(struct I2cDevice *device)
+static int32_t I2cDeviceIomuxInit(uint32_t i2cId, struct I2cResource *resource)
 {
-    int32_t ret = -1;
-    uint32_t i2cPort;
-    struct I2cResource *resource = NULL;
-    struct HAL_I2C_CONFIG_T *i2cConfig = NULL;
-    if (device == NULL) {
-        HDF_LOGE("device is NULL\r\n");
-        return HDF_ERR_INVALID_PARAM;
-    }
-
-    resource = &device->resource;
-    if (resource == NULL) {
-        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
-        return HDF_ERR_INVALID_PARAM;
-    }
-
-    i2cConfig = &device->i2cCfg;
-    if (i2cConfig == NULL) {
+    if (i2cId > HAL_I2C_ID_NUM || resource == NULL) {
         HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
@@ -76,6 +60,52 @@ int32_t InitI2cDevice(struct I2cDevice *device)
         {0, 0, HAL_IOMUX_PIN_VOLTAGE_VIO, HAL_IOMUX_PIN_PULLUP_ENABLE},
     };
 
+#ifdef LOSCFG_SOC_SERIES_BES2600
+    if (i2cId == 0) {
+        pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M0_SCL;
+        pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M0_SDA;
+    } else {
+        pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M1_SCL;
+        pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M1_SDA;
+    }
+#elif defined (LOSCFG_SOC_SERIES_BES2700)
+    if (i2cId == 0) {
+        pinMuxI2c[0].function = HAL_IOMUX_FUNC_SYS_I2C_M0_SCL;
+        pinMuxI2c[1].function = HAL_IOMUX_FUNC_SYS_I2C_M0_SDA;
+    } else {
+        pinMuxI2c[0].function = HAL_IOMUX_FUNC_SYS_I2C_M1_SCL;
+        pinMuxI2c[1].function = HAL_IOMUX_FUNC_SYS_I2C_M1_SDA;
+    }
+#endif
+    pinMuxI2c[0].pin = resource->sclPin;
+    pinMuxI2c[1].pin = resource->sdaPin;
+    hal_iomux_init(pinMuxI2c, ARRAY_SIZE(pinMuxI2c));
+    return HDF_SUCCESS;
+}
+
+int32_t InitI2cDevice(struct I2cDevice *device)
+{
+    int32_t ret;
+    uint32_t i2cPort;
+    struct I2cResource *resource = NULL;
+    struct HAL_I2C_CONFIG_T *i2cConfig = NULL;
+    if (device == NULL) {
+        HDF_LOGE("%s %d:device is NULL\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    resource = &device->resource;
+    if (resource == NULL) {
+        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    i2cConfig = &device->i2cCfg;
+    if (i2cConfig == NULL) {
+        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
     device->port = resource->port;
     i2cPort = device->port;
     if (i2cPort > HAL_I2C_ID_NUM) {
@@ -83,27 +113,22 @@ int32_t InitI2cDevice(struct I2cDevice *device)
         return HDF_ERR_NOT_SUPPORT;
     }
 
-    if (i2cPort == 0) {
-        pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M0_SCL;
-        pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M0_SDA;
-    } else {
-        pinMuxI2c[0].function = HAL_IOMUX_FUNC_I2C_M1_SCL;
-        pinMuxI2c[1].function = HAL_IOMUX_FUNC_I2C_M1_SDA;
-    }
-
     if (OsalMutexInit(&device->mutex) != HDF_SUCCESS) {
         HDF_LOGE("%s %d OsalMutexInit fail\r\n", __func__, __LINE__);
         return HDF_FAILURE;
     }
 
-    if (HDF_SUCCESS != OsalMutexLock(&device->mutex)) {
+    if (OsalMutexLock(&device->mutex) != HDF_SUCCESS) {
         HDF_LOGE("%s %d osMutexWait fail\r\n", __func__, __LINE__);
         return HDF_ERR_TIMEOUT;
     }
 
-    pinMuxI2c[0].pin = resource->sclPin;
-    pinMuxI2c[1].pin = resource->sdaPin;
-    hal_iomux_init(pinMuxI2c, ARRAY_SIZE(pinMuxI2c));
+    ret = I2cDeviceIomuxInit(i2cPort, resource);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGD("I2C iomux init failed.\r\n");
+        OsalMutexUnlock(&device->mutex);
+        return ret;
+    }
 
     ret = hal_i2c_open(i2cPort, i2cConfig);
     if (ret == HDF_SUCCESS) {
@@ -113,86 +138,41 @@ int32_t InitI2cDevice(struct I2cDevice *device)
     return ret;
 }
 
-static int32_t HostRestI2cDevice(struct I2cDevice *device)
+static int32_t GetI2cDeviceIomuxConfig(struct I2cResource *resource, const struct DeviceResourceNode *resourceNode)
 {
-    int32_t ret = -1;
-    struct I2cResource *resource = NULL;
-    struct HAL_I2C_CONFIG_T *i2cConfig = NULL;
-    uint32_t i2cPort;
-    if (device == NULL) {
-        HDF_LOGE("%s %d device is null\r\n", __func__, __LINE__);
+    struct DeviceResourceIface *dri = NULL;
+    if (resource == NULL || resourceNode == NULL) {
+        HDF_LOGE("%s %d:resource or resourceNode is NULL\r\n", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
-    resource = &device->resource;
-    if (resource == NULL) {
-        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
-        return HDF_ERR_INVALID_OBJECT;
-    }
-    i2cConfig = &device->i2cCfg;
-    if (i2cConfig == NULL) {
-        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
-        return HDF_ERR_INVALID_OBJECT;
-    }
-    device->port = resource->port;
-    i2cPort = device->port;
-    if (i2cPort > HAL_I2C_ID_NUM) {
-        HDF_LOGE("i2c port %u not support\r\n", i2cPort);
-        return HDF_ERR_NOT_SUPPORT;
-    }
 
-    hal_i2c_close(i2cPort);
-    ret = hal_i2c_open(i2cPort, i2cConfig);
-    if (ret == HDF_SUCCESS) {
-        HDF_LOGD("open %u i2c succ.\r\n", i2cPort);
-    }
-    return ret;
-}
-#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-#define I2C_FIND_CONFIG(node, name, resource) \
-    do { \
-        if (strcmp(HCS_PROP(node, match_attr), name) == 0) { \
-            resource->port = HCS_PROP(node, port); \
-            tempPin = HCS_PROP(node, sclPin); \
-            resource->sclPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
-            tempPin = HCS_PROP(node, sdaPin); \
-            resource->sdaPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM); \
-            resource->speed = HCS_PROP(node, speed); \
-            resource->mode = HCS_PROP(node, mode); \
-            resource->useDma = HCS_PROP(node, useDma); \
-            resource->useSync = HCS_PROP(node, useSync); \
-            resource->asMaster = HCS_PROP(node, asMaster); \
-            break; \
-        } \
-    } while (0)
-
-#define PLATFORM_I2C_CONFIG HCS_NODE(HCS_NODE(HCS_ROOT, platform), i2c_config)
-static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
-                                     const char *deviceMatchAttr)
-{
-    uint32_t tempPin = 0;
-    struct I2cResource *resource = NULL;
-    if (device == NULL) {
-        HDF_LOGE("device or resourceNode is NULL\r\n");
-        return HDF_ERR_INVALID_PARAM;
-    }
-    resource = &device->resource;
-    if (resource == NULL) {
-        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+    dri = DeviceResourceGetIfaceInstance(HDF_CONFIG_SOURCE);
+    if (dri == NULL || dri->GetUint32 == NULL) {
+        HDF_LOGE("DeviceResourceIface is invalid\r\n");
         return HDF_ERR_INVALID_OBJECT;
     }
 
-    HCS_FOREACH_CHILD_VARGS(PLATFORM_I2C_CONFIG, I2C_FIND_CONFIG, deviceMatchAttr, resource);
+    if (dri->GetUint32(resourceNode, "sclPin", &resource->sclPin, 0) != HDF_SUCCESS) {
+        HDF_LOGE("i2c config sclPin fail\r\n");
+        return HDF_FAILURE;
+    }
+
+    if (dri->GetUint32(resourceNode, "sdaPin", &resource->sdaPin, 0) != HDF_SUCCESS) {
+        HDF_LOGE("i2c config sdaPin fail\r\n");
+        return HDF_FAILURE;
+    }
+    resource->sclPin = ((resource->sclPin / DEC_NUM) * GROUP_PIN_NUM) + (resource->sclPin % DEC_NUM);
+
+    resource->sdaPin = ((resource->sdaPin / DEC_NUM) * GROUP_PIN_NUM) + (resource->sdaPin % DEC_NUM);
     return HDF_SUCCESS;
 }
-#else
-static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
-                                     const struct DeviceResourceNode *resourceNode)
+
+static int32_t GetI2cDeviceResource(struct I2cDevice *device, const struct DeviceResourceNode *resourceNode)
 {
-    uint32_t tempPin = 0;
     struct I2cResource *resource = NULL;
     struct DeviceResourceIface *dri = NULL;
     if (device == NULL || resourceNode == NULL) {
-        HDF_LOGE("device or resourceNode is NULL\r\n");
+        HDF_LOGE("%s %d:device or resourceNode is NULL\r\n", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
     resource = &device->resource;
@@ -210,18 +190,6 @@ static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
         HDF_LOGE("i2c config port fail\r\n");
         return HDF_FAILURE;
     }
-
-    if (dri->GetUint32(resourceNode, "sclPin", &tempPin, 0) != HDF_SUCCESS) {
-        HDF_LOGE("i2c config sclPin fail\r\n");
-        return HDF_FAILURE;
-    }
-    resource->sclPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM);
-
-    if (dri->GetUint32(resourceNode, "sdaPin", &tempPin, 0) != HDF_SUCCESS) {
-        HDF_LOGE("i2c config sdaPin fail\r\n");
-        return HDF_FAILURE;
-    }
-    resource->sdaPin = ((tempPin / DEC_NUM) * GROUP_PIN_NUM) + (tempPin % DEC_NUM);
 
     if (dri->GetUint32(resourceNode, "speed", &resource->speed, 0) != HDF_SUCCESS) {
         HDF_LOGE("i2c config speed fail\r\n");
@@ -247,9 +215,10 @@ static uint32_t GetI2cDeviceResource(struct I2cDevice *device,
         HDF_LOGE("i2c config asMaster fail\r\n");
         return HDF_FAILURE;
     }
-    return HDF_SUCCESS;
+
+    return GetI2cDeviceIomuxConfig(resource, resourceNode);
 }
-#endif
+
 static int32_t AttachI2cDevice(struct I2cCntlr *host, struct HdfDeviceObject *device)
 {
     int32_t ret;
@@ -278,11 +247,13 @@ static int32_t AttachI2cDevice(struct I2cCntlr *host, struct HdfDeviceObject *de
     resource = &i2cDevice->resource;
     if (resource == NULL) {
         HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+        OsalMemFree(i2cDevice);
         return HDF_ERR_INVALID_OBJECT;
     }
     i2cConfig = &i2cDevice->i2cCfg;
     if (i2cConfig == NULL) {
         HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
+        OsalMemFree(i2cDevice);
         return HDF_ERR_INVALID_OBJECT;
     }
     i2cDevice->port = resource->port;
@@ -320,12 +291,10 @@ static int32_t i2cDriverInit(struct HdfDeviceObject *device)
     ret = AttachI2cDevice(host, device);
     if (ret != HDF_SUCCESS) {
         HDF_LOGE("%s: attach error\r\n", __func__);
-        i2cDriverRelease(device);
         return HDF_DEV_ERR_ATTACHDEV_FAIL;
     }
     ret = I2cCntlrAdd(host);
     if (ret != HDF_SUCCESS) {
-        i2cDriverRelease(device);
         return HDF_FAILURE;
     }
     return ret;

@@ -37,10 +37,17 @@ static void Spi1DmaIrq(int error);
 static struct SPI_CTX_OBJ_T spiCtx[MAX_SPI_NUMBER] = {
     {
         .spiPinCS0 = 0,
+#if defined (LOSCFG_SOC_SERIES_BES2700)
+        .spiFunDI0 = HAL_IOMUX_FUNC_SYS_SPI_DI0,
+        .spiFunCLK = HAL_IOMUX_FUNC_SYS_SPI_CLK,
+        .spiFunCS0 = HAL_IOMUX_FUNC_SYS_SPI_CS0,
+        .spiFunDIO = HAL_IOMUX_FUNC_SYS_SPI_DIO,
+#elif defined (LOSCFG_SOC_SERIES_BES2600)
         .spiFunDI0 = HAL_IOMUX_FUNC_SPI_DI0,
         .spiFunCLK = HAL_IOMUX_FUNC_SPI_CLK,
         .spiFunCS0 = HAL_IOMUX_FUNC_SPI_CS0,
         .spiFunDIO = HAL_IOMUX_FUNC_SPI_DIO,
+#endif
         .sem = { NULL },
         .mutex = { NULL },
         .SpiOpen = hal_spi_open,
@@ -53,10 +60,17 @@ static struct SPI_CTX_OBJ_T spiCtx[MAX_SPI_NUMBER] = {
     },
     {
         .spiPinCS0 = 0,
+#if defined (LOSCFG_SOC_SERIES_BES2700)
+        .spiFunDI0 = HAL_IOMUX_FUNC_SYS_SPILCD_DI0,
+        .spiFunCLK = HAL_IOMUX_FUNC_SYS_SPILCD_CLK,
+        .spiFunCS0 = HAL_IOMUX_FUNC_SYS_SPILCD_CS0,
+        .spiFunDIO = HAL_IOMUX_FUNC_SYS_SPILCD_DIO,
+#elif defined (LOSCFG_SOC_SERIES_BES2600)
         .spiFunDI0 = HAL_IOMUX_FUNC_SPILCD_DI0,
         .spiFunCLK = HAL_IOMUX_FUNC_SPILCD_CLK,
         .spiFunCS0 = HAL_IOMUX_FUNC_SPILCD_CS0,
         .spiFunDIO = HAL_IOMUX_FUNC_SPILCD_DIO,
+#endif
         .sem = { NULL },
         .mutex = { NULL },
         .SpiOpen = hal_spilcd_open,
@@ -100,19 +114,19 @@ static void SpiIomuxInit(struct SpiDevice *spiDevice)
     HDF_LOGI("%s: Enter\r\n", __func__);
 
     if (spiDevice == NULL) {
-        HDF_LOGE("%s: invalid parameter\r\n", __func__);
+        HDF_LOGE("%s %d: invalid parameter\r\n", __func__, __LINE__);
         return;
     }
 
     resource = &spiDevice->resource;
     if (resource == NULL) {
-        HDF_LOGE("resource is null\r\n");
-        return HDF_ERR_INVALID_OBJECT;
+        HDF_LOGE("%s %d:resource is null\r\n", __func__, __LINE__);
+        return;
     }
     spiDevCfg = &spiDevice->spiDevCfg;
     if (spiDevCfg == NULL) {
-        HDF_LOGE("resource is null\r\n");
-        return HDF_ERR_INVALID_OBJECT;
+        HDF_LOGE("%s %d:spiconfig is null\r\n", __func__, __LINE__);
+        return;
     }
     spiDevCfg->rate = resource->speed;
 
@@ -135,203 +149,20 @@ static void SpiIomuxInit(struct SpiDevice *spiDevice)
     pinMuxSpi[SPI_PIN_2].function = spiCtx[spiPort].spiFunCS0;
     pinMuxSpi[SPI_PIN_3].function = spiCtx[spiPort].spiFunDIO;
 
-    if (spiDevCfg->rate > MAX_SPI_SPEED) {
-        hal_iomux_set_io_drv(pinMuxSpi[SPI_PIN_1].pin, DRIVER_LEVEL);
-        hal_iomux_set_io_drv(pinMuxSpi[SPI_PIN_3].pin, DRIVER_LEVEL);
-    }
+    hal_iomux_set_io_drv(pinMuxSpi[SPI_PIN_0].pin, DRIVER_LEVEL);
+    hal_iomux_set_io_drv(pinMuxSpi[SPI_PIN_1].pin, DRIVER_LEVEL);
+    hal_iomux_set_io_drv(pinMuxSpi[SPI_PIN_2].pin, DRIVER_LEVEL);
+    hal_iomux_set_io_drv(pinMuxSpi[SPI_PIN_3].pin, DRIVER_LEVEL);
 
     hal_iomux_init(pinMuxSpi, ARRAY_SIZE(pinMuxSpi));
 }
 
-/**
- * Spi send
- *
- * @param[in]  spiId   the spi bus id
- * @param[in]  data     spi send data
- * @param[in]  size     spi send data size
- * @param[in]  timeOut  timeOut in milisecond, set this value to HAL_WAIT_FOREVER
- *                      if you want to wait forever
- *
- * @return  0 : on success, EIO : if the SPI device could not be initialised
- */
-
-#ifdef HalSpiSend
-#undef HalSpiSend
-#endif
-int32_t HalSpiSend(struct SpiDevice *spiDevice, const uint8_t *data, uint16_t size, uint32_t timeOut)
+static int32_t SpiDevCfgInit(struct HAL_SPI_CFG_T *spiDevCfg, struct SpiResource *resource)
 {
-    int32_t ret = 0;
-    uint32_t spiId;
-    uint32_t len = size;
-    struct SpiResource *resource = NULL;
-    int32_t status = HDF_FAILURE;
-
-    if (spiDevice == NULL || data == NULL || size == 0) {
-        HDF_LOGE("spi input para err\r\n");
+    if (spiDevCfg == NULL || resource == NULL) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
-
-    spiId = spiDevice->spiId;
-    resource = &spiDevice->resource;
-    if (resource == NULL) {
-        HDF_LOGE("resource is null\r\n");
-        return HDF_ERR_INVALID_OBJECT;
-    }
-    status = OsalMutexLock(&spiCtx[spiId].mutex);
-    if (HDF_SUCCESS != status) {
-        HDF_LOGE("%s spi_mutex wait error = 0x%X!\r\n", __func__, status);
-        return HDF_ERR_TIMEOUT;
-    }
-
-    if (resource->transmode == SPI_TRANSFER_DMA) {
-        ret = spiCtx[spiId].SpiDmaSend(data, len, spiCtx[spiId].SpiDmaIrq);
-        if (OsalSemWait(&spiCtx[spiId].sem, timeOut) != HDF_SUCCESS) {
-            HDF_LOGE("spi dma send timeOut\r\n");
-            goto OUT;
-        }
-    } else {
-        ret = spiCtx[spiId].SpiSend(data, len);
-    }
-
-    if (ret) {
-        HDF_LOGE("spi tail send fail %ld, size %ld\r\n", ret, len);
-        goto OUT;
-    }
-OUT:
-    OsalMutexUnlock(&spiCtx[spiId].mutex);
-    return ret;
-}
-
-#ifdef HalSpiRecv
-#undef HalSpiRecv
-#endif
-
-/**
- * SpiRecv
- *
- * @param[in]   spiId   the spi bus id
- * @param[out]  data     spi recv data
- * @param[in]   size     spi recv data size
- * @param[in]   timeOut  timeOut in milisecond, set this value to HAL_WAIT_FOREVER
- *                       if you want to wait forever
- *
- * @return  0 : on success, EIO : if the SPI device could not be initialised
- */
-int32_t HalSpiRecv(struct SpiDevice *spiDevice, uint8_t *data, uint16_t size, uint32_t timeOut)
-{
-    int32_t ret = 0;
-    uint32_t len = size;
-    uint32_t remainder = 0;
-    int32_t status = HDF_FAILURE;
-    uint8_t *cmd = NULL;
-    uint32_t spiId;
-    struct SpiResource *resource = NULL;
-    if (spiDevice == NULL || data == NULL || size == 0) {
-        HDF_LOGE("spi input para err\r\n");
-        return HDF_ERR_INVALID_PARAM;
-    }
-
-    spiId = spiDevice->spiId;
-    resource = &spiDevice->resource;
-    if (resource == NULL) {
-        HDF_LOGE("resource is null\r\n");
-        return HDF_ERR_INVALID_OBJECT;
-    }
-    cmd = (uint8_t *)OsalMemAlloc(len);
-    if (cmd == NULL) {
-        HDF_LOGE("%s OsalMemAlloc size %ld error\r\n", __FUNCTION__, len);
-        return HDF_ERR_MALLOC_FAIL;
-    }
-
-    memset_s(cmd, len, 0, len);
-
-    status = OsalMutexLock(&spiCtx[spiId].mutex);
-    if (HDF_SUCCESS != status) {
-        HDF_LOGE("%s spi_mutex wait error = 0x%X!\r\n", __func__, status);
-        OsalMemFree(cmd);
-        return HDF_ERR_TIMEOUT;
-    }
-    remainder = len <= SPI_DMA_MAX ? len : SPI_DMA_MAX;
-
-    if (resource->transmode == SPI_TRANSFER_DMA) {
-        ret = spiCtx[spiId].SpiDmaRecv(cmd, data, remainder, spiCtx[spiId].SpiDmaIrq);
-        if (OsalSemWait(&spiCtx[spiId].sem, timeOut) <= 0) {
-            HDF_LOGE("SPI Read timeOut!\r\n");
-            goto OUT;
-        }
-    } else {
-        ret = spiCtx[spiId].SpiRecv(cmd, data, remainder);
-    }
-
-    len -= remainder;
-    data += remainder;
-
-    if (ret) {
-        HDF_LOGE("spi tail fail %ld, size %ld\r\n", ret, len);
-        goto OUT;
-    }
-OUT:
-    OsalMutexUnlock(&spiCtx[spiId].mutex);
-    OsalMemFree(cmd);
-    return ret;
-}
-
-#ifdef HalSpiSendRecv
-#undef HalSpiSendRecv
-#endif
-int32_t HalSpiSendRecv(struct SpiDevice *spiDevice, uint8_t *txData, uint16_t txSize, uint8_t *rxData,
-                        uint16_t rxSize, uint32_t timeOut)
-{
-    int32_t ret;
-    int32_t status;
-    uint32_t spiId;
-    struct SpiResource *resource = NULL;
-    if (spiDevice == NULL || txData == NULL || txSize == 0 || rxData == NULL || rxSize == 0) {
-        HDF_LOGE("spi input para err\r\n");
-        return HDF_ERR_INVALID_PARAM;
-    }
-    spiId = spiDevice->spiId;
-    resource = &spiDevice->resource;
-    status = OsalMutexLock(&spiCtx[spiId].mutex);
-    if (HDF_SUCCESS != status) {
-        HDF_LOGE("%s spi_mutex wait error = 0x%X!\r\n", __func__, status);
-        return HDF_ERR_TIMEOUT;
-    }
-
-    if (resource->transmode == SPI_TRANSFER_DMA) {
-        ret = spiCtx[spiId].SpiDmaRecv(txData, rxData, rxSize, spiCtx[spiId].SpiDmaIrq);
-        if (OsalSemWait(&spiCtx[spiId].sem, timeOut) <= 0) {
-            HDF_LOGE("%s:SPI Read timeOut!\r\n", __func__);
-            goto OUT;
-        }
-    } else {
-        ret = spiCtx[spiId].SpiRecv(txData, rxData, rxSize);
-    }
-    if (ret) {
-        HDF_LOGE("spi dma tail fail %d\r\n", ret);
-        goto OUT;
-    }
-OUT:
-    OsalMutexUnlock(&spiCtx[spiId].mutex);
-    return ret;
-}
-
-static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
-{
-    uint32_t spiPort;
-    struct HAL_SPI_CFG_T *spiDevCfg = NULL;
-    struct SpiResource *resource = NULL;
-    if (spiDevice == NULL) {
-        HDF_LOGE("%s: invalid parameter\r\n", __func__);
-        return HDF_ERR_INVALID_PARAM;
-    }
-
-    resource = &spiDevice->resource;
-    spiDevCfg = &spiDevice->spiDevCfg;
-    spiPort = spiDevice->spiId;
-
-    SpiIomuxInit(spiDevice);
-
     switch (resource->mode) {
         case SPI_WORK_MODE_0:
             spiDevCfg->clk_delay_half = false;
@@ -365,6 +196,201 @@ static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
     spiDevCfg->rx_bits = resource->dataSize;
     spiDevCfg->tx_bits = resource->dataSize;
     spiDevCfg->rx_frame_bits = 0;
+    return HDF_SUCCESS;
+}
+/**
+ * Spi send
+ *
+ * @param[in]  spiId   the spi bus id
+ * @param[in]  data     spi send data
+ * @param[in]  size     spi send data size
+ * @param[in]  timeOut  timeOut in milisecond, set this value to HAL_WAIT_FOREVER
+ *                      if you want to wait forever
+ *
+ * @return  0 : on success, EIO : if the SPI device could not be initialised
+ */
+
+#ifdef HalSpiSend
+#undef HalSpiSend
+#endif
+int32_t HalSpiSend(struct SpiDevice *spiDevice, const uint8_t *data, uint16_t size, uint32_t timeOut)
+{
+    int32_t ret;
+    uint32_t spiId;
+    uint32_t len = size;
+    struct SpiResource *resource = NULL;
+    int32_t status = HDF_FAILURE;
+
+    if (spiDevice == NULL || data == NULL || size == 0) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    spiId = spiDevice->spiId;
+    resource = &spiDevice->resource;
+    if (resource == NULL) {
+        HDF_LOGE("resource is null\r\n");
+        return HDF_ERR_INVALID_OBJECT;
+    }
+    status = OsalMutexLock(&spiCtx[spiId].mutex);
+    if (HDF_SUCCESS != status) {
+        HDF_LOGE("%s spi_mutex wait error = 0x%X!\r\n", __func__, status);
+        return HDF_ERR_TIMEOUT;
+    }
+#ifdef LOSCFG_SOC_SERIES_BES2700
+    hal_cache_sync_all(HAL_CACHE_ID_D_CACHE);
+#endif
+    if (resource->transmode == SPI_TRANSFER_DMA) {
+        ret = spiCtx[spiId].SpiDmaSend(data, len, spiCtx[spiId].SpiDmaIrq);
+        if (OsalSemWait(&spiCtx[spiId].sem, timeOut) != HDF_SUCCESS) {
+            HDF_LOGE("spi dma send timeOut\r\n");
+            goto OUT;
+        }
+    } else {
+        ret = spiCtx[spiId].SpiSend(data, len);
+    }
+
+    if (ret != 0) {
+        HDF_LOGE("spi tail send fail %d, size %u\r\n", ret, len);
+        goto OUT;
+    }
+OUT:
+    OsalMutexUnlock(&spiCtx[spiId].mutex);
+    return ret;
+}
+
+#ifdef HalSpiRecv
+#undef HalSpiRecv
+#endif
+
+/**
+ * SpiRecv
+ *
+ * @param[in]   spiId   the spi bus id
+ * @param[out]  data     spi recv data
+ * @param[in]   size     spi recv data size
+ * @param[in]   timeOut  timeOut in milisecond, set this value to HAL_WAIT_FOREVER
+ *                       if you want to wait forever
+ *
+ * @return  0 : on success, EIO : if the SPI device could not be initialised
+ */
+static int32_t HalSpiRecv(struct SpiDevice *spiDevice, uint8_t *data, uint16_t size, uint32_t timeOut)
+{
+    int32_t ret;
+    int32_t len = (int32_t)size;
+    uint32_t remainder;
+    int32_t status = HDF_FAILURE;
+    uint8_t *cmd = NULL;
+    uint32_t spiId;
+    struct SpiResource *resource = NULL;
+    if (spiDevice == NULL || data == NULL || size == 0) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    spiId = spiDevice->spiId;
+    resource = &spiDevice->resource;
+    if (resource == NULL) {
+        HDF_LOGE("resource is null\r\n");
+        return HDF_ERR_INVALID_OBJECT;
+    }
+    cmd = (uint8_t *)0x20020000; // 0x20020000 : non secure sram base. tx buf is useless, use sram instead of malloc.
+
+    status = OsalMutexLock(&spiCtx[spiId].mutex);
+    if (status != HDF_SUCCESS) {
+        HDF_LOGE("%s spi_mutex wait error = 0x%X!\r\n", __func__, status);
+        return HDF_ERR_TIMEOUT;
+    }
+#ifdef LOSCFG_SOC_SERIES_BES2700
+    hal_cache_sync_all(HAL_CACHE_ID_D_CACHE);
+#endif
+    do {
+        remainder = len <= SPI_DMA_MAX ? len : SPI_DMA_MAX;
+        if (resource->transmode == SPI_TRANSFER_DMA) {
+            ret = spiCtx[spiId].SpiDmaRecv(cmd, data, remainder, spiCtx[spiId].SpiDmaIrq);
+            if (OsalSemWait(&spiCtx[spiId].sem, timeOut) <= 0) {
+                HDF_LOGE("SPI Read timeOut!\r\n");
+                goto OUT;
+            }
+        } else {
+            ret = spiCtx[spiId].SpiRecv(cmd, data, remainder);
+        }
+
+        len -= remainder;
+        data += remainder;
+
+        if (ret != 0) {
+            HDF_LOGE("spi tail fail %ld, size %ld\r\n", ret, len);
+            goto OUT;
+        }
+    } while (len);
+OUT:
+    OsalMutexUnlock(&spiCtx[spiId].mutex);
+    return ret;
+}
+
+#ifdef HalSpiSendRecv
+#undef HalSpiSendRecv
+#endif
+static int32_t HalSpiSendRecv(struct SpiDevice *spiDevice, uint8_t *txData, uint16_t txSize, uint8_t *rxData,
+                              uint16_t rxSize)
+{
+    int32_t ret;
+    int32_t status;
+    uint32_t spiId;
+    struct SpiResource *resource = NULL;
+    if (spiDevice == NULL || txData == NULL || txSize == 0 || rxData == NULL || rxSize == 0) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+    spiId = spiDevice->spiId;
+    resource = &spiDevice->resource;
+    status = OsalMutexLock(&spiCtx[spiId].mutex);
+    if (HDF_SUCCESS != status) {
+        HDF_LOGE("%s OsalMutexLock error = 0x%X!\r\n", __func__, status);
+        return HDF_ERR_TIMEOUT;
+    }
+#ifdef LOSCFG_SOC_SERIES_BES2700
+    hal_cache_sync_all(HAL_CACHE_ID_D_CACHE);
+#endif
+    if (resource->transmode == SPI_TRANSFER_DMA) {
+        ret = spiCtx[spiId].SpiDmaRecv(txData, rxData, rxSize, spiCtx[spiId].SpiDmaIrq);
+        if (OsalSemWait(&spiCtx[spiId].sem, TIMEOUT) <= 0) {
+            HDF_LOGE("%s:SPI Read timeOut!\r\n", __func__);
+            goto OUT;
+        }
+    } else {
+        ret = spiCtx[spiId].SpiRecv(txData, rxData, rxSize);
+    }
+    if (ret) {
+        HDF_LOGE("spi dma tail fail %d\r\n", ret);
+    }
+OUT:
+    OsalMutexUnlock(&spiCtx[spiId].mutex);
+    return ret;
+}
+
+static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
+{
+    uint32_t spiPort;
+    int32_t ret;
+    struct HAL_SPI_CFG_T *spiDevCfg = NULL;
+    struct SpiResource *resource = NULL;
+    if (spiDevice == NULL) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    resource = &spiDevice->resource;
+    spiDevCfg = &spiDevice->spiDevCfg;
+    spiPort = spiDevice->spiId;
+
+    SpiIomuxInit(spiDevice);
+    ret = SpiDevCfgInit(spiDevCfg, resource);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("%s: SPI config init failed\r\n", __func__);
+        return HDF_FAILURE;
+    }
     /* spi open move to hdf open api */
     /* if cs use as gpio ,pull up at first */
     if (spiCtx[spiPort].spiFunCS0 == HAL_IOMUX_FUNC_AS_GPIO) {
@@ -388,24 +414,46 @@ static int32_t InitSpiDevice(struct SpiDevice *spiDevice)
 }
 
 /* get spi config from hcs file */
-#ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice)
+static int32_t GetSpiDeviceIomuxConfig(struct SpiResource *resource, const struct DeviceResourceNode *resourceNode)
 {
-}
-#else
-static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const struct DeviceResourceNode *resourceNode)
-{
-    uint32_t relPin;
-    struct SpiResource *resource = NULL;
     struct DeviceResourceIface *dri = NULL;
-    if (spiDevice == NULL || resourceNode == NULL) {
-        HDF_LOGE("%s: PARAM is NULL\r\n", __func__);
+    if (resource == NULL || resourceNode == NULL) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
-    resource = &spiDevice->resource;
-    if (resource == NULL) {
-        HDF_LOGE("%s: resource is NULL\r\n", __func__);
-        return HDF_ERR_INVALID_OBJECT;
+    dri = DeviceResourceGetIfaceInstance(HDF_CONFIG_SOURCE);   // open HDF
+    if (dri == NULL || dri->GetUint32 == NULL) {
+        HDF_LOGE("DeviceResourceIface is invalid\r\n");
+        return HDF_ERR_INVALID_PARAM;
+    }
+    if (dri->GetUint32(resourceNode, "spiClkPin", &resource->spiClkPin, 0) != HDF_SUCCESS) {
+        HDF_LOGE("spi config read spiClkPin fail\r\n");
+        return HDF_FAILURE;
+    }
+
+    if (dri->GetUint32(resourceNode, "spiMosiPin", &resource->spiMosiPin, 0) != HDF_SUCCESS) {
+        HDF_LOGE("spi config read spiMosiPin fail\r\n");
+        return HDF_FAILURE;
+    }
+
+    if (dri->GetUint32(resourceNode, "spiMisoPin", &resource->spiMisoPin, 0) != HDF_SUCCESS) {
+        HDF_LOGE("spi config read spiMisoPin fail\r\n");
+        return HDF_FAILURE;
+    }
+
+    if (dri->GetUint32(resourceNode, "spiCsPin", &resource->spiCsPin, 0) != HDF_SUCCESS) {
+        HDF_LOGE("spi config read spiCsPin fail\r\n");
+        return HDF_FAILURE;
+    }
+    return HDF_SUCCESS;
+}
+
+static int32_t GetSpiDeviceConfig(struct SpiResource *resource, const struct DeviceResourceNode *resourceNode)
+{
+    struct DeviceResourceIface *dri = NULL;
+    if (resource == NULL || resourceNode == NULL) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
     }
     dri = DeviceResourceGetIfaceInstance(HDF_CONFIG_SOURCE);   // open HDF
     if (dri == NULL || dri->GetUint32 == NULL) {
@@ -418,7 +466,6 @@ static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const struct De
         return HDF_FAILURE;
     }
 
-    spiDevice->spiId = resource->num;
     if (dri->GetUint32(resourceNode, "speed", &resource->speed, 0) != HDF_SUCCESS) {
         HDF_LOGE("spi config read base fail\r\n");
         return HDF_FAILURE;
@@ -449,40 +496,40 @@ static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const struct De
         return HDF_FAILURE;
     }
 
-    if (dri->GetUint32(resourceNode, "spiClkPin", &resource->spiClkPin, 0) != HDF_SUCCESS) {
-        HDF_LOGE("spi config read spiClkPin fail\r\n");
-        return HDF_FAILURE;
+    return GetSpiDeviceIomuxConfig(resource, resourceNode);
+}
+
+static int32_t GetSpiDeviceResource(struct SpiDevice *spiDevice, const struct DeviceResourceNode *resourceNode)
+{
+    struct SpiResource *resource = NULL;
+    int32_t ret;
+    if (spiDevice == NULL || resourceNode == NULL) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
+        return HDF_ERR_INVALID_PARAM;
     }
-
-    relPin = (resource->spiClkPin / DEC_NUM) * GROUP_PIN_NUM + (resource->spiClkPin % DEC_NUM);
-    resource->spiClkPin = relPin;
-
-    if (dri->GetUint32(resourceNode, "spiMosiPin", &resource->spiMosiPin, 0) != HDF_SUCCESS) {
-        HDF_LOGE("spi config read spiMosiPin fail\r\n");
-        return HDF_FAILURE;
+    resource = &spiDevice->resource;
+    if (resource == NULL) {
+        HDF_LOGE("%s: resource is NULL\r\n", __func__);
+        return HDF_ERR_INVALID_OBJECT;
     }
-
-    relPin = (resource->spiMosiPin / DEC_NUM) * GROUP_PIN_NUM + (resource->spiMosiPin % DEC_NUM);
-    resource->spiMosiPin = relPin;
-    if (dri->GetUint32(resourceNode, "spiMisoPin", &resource->spiMisoPin, 0) != HDF_SUCCESS) {
-        HDF_LOGE("spi config read spiMisoPin fail\r\n");
-        return HDF_FAILURE;
+    ret = GetSpiDeviceConfig(resource, resourceNode);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("get spi config fail\r\n");
+        return ret;
     }
+    spiDevice->spiId = resource->num;
 
-    relPin = ((resource->spiMisoPin / DEC_NUM) * GROUP_PIN_NUM) + (resource->spiMisoPin % DEC_NUM);
-    resource->spiMisoPin = relPin;
+    resource->spiClkPin = (resource->spiClkPin / DEC_NUM) * GROUP_PIN_NUM + (resource->spiClkPin % DEC_NUM);
 
-    if (dri->GetUint32(resourceNode, "spiCsPin", &resource->spiCsPin, 0) != HDF_SUCCESS) {
-        HDF_LOGE("spi config read spiCsPin fail\r\n");
-        return HDF_FAILURE;
-    }
+    resource->spiMosiPin = (resource->spiMosiPin / DEC_NUM) * GROUP_PIN_NUM + (resource->spiMosiPin % DEC_NUM);
 
-    relPin = ((resource->spiCsPin / DEC_NUM) * GROUP_PIN_NUM) + (resource->spiCsPin % DEC_NUM);
-    resource->spiCsPin = relPin;
+    resource->spiMisoPin  = ((resource->spiMisoPin / DEC_NUM) * GROUP_PIN_NUM) + (resource->spiMisoPin % DEC_NUM);
+
+    resource->spiCsPin = ((resource->spiCsPin / DEC_NUM) * GROUP_PIN_NUM) + (resource->spiCsPin % DEC_NUM);
 
     return HDF_SUCCESS;
 }
-#endif
+
 int32_t AttachSpiDevice(struct SpiCntlr *spiCntlr, struct HdfDeviceObject *device)
 {
     int32_t ret;
@@ -502,7 +549,7 @@ int32_t AttachSpiDevice(struct SpiCntlr *spiCntlr, struct HdfDeviceObject *devic
         return HDF_ERR_MALLOC_FAIL;
     }
 #ifdef LOSCFG_DRIVERS_HDF_CONFIG_MACRO
-    ret = GetSpiDeviceResource(spiDevice);
+    ret = GetSpiDeviceResource(spiDevice, device->deviceMatchAttr);
 #else
     ret = GetSpiDeviceResource(spiDevice, device->property);
 #endif
@@ -606,7 +653,7 @@ static void SpiDriverRelease(struct HdfDeviceObject *device)
     }
 
     spiCntlr = SpiCntlrFromDevice(device);
-    if (spiCntlr == NULL || spiCntlr->priv == NULL) {
+    if (spiCntlr == NULL) {
         HDF_LOGE("%s: spiCntlr is NULL\r\n", __func__);
         return;
     }
@@ -672,8 +719,8 @@ static int32_t SpiDevClose(struct SpiCntlr *spiCntlr)
 static int32_t SpiDevGetCfg(struct SpiCntlr *spiCntlr, struct SpiCfg *spiCfg)
 {
     struct SpiDevice *spiDevice = NULL;
-    if (spiCntlr == NULL || spiCfg == NULL || spiCntlr->priv == NULL) {
-        HDF_LOGE("%s: spiCntlr is NULL\r\n", __func__);
+    if (spiCntlr == NULL || spiCfg == NULL) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
     spiDevice = (struct SpiDevice *)spiCntlr->priv;
@@ -687,12 +734,13 @@ static int32_t SpiDevGetCfg(struct SpiCntlr *spiCntlr, struct SpiCfg *spiCfg)
 
     return HDF_SUCCESS;
 }
+
 static int32_t SpiDevSetCfg(struct SpiCntlr *spiCntlr, struct SpiCfg *spiCfg)
 {
     struct SpiDevice *spiDevice = NULL;
     struct HAL_SPI_CFG_T *spiDevCfg = NULL;
-    if (spiCntlr == NULL || spiCfg == NULL || spiCntlr->priv == NULL) {
-        HDF_LOGE("%s: spiCntlr is NULL\r\n", __func__);
+    if (spiCntlr == NULL || spiCfg == NULL) {
+        HDF_LOGE("%s %d:invalid parameter error\r\n", __func__, __LINE__);
         return HDF_ERR_INVALID_PARAM;
     }
     spiDevice = (struct SpiDevice *)spiCntlr->priv;
@@ -717,11 +765,11 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
     struct SpiDevice *spiDevice = NULL;
     struct HAL_SPI_CFG_T *spiDevCfg = NULL;
     struct SpiMsg *msg = NULL;
+    int32_t ret;
     if (spiCntlr == NULL || spiCntlr->priv == NULL) {
         HDF_LOGE("%s: spiCntlr is NULL\r\n", __func__);
         return HDF_ERR_INVALID_PARAM;
     }
-    HDF_LOGI("%s: %u Enter\r\n", __func__, spiId);
     spiDevice = (struct SpiDevice *)spiCntlr->priv;
     spiId = spiDevice->spiId;
     for (size_t i = 0; i < count; i++) {
@@ -732,18 +780,21 @@ static int32_t SpiDevTransfer(struct SpiCntlr *spiCntlr, struct SpiMsg *spiMsg, 
         }
 
         if ((msg->wbuf != NULL) && (msg->rbuf == NULL)) {
-            HalSpiSend(spiDevice, msg->wbuf, msg->len, TIMEOUT);
+            ret = HalSpiSend(spiDevice, msg->wbuf, msg->len, TIMEOUT);
         }
         if ((msg->rbuf != NULL) && (msg->wbuf == NULL)) {
-            HalSpiRecv(spiDevice, msg->rbuf, msg->len, TIMEOUT);
+            ret = HalSpiRecv(spiDevice, msg->rbuf, msg->len, TIMEOUT);
         }
         if ((msg->wbuf != NULL) && (msg->rbuf != NULL)) {
-            HalSpiSendRecv(spiDevice, msg->wbuf, msg->len, msg->rbuf, msg->len, TIMEOUT);
+            ret = HalSpiSendRecv(spiDevice, msg->wbuf, msg->len, msg->rbuf, msg->len);
         }
 
         /* pull pull up cs at the end */
-        if (msg->csChange) {
+        if (msg->keepCs == 0) {
             hal_gpio_pin_set_dir(spiCtx[spiId].spiPinCS0, HAL_GPIO_DIR_OUT, 1);
+        }
+        if (ret < 0) {
+            HDF_LOGE("%s send error!\r\n", __func__);
         }
         DelayUs(msg->delayUs);
     }
