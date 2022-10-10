@@ -69,26 +69,10 @@ typedef int32_t (*oem_gpio_irq_handler_t)(uint16_t gpio, void *data);
 #define OCTALNUM 8
 
 static struct GpioCntlr g_gpioCntlr;
-struct OemGpioIrqHandler {
-    uint8_t port;
-    GpioIrqFunc func;
-    void *arg;
-};
 
 enum HAL_GPIO_PIN_T g_gpioPinReflectionMap[HAL_GPIO_PIN_LED_NUM] = {0};
+
 static struct HAL_GPIO_IRQ_CFG_T g_gpioIrqCfg[HAL_GPIO_PIN_LED_NUM] = {0};
-
-static struct HAL_GPIO_IRQ_CFG_T HalGpioGetIrqConfig(enum HAL_GPIO_PIN_T pin)
-{
-    struct HAL_GPIO_IRQ_CFG_T irqCfg;
-
-    irqCfg.irq_enable = g_gpioIrqCfg[pin].irq_enable;
-    irqCfg.irq_debounce = g_gpioIrqCfg[pin].irq_debounce;
-    irqCfg.irq_type = g_gpioIrqCfg[pin].irq_type;
-    irqCfg.irq_polarity = g_gpioIrqCfg[pin].irq_polarity;
-
-    return irqCfg;
-}
 
 static void OemGpioIrqHdl(enum HAL_GPIO_PIN_T pin)
 {
@@ -216,8 +200,7 @@ static uint32_t GetGpioDeviceResource(struct GpioDevice *device)
     return HDF_SUCCESS;
 }
 #else
-static uint32_t GetGpioDeviceResource(
-    struct GpioDevice *device, const struct DeviceResourceNode *resourceNode)
+static uint32_t GetGpioDeviceResource(struct GpioDevice *device, const struct DeviceResourceNode *resourceNode)
 {
     uint32_t relPin;
     int32_t ret;
@@ -271,11 +254,9 @@ static uint32_t GetGpioDeviceResource(
             return HDF_FAILURE;
         }
     }
-
     return HDF_SUCCESS;
 }
 #endif
-
 
 static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObject *device)
 {
@@ -302,12 +283,12 @@ static int32_t AttachGpioDevice(struct GpioCntlr *gpioCntlr, struct HdfDeviceObj
     ret = GetGpioDeviceResource(gpioDevice, device->property);
 #endif
     if (ret != HDF_SUCCESS) {
-        (void)OsalMemFree(gpioDevice);
+        OsalMemFree(gpioDevice);
         return HDF_FAILURE;
     }
 
     gpioCntlr->count = gpioDevice->resource.pinNum;
-
+    gpioCntlr->priv = (void *)gpioDevice;
     return HDF_SUCCESS;
 }
 
@@ -363,7 +344,8 @@ static void GpioDriverRelease(struct HdfDeviceObject *device)
         return HDF_DEV_ERR_NO_DEVICE_SERVICE;
     }
 
-    (void)OsalMemFree(gpioCntlr->priv);
+    gpioCntlr->ops = NULL;
+    OsalMemFree(gpioCntlr->priv);
     gpioCntlr->count = 0;
 }
 
@@ -371,9 +353,13 @@ static void GpioDriverRelease(struct HdfDeviceObject *device)
 static int32_t GpioDevWrite(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t val)
 {
     (void)cntlr;
+    if (gpio >= HAL_GPIO_PIN_LED_NUM) {
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, gpio);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uint16_t halGpio = g_gpioPinReflectionMap[gpio];
     if ((enum HAL_GPIO_PIN_T)halGpio >= HAL_GPIO_PIN_LED_NUM) {
-        HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, halGpio);
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, halGpio);
         return HDF_ERR_NOT_SUPPORT;
     }
 
@@ -386,9 +372,13 @@ static int32_t GpioDevRead(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t *val
 {
     (void)cntlr;
     uint16_t value;
+    if (gpio >= HAL_GPIO_PIN_LED_NUM) {
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, gpio);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uint16_t halGpio = g_gpioPinReflectionMap[gpio];
     if ((enum HAL_GPIO_PIN_T)halGpio >= HAL_GPIO_PIN_LED_NUM) {
-        HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, halGpio);
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, halGpio);
         return HDF_ERR_NOT_SUPPORT;
     }
 
@@ -401,9 +391,13 @@ static int32_t GpioDevRead(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t *val
 static int32_t GpioDevSetDir(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t dir)
 {
     (void)cntlr;
+    if (gpio >= HAL_GPIO_PIN_LED_NUM) {
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, gpio);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uint16_t halGpio = g_gpioPinReflectionMap[gpio];
     if ((enum HAL_GPIO_PIN_T)halGpio >= HAL_GPIO_PIN_LED_NUM) {
-        HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, halGpio);
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, halGpio);
         return HDF_ERR_NOT_SUPPORT;
     }
 
@@ -416,9 +410,13 @@ static int32_t GpioDevGetDir(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t *d
 {
     (void)cntlr;
     uint16_t value;
+    if (gpio >= HAL_GPIO_PIN_LED_NUM) {
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, gpio);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uint16_t halGpio = g_gpioPinReflectionMap[gpio];
     if ((enum HAL_GPIO_PIN_T)halGpio >= HAL_GPIO_PIN_LED_NUM) {
-        HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, gpio);
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, halGpio);
         return HDF_ERR_NOT_SUPPORT;
     }
 
@@ -431,9 +429,13 @@ static int32_t GpioDevGetDir(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t *d
 static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mode)
 {
     (void)cntlr;
+    if (gpio >= HAL_GPIO_PIN_LED_NUM) {
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, gpio);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     enum HAL_GPIO_PIN_T pin = (enum HAL_GPIO_PIN_T)g_gpioPinReflectionMap[gpio];
     if (pin >= HAL_GPIO_PIN_LED_NUM) {
-        HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, pin);
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, pin);
         return HDF_ERR_NOT_SUPPORT;
     }
 
@@ -442,8 +444,14 @@ static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mo
     } else if ((mode == OSAL_IRQF_TRIGGER_HIGH) || (mode == OSAL_IRQF_TRIGGER_LOW)) {
         g_gpioIrqCfg[pin].irq_type = HAL_GPIO_IRQ_TYPE_LEVEL_SENSITIVE;
     } else {
-        HDF_LOGE("%s %d, error mode:%d", __func__, __LINE__, mode);
+        HDF_LOGE("%s %d, error mode:%hu", __func__, __LINE__, mode);
         return HDF_ERR_NOT_SUPPORT;
+    }
+
+    if (mode == OSAL_IRQF_TRIGGER_HIGH || mode == OSAL_IRQF_TRIGGER_RISING) {
+        mode = HAL_GPIO_IRQ_POLARITY_HIGH_RISING;
+    } else {
+        mode = HAL_GPIO_IRQ_POLARITY_LOW_FALLING;
     }
 
     g_gpioIrqCfg[pin].irq_polarity = mode;
@@ -454,6 +462,10 @@ static int32_t GpioDevSetIrq(struct GpioCntlr *cntlr, uint16_t gpio, uint16_t mo
 static int32_t GpioDevUnSetIrq(struct GpioCntlr *cntlr, uint16_t gpio)
 {
     (void)cntlr;
+    if (gpio >= HAL_GPIO_PIN_LED_NUM) {
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, gpio);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     enum HAL_GPIO_PIN_T pin = (enum HAL_GPIO_PIN_T)g_gpioPinReflectionMap[gpio];
     if (pin >= HAL_GPIO_PIN_LED_NUM) {
         HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, pin);
@@ -467,6 +479,10 @@ static int32_t GpioDevEnableIrq(struct GpioCntlr *cntlr, uint16_t gpio)
 {
     (void)cntlr;
     struct HAL_GPIO_IRQ_CFG_T gpioCfg;
+    if (gpio >= HAL_GPIO_PIN_LED_NUM) {
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, gpio);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uint16_t halGpio = (enum HAL_GPIO_PIN_T)g_gpioPinReflectionMap[gpio];
     if ((enum HAL_GPIO_PIN_T)halGpio >= HAL_GPIO_PIN_LED_NUM) {
         HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, (enum HAL_GPIO_PIN_T)halGpio);
@@ -490,9 +506,13 @@ static int32_t GpioDevEnableIrq(struct GpioCntlr *cntlr, uint16_t gpio)
 static int32_t GpioDevDisableIrq(struct GpioCntlr *cntlr, uint16_t gpio)
 {
     (void)cntlr;
+    if (gpio >= HAL_GPIO_PIN_LED_NUM) {
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, gpio);
+        return HDF_ERR_NOT_SUPPORT;
+    }
     uint16_t halGpio = (enum HAL_GPIO_PIN_T)g_gpioPinReflectionMap[gpio];
     if ((enum HAL_GPIO_PIN_T)halGpio >= HAL_GPIO_PIN_LED_NUM) {
-        HDF_LOGE("%s %d, error pin:%d", __func__, __LINE__, halGpio);
+        HDF_LOGE("%s %d, error pin:%hu", __func__, __LINE__, halGpio);
         return HDF_ERR_NOT_SUPPORT;
     }
 
