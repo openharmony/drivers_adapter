@@ -14,6 +14,7 @@
  */
 
 #include "hdi_support.h"
+#include <charconv>
 #include <dlfcn.h>
 #include <map>
 #include <mutex>
@@ -96,8 +97,18 @@ static int32_t ParseInterface(
         return HDF_FAILURE;
     }
 
-    uint32_t versionMajor = std::stoul(result[INTERFACE_VERSION_MAJOR_INDEX]);
-    uint32_t versionMinor = std::stoul(result[INTERFACE_VERSION_MINOR_INDEX]);
+    uint32_t versionMajor = 0;
+    uint32_t versionMinor = 0;
+    const std::string majorStr = result[INTERFACE_VERSION_MAJOR_INDEX];
+    auto [ptrMaj, ecMaj] = std::from_chars(majorStr.data(), majorStr.data() + majorStr.size(), versionMajor);
+    if (ecMaj != std::errc{} || ptrMaj != majorStr.data() + majorStr.size()) {
+        return HDF_FAILURE;
+    }
+    const std::string minorStr = result[INTERFACE_VERSION_MINOR_INDEX];
+    auto [ptrMin, ecMin] = std::from_chars(minorStr.data(), minorStr.data() + minorStr.size(), versionMinor);
+    if (ecMin != std::errc{} || ptrMin != minorStr.data() + minorStr.size()) {
+        return HDF_FAILURE;
+    }
     std::string interfaceName = result[INTERFACE_NAME_INDEX];
 
     interface = interfaceName[0] == 'I' ? interfaceName.substr(1) : interfaceName;
